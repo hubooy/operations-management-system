@@ -1,0 +1,17 @@
+{
+  "date":"2026-09-17","batch":52,"status":"candidate_explicit_screening_workbench",
+  "verification":{
+    "nodeTargeted":{"passed":17,"log":".runtime/screening-ui-52-node.log"},
+    "browser":{"passed":10,"actualHttpSyntheticDto":true,"sources":3,"tables":6,"partitions":9,"independentProofs":5,"budget":true,"evidence":".runtime/business-screening-workbench-ui/evidence.json"},
+    "legacyBrowsers":{"mappingPassed":13,"budgetPassed":7,"evidence":[".runtime/business-mapping-workbench-ui-batch52/evidence.json",".runtime/business-budget-workbench-ui-batch52/evidence.json"]},
+    "visualReview":{"rootInspectedDesktopAnd390px":true,"screenshots":[".runtime/business-screening-workbench-ui/screening-desktop.png",".runtime/business-screening-workbench-ui/screening-mobile.png",".runtime/business-screening-workbench-ui/actual-http-desktop.png",".runtime/business-screening-workbench-ui/actual-http-mobile.png"]},
+    "build":{"passed":true,"log":".runtime/batch52-build.log"},
+    "types":{"passed":false,"unchangedBaseline":true,"baselineLines":223,"finalLines":223,"exactLineComparison":true,"log":".runtime/batch52-types.log"},
+    "lint":{"ownedFilesWarnings":0},
+    "fullNode":{"total":2374,"passed":2352,"failed":0,"cancelledTimeout":2,"skipped":20,"durationMs":298048.4312,"log":".runtime/batch52-full-node.log"},
+    "timeoutRecheck":{"passed":13,"failed":0,"cancelled":0,"durationMs":11280.885,"log":".runtime/batch52-node-timeout-recheck.log","changedBusinessCode":false,"raisedTimeout":false},
+    "productionBoundary":{"checkedModules":493,"violations":0,"log":".runtime/batch52-boundary.log"}
+  },
+  "limits":{"ordinaryResponseBytes":2097152,"exactSuccessfulScreeningReportDetailBytes":5242880,"uiRowsPerPage":20},
+  "operations":{"productionBusinessReads":false,"productionWrites":false,"deployment":false,"serviceRestart":false,"paidModelCalls":false,"externalMessages":false}
+}

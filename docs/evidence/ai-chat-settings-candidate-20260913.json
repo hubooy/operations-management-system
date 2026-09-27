@@ -1,0 +1,186 @@
+{
+  "status": "candidate_verified_pending_visual_acceptance",
+  "date": "2026-09-13",
+  "branch": "codex/ai-chat-settings",
+  "codeCommit": "5f0ecd5c2122ac7e5f21d39be469be26dd355673",
+  "integrationBase": "3e579ec8b71b84b0fb11e073a68ada48cd9aaa7c",
+  "sourceFiles": {
+    "app/ai-chat-workbench.css": "f64cc840d7997b43cb251ea0c78dbd672fc7ee5b13360704908d3b73c5c1ab14",
+    "app/ai-chat-workbench.tsx": "35b16e85742ca3afbcb9355b6f10d42daab768ea25cc9ac416385c7fbdba1cb4",
+    "app/ai-module-view.tsx": "1e6a3c9ad9996935a17ae775c176468d17242e8a6fa0671c2044f54f3cc2b10c",
+    "app/ai-prompt-settings-view.tsx": "8b3d882dec96fbdfa636a12d3f65918abbc41e4954798103bcdc6b056c02dd12",
+    "app/ai-prompt-settings.css": "4adcdc49477bd64af8b42df056d04ec0a70a396c0317d90488cb35d90dd0a9fa",
+    "app/ai-workspace-host.tsx": "c2f62d2f9047aed2ae93ffd40a0dcfa42eaf3cecdd20253089b4c3c9f8cb620c",
+    "app/api/ai/prompt-settings/route.ts": "399d124e56202cfc58904bf764a1428f9810c77a781c8f26cce3f21f04fb1d7a",
+    "app/globals.css": "0850094d51b0ef33b727f632604f3685f4db3d297cdb74a2d326bb5ec3deab6b",
+    "app/page.tsx": "6f756a1fb9ed617b52f2d78eea069fe6510b693a8093db78e8a29eb5a0f9e425",
+    "app/shell/navigation-catalog.ts": "5859f1587f0d379e5697acfa8e91dbd9e253dfbc7970d528bfb31eff128e5b4b",
+    "app/shell/sidebar-navigation.tsx": "0c4bbc533ca01b13caf6ceb7028e5151b8acb1c1d7384ff6efe8bd57fe79795f",
+    "backend/ai_assistant/chat.py": "ded1de85405b73bafab1e12dc44f51005f2166ca2e0ea3e1c2ca7dccda6040e7",
+    "backend/ai_assistant/database_contract.py": "be0bbcd2d90d37d1d4c465749a63fce9c98712337b7f37839f5bf12eaf1a2b20",
+    "backend/ai_assistant/health.py": "bdb21c01c6b4fe41a34c323841480d68e7e54c71b06d32656bdd2ddc48eaf398",
+    "backend/ai_assistant/migrations/0011_prompt_settings.py": "27b11e6a02d7974fa9d0810f49759dabff75fb77f7df246b1fc5f168a02a741a",
+    "backend/ai_assistant/models.py": "94b4fd398e7bf4455079de50ff3f8906b836d75f16c2c641fdcc8631d68f51fb",
+    "backend/ai_assistant/page_context.py": "715698e995548108f50d7fc513463c8b54ad73b4f56b0e72910f3f8b86ca1135",
+    "backend/ai_assistant/prompt_settings.py": "28f6f72dece6e9bc8b261344f0154cd86e05ae8ecd374b653e5cb5092e9d9bc9",
+    "backend/ai_assistant/table_manifest.py": "4a03c0e704c33b01eac49263a7094bec2fb2adc5fb7690675ac86c3dd3d65451",
+    "backend/ai_assistant/test_prompt_settings.py": "4b7dd0cf7987e52be76ad4fed2aff5c1e4ce52391bd1c01991fdbc937f56a544",
+    "backend/ai_assistant/views.py": "6f9fdc909920fa94f1839ffccf2574f65520908085eb2fb6b4e5793e216b7e08",
+    "backend/system_datasets/manifest.json": "67733ef3c104ac9c388112ce723334f782daaa34ac4c2f08f34f823230945469",
+    "lib/ai/django-route.ts": "9024d7d173ea82115fd40846b851f0d2db9c2196a96bcc067b4a8ce035344253",
+    "lib/ai/model-generation.ts": "75085465fa3cbea212a3a2b5c7eedf63daec212dfac0fc79988d44584c2e8302",
+    "lib/ai/page-context.ts": "44027a271ef1166f496a57f5f2e307809f529a6ac17d5cd82624f2018025ce61",
+    "lib/django/ai-service.ts": "d3bb1045df4f15a10d80df4fb9f77ea5980bcc20113d2c417fa23db3997ee8dc",
+    "tests/ai-chat-navigation.test.ts": "72aaf928bb94d1204c5a9de69b87f6a66e8f0758490553996f6a45d489a1d217",
+    "tests/ai-space.test.ts": "99d35c1a9bb236790a79c7a5a8ccb9dd78ad4bc8df0bc466c052a28eeedd6d00",
+    "tests/django-postgres-maintenance.test.ts": "1c9ba672199ba52cd7853ac2108af012db0eb8839e115f5726f3a9ad881e08e3",
+    "tests/frontend-unification.test.ts": "15292560945e19ccc2edf1e54277146a1c32bd3b13b691b874d119f243be722c",
+    "tests/module-view-contract.test.ts": "7d4dda5f54d45997dbed1fad21e1b83cbce2bff5dd06d4852d73079f9ccff36d",
+    "tests/postgres-consistent-backup.test.py": "b397341bde1b81bf6804a33a4c6e10682ab5bcc691c2fe0366c70cb0f915e034",
+    "tools/ai-domain-snapshot.py": "718f11c503147d1d3f9cdf93b032d9645845a68c8a22e5a86d5b748673f55d74",
+    "tools/ai-postgres-rehearsal.py": "9c6b3fa36e8b7554076f11517aea821d15e4bee90bac139e9053a33e0f45814f",
+    "tools/ai-prompt-settings-upgrade-rehearsal.py": "e83c47cef12af6d950fc28b2e942adb1758e8261b8996150b5979930c2d122cc",
+    "tools/django-postgres-maintenance.ps1": "55fbadc9d2f55e32ab5379a9ad5fa94b26af54d53c35892424d8215812ad5d02",
+    "tools/postgres-consistent-backup.py": "c82dab6963c9e271475301c036647075390930bff75fc892338660ef5f45948a",
+    "tools/preview/data.py": "77ea9628130f105bb525e11d3a9a015e128b14b98fc474e2bccf758ff36d848b"
+  },
+  "validation": {
+    "nodeFullSuite": {
+      "pass": 2137,
+      "fail": 0,
+      "skip": 21,
+      "base": "9e84fb46f590206fc498f40e99ac9c20f996a0ec"
+    },
+    "finalRelatedSuite": {
+      "pass": 51,
+      "fail": 0,
+      "includesNewNavigationRenderTest": true
+    },
+    "postgresAiAndDatasetSuite": {
+      "pass": 199,
+      "fail": 0,
+      "skip": 3
+    },
+    "migrationRolesRestore": {
+      "upgrade": "0010->0011",
+      "existingConversationsAndMessagesPreserved": true,
+      "defaultsRequireNoSeed": true,
+      "secondApplyNoop": true,
+      "migrationDryRun": true,
+      "realRoleHealth": true,
+      "readerReadOnly": true,
+      "writerAppendOnlyAndFenced": true,
+      "businessWritesDenied": true,
+      "tables": 52,
+      "dumpRestoreDigest": "dfa1f0cc9cedb6b1f48e628a535d2e872405a7a471e1f823365fdb0ff9fdcfdb",
+      "productionWrites": false,
+      "externalCalls": 0
+    },
+    "lint": {
+      "errors": 0,
+      "warnings": 11,
+      "newWarnings": 0
+    },
+    "typecheck": {
+      "baselineErrors": 145,
+      "candidateErrors": 145,
+      "newDiagnostics": 0,
+      "baseline": "9e84fb46f590206fc498f40e99ac9c20f996a0ec",
+      "status": "existing_diagnostics_unchanged"
+    },
+    "backendBoundary": "passed",
+    "build": "passed",
+    "builtArtifactTests": {
+      "pass": 20,
+      "fail": 0
+    },
+    "previewSmoke": {
+      "fixture": "synthetic-v1",
+      "checkedAt": "2026-09-13T07:06:54.473Z",
+      "checks": [
+        {
+          "route": "/",
+          "method": "GET",
+          "status": 200
+        },
+        {
+          "route": "/api/inventory/overview?pageSize=5",
+          "method": "GET",
+          "status": 200
+        },
+        {
+          "route": "/api/inventory/overview?q=DEMO-002",
+          "method": "GET",
+          "status": 200
+        },
+        {
+          "route": "/api/products/summary?pageSize=5",
+          "method": "GET",
+          "status": 200
+        },
+        {
+          "route": "/api/products/summary?pageSize=5&page=2",
+          "method": "GET",
+          "status": 200
+        },
+        {
+          "route": "/api/sales/data-health",
+          "method": "GET",
+          "status": 200
+        },
+        {
+          "route": "/api/imports/chain-status",
+          "method": "GET",
+          "status": 200
+        },
+        {
+          "route": "/api/imports/chain-status?path=production",
+          "method": "GET",
+          "status": 400
+        },
+        {
+          "route": "/api/imports/chain-status",
+          "method": "POST",
+          "status": 403
+        },
+        {
+          "route": "/api/inventory/settings",
+          "method": "POST",
+          "status": 403
+        },
+        {
+          "route": "/_teruisi/local/market-annotation-scheduled",
+          "method": "GET",
+          "status": 403
+        },
+        {
+          "route": "/api/inventory/overview?unknown=1",
+          "method": "GET",
+          "status": 400
+        }
+      ]
+    },
+    "browserReview": [
+      "chat before operations navigation",
+      "single active AI destination",
+      "full height long reply and compact bottom composer",
+      "desktop history collapse",
+      "narrow history open and close",
+      "global and business rule editor",
+      "reply guidance version metadata"
+    ]
+  },
+  "production": {
+    "merged": false,
+    "deployed": false,
+    "databaseWrites": false,
+    "serviceRestart": false,
+    "paidModelCalls": 0,
+    "externalMessages": 0
+  },
+  "deferred": [
+    "persistent conversation workspace",
+    "long-task execution",
+    "expanded sandbox capabilities"
+  ]
+}

@@ -1,0 +1,436 @@
+{
+  "id": "J8kY2mQ5vR7sT4pN",
+  "name": "吉客云导入系统",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "1089d9d9bae73f47533eafb088a3b471",
+      "name": "手动运行",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -760,
+        0
+      ]
+    },
+    {
+      "id": "cffaaa43523070f74eb344316db42535",
+      "name": "每天本机时间 00:10",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -760,
+        -160
+      ],
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "10 0 * * *"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:5791/coordination/claim",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-TERUISI-N8N-EXECUTION-ID",
+              "value": "={{ $execution.id }}"
+            },
+            {
+              "name": "X-TERUISI-COORDINATION-ATTEMPT",
+              "value": "={{ $runIndex }}"
+            },
+            {
+              "name": "X-TERUISI-WORKFLOW-KEY",
+              "value": "jackyun"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 10000
+        }
+      },
+      "id": "a0c83e83c41ca10531952f14c8c801fb",
+      "name": "领取共享 helper",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -540,
+        0
+      ],
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "d01a0d62-bd97-49e9-a2f6-000000000010",
+              "leftValue": "={{ $json.coordinationStatus }}",
+              "rightValue": "granted",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "be724a68e28a8e72619d5eb1616e9dcd",
+      "name": "helper 领取成功？",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -300,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "resume": "timeInterval",
+        "amount": 5,
+        "unit": "minutes"
+      },
+      "id": "fc3fc973991cef87e2598bbaaab28167",
+      "name": "等待前序流程释放 helper",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -540,
+        220
+      ]
+    },
+    {
+      "id": "cd9bc55504ac79692146426e0c463ea0",
+      "name": "A·固定采集日和销售日期",
+      "position": [
+        -60,
+        0
+      ],
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:5791/jackyun/export-first/plan-api",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-TERUISI-N8N-EXECUTION-ID",
+              "value": "={{ $execution.id }}"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 120000
+        }
+      }
+    },
+    {
+      "id": "fb6028846f14fb982282281d2d8d4432",
+      "name": "B·接口校验与五表下载",
+      "position": [
+        280,
+        0
+      ],
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:5791/jackyun/export-first/export-all",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-TERUISI-N8N-EXECUTION-ID",
+              "value": "={{ $execution.id }}"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 1800000
+        }
+      }
+    },
+    {
+      "id": "46831fd7e8668d9cc85c10ae92c721d9",
+      "name": "C·五表完整校验和导入演练",
+      "position": [
+        620,
+        0
+      ],
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:5791/jackyun/export-first/validate",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-TERUISI-N8N-EXECUTION-ID",
+              "value": "={{ $execution.id }}"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 1800000
+        }
+      }
+    },
+    {
+      "id": "366a4fc139ed556417dca4f17feb7a7e",
+      "name": "D·统一导入运营管理系统",
+      "position": [
+        960,
+        0
+      ],
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:5791/jackyun/export-first/import",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-TERUISI-N8N-EXECUTION-ID",
+              "value": "={{ $execution.id }}"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 5400000
+        }
+      }
+    },
+    {
+      "id": "e2d15d0604985fa8550747ad0cf37bdf",
+      "name": "E·独立核验五类精确批次",
+      "position": [
+        1300,
+        0
+      ],
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:5791/jackyun/export-first/verify",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-TERUISI-N8N-EXECUTION-ID",
+              "value": "={{ $execution.id }}"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 300000
+        }
+      }
+    },
+    {
+      "id": "a7519c3d2953453e143d341da5cfed45",
+      "name": "五表操作说明",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        280,
+        -300
+      ],
+      "parameters": {
+        "content": "## 五表接口下载\n浏览器仅负责登录和会话初始化；报表阶段由同一个 HTTP 会话完成权限核验、获取全部授权仓库与自营货主、按本轮日期查询数量、服务端导出校验、提交任务、轮询和下载。没有报表页面导航、MiniUI 控件、右键或菜单点击。\n销售按发货时间，固定为截至昨天（含）的最近 45 天，跨月和月初仍为 45 天；每次成功完整导入按该范围更新明细，同内容不重复累计，范围外历史保留。组合装保留母件与子件，图片导出数量上限仍严格校验。库存和库龄记录实际采集日。",
+        "width": 1280,
+        "height": 245,
+        "color": 4
+      }
+    },
+    {
+      "id": "1636e7e168e19fca0591a23d4a00b23a",
+      "name": "导入与运行说明",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        0,
+        280
+      ],
+      "parameters": {
+        "content": "## 导入门槛\n5 张本轮文件全部落地后，核验表头、接口查询总数、SHA-256、组合装母子关系和销售日期，并进行无业务写入的导入演练。全部通过才依次导入：货品 → 分仓库存 → 库龄 → 销售 → 组合装；最后独立回查 PostgreSQL 权威 API 的批次与事实归属。\n同一 execution 全程绑定；提交前保存任务基线和 intent；提交结果未决时保留原运行，只查询原任务，禁止重复生成。仅共享 helper 的领取允许自动重试，业务节点失败后停止。每天本机时间 00:10 定时运行，同时保留手动入口。已核验本机 China Standard Time，对应工作流时区 Asia/Shanghai（UTC+08:00）；本机需保持开机且 n8n/helper 服务运行。仓库模板未激活，实际调度以 n8n 已发布版本为准。账号密码及浏览器会话均不保存在 n8n。需要配套 helper 版本支持 /jackyun/export-first/ 路由。",
+        "width": 1200,
+        "height": 245,
+        "color": 4
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "teruisi-hourly-retry-fc753414409a49c05026b800c1eced5bf3875b69",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "b4f7fa6a-5088-42a2-a0c0-fb8f7fd4565a",
+      "name": "失败后每小时安全重试入口",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -780,
+        320
+      ],
+      "webhookId": "c2f4cf0c-dd9e-4d33-94f2-378fe248e68c"
+    }
+  ],
+  "connections": {
+    "手动运行": {
+      "main": [
+        [
+          {
+            "node": "领取共享 helper",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "领取共享 helper": {
+      "main": [
+        [
+          {
+            "node": "helper 领取成功？",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "helper 领取成功？": {
+      "main": [
+        [
+          {
+            "node": "A·固定采集日和销售日期",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "等待前序流程释放 helper",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "等待前序流程释放 helper": {
+      "main": [
+        [
+          {
+            "node": "领取共享 helper",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "A·固定采集日和销售日期": {
+      "main": [
+        [
+          {
+            "node": "B·接口校验与五表下载",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "B·接口校验与五表下载": {
+      "main": [
+        [
+          {
+            "node": "C·五表完整校验和导入演练",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "C·五表完整校验和导入演练": {
+      "main": [
+        [
+          {
+            "node": "D·统一导入运营管理系统",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "D·统一导入运营管理系统": {
+      "main": [
+        [
+          {
+            "node": "E·独立核验五类精确批次",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "每天本机时间 00:10": {
+      "main": [
+        [
+          {
+            "node": "领取共享 helper",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "失败后每小时安全重试入口": {
+      "main": [
+        [
+          {
+            "node": "领取共享 helper",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Asia/Shanghai",
+    "errorWorkflow": "TeruisiHourlyRetry2026"
+  },
+  "tags": [],
+  "meta": {
+    "hourlyRetryPolicy": {
+      "version": "2026-09-10.safe-hourly-retry.1",
+      "delayMinutes": 60,
+      "errorWorkflowId": "TeruisiHourlyRetry2026",
+      "webhookPath": "teruisi-hourly-retry-fc753414409a49c05026b800c1eced5bf3875b69"
+    }
+  }
+}

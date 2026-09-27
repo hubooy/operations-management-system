@@ -1,0 +1,334 @@
+{
+  "version": "teruisi-guangdong-monitor-production-release-v1",
+  "status": "completed",
+  "completedAt": "2026-09-08T10:45:30.540Z",
+  "sourceCommit": "f39d8d6887a57812ac36f41bc7ada0e7b2141ab7",
+  "featurePullRequest": 36,
+  "djangoDeploymentManifestSha256": "d86d6a007bfb95ca36cd0b0dcd0d9529ff06e8dca7cc78defa475d5530b76c0b",
+  "activation": {
+    "status": "activated",
+    "version": "teruisi-local-worker-release-successor-v1",
+    "planSha256": "81a7521a4f61c7cdd7aabf691c2159177df9bb94b7b42690dfa1db61e62ac53b",
+    "predecessorReleaseId": "20260908T093713Z-64866b73575c4810",
+    "releaseId": "20260908T103235Z-6e9bfb8baea02174",
+    "manifestPath": "D:\\teruisi-runtime\\teruisi-worker-sales\\releases\\20260908T103235Z-6e9bfb8baea02174\\deployment-manifest.json",
+    "manifestSha256": "c8800bb537263d07049594cce44d37844bac018eee7af9f79b35a1eb8164f401",
+    "successorSha256": "32152fb1fa67e0bf2cb4c22dae1fb0980fb1bd36783097b4db11ea6916f9850d",
+    "consumptionSha256": "f26d171b90fd793b24e1dbb24d88566035b7ab94cff300a8a98bac91b43e62c4",
+    "startupBindingSha256": "790add13d70168f5ed7e631dd6c524554d139e210cf1a24b23dee545ffeced2e"
+  },
+  "finalServiceState": {
+    "version": "teruisi-operations-system-control-v2",
+    "state": "Running",
+    "backendState": "Ready",
+    "workerState": "exact_release",
+    "releaseId": "20260908T103235Z-6e9bfb8baea02174",
+    "supervisorProcessId": 36896,
+    "portProcessId": 25716,
+    "url": "http://localhost:3000/",
+    "reason": null,
+    "components": {
+      "core": true,
+      "finance": true,
+      "netshop": true,
+      "market": true,
+      "products": true,
+      "workflow": true,
+      "inventory": true,
+      "customerService": true,
+      "accessControl": true,
+      "erpReference": true,
+      "bi": true,
+      "ai": true
+    },
+    "checkedAt": "2026-09-08T18:44:33.1561189+08:00"
+  },
+  "productionReadback": {
+    "status": "passed",
+    "checkedAt": "2026-09-08T10:39:47.695Z",
+    "readOnly": true,
+    "watchCount": 0,
+    "version": "39:e7255517311b/sales:17/erp:13",
+    "checks": [
+      {
+        "route": "/_teruisi/local/health/live",
+        "status": 200,
+        "bytes": 27,
+        "sha256": "6191c1f860b8a0225c697e46ebce756193dfb18c189218cfe742037501da05eb"
+      },
+      {
+        "route": "/_teruisi/local/health/ready",
+        "status": 200,
+        "bytes": 83,
+        "sha256": "fcf5dce03d916e101db4a3c420027b93d65df5f2bf6e9b136ef13088693eee21"
+      },
+      {
+        "route": "/api/sales/data-health",
+        "status": 200,
+        "bytes": 619,
+        "sha256": "4dd8d5f03fd6efc617c963c2c0e13b0f8068cea89ff1aa8164cdf44f17516b9f"
+      },
+      {
+        "route": "/api/inventory/overview?pageSize=1",
+        "status": 200,
+        "bytes": 138378,
+        "sha256": "8e4aaefa8a4c0d37216869e16bdab2f33ea27ba25f56a79efb24b38c84a05063"
+      },
+      {
+        "route": "/api/inventory/inbound-monitor?pageSize=1",
+        "status": 200,
+        "bytes": 9207,
+        "sha256": "605e6b78f19b5951f7f97e6ea47eb0a5847f18782f5d42478f80c76675049c34"
+      },
+      {
+        "route": "/api/netshop/products?pageSize=1",
+        "status": 200,
+        "bytes": 4209,
+        "sha256": "bd205a6d93babb517cd659e399c47a358ebb40ca03ff42df2888b7a10c34edee"
+      },
+      {
+        "route": "/api/products/summary?pageSize=1",
+        "status": 200,
+        "bytes": 5951,
+        "sha256": "1b461763e5d67959dd21063c366da68f3c2c3767336866f454809aecdc37bfe0"
+      },
+      {
+        "route": "/api/inventory/guangdong-monitor",
+        "status": 200,
+        "bytes": 1703,
+        "sha256": "3f1f51d1c07c067f296744b81d87d465cd8de7b07d20f045be182da056bcc84c"
+      },
+      {
+        "route": "/api/inventory/guangdong-monitor/watchlist",
+        "status": 200,
+        "bytes": 56,
+        "sha256": "52c2f7323a39c6e91d95f7984248dd7f89a30a4feede6e61b2e6085838a5b47f"
+      },
+      {
+        "route": "/api/inventory/guangdong-monitor/suppliers",
+        "status": 200,
+        "bytes": 56,
+        "sha256": "8601a75826f7d0f63d797536d3b5ac7421e00005863a2a6610cee4d93c31ec13"
+      },
+      {
+        "route": "/api/inventory/guangdong-monitor/template",
+        "status": 200,
+        "bytes": 303979,
+        "sha256": "e69f022d05391b001835afe62455d800f493e1e9da077597627c0c4175f2b6a1"
+      },
+      {
+        "route": "/api/inventory/guangdong-monitor/export?kind=watchlist&version=39%3Ae7255517311b%2Fsales%3A17%2Ferp%3A13",
+        "status": 200,
+        "bytes": 303979,
+        "sha256": "e69f022d05391b001835afe62455d800f493e1e9da077597627c0c4175f2b6a1"
+      },
+      {
+        "route": "/api/inventory/guangdong-monitor/export?kind=monitor&version=39%3Ae7255517311b%2Fsales%3A17%2Ferp%3A13",
+        "status": 200,
+        "bytes": 23355,
+        "sha256": "9c31b224bf3040d2f6bd147a78a4dcf1b4d4a42386a4dd72cf91b604b6c765fb"
+      },
+      {
+        "route": "/api/inventory/guangdong-monitor/export?kind=monitor&version=expired",
+        "status": 409,
+        "bytes": 89,
+        "sha256": "96e830711e014d94948ec6e83713f5d62629c438b5fe3b6b37915a882680ad0c"
+      },
+      {
+        "route": "/api/inventory/guangdong-monitor?warehouse=京东仓",
+        "status": 400,
+        "bytes": 79,
+        "sha256": "b15582a642a357c51229494687687aa3940e18ebeb2ea50e83a651b8b0a11db1"
+      },
+      {
+        "route": "/api/inventory/guangdong-monitor",
+        "status": 401,
+        "bytes": 72,
+        "sha256": "09c50a596d7b47a823265cffcfd788c88370d46109e2d71a7b99a2a6956e4ac2"
+      },
+      {
+        "route": "/api/inventory/guangdong-monitor",
+        "status": 200,
+        "bytes": 1703,
+        "sha256": "3f1f51d1c07c067f296744b81d87d465cd8de7b07d20f045be182da056bcc84c"
+      }
+    ]
+  },
+  "productionUi": {
+    "status": "passed",
+    "mockedApi": false,
+    "readOnly": true,
+    "url": "http://127.0.0.1:3000/?module=inventory&view=guangdong",
+    "checks": [
+      "selected-guangdong-tab",
+      "watchlist-management",
+      "supplier-cycle-panel"
+    ],
+    "pageErrors": []
+  },
+  "migration": {
+    "name": "inventory.0007_guangdong_monitor",
+    "newTables": {
+      "inventory_guangdong_monitor_items": 0,
+      "inventory_guangdong_supplier_cycles": 0,
+      "inventory_guangdong_monitor_audits": 0
+    }
+  },
+  "permissions": {
+    "added": [
+      [
+        "r",
+        "inventory_guangdong_monitor_audits",
+        "teruisi_inventory_writer",
+        "INSERT"
+      ],
+      [
+        "r",
+        "inventory_guangdong_monitor_audits",
+        "teruisi_inventory_writer",
+        "SELECT"
+      ],
+      [
+        "r",
+        "inventory_guangdong_monitor_items",
+        "teruisi_inventory_reader",
+        "SELECT"
+      ],
+      [
+        "r",
+        "inventory_guangdong_monitor_items",
+        "teruisi_inventory_writer",
+        "INSERT"
+      ],
+      [
+        "r",
+        "inventory_guangdong_monitor_items",
+        "teruisi_inventory_writer",
+        "SELECT"
+      ],
+      [
+        "r",
+        "inventory_guangdong_monitor_items",
+        "teruisi_inventory_writer",
+        "UPDATE"
+      ],
+      [
+        "r",
+        "inventory_guangdong_supplier_cycles",
+        "teruisi_inventory_reader",
+        "SELECT"
+      ],
+      [
+        "r",
+        "inventory_guangdong_supplier_cycles",
+        "teruisi_inventory_writer",
+        "INSERT"
+      ],
+      [
+        "r",
+        "inventory_guangdong_supplier_cycles",
+        "teruisi_inventory_writer",
+        "SELECT"
+      ],
+      [
+        "r",
+        "inventory_guangdong_supplier_cycles",
+        "teruisi_inventory_writer",
+        "UPDATE"
+      ]
+    ],
+    "removed": [],
+    "otherCatalogsUnchanged": true
+  },
+  "validation": {
+    "developmentEvidence": "guangdong-monitor-development-20260908.json",
+    "releaseRelatedTests": 22,
+    "isolatedBuild": "passed",
+    "backendBoundary": "passed",
+    "mirrorColdStart": 23,
+    "mirrorRestart": 23,
+    "mirrorPublicChecks": 20,
+    "mirrorMigration": {
+      "name": "inventory.0007_guangdong_monitor",
+      "newTables": [
+        "inventory_guangdong_monitor_audits",
+        "inventory_guangdong_monitor_items",
+        "inventory_guangdong_supplier_cycles"
+      ],
+      "existingBusinessCountsAndAuthorityUnchanged": true
+    },
+    "mirrorReadOnlyContentUnchanged": true,
+    "mirrorRunnerSha256": "aac9ee3afa406526a1c96ce75f0216cceab13e18226f9e6ce0fc4492670992f9"
+  },
+  "backups": {
+    "before": {
+      "backupId": "daily-20260908T101746Z-40870972022e",
+      "manifestSha256": "1cbbfacedb27089151889f7628821d0ad9ba629a93b52d214ba451bf9b1c0cd0",
+      "restore": {
+        "version": "teruisi-postgres-restore-rehearsal-v1",
+        "status": "completed",
+        "rehearsalId": "724be810a5c9",
+        "startedAt": "2026-09-08T10:21:14.6331525+00:00",
+        "completedAt": "2026-09-08T10:26:17.3337981+00:00",
+        "backupId": "daily-20260908T101746Z-40870972022e",
+        "backupManifestSha256": "1cbbfacedb27089151889f7628821d0ad9ba629a93b52d214ba451bf9b1c0cd0",
+        "dumpSha256": "25695af067dd6c028a583e4ce432d63ba251375a0ce9e3edb181282816b4cf44",
+        "expectedContentSha256": "88c6de61d274d0dc5e0686796c8889a6e22f1197420c8693b8116c3a108df3e4",
+        "restoredContentSha256": "88c6de61d274d0dc5e0686796c8889a6e22f1197420c8693b8116c3a108df3e4",
+        "isolatedPort": 55446,
+        "productionDatabaseTouched": false,
+        "serviceStateChanged": false,
+        "cleanupStatus": "isolated_data_removed"
+      }
+    },
+    "after": {
+      "backupId": "daily-20260908T103859Z-7607f5770aef",
+      "manifestSha256": "9c9d4f91e57ba4326c4194bb6d09f74ad1556205f2b0d1e330da742de62c3f4a",
+      "restore": {
+        "version": "teruisi-postgres-restore-rehearsal-v1",
+        "status": "completed",
+        "rehearsalId": "9e326a74bf01",
+        "startedAt": "2026-09-08T10:41:05.4886583+00:00",
+        "completedAt": "2026-09-08T10:45:15.7434278+00:00",
+        "backupId": "daily-20260908T103859Z-7607f5770aef",
+        "backupManifestSha256": "9c9d4f91e57ba4326c4194bb6d09f74ad1556205f2b0d1e330da742de62c3f4a",
+        "dumpSha256": "908d5fb8e085f321360f20fe3724ff1a36846f248a23085f091545c4a467fa98",
+        "expectedContentSha256": "0465d43e9c7f9db71d3821cedb93da017a01e6565dc9e919283fd9ab89bc9ac2",
+        "restoredContentSha256": "0465d43e9c7f9db71d3821cedb93da017a01e6565dc9e919283fd9ab89bc9ac2",
+        "isolatedPort": 55446,
+        "productionDatabaseTouched": false,
+        "serviceStateChanged": false,
+        "cleanupStatus": "isolated_data_removed"
+      }
+    }
+  },
+  "productionSnapshot": {
+    "existingTableCountChanges": [
+      "market_netshop_projection",
+      "market_write_request_receipts"
+    ],
+    "domainRevisionsAndAuthorityUnchanged": true
+  },
+  "supervisor": {
+    "desiredState": "running",
+    "process": "running",
+    "health": "healthy",
+    "startup": "installed",
+    "launchEnvironment": "Windows PowerShell system module path; no persistent machine environment changes"
+  },
+  "archive": "D:/teruisi-runtime/django-sales/audits/guangdong-release-20260908",
+  "evidenceFiles": {
+    "guangdong-release-mirror.py": "aac9ee3afa406526a1c96ce75f0216cceab13e18226f9e6ce0fc4492670992f9",
+    "guangdong-release-worker.mjs": "a9cde9919204f478c505f0e24cdb9693077b29d709c5dc636ec9c535bcb632c6",
+    "pre-backup-evidence.py": "e17e27607ef3f31333d44285b0a68bebc172711eaa32f2146c318010c99e33ee",
+    "production-readback.mjs": "a2bad838a19b30511880779edae030bfeabce5aff8194b20ebbcac70ff4029bf",
+    "production-readback.json": "a1aaa4ce02c12319ad6648ae892bdd7813c72dc3e9f692d7c7f70c35ce67fc30",
+    "production-ui.mjs": "1c961d039594f90d9afcae5a223bb13182aca92634237282a2a0390335f53d35",
+    "production-ui.json": "23513ace1b166a2ba6cb0b8bf9c410395c6fef433b3c518301786c2abc8b4f71",
+    "production-guangdong.png": "51b2443cb943d482816edb172411d30bc4d037b37f87bcab241d7e5c645e29ff",
+    "rotation-plan.log": "f9970bbb73c9439251da96d30acd84fd58afe5761ffd959e15abb7a46326d4c7",
+    "rotation-apply.log": "c2bde68b0b89a93bd28008684d4aac92dcd9d9a2fb0337b87d03a3b14eefb8c0",
+    "final-status.json": "9fc827545d40a44c3b10e7d98ca154e0d7c115a0a0113b71a01229f920c9e718"
+  },
+  "productionTestDataWritten": false
+}

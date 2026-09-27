@@ -1,0 +1,51 @@
+{
+  "schemaVersion": "candidate-development-evidence-v1",
+  "date": "2026-09-18",
+  "scope": "netshop, sales and market v2 continuation candidates",
+  "productionWrites": false,
+  "modelCalls": false,
+  "owningPostgresql": {
+    "passed": 17,
+    "log": ".runtime/ai-pg-a3f68ea917d3/tests.log"
+  },
+  "aiLedgerPostgresql": {
+    "passed": 12,
+    "log": ".runtime/ai-pg-1e45ad8c9b02/tests.log",
+    "crossProcessTransport": "test replacement calling actual owning entry"
+  },
+  "legacyCollectionPostgresql": {
+    "passed": 31,
+    "log": ".runtime/ai-pg-5d6d709b7a41/tests.log"
+  },
+  "relatedNode": {
+    "passed": 75,
+    "log": ".runtime/continuation-related-node.log"
+  },
+  "build": "passed",
+  "salesAndMarketOwningPostgresql": {
+    "passed": 26,
+    "log": ".runtime/ai-pg-46a3d40a14f7/tests.log"
+  },
+  "salesAndMarketAiLedgerPostgresql": {
+    "passed": 6,
+    "log": ".runtime/ai-pg-8b7513a8f51e/tests.log"
+  },
+  "existingV2AndIdentityPostgresql": {
+    "passed": 30,
+    "logs": [
+      ".runtime/ai-pg-1074fa9129cc/tests.log",
+      ".runtime/ai-pg-ea24349de185/tests.log"
+    ]
+  },
+  "threeDomainNode": {
+    "passed": 43,
+    "log": ".runtime/three-source-continuation-node.log"
+  },
+  "limits": [
+    "No production deployment or real HTTP multi-process acceptance",
+    "Sales and market continuation are wired in the candidate but have no production multi-process or elapsed-hour acceptance",
+    "The first combined sales/market AI run failed only because synthetic sales revisions were absent and a market subcase remained queued; the fixture was corrected without weakening owning revision checks. The failure is retained in .runtime/ai-pg-ffc09154f7e4/failure.log",
+    "Initial AI test run had one mock-fixture error, retained in .runtime/ai-pg-83fd99259a98/failure.log",
+    "Previous full Node run: 2422 pass, 1 metadata-label retirement false positive, 21 skip. Guard now exempts only two exact metadata expressions in one file; dedicated 40 and combined 75 pass. Full rerun pending."
+  ]
+}

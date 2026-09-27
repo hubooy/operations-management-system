@@ -1,0 +1,381 @@
+{
+  "date": "2026-09-13",
+  "scope": "市场标注读取故障恢复与 AI 回复黑色字体",
+  "sourceCommit": "8f93ec2f5beea4475656da514f4d60546e73c5e9",
+  "adoption": {
+    "status": "activated",
+    "version": "teruisi-local-worker-release-successor-v1",
+    "planSha256": "b37598a42bd696b02372f9800846787daab8b443560e7b22f8e34b770ef20511",
+    "predecessorReleaseId": "20260913T083423Z-5b9bc1d755228cae",
+    "releaseId": "20260913T143708Z-cd14607ae3bd71e3",
+    "manifestPath": "D:\\teruisi-runtime\\teruisi-worker-sales\\releases\\20260913T143708Z-cd14607ae3bd71e3\\deployment-manifest.json",
+    "manifestSha256": "fe1255754246e12c3f2c5264ed4a06b7d032766943a3f4292a75e4fb070deb6f",
+    "successorSha256": "074e3ca518bff464021e2e440bd6cfe59182549cbf62e14ec87e9e3ed8ead29f",
+    "consumptionSha256": "20e654ae0eb8380ac48289c177dc19d2ce4bbf5a8967bb5eed3d041658202e8f",
+    "startupBindingSha256": "dc2e8e23df145e8100abf062cb87e362e6d53724c3abdb363e2aa0f52b344346"
+  },
+  "djangoManifestSha256": "d6bbf9f727475c7dab0a347f33a6ccc1523604bab55af074ba3659644c6d211e",
+  "validation": {
+    "unitTests": {
+      "command": "npm run test:unit -- --test-concurrency=4",
+      "tests": 2167,
+      "passed": 2147,
+      "failed": 0,
+      "cancelled": 0,
+      "skipped": 20
+    },
+    "initialUnitAttempt": {
+      "passed": 2146,
+      "cancelled": 1,
+      "reason": "Unchanged combo browser test exceeded its 30-second timeout during concurrent verification; standalone 3/3 and complete rerun passed without code changes."
+    },
+    "targetedAnnotationTests": {
+      "passed": 73,
+      "failed": 0
+    },
+    "aiTargetedTests": {
+      "passed": 8,
+      "failed": 0
+    },
+    "renderedBuildTests": {
+      "passed": 20,
+      "failed": 0
+    },
+    "build": "passed; isolated build plus controlled candidate build",
+    "lint": "0 errors; 11 existing warnings in untouched files",
+    "typecheck": "Existing diagnostics in unchanged tests/tools; no diagnostics in changed files; full repository not claimed clean",
+    "backendBoundary": {
+      "checkedModules": 433,
+      "violations": 0
+    },
+    "preBackup": {
+      "status": "completed",
+      "backupId": "daily-20260913T142526Z-6b13cd513f49",
+      "backupDirectory": "D:\\teruisi-runtime\\django-sales\\backups\\postgres-daily\\daily-20260913T142526Z-6b13cd513f49",
+      "manifestSha256": "57ec2cb29cc6315843afadff6bd0902f728df1fa914baed63d5cba524c26d7ae",
+      "dumpSha256": "5f5895f522cecaa71e254f98347e4e63de4e2150c77829af2165ca838ebc7669",
+      "contentSha256": "66fa30c1f4d3832ba928140322a123e486501cab044616c0ea31622daeb79bf7",
+      "completedAt": "2026-09-13T14:27:47.2922326+00:00",
+      "serviceStateChanged": false
+    },
+    "preBackupVerify": {
+      "status": "completed",
+      "backupId": "daily-20260913T142526Z-6b13cd513f49",
+      "manifestSha256": "57ec2cb29cc6315843afadff6bd0902f728df1fa914baed63d5cba524c26d7ae",
+      "dumpSha256": "5f5895f522cecaa71e254f98347e4e63de4e2150c77829af2165ca838ebc7669",
+      "contentSha256": "66fa30c1f4d3832ba928140322a123e486501cab044616c0ea31622daeb79bf7",
+      "serviceStateChanged": false
+    },
+    "isolatedRestore": {
+      "version": "teruisi-postgres-restore-rehearsal-v1",
+      "status": "completed",
+      "rehearsalId": "b7e84391cd60",
+      "startedAt": "2026-09-13T14:29:03.0747822+00:00",
+      "completedAt": "2026-09-13T14:34:16.4393110+00:00",
+      "backupId": "daily-20260913T142526Z-6b13cd513f49",
+      "backupManifestSha256": "57ec2cb29cc6315843afadff6bd0902f728df1fa914baed63d5cba524c26d7ae",
+      "dumpSha256": "5f5895f522cecaa71e254f98347e4e63de4e2150c77829af2165ca838ebc7669",
+      "expectedContentSha256": "66fa30c1f4d3832ba928140322a123e486501cab044616c0ea31622daeb79bf7",
+      "restoredContentSha256": "66fa30c1f4d3832ba928140322a123e486501cab044616c0ea31622daeb79bf7",
+      "isolatedPort": 55483,
+      "productionDatabaseTouched": false,
+      "serviceStateChanged": false,
+      "cleanupStatus": "isolated_data_removed"
+    },
+    "postBackup": {
+      "status": "completed",
+      "backupId": "daily-20260913T144709Z-1690ef96d131",
+      "backupDirectory": "D:\\teruisi-runtime\\django-sales\\backups\\postgres-daily\\daily-20260913T144709Z-1690ef96d131",
+      "manifestSha256": "1b4aad64cb21271fbd055e12b4a4267a93219c3267fffb6c7a6e916a9b07805a",
+      "dumpSha256": "1e8ad4cadfa7fcf541f01f3488b5a8b0cdab8f7d083bd4ff430236d8179033c9",
+      "contentSha256": "de8378bcb49d1610cffed1dd159c1e760d33b21c36d252c7564b1b594193aba9",
+      "completedAt": "2026-09-13T14:48:45.5603062+00:00",
+      "serviceStateChanged": false
+    },
+    "postBackupVerify": {
+      "status": "completed",
+      "backupId": "daily-20260913T144709Z-1690ef96d131",
+      "manifestSha256": "1b4aad64cb21271fbd055e12b4a4267a93219c3267fffb6c7a6e916a9b07805a",
+      "dumpSha256": "1e8ad4cadfa7fcf541f01f3488b5a8b0cdab8f7d083bd4ff430236d8179033c9",
+      "contentSha256": "de8378bcb49d1610cffed1dd159c1e760d33b21c36d252c7564b1b594193aba9",
+      "serviceStateChanged": false
+    }
+  },
+  "readback": {
+    "system": {
+      "version": "teruisi-operations-system-control-v2",
+      "state": "Running",
+      "backendState": "Ready",
+      "workerState": "exact_release",
+      "releaseId": "20260913T143708Z-cd14607ae3bd71e3",
+      "supervisorProcessId": 51664,
+      "portProcessId": 6712,
+      "url": "http://localhost:3000/",
+      "reason": null,
+      "components": {
+        "core": true,
+        "finance": true,
+        "netshop": true,
+        "market": true,
+        "products": true,
+        "workflow": true,
+        "inventory": true,
+        "customerService": true,
+        "accessControl": true,
+        "erpReference": true,
+        "bi": true,
+        "ai": true
+      },
+      "checkedAt": "2026-09-13T22:50:25.9206272+08:00"
+    },
+    "startup": {
+      "status": "verified",
+      "version": "teruisi-local-worker-status-v1",
+      "releaseId": "20260913T143708Z-cd14607ae3bd71e3",
+      "manifestSha256": "fe1255754246e12c3f2c5264ed4a06b7d032766943a3f4292a75e4fb070deb6f",
+      "startupVerified": true
+    },
+    "live": {
+      "checkedAt": "2026-09-13T14:46:15.299Z",
+      "releaseId": "20260913T143708Z-cd14607ae3bd71e3",
+      "checks": [
+        {
+          "path": "/?module=ai&view=assistant",
+          "status": 200,
+          "elapsedMs": 41
+        },
+        {
+          "path": "/_teruisi/local/health/live",
+          "status": 200,
+          "elapsedMs": 15
+        },
+        {
+          "path": "/_teruisi/local/health/ready",
+          "status": 200,
+          "elapsedMs": 1732
+        },
+        {
+          "path": "/assets/index-DC8eWmks.css",
+          "status": 200,
+          "elapsedMs": 36
+        },
+        {
+          "path": "/assets/layout-segment-context-BtpTRoO5.js",
+          "status": 200,
+          "elapsedMs": 16
+        },
+        {
+          "path": "/assets/rolldown-runtime-S-ySWqyJ.js",
+          "status": 200,
+          "elapsedMs": 15
+        },
+        {
+          "path": "/assets/index-ybVbc_Nj.js",
+          "status": 200,
+          "elapsedMs": 17
+        },
+        {
+          "path": "/assets/framework-CXnKph_e.js",
+          "status": 200,
+          "elapsedMs": 16
+        },
+        {
+          "path": "/assets/page-D7wYZXfa.js",
+          "status": 200,
+          "elapsedMs": 11
+        },
+        {
+          "path": "/assets/ai-page-context-provider-WIQOLSyE.js",
+          "status": 200,
+          "elapsedMs": 15
+        },
+        {
+          "path": "/assets/module-view-shared-DIbtIINp.js",
+          "status": 200,
+          "elapsedMs": 14
+        },
+        {
+          "path": "/assets/navigation-catalog-BVQfHJrV.js",
+          "status": 200,
+          "elapsedMs": 14
+        },
+        {
+          "path": "/assets/reloadable-lazy-CrG6HtuH.js",
+          "status": 200,
+          "elapsedMs": 15
+        },
+        {
+          "path": "/assets/dialog-CaZn5fCx.js",
+          "status": 200,
+          "elapsedMs": 13
+        },
+        {
+          "path": "/assets/searchable-select-TuzqFU6k.js",
+          "status": 200,
+          "elapsedMs": 16
+        },
+        {
+          "path": "/assets/page-context-DsmfwIVT.js",
+          "status": 200,
+          "elapsedMs": 13
+        },
+        {
+          "path": "/assets/api-client-CiGXK47d.js",
+          "status": 200,
+          "elapsedMs": 5
+        },
+        {
+          "path": "/assets/api-error-CJCV3BJQ.js",
+          "status": 200,
+          "elapsedMs": 9
+        },
+        {
+          "path": "/assets/market-annotation-view-BvBNUGZZ.js",
+          "status": 200,
+          "elapsedMs": 17
+        },
+        {
+          "path": "/api/market/annotations?view=workspace_fast&itemPage=1&itemPageSize=20&aggregateJobs=1",
+          "status": 200,
+          "elapsedMs": 3404
+        },
+        {
+          "path": "/api/market/annotations?view=review&itemPage=1&itemPageSize=20&aggregateJobs=1",
+          "status": 200,
+          "elapsedMs": 642
+        },
+        {
+          "path": "/api/market/annotations?view=candidate_counts",
+          "status": 200,
+          "elapsedMs": 5558
+        },
+        {
+          "path": "/api/market/annotations?view=progress&jobId=selected",
+          "status": 200,
+          "elapsedMs": 59
+        },
+        {
+          "path": "/health",
+          "status": 200,
+          "elapsedMs": 7
+        }
+      ],
+      "assetBytesMatchRelease": true,
+      "sourceBytesMatchRelease": true,
+      "progressMarker": true,
+      "blackMarker": true,
+      "assets": [
+        {
+          "path": "/assets/index-DC8eWmks.css",
+          "bytes": 401004,
+          "sha256": "716353ec68e6a4c6a65f4ae8149ac7c5e847cf3bc3c2f81d2aa5d5756e6eca04"
+        },
+        {
+          "path": "/assets/layout-segment-context-BtpTRoO5.js",
+          "bytes": 288,
+          "sha256": "ec271fff47b14e3b3fee9a538e121f9d628e9cb9d03aa311cc56f63ec3f8acf4"
+        },
+        {
+          "path": "/assets/rolldown-runtime-S-ySWqyJ.js",
+          "bytes": 694,
+          "sha256": "5db5ba82eef00d1dee7e86e663098c9427d01183a88d357437daff295aec3e75"
+        },
+        {
+          "path": "/assets/index-ybVbc_Nj.js",
+          "bytes": 81365,
+          "sha256": "791818c3a3e852f9397c150eea798f04d61f7b4535ee47879571700180edf58f"
+        },
+        {
+          "path": "/assets/framework-CXnKph_e.js",
+          "bytes": 189805,
+          "sha256": "73b45b606448e4dc310fbe851d8089ee752f3eb081980b3a6fec88988820ee12"
+        },
+        {
+          "path": "/assets/page-D7wYZXfa.js",
+          "bytes": 59199,
+          "sha256": "e00f2a045327ddb3e59b2a9a568175f517979f416c1bb818b516ac7110fff54a"
+        },
+        {
+          "path": "/assets/ai-page-context-provider-WIQOLSyE.js",
+          "bytes": 519,
+          "sha256": "81068a87be6359e62cb5aca4183656b0fdb30f82e4dab2532fd9e2caa6753858"
+        },
+        {
+          "path": "/assets/module-view-shared-DIbtIINp.js",
+          "bytes": 6469,
+          "sha256": "62cf95ce744681846b4ecd23cddb29d80a3fbdf3c9a4b59ad61746c6b9afc985"
+        },
+        {
+          "path": "/assets/navigation-catalog-BVQfHJrV.js",
+          "bytes": 3017,
+          "sha256": "569e3b304f924c9a5333361bfe32f0553b13426edf7cd8ddb74ca2a3b6957a2d"
+        },
+        {
+          "path": "/assets/reloadable-lazy-CrG6HtuH.js",
+          "bytes": 536,
+          "sha256": "89877a478fb2c752b38ed3187cc3c2976f3114b25c92131f6a3da6421188a432"
+        },
+        {
+          "path": "/assets/dialog-CaZn5fCx.js",
+          "bytes": 3064,
+          "sha256": "62403b91d7d23f2e2c0f24b5941f9176e1a7ebf61f5cb8f770132bc6f8dc1ac5"
+        },
+        {
+          "path": "/assets/searchable-select-TuzqFU6k.js",
+          "bytes": 5409,
+          "sha256": "f423c656f508f5e8c08f6790e50b567b02f6e294204032fe6ba28e765310916f"
+        },
+        {
+          "path": "/assets/page-context-DsmfwIVT.js",
+          "bytes": 6384,
+          "sha256": "709665672f5352f3303f7b2b62557684956351f90501efed7b286b27fac679f5"
+        },
+        {
+          "path": "/assets/api-client-CiGXK47d.js",
+          "bytes": 1587,
+          "sha256": "1668ca8a79bf454e2d7c8c8ef2783c19ca9d6640e5df6327400a57e8ccc5edbe"
+        },
+        {
+          "path": "/assets/api-error-CJCV3BJQ.js",
+          "bytes": 201,
+          "sha256": "4efae8b1a9127677a8c80569e149000d507839d79d3fc807c2a37d490174941f"
+        },
+        {
+          "path": "/assets/market-annotation-view-BvBNUGZZ.js",
+          "bytes": 56182,
+          "sha256": "19b7d1384e13824a422d5afae29d3847b5caf089ab941b7b8b604bfdfe3258ce"
+        }
+      ],
+      "helper": {
+        "ok": true,
+        "busy": true
+      },
+      "liveness": {
+        "ok": true,
+        "status": "live"
+      },
+      "readiness": {
+        "ok": true,
+        "backend": "django-postgresql",
+        "unavailableServices": [],
+        "status": "ready"
+      }
+    }
+  },
+  "startupCallerNote": "The canonical Start service reported started, but its outer caller shell retained redirected pipe handles. Independent Status and HTTP/readiness confirmed the exact new release. Only the verified caller shell was closed; no supervisor or service process was stopped.",
+  "boundaries": {
+    "djangoRestart": false,
+    "backendDeployment": false,
+    "databaseMigration": false,
+    "n8nRestart": false,
+    "businessWritesForAcceptance": false,
+    "manualPaidModelCall": false,
+    "existingEnabledBackgroundJobs": "resumed naturally through the existing startup/scheduled paths",
+    "postBackupRestoreRepeated": false
+  },
+  "limitations": [
+    "The original upstream 503 trigger was not reproduced; this release fixes client read recovery and stale responses.",
+    "The separately documented master database list timeout remains unresolved.",
+    "Production verification used HTTP and exact release asset/source byte checks; no paid-model or browser interaction acceptance was performed."
+  ]
+}

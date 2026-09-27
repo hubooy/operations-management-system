@@ -1,0 +1,4 @@
+interface:
+  display_name: "抖音竞品分析与获客打法"
+  short_description: "拆解竞品定位、获客与种草机制，生成30天运营打法"
+  default_prompt: "使用 $douyin-competitor-analysis 分析这些抖音竞品与我方账号，并输出证据化诊断和可执行的30天计划。"

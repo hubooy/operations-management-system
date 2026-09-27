@@ -1,0 +1,30 @@
+{
+  "status": "tmall_deployed_and_two_store_acceptance_passed_n8n_environment_followup_pending",
+  "sourceCommit": "94244216",
+  "releaseId": "20260911T165424Z-941a792a6c05e33e",
+  "manifestSha256": "92b21b497aad296b9d6f5a1bd9d3d28350ce23de0c1e566f64435f8f5f396e84",
+  "planSha256": "addc7b3d1b2a3fbd7fd9f670e438e082047dcfb5d15f99877026a2e8b75814de",
+  "liliPublishedVersionId": "b5ef2f61-190f-4ddd-a680-3455975c7840",
+  "otherWorkflowDefinitionsAndOwnersUnchanged": true,
+  "registeredRetryWebhooks": 11,
+  "databaseRestarted": false,
+  "djangoRestarted": false,
+  "n8nRestartCount": 1,
+  "retiredLiliRunId": "f48b8cc7-9120-4f5a-b3bd-14b3de09eec9",
+  "retiredSubmissionAt": "2026-09-11T14:44:54.797Z",
+  "retiredEvidencePreserved": true,
+  "backupBefore": "daily-20260911T163933Z-a2ca789a69b2",
+  "restoreRehearsal": "a13c9e427b08",
+  "backupAfter": "daily-20260911T171150Z-d797f82589ee",
+  "backupAfterVerified": true,
+  "executions": [
+    {"id": 1058, "storeKey": "tmall-lili", "status": "success", "products": 109, "exportBatches": 6, "masterRows": 2452, "masterWarnings": 3, "masterSnapshot": "2026-09-12", "dailyDate": "2026-09-07", "productDailyRows": 81, "promotionRows": 50, "dailyWarnings": 0, "browserClosed": true, "nextMasterDueDate": "2026-09-13", "remainingDailyDates": ["2026-09-08", "2026-09-09", "2026-09-10", "2026-09-11"]},
+    {"id": 1059, "storeKey": "tmall-yijiu", "status": "success", "products": 128, "exportBatches": 7, "masterRows": 2624, "masterWarnings": 3, "masterSnapshot": "2026-09-12", "dailyDate": "2026-09-09", "productDailyRows": 51, "promotionRows": 43, "dailyWarnings": 0, "browserClosed": true, "nextMasterDueDate": "2026-09-13", "remainingDailyDates": ["2026-09-10", "2026-09-11"]}
+  ],
+  "fileHashesAndExactBatchesVerified": true,
+  "twoStoreBusinessOverlapObserved": true,
+  "sixStoreSimultaneousBusinessLoadVerified": false,
+  "naturalHourlyRetryEndToEndVerified": false,
+  "notificationSentByThisTask": false,
+  "unrelatedScheduledWorkflowIssue": {"workflowId": "NewProductWeeklyDingTalk2026", "executionIds": [1060, 1061], "cause": "PowerShell 7 module path inherited by n8n prevents PowerShell 5 ConvertTo-SecureString module loading", "credentialChanged": false, "readOnlyCleanModulePathProbePassed": true, "additionalIdleN8nRestartApprovalPending": true}
+}

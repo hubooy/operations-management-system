@@ -18,6 +18,50 @@ const selfOperated = "\u81ea\u8425";
 const unknownMode = "\u672a\u77e5";
 const unknownPriceBand = "\u672a\u786e\u8ba4\u4ef7\u683c";
 
+export const marketNetshopProjectionStatements = [
+  `CREATE TABLE IF NOT EXISTS market_netshop_projection_control (
+    id INTEGER PRIMARY KEY NOT NULL CHECK (id=1),
+    active_revision TEXT NOT NULL DEFAULT '',
+    active_total INTEGER NOT NULL DEFAULT 0,
+    syncing_revision TEXT NOT NULL DEFAULT '',
+    owner_token TEXT NOT NULL DEFAULT '',
+    lease_expires_at TEXT,
+    updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+  )`,
+  `INSERT OR IGNORE INTO market_netshop_projection_control
+    (id,active_revision,active_total,syncing_revision,owner_token)
+    VALUES (1,'',0,'','')`,
+  `CREATE TABLE IF NOT EXISTS market_netshop_projection (
+    projection_revision TEXT NOT NULL,
+    projection_key TEXT NOT NULL,
+    kind TEXT NOT NULL CHECK (kind IN ('metric','identity','brand')),
+    source TEXT NOT NULL DEFAULT '',
+    dataset TEXT NOT NULL DEFAULT '',
+    platform TEXT NOT NULL DEFAULT '',
+    shop_name TEXT NOT NULL DEFAULT '',
+    business_date TEXT NOT NULL DEFAULT '',
+    sku_id TEXT NOT NULL DEFAULT '',
+    spu_id TEXT NOT NULL DEFAULT '',
+    product_code TEXT NOT NULL DEFAULT '',
+    transaction_amount_cents INTEGER NOT NULL DEFAULT 0,
+    brand TEXT NOT NULL DEFAULT '',
+    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (projection_revision,projection_key)
+  )`,
+  `CREATE INDEX IF NOT EXISTS market_netshop_projection_metric_idx
+    ON market_netshop_projection
+      (projection_revision,kind,source,dataset,business_date,sku_id,spu_id)`,
+  `CREATE INDEX IF NOT EXISTS market_netshop_projection_identity_idx
+    ON market_netshop_projection
+      (projection_revision,kind,sku_id,spu_id,product_code)`,
+  `CREATE INDEX IF NOT EXISTS market_netshop_projection_brand_idx
+    ON market_netshop_projection (projection_revision,kind,brand)`,
+  `CREATE VIEW IF NOT EXISTS market_netshop_active_projection AS
+    SELECT projection.* FROM market_netshop_projection projection
+    JOIN market_netshop_projection_control control
+      ON control.id=1 AND control.active_revision=projection.projection_revision`,
+] as const;
+
 const marketEffectiveMetricsCacheStatements = [
   `CREATE TABLE IF NOT EXISTS market_effective_metrics_cache (
     market_entry_id INTEGER PRIMARY KEY NOT NULL,
@@ -106,6 +150,14 @@ const marketMonthlySummaryCacheIndexStatements = [
   `CREATE INDEX IF NOT EXISTS market_monthly_summary_confirmed_band_idx ON market_monthly_summary_cache (confirmed_price_band, month)`,
 ] as const;
 
+export const marketSystemKpiCacheControlTableStatement = `CREATE TABLE IF NOT EXISTS market_system_kpi_cache_control (
+  id INTEGER PRIMARY KEY NOT NULL CHECK (id = 1),
+  suppress_all_revision INTEGER NOT NULL DEFAULT 0 CHECK (suppress_all_revision IN (0, 1)),
+  suppress_identity_revision INTEGER NOT NULL DEFAULT 0 CHECK (suppress_identity_revision IN (0, 1)),
+  owner_token TEXT NOT NULL DEFAULT '',
+  updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+)`;
+
 const marketOverviewResponseCacheStatements = [
   `CREATE TABLE IF NOT EXISTS market_overview_response_cache (
     cache_key TEXT PRIMARY KEY NOT NULL,
@@ -114,10 +166,179 @@ const marketOverviewResponseCacheStatements = [
     created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
   )`,
+  `CREATE TABLE IF NOT EXISTS market_system_kpi_cache_state (
+    id INTEGER PRIMARY KEY NOT NULL CHECK (id = 1),
+    source_revision INTEGER NOT NULL DEFAULT 1,
+    updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+  )`,
+  marketSystemKpiCacheControlTableStatement,
 ] as const;
+
+const marketSystemKpiCacheStateSeedStatement = `INSERT OR IGNORE INTO market_system_kpi_cache_state (id, source_revision)
+  VALUES (1, 1)`;
+
+export const marketSystemKpiCacheControlSeedStatement = `INSERT OR IGNORE INTO market_system_kpi_cache_control
+  (id, suppress_all_revision, suppress_identity_revision, owner_token) VALUES (1, 0, 0, '')`;
+
+const marketSystemKpiRevisionDependencies = [
+  ["ranking", "market_ranking_entries"],
+  ["price", "market_price_snapshots"],
+  ["prompt", "market_annotation_prompt_versions"],
+  ["image", "market_image_cache"],
+  ["annotation", "market_annotation_items"],
+  ["taxonomy", "market_subcategory_taxonomy"],
+  ["identity", "market_master_identities"],
+  ["batch", "market_import_batches"],
+] as const;
+
+export const marketSystemKpiCacheTriggerNames = marketSystemKpiRevisionDependencies.flatMap(([name]) =>
+  (["insert", "update", "delete"] as const).map((operation) => `market_system_kpi_cache_${name}_${operation}`),
+);
+
+export const marketSystemKpiCacheTriggerStatements = marketSystemKpiRevisionDependencies.flatMap(([name, table]) =>
+  (["insert", "update", "delete"] as const).map((operation) => `CREATE TRIGGER IF NOT EXISTS market_system_kpi_cache_${name}_${operation}
+    AFTER ${operation.toUpperCase()} ON ${table}
+    WHEN NOT EXISTS (
+      SELECT 1 FROM market_system_kpi_cache_control
+      WHERE id=1 AND (suppress_all_revision=1${name === "identity" ? " OR suppress_identity_revision=1" : ""})
+    )
+    BEGIN
+      UPDATE market_system_kpi_cache_state
+      SET source_revision=source_revision+1, updated_at=CURRENT_TIMESTAMP
+      WHERE id=1;
+    END`),
+);
+
+export const marketSystemKpiCacheTriggerDropStatements = marketSystemKpiRevisionDependencies.flatMap(([name]) =>
+  (["insert", "update", "delete"] as const)
+    .map((operation) => `DROP TRIGGER IF EXISTS market_system_kpi_cache_${name}_${operation}`),
+);
+
+export const marketSystemKpiIdentityTriggerDropStatements = marketSystemKpiCacheTriggerDropStatements
+  .filter((statement) => statement.includes("_identity_"));
+
+const marketImageCacheTableStatement = `CREATE TABLE IF NOT EXISTS market_image_cache (
+    source_url TEXT PRIMARY KEY NOT NULL,
+    status TEXT NOT NULL DEFAULT 'pending',
+    object_key TEXT NOT NULL DEFAULT '',
+    content_sha256 TEXT NOT NULL DEFAULT '',
+    mime_type TEXT NOT NULL DEFAULT '',
+    size_bytes INTEGER NOT NULL DEFAULT 0,
+    image_source TEXT NOT NULL DEFAULT '',
+    attempt_count INTEGER NOT NULL DEFAULT 0,
+    error_code TEXT NOT NULL DEFAULT '',
+    error_message TEXT NOT NULL DEFAULT '',
+    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+  )`;
+
+const marketImageCacheJobTableStatement = `CREATE TABLE IF NOT EXISTS market_image_cache_jobs (
+    id TEXT PRIMARY KEY NOT NULL,
+    scope_key TEXT NOT NULL UNIQUE,
+    batch_id TEXT NOT NULL DEFAULT '',
+    status TEXT NOT NULL DEFAULT 'queued' CHECK (status IN ('queued','running','completed','failed')),
+    requested_by TEXT NOT NULL DEFAULT '',
+    discovery_cursor TEXT NOT NULL DEFAULT '',
+    discovery_complete INTEGER NOT NULL DEFAULT 0 CHECK (discovery_complete IN (0,1)),
+    discovered_count INTEGER NOT NULL DEFAULT 0,
+    completed_count INTEGER NOT NULL DEFAULT 0,
+    failed_count INTEGER NOT NULL DEFAULT 0,
+    pending_count INTEGER NOT NULL DEFAULT 0,
+    propagation_pending_count INTEGER NOT NULL DEFAULT 0,
+    processed_count INTEGER NOT NULL DEFAULT 0,
+    run_count INTEGER NOT NULL DEFAULT 0,
+    failure_count INTEGER NOT NULL DEFAULT 0,
+    lease_token TEXT NOT NULL DEFAULT '',
+    lease_epoch INTEGER NOT NULL DEFAULT 0,
+    lease_expires_at TEXT,
+    next_run_at TEXT,
+    error_code TEXT NOT NULL DEFAULT '',
+    error_message TEXT NOT NULL DEFAULT '',
+    started_at TEXT,
+    completed_at TEXT,
+    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+  )`;
+
+const marketImageCacheJobItemTableStatement = `CREATE TABLE IF NOT EXISTS market_image_cache_job_items (
+    job_id TEXT NOT NULL,
+    source_url TEXT NOT NULL,
+    status TEXT NOT NULL DEFAULT 'queued' CHECK (status IN ('queued','ready','completed','failed')),
+    content_sha256 TEXT NOT NULL DEFAULT '',
+    attempt_count INTEGER NOT NULL DEFAULT 0,
+    error_code TEXT NOT NULL DEFAULT '',
+    error_message TEXT NOT NULL DEFAULT '',
+    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    completed_at TEXT,
+    PRIMARY KEY (job_id, source_url)
+  )`;
+
+const marketImageCacheClaimTableStatement = `CREATE TABLE IF NOT EXISTS market_image_cache_claims (
+    source_url TEXT PRIMARY KEY NOT NULL,
+    job_id TEXT NOT NULL,
+    claim_token TEXT NOT NULL,
+    job_lease_token TEXT NOT NULL,
+    job_epoch INTEGER NOT NULL,
+    attempt_count INTEGER NOT NULL,
+    lease_expires_at TEXT NOT NULL,
+    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+  )`;
+
+const marketImageCacheCounterTriggerStatements = [
+  `CREATE TRIGGER IF NOT EXISTS market_image_cache_item_insert_counts
+    AFTER INSERT ON market_image_cache_job_items
+    BEGIN
+      UPDATE market_image_cache_jobs SET
+        discovered_count=discovered_count+1,
+        pending_count=pending_count+CASE WHEN NEW.status='queued' THEN 1 ELSE 0 END,
+        propagation_pending_count=propagation_pending_count+CASE WHEN NEW.status='ready' THEN 1 ELSE 0 END,
+        completed_count=completed_count+CASE WHEN NEW.status='completed' THEN 1 ELSE 0 END,
+        failed_count=failed_count+CASE WHEN NEW.status='failed' THEN 1 ELSE 0 END,
+        processed_count=processed_count+CASE WHEN NEW.status IN ('completed','failed') THEN 1 ELSE 0 END,
+        updated_at=CURRENT_TIMESTAMP
+      WHERE id=NEW.job_id;
+    END`,
+  `CREATE TRIGGER IF NOT EXISTS market_image_cache_item_status_counts
+    AFTER UPDATE OF status ON market_image_cache_job_items
+    WHEN OLD.status<>NEW.status
+    BEGIN
+      UPDATE market_image_cache_jobs SET
+        pending_count=MAX(0, pending_count
+          + CASE WHEN NEW.status='queued' THEN 1 ELSE 0 END
+          - CASE WHEN OLD.status='queued' THEN 1 ELSE 0 END),
+        propagation_pending_count=MAX(0, propagation_pending_count
+          + CASE WHEN NEW.status='ready' THEN 1 ELSE 0 END
+          - CASE WHEN OLD.status='ready' THEN 1 ELSE 0 END),
+        completed_count=MAX(0, completed_count
+          + CASE WHEN NEW.status='completed' THEN 1 ELSE 0 END
+          - CASE WHEN OLD.status='completed' THEN 1 ELSE 0 END),
+        failed_count=MAX(0, failed_count
+          + CASE WHEN NEW.status='failed' THEN 1 ELSE 0 END
+          - CASE WHEN OLD.status='failed' THEN 1 ELSE 0 END),
+        processed_count=MAX(0, processed_count
+          + CASE WHEN NEW.status IN ('completed','failed') THEN 1 ELSE 0 END
+          - CASE WHEN OLD.status IN ('completed','failed') THEN 1 ELSE 0 END),
+        updated_at=CURRENT_TIMESTAMP
+      WHERE id=NEW.job_id;
+    END`,
+] as const;
+
+export const marketImportIdentityRefreshKeysTableStatement = `CREATE TABLE IF NOT EXISTS market_import_identity_refresh_keys_v2 (
+  batch_id TEXT NOT NULL,
+  owner_token TEXT NOT NULL,
+  category TEXT NOT NULL,
+  scope TEXT NOT NULL,
+  ranking_dimension TEXT NOT NULL,
+  sku_code TEXT NOT NULL,
+  created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (batch_id, owner_token, category, scope, ranking_dimension, sku_code)
+)`;
 
 export const marketBaseSchemaStatements = [
   ...marketOverviewResponseCacheStatements,
+  ...marketNetshopProjectionStatements,
   `CREATE TABLE IF NOT EXISTS market_import_batches (
     id TEXT PRIMARY KEY NOT NULL,
     source_type TEXT NOT NULL,
@@ -152,6 +373,7 @@ export const marketBaseSchemaStatements = [
     created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (batch_id, row_number)
   )`,
+  marketImportIdentityRefreshKeysTableStatement,
   `CREATE TABLE IF NOT EXISTS market_ranking_entries (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     natural_key TEXT NOT NULL UNIQUE,
@@ -249,20 +471,11 @@ export const marketBaseSchemaStatements = [
     created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
   )`,
-  `CREATE TABLE IF NOT EXISTS market_image_cache (
-    source_url TEXT PRIMARY KEY NOT NULL,
-    status TEXT NOT NULL DEFAULT 'pending',
-    object_key TEXT NOT NULL DEFAULT '',
-    content_sha256 TEXT NOT NULL DEFAULT '',
-    mime_type TEXT NOT NULL DEFAULT '',
-    size_bytes INTEGER NOT NULL DEFAULT 0,
-    image_source TEXT NOT NULL DEFAULT '',
-    attempt_count INTEGER NOT NULL DEFAULT 0,
-    error_code TEXT NOT NULL DEFAULT '',
-    error_message TEXT NOT NULL DEFAULT '',
-    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
-  )`,
+  marketImageCacheTableStatement,
+  marketImageCacheJobTableStatement,
+  marketImageCacheJobItemTableStatement,
+  marketImageCacheClaimTableStatement,
+  ...marketImageCacheCounterTriggerStatements,
   `CREATE TABLE IF NOT EXISTS market_price_band_versions (
     id TEXT PRIMARY KEY NOT NULL,
     category TEXT NOT NULL DEFAULT '*',
@@ -494,8 +707,35 @@ const importBatchColumns: Array<[string, string]> = [
   ["owner_token", "TEXT NOT NULL DEFAULT ''"],
 ];
 
+const systemKpiCacheControlColumns: Array<[string, string]> = [
+  ["suppress_all_revision", "INTEGER NOT NULL DEFAULT 0 CHECK (suppress_all_revision IN (0, 1))"],
+  ["suppress_identity_revision", "INTEGER NOT NULL DEFAULT 0 CHECK (suppress_identity_revision IN (0, 1))"],
+  ["owner_token", "TEXT NOT NULL DEFAULT ''"],
+];
+
+const imageCacheJobColumns: Array<[string, string]> = [
+  ["discovery_cursor", "TEXT NOT NULL DEFAULT ''"],
+  ["discovery_complete", "INTEGER NOT NULL DEFAULT 0"],
+  ["discovered_count", "INTEGER NOT NULL DEFAULT 0"],
+  ["completed_count", "INTEGER NOT NULL DEFAULT 0"],
+  ["failure_count", "INTEGER NOT NULL DEFAULT 0"],
+];
+
+const imageCacheClaimColumns: Array<[string, string]> = [
+  ["job_lease_token", "TEXT NOT NULL DEFAULT ''"],
+];
+
 const marketPublishedPriceBandUniqueIndexStatement =
   `CREATE UNIQUE INDEX IF NOT EXISTS market_price_band_versions_published_category_uq ON market_price_band_versions (category) WHERE status = 'published'`;
+
+const marketImageCachePropagationIndexStatements = [
+  `CREATE INDEX IF NOT EXISTS market_price_snapshots_pending_image_url_idx
+    ON market_price_snapshots (image_url, id)
+    WHERE image_content_sha256='' AND image_url<>''`,
+  `CREATE INDEX IF NOT EXISTS market_price_snapshots_image_hash_idx
+    ON market_price_snapshots (image_content_sha256, category, scope, sku_code, ranking_dimension, month, id)
+    WHERE image_content_sha256<>''`,
+] as const;
 
 export const marketPostUpgradeIndexStatements = [
   `CREATE INDEX IF NOT EXISTS market_import_batches_created_idx ON market_import_batches (created_at)`,
@@ -513,14 +753,21 @@ export const marketPostUpgradeIndexStatements = [
   `CREATE INDEX IF NOT EXISTS market_entries_rank_order_idx ON market_ranking_entries ((rank IS NULL), rank, gmv_cents DESC, id)`,
   `CREATE INDEX IF NOT EXISTS market_entries_image_url_idx ON market_ranking_entries (image_url) WHERE image_url<>''`,
   `CREATE INDEX IF NOT EXISTS market_entries_last_batch_idx ON market_ranking_entries (last_import_batch_id)`,
+  `CREATE INDEX IF NOT EXISTS market_entries_batch_image_idx ON market_ranking_entries (last_import_batch_id, image_url) WHERE image_url<>''`,
   ...marketMonthlySummaryCacheIndexStatements,
   `CREATE UNIQUE INDEX IF NOT EXISTS market_entries_canonical_price_band_uq ON market_ranking_entries (period_start, period_end, category, scope, price_band_filter, ranking_dimension, sku_code)`,
   `CREATE UNIQUE INDEX IF NOT EXISTS market_price_snapshots_sku_month_uq ON market_price_snapshots (category, scope, sku_code, ranking_dimension, month)`,
   `CREATE INDEX IF NOT EXISTS market_price_snapshots_status_idx ON market_price_snapshots (confirmation_status, updated_at)`,
   `CREATE INDEX IF NOT EXISTS market_price_snapshots_hash_idx ON market_price_snapshots (sku_code, image_content_sha256, confirmed_at)`,
+  ...marketImageCachePropagationIndexStatements,
   `CREATE INDEX IF NOT EXISTS market_image_cache_object_key_idx ON market_image_cache (object_key)`,
   `CREATE INDEX IF NOT EXISTS market_image_cache_status_idx ON market_image_cache (status, updated_at)`,
   `CREATE INDEX IF NOT EXISTS market_image_cache_updated_idx ON market_image_cache (updated_at)`,
+  `CREATE INDEX IF NOT EXISTS market_image_cache_fetching_recovery_idx ON market_image_cache (status, updated_at, source_url) WHERE status='fetching'`,
+  `CREATE INDEX IF NOT EXISTS market_image_cache_jobs_runnable_idx ON market_image_cache_jobs (status, next_run_at, lease_expires_at, updated_at)`,
+  `CREATE INDEX IF NOT EXISTS market_image_cache_jobs_batch_idx ON market_image_cache_jobs (batch_id, updated_at)`,
+  `CREATE INDEX IF NOT EXISTS market_image_cache_job_items_work_idx ON market_image_cache_job_items (job_id, status, source_url)`,
+  `CREATE INDEX IF NOT EXISTS market_image_cache_claims_job_expiry_idx ON market_image_cache_claims (job_id, lease_expires_at, source_url)`,
   `CREATE INDEX IF NOT EXISTS market_overview_response_cache_updated_idx ON market_overview_response_cache (updated_at)`,
   `CREATE UNIQUE INDEX IF NOT EXISTS market_price_band_versions_category_version_uq ON market_price_band_versions (category, version)`,
   marketPublishedPriceBandUniqueIndexStatement,
@@ -572,7 +819,13 @@ async function addMissingColumns(db: MarketSchemaDatabase, table: string, column
 
 const marketRuntimeSchemaMarker = "market-runtime-schema-v13";
 
-export function marketStandardSkuImagePriceInheritanceSql(targetFilter = "1=1") {
+export function marketStandardSkuImagePriceInheritanceSql(
+  targetFilter = "1=1",
+  sourceFilter = "1=1",
+  useImageHashIndex = false,
+) {
+  const sourceIndex = useImageHashIndex ? " INDEXED BY market_price_snapshots_image_hash_idx" : "";
+  const targetIndex = useImageHashIndex ? " INDEXED BY market_price_snapshots_image_hash_idx" : "";
   return `WITH ranked_standard_prices AS MATERIALIZED (
       SELECT source.category, source.scope, source.sku_code, source.ranking_dimension,
         source.image_content_sha256,
@@ -583,53 +836,52 @@ export function marketStandardSkuImagePriceInheritanceSql(targetFilter = "1=1") 
           ORDER BY datetime(COALESCE(source.confirmed_at, source.updated_at)) DESC,
             source.month DESC, source.id DESC
         ) standard_rank
-      FROM market_price_snapshots source
+      FROM market_price_snapshots source${sourceIndex}
       WHERE source.ranking_dimension='SKU'
         AND source.confirmed_market_price_cents IS NOT NULL
         AND source.confirmation_status='confirmed'
         AND source.ai_price_type='标准售价'
         AND source.image_content_sha256<>''
+        AND (${sourceFilter})
     ), latest_standard_prices AS MATERIALIZED (
       SELECT * FROM ranked_standard_prices WHERE standard_rank=1
     )
-    UPDATE market_price_snapshots AS target
-    SET ai_image_price_cents=(SELECT source.confirmed_market_price_cents FROM latest_standard_prices source
-          WHERE source.category=target.category AND source.scope=target.scope
-            AND source.sku_code=target.sku_code AND source.ranking_dimension=target.ranking_dimension
-            AND source.image_content_sha256=target.image_content_sha256),
+    UPDATE market_price_snapshots AS target${targetIndex}
+    SET ai_image_price_cents=inherited.confirmed_market_price_cents,
       ai_price_type='标准售价',
-      confirmed_market_price_cents=(SELECT source.confirmed_market_price_cents FROM latest_standard_prices source
-          WHERE source.category=target.category AND source.scope=target.scope
-            AND source.sku_code=target.sku_code AND source.ranking_dimension=target.ranking_dimension
-            AND source.image_content_sha256=target.image_content_sha256),
-      price_low_cents=COALESCE((SELECT source.price_low_cents FROM latest_standard_prices source
-          WHERE source.category=target.category AND source.scope=target.scope
-            AND source.sku_code=target.sku_code AND source.ranking_dimension=target.ranking_dimension
-            AND source.image_content_sha256=target.image_content_sha256), price_low_cents),
-      price_high_cents=COALESCE((SELECT source.price_high_cents FROM latest_standard_prices source
-          WHERE source.category=target.category AND source.scope=target.scope
-            AND source.sku_code=target.sku_code AND source.ranking_dimension=target.ranking_dimension
-            AND source.image_content_sha256=target.image_content_sha256), price_high_cents),
+      confirmed_market_price_cents=inherited.confirmed_market_price_cents,
+      price_low_cents=COALESCE(inherited.price_low_cents, target.price_low_cents),
+      price_high_cents=COALESCE(inherited.price_high_cents, target.price_high_cents),
       confirmation_status='confirmed', confirmed_by='system:history_same_image', confirmed_at=CURRENT_TIMESTAMP,
-      source_job_item_id=COALESCE((SELECT NULLIF(source.source_job_item_id, '') FROM latest_standard_prices source
-          WHERE source.category=target.category AND source.scope=target.scope
-            AND source.sku_code=target.sku_code AND source.ranking_dimension=target.ranking_dimension
-            AND source.image_content_sha256=target.image_content_sha256), source_job_item_id),
-      prompt_version_id=COALESCE((SELECT NULLIF(source.prompt_version_id, '') FROM latest_standard_prices source
-          WHERE source.category=target.category AND source.scope=target.scope
-            AND source.sku_code=target.sku_code AND source.ranking_dimension=target.ranking_dimension
-            AND source.image_content_sha256=target.image_content_sha256), prompt_version_id),
+      source_job_item_id=COALESCE(NULLIF(inherited.source_job_item_id, ''), target.source_job_item_id),
+      prompt_version_id=COALESCE(NULLIF(inherited.prompt_version_id, ''), target.prompt_version_id),
       updated_at=CURRENT_TIMESTAMP
+    FROM latest_standard_prices inherited
     WHERE target.ranking_dimension='SKU' AND target.image_content_sha256<>'' AND target.confirmed_market_price_cents IS NULL
       AND (${targetFilter})
-      AND EXISTS (SELECT 1 FROM latest_standard_prices source
-        WHERE source.category=target.category AND source.scope=target.scope
-          AND source.sku_code=target.sku_code AND source.ranking_dimension=target.ranking_dimension
-          AND source.image_content_sha256=target.image_content_sha256)`;
+      AND inherited.category=target.category AND inherited.scope=target.scope
+      AND inherited.sku_code=target.sku_code
+      AND inherited.ranking_dimension=target.ranking_dimension
+      AND inherited.image_content_sha256=target.image_content_sha256`;
 }
 
 export async function inheritConfirmedStandardSkuImagePrices(db: MarketSchemaDatabase, targetFilter = "1=1", bindings: unknown[] = []) {
   return db.prepare(marketStandardSkuImagePriceInheritanceSql(targetFilter)).bind(...bindings).run();
+}
+
+async function ensureMarketImageCacheJobSchema(db: MarketSchemaDatabase) {
+  await db.prepare(marketImageCacheTableStatement).run();
+  await db.prepare(marketImageCacheJobTableStatement).run();
+  await addMissingColumns(db, "market_image_cache_jobs", imageCacheJobColumns);
+  await db.prepare(marketImageCacheJobItemTableStatement).run();
+  await db.prepare(marketImageCacheClaimTableStatement).run();
+  await addMissingColumns(db, "market_image_cache_claims", imageCacheClaimColumns);
+  for (const statement of marketImageCacheCounterTriggerStatements) await db.prepare(statement).run();
+  await db.prepare("CREATE INDEX IF NOT EXISTS market_image_cache_jobs_runnable_idx ON market_image_cache_jobs (status, next_run_at, lease_expires_at, updated_at)").run();
+  await db.prepare("CREATE INDEX IF NOT EXISTS market_image_cache_jobs_batch_idx ON market_image_cache_jobs (batch_id, updated_at)").run();
+  await db.prepare("CREATE INDEX IF NOT EXISTS market_image_cache_job_items_work_idx ON market_image_cache_job_items (job_id, status, source_url)").run();
+  await db.prepare("CREATE INDEX IF NOT EXISTS market_image_cache_claims_job_expiry_idx ON market_image_cache_claims (job_id, lease_expires_at, source_url)").run();
+  await db.prepare("CREATE INDEX IF NOT EXISTS market_image_cache_fetching_recovery_idx ON market_image_cache (status, updated_at, source_url) WHERE status='fetching'").run();
 }
 
 async function hasMarketRuntimeSchemaMarker(db: MarketSchemaDatabase) {
@@ -923,14 +1175,22 @@ async function normalizePublishedPriceBandVersions(db: MarketSchemaDatabase) {
 }
 
 export async function ensureMarketSchemaCore(db: MarketSchemaDatabase): Promise<void> {
+  await ensureMarketImageCacheJobSchema(db);
   const fastMarker = await hasMarketRuntimeSchemaMarker(db);
   if (fastMarker) {
+    for (const statement of marketNetshopProjectionStatements) await db.prepare(statement).run();
     for (const statement of marketEffectiveMetricsCacheStatements) await db.prepare(statement).run();
     for (const statement of marketMonthlySummaryCacheStatements) await db.prepare(statement).run();
     for (const statement of marketMonthlySummaryCacheIndexStatements) await db.prepare(statement).run();
     for (const statement of marketOverviewResponseCacheStatements) await db.prepare(statement).run();
+    await db.prepare(marketImportIdentityRefreshKeysTableStatement).run();
+    await db.prepare(marketSystemKpiCacheStateSeedStatement).run();
+    await addMissingColumns(db, "market_system_kpi_cache_control", systemKpiCacheControlColumns);
+    await db.prepare(marketSystemKpiCacheControlSeedStatement).run();
     await db.prepare("CREATE INDEX IF NOT EXISTS market_overview_response_cache_updated_idx ON market_overview_response_cache (updated_at)").run();
     await db.prepare("CREATE INDEX IF NOT EXISTS market_image_cache_updated_idx ON market_image_cache (updated_at)").run();
+    await db.prepare("CREATE INDEX IF NOT EXISTS market_entries_batch_image_idx ON market_ranking_entries (last_import_batch_id, image_url) WHERE image_url<>''").run();
+    for (const statement of marketImageCachePropagationIndexStatements) await db.prepare(statement).run();
     await db.prepare(`CREATE TABLE IF NOT EXISTS market_master_identities (
       category TEXT NOT NULL, scope TEXT NOT NULL, ranking_dimension TEXT NOT NULL,
       sku_code TEXT NOT NULL, latest_entry_id INTEGER NOT NULL,
@@ -952,7 +1212,15 @@ export async function ensureMarketSchemaCore(db: MarketSchemaDatabase): Promise<
     await db.prepare(marketPublishedPriceBandUniqueIndexStatement).run();
     return;
   }
-  await db.batch(marketBaseSchemaStatements.map((statement) => db.prepare(statement)));
+  // D1/SQLite validates views and trigger dependencies when a statement is
+  // prepared. Preparing the whole fresh-schema list eagerly can therefore
+  // reference a table that has not run yet. The statements are idempotent, so
+  // install them in dependency order and let a later attempt safely continue
+  // if an infrastructure failure interrupts initialization.
+  for (const statement of marketBaseSchemaStatements) await db.prepare(statement).run();
+  await db.prepare(marketSystemKpiCacheStateSeedStatement).run();
+  await addMissingColumns(db, "market_system_kpi_cache_control", systemKpiCacheControlColumns);
+  await db.prepare(marketSystemKpiCacheControlSeedStatement).run();
   const changedTables = new Set<string>();
   const addedColumns = new Map<string, Set<string>>();
   for (const [table, columns] of [

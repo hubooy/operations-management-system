@@ -1,0 +1,162 @@
+{
+  "version": "teruisi-guangdong-worker-liveness-production-v1",
+  "status": "production_verified",
+  "checkedAt": "2026-09-15T15:05:24.8788206+00:00",
+  "authorization": "The user explicitly requested both branches be merged into main and then deployed through the controlled production process.",
+  "sourceCommit": "5e3cdeb7658542c68c3d8cee501af2eadb58efc7",
+  "candidateEvidence": "guangdong-worker-liveness-candidate-20260915.json",
+  "mergedBranches": [
+    "codex/guangdong-health-increase-only-20260915",
+    "codex/worker-liveness-20260914"
+  ],
+  "worker": {
+    "status": "activated",
+    "version": "teruisi-local-worker-release-successor-v1",
+    "planSha256": "3bfcd0a9826f4f4e47bcaa561449ef35316fab87c0227dc0bd8205397b94b782",
+    "predecessorReleaseId": "20260915T113701Z-5c7c6173998295bb",
+    "releaseId": "20260915T143857Z-c71f254c9e28b6f2",
+    "manifestPath": "D:\\teruisi-runtime\\teruisi-worker-sales\\releases\\20260915T143857Z-c71f254c9e28b6f2\\deployment-manifest.json",
+    "manifestSha256": "09f3e18d9d7e3f9d8cb50255b0c946e0c60982963cc3ce6d121b6fd1bf7aa27a",
+    "successorSha256": "cb7ccad72a26c5ea1db0f412c904f37650ff1bd026cff0995e7d0c738ca15478",
+    "consumptionSha256": "64e0eec7c288c8a2ac60d877fb94205533fd5048ca16a4e8f3029e83dc8b5aa7",
+    "startupBindingSha256": "703c6b570da3687609906f94469b2b50e12fd8fbe386c7087d2178b11ecb8240",
+    "heapMiB": 3072,
+    "livenessFailureThreshold": 14,
+    "restartStormLimit": "5 restarts per 10 minutes"
+  },
+  "django": {
+    "version": 2,
+    "deployedAt": "2026-09-15T22:48:04.5018884+08:00",
+    "sourceRoot": "D:\\运营管理系统-sales-django-release",
+    "fileCount": 2043,
+    "appFingerprint": "c0ad2c3c583c86da0ac859d91db9b014e8345327594e360d9ca493a93ec8a2eb",
+    "manifestSha256": "ec56c6b5d5f327a45f980b567ef06bccfed84973388100f66511e5a224bb1856",
+    "newMigrations": 0
+  },
+  "maintenance": {
+    "id": "d8afe2fab40c4d93a2a4ade058dc965d",
+    "firstDrain": {
+      "market": {
+        "activeCloudRuns": 0,
+        "cloudLeases": 0,
+        "itemLeases": 0,
+        "imageClaims": 0,
+        "runningImages": 0
+      },
+      "ai": {
+        "activeScheduleRuns": 0,
+        "runningAgents": 0,
+        "runningWorkflows": 0,
+        "runningImages": 0,
+        "activeChat": 0,
+        "activeDingTalk": 0
+      },
+      "n8nActive": []
+    },
+    "finalDrain": {
+      "checkedAt": "2026-09-15T14:36:44.604729+00:00",
+      "market": {
+        "activeCloudRuns": 0,
+        "cloudLeases": 0,
+        "itemLeases": 0,
+        "imageClaims": 0,
+        "runningImages": 0
+      },
+      "ai": {
+        "activeScheduleRuns": 0,
+        "runningAgents": 0,
+        "runningWorkflows": 0,
+        "runningImages": 0,
+        "activeChat": 0,
+        "activeDingTalk": 0
+      },
+      "n8nActive": []
+    },
+    "entry": {
+      "status": "maintenance",
+      "backendStopped": true,
+      "productionPortsReleased": true
+    },
+    "exit": {
+      "status": "maintenance_ended",
+      "sameMaintenanceId": true
+    },
+    "deploymentRecovery": {
+      "firstTwoAttempts": "The isolated local R2 smoke put exceeded its fixed 30-second timeout before any installed-app swap; staging was removed and the predecessor deployment manifest remained unchanged.",
+      "diagnosticWarmup": "The same protected Wrangler local R2 put completed in 27.327 seconds in an isolated worktree persist root.",
+      "finalAttempt": "passed without weakening the timeout or digest gates"
+    },
+    "scheduledCheckImpact": {
+      "failedWhilePostgresStopped": [
+        "2026-09-15T22:40:00+08:00",
+        "2026-09-15T22:45:00+08:00",
+        "2026-09-15T22:50:00+08:00"
+      ],
+      "naturalChecksAfterRecovery": [
+        "2026-09-15T22:55:00+08:00",
+        "2026-09-15T23:00:00+08:00",
+        "2026-09-15T23:05:00+08:00"
+      ],
+      "manualReplay": false
+    },
+    "n8nRestarted": false
+  },
+  "productionChecks": {
+    "systemState": "Running",
+    "backendState": "Ready",
+    "workerState": "exact_release",
+    "componentsReady": 12,
+    "workerStartupVerified": true,
+    "workerSupervisorProcessId": 44572,
+    "workerPortProcessId": 46084,
+    "helperHealth": 200,
+    "rootPage": {
+      "status": 200,
+      "utf8Bytes": 16855
+    },
+    "guangdongApi": {
+      "status": 200,
+      "total": 42,
+      "newFields": [
+        "replenishmentRemainingQuantity",
+        "replenishmentStockIncreaseQuantity",
+        "replenishmentRemainingReason"
+      ]
+    },
+    "dingtalkReceiver": {
+      "processRunning": true,
+      "logState": "connected",
+      "messagesSentByVerification": 0
+    },
+    "n8nActive": [],
+    "n8nProcessPreservedSince": "2026-09-15T20:52:20.233088+08:00",
+    "businessWritesByVerification": false,
+    "externalMessagesByVerification": 0,
+    "productionFaultInjection": false
+  },
+  "backups": {
+    "before": {
+      "backupId": "daily-20260915T141912Z-9f78807ba686",
+      "manifestSha256": "cc84cca88aa0631ac9ea137975a34c77eed3029cc3f237264e234d03bb5cbe75",
+      "dumpSha256": "f5fcd453f284a73ad9791c6f56f0dbe50ed0670e30473904a810ef01a2f1cf8e",
+      "contentSha256": "8d399ab0bf34164753c8cfb0fd43859b73ead24a587785552f1a42f7b9f7ff80",
+      "restoreRehearsalId": "c15e9a4b762d",
+      "restoreMatched": true,
+      "archivedTo": "E:\\运营管理系统业务数据\\daily-20260915T141912Z-9f78807ba686",
+      "archiveFilesMatched": true
+    },
+    "after": {
+      "backupId": "daily-20260915T145817Z-47f026aba5e6",
+      "manifestSha256": "35a184b2d4af04f4db558051d6b5a99d49b9c82b9d9a5d71e656b5da9ef8c3bc",
+      "dumpSha256": "14c3e8a6a45f4f2c1f70566c86140fb8cded93ca3882cf084f130a8bf2a5d98e",
+      "contentSha256": "ffea79bcd23000408182f0644ccc7f172f3b67b4bf9aaf0b70997fa66e0dc947",
+      "restoreRehearsalId": "d2a4c6e8f013",
+      "restorePort": 55476,
+      "restoreMatched": true,
+      "productionDatabaseTouched": false,
+      "cleanupStatus": "isolated_data_removed",
+      "archivedTo": "E:\\运营管理系统业务数据\\daily-20260915T145817Z-47f026aba5e6",
+      "archiveFilesMatched": true
+    }
+  }
+}

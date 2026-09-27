@@ -1,0 +1,260 @@
+{
+  "task": "Restore BI Guangdong configuration read permissions and enforce readiness",
+  "recordedAt": "2026-09-10T17:37:12.554341+00:00",
+  "sourceCommit": "4031d6bc276d71c4b2ed456a4ba6c67800a77d3b",
+  "rootCause": "inventory_overview began reading Guangdong configuration; BI SELECT grants and readiness dependencies were missing",
+  "django": {
+    "version": 2,
+    "deployedAt": "2026-09-11T01:27:21.1242986+08:00",
+    "sourceRoot": "D:\\运营管理系统-sales-django-release",
+    "fingerprintAlgorithm": "relative-path-file-sha256-ordinal-v2",
+    "fileCount": 2006,
+    "appFingerprint": "8d52ec53f49ffcd48daa788fbfcc23db295cdf0aa32ff6c8e2d903ee47b9f045",
+    "deploymentManifestSha256": "79dfe7c0dc9da6a48f85da7142e0e6c9f5aaa3692cdedfcda8f7acd2c0282a66"
+  },
+  "worker": {
+    "releaseId": "20260910T161236Z-c0ab8ed9ff663df9",
+    "changed": false
+  },
+  "permissionsBefore": {
+    "role": "teruisi_bi_reader",
+    "tables": {
+      "inventory_guangdong_monitor_items": {
+        "select": false,
+        "tableWrite": false,
+        "columnWrite": false
+      },
+      "inventory_guangdong_supplier_cycles": {
+        "select": false,
+        "tableWrite": false,
+        "columnWrite": false
+      },
+      "inventory_guangdong_monitor_audits": {
+        "select": false,
+        "tableWrite": false,
+        "columnWrite": false
+      }
+    },
+    "transactionReadOnly": "on",
+    "elevatedRoleFlags": [
+      false,
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "permissionsAfter": {
+    "role": "teruisi_bi_reader",
+    "tables": {
+      "inventory_guangdong_monitor_items": {
+        "select": true,
+        "tableWrite": false,
+        "columnWrite": false
+      },
+      "inventory_guangdong_supplier_cycles": {
+        "select": true,
+        "tableWrite": false,
+        "columnWrite": false
+      },
+      "inventory_guangdong_monitor_audits": {
+        "select": false,
+        "tableWrite": false,
+        "columnWrite": false
+      }
+    },
+    "transactionReadOnly": "on",
+    "elevatedRoleFlags": [
+      false,
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "verification": {
+    "system": {
+      "version": "teruisi-operations-system-control-v2",
+      "state": "Running",
+      "backendState": "Ready",
+      "workerState": "exact_release",
+      "releaseId": "20260910T161236Z-c0ab8ed9ff663df9",
+      "supervisorProcessId": 516,
+      "portProcessId": 41664,
+      "url": "http://localhost:3000/",
+      "reason": null,
+      "components": {
+        "core": true,
+        "finance": true,
+        "netshop": true,
+        "market": true,
+        "products": true,
+        "workflow": true,
+        "inventory": true,
+        "customerService": true,
+        "accessControl": true,
+        "erpReference": true,
+        "bi": true,
+        "ai": true
+      },
+      "checkedAt": "2026-09-11T01:35:23.9500864+08:00"
+    },
+    "api": [
+      {
+        "name": "default",
+        "status": 200,
+        "expected": 200,
+        "elapsedMs": 7765,
+        "passed": true,
+        "revision": "20:16|209:d63dd87285c8",
+        "revisionMatchesHeader": true,
+        "contractVersion": "bi-dashboard-read-model-v1",
+        "hasSales": true,
+        "hasInventory": true
+      },
+      {
+        "name": "last7",
+        "status": 200,
+        "expected": 200,
+        "elapsedMs": 4606,
+        "passed": true,
+        "revision": "20:16|209:d63dd87285c8",
+        "revisionMatchesHeader": true,
+        "contractVersion": "bi-dashboard-read-model-v1",
+        "hasSales": true,
+        "hasInventory": true
+      },
+      {
+        "name": "custom",
+        "status": 200,
+        "expected": 200,
+        "elapsedMs": 4542,
+        "passed": true,
+        "revision": "20:16|209:d63dd87285c8",
+        "revisionMatchesHeader": true,
+        "contractVersion": "bi-dashboard-read-model-v1",
+        "hasSales": true,
+        "hasInventory": true
+      },
+      {
+        "name": "invalid-query",
+        "status": 400,
+        "expected": 400,
+        "elapsedMs": 2054,
+        "passed": true
+      },
+      {
+        "name": "unsigned-internal",
+        "status": 401,
+        "expected": 401,
+        "elapsedMs": 6,
+        "passed": true
+      }
+    ],
+    "browser": {
+      "browser": "Chrome",
+      "url": "http://localhost:3000/",
+      "biLoaded": true,
+      "visibleState": "已同步经营数据",
+      "salesTrendAndShopRankingVisible": true,
+      "existingInventoryDataQualityNoticeRetained": true
+    },
+    "supervisor": {
+      "desiredState": "running",
+      "supervisorProcess": "running",
+      "health": "healthy",
+      "code": "all_components_ready",
+      "observedAt": "2026-09-11T01:34:52+08:00"
+    },
+    "isolatedPostgresTestsPassed": 23,
+    "typescriptBiTestsPassed": 6,
+    "sqliteBiContractTestsPassed": 8,
+    "changedFileLintPassed": true,
+    "unchangedDatabaseEvidenceKeys": [
+      "accessControl",
+      "aiAssistant",
+      "customerServiceRevisions",
+      "customerServiceWriteAuthority",
+      "database",
+      "erpReferenceWriteAuthority",
+      "inventoryRevisions",
+      "inventoryWriteAuthority",
+      "marketRevisions",
+      "marketWriteAuthority",
+      "migrations",
+      "netshopRevisions",
+      "netshopWriteAuthority",
+      "productsRevisions",
+      "productsWriteAuthority",
+      "revisions",
+      "workflowOperationsWriteAuthority",
+      "workflowRevisions",
+      "workflowWriteAuthority",
+      "writeAuthority"
+    ],
+    "tableCountChanges": [
+      {
+        "table": "market_write_request_receipts",
+        "before": 38651,
+        "after": 38682
+      }
+    ],
+    "wholeDatabaseContentUnchangedClaimed": false
+  },
+  "backups": {
+    "before": {
+      "backupDirectory": "D:\\teruisi-runtime\\django-sales\\backups\\postgres-daily\\daily-20260910T171728Z-db8b1d743258",
+      "manifestSha256": "e69a64b188fb2e9a413e848ad40f4cdcc381a0a73119f5bfa94146362396fa43",
+      "dumpSha256": "a406be2fdd1ef3c2fe13a8cd70fc3ebb1d549d643686cad528d8c72e28d42821",
+      "contentSha256": "7cd9d090553dfe6e705b5270cef37d1cd8acf67d6b9ad219821d2a72279c093c",
+      "verified": true
+    },
+    "beforeRestore": {
+      "version": "teruisi-postgres-restore-rehearsal-v1",
+      "status": "completed",
+      "rehearsalId": "4bcbf37a9210",
+      "startedAt": "2026-09-10T17:20:02.3372147+00:00",
+      "completedAt": "2026-09-10T17:24:23.6647848+00:00",
+      "backupId": "daily-20260910T171728Z-db8b1d743258",
+      "backupManifestSha256": "e69a64b188fb2e9a413e848ad40f4cdcc381a0a73119f5bfa94146362396fa43",
+      "dumpSha256": "a406be2fdd1ef3c2fe13a8cd70fc3ebb1d549d643686cad528d8c72e28d42821",
+      "expectedContentSha256": "7cd9d090553dfe6e705b5270cef37d1cd8acf67d6b9ad219821d2a72279c093c",
+      "restoredContentSha256": "7cd9d090553dfe6e705b5270cef37d1cd8acf67d6b9ad219821d2a72279c093c",
+      "isolatedPort": 55472,
+      "productionDatabaseTouched": false,
+      "serviceStateChanged": false,
+      "cleanupStatus": "isolated_data_removed"
+    },
+    "after": {
+      "backupDirectory": "D:\\teruisi-runtime\\django-sales\\backups\\postgres-daily\\daily-20260910T173211Z-db5ca7de36f6",
+      "manifestSha256": "575b407ad080865701374984d73b0792ff0cbdabe5fb8dfd48737391163cfe85",
+      "dumpSha256": "0209beb710d949e0e5d973c42e64f9f0c6611965fbe63da8f3bba9712eb03efb",
+      "contentSha256": "2ea61f06b416f8c5c831455bf452b3111bd73b51fe9d35807d5c7bdeb9e1ab05",
+      "verified": true
+    },
+    "afterRestore": {
+      "performed": false,
+      "basis": "Same migration list; this release reuses its successful pre-deployment isolated restore and separately verifies the new backup"
+    }
+  },
+  "operatorLogs": [
+    {
+      "path": "D:\\teruisi-runtime\\django-sales\\logs\\bi-role-provision.20260911-012834-c99e6516.log",
+      "sha256": "28b61f886132520dc454e1f3996474a1d6fdacfc4e6c052802f02950f0df200d",
+      "summary": "operation=bi_role_provision; exitCode=0; launchFailed=False; outputRecordCount=0; capturedRecordCount=0; outputTruncated=False; outputSha256=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "D:\\teruisi-runtime\\django-sales\\logs\\django-migrate.teruisi_sales.20260911-012811-1f5b4495.log",
+      "sha256": "f47edde36af296b9b0cc3cb0b3e0a00d897c54d164b78db696d59420ed25e674",
+      "summary": "operation=django_migrate; exitCode=0; launchFailed=False; outputRecordCount=4; capturedRecordCount=4; outputTruncated=False; outputSha256=399ca85b74683b00381c069dec120f62e2e5e85a3138d513daecabb0bbadc45f\noperation=django_runtime_grants; exitCode=0; launchFailed=False; outputRecordCount=2; capturedRecordCount=2; outputTruncated=False; outputSha256=9f5675a8bbd579ddf7d5327ae328dbf6a2306f331598f160c3e87b154eff3bf2"
+    }
+  ],
+  "boundaries": {
+    "noNewSchemaMigration": true,
+    "noPaidModelCallsDuringVerification": true,
+    "noRealMessagesSentDuringVerification": true,
+    "productionBusinessVerificationReadOnly": true,
+    "noWorkerReleaseChange": true,
+    "noAuditOrAuthorityRetirementEvidenceRemoved": true
+  }
+}

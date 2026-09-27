@@ -11,6 +11,13 @@ export type InventorySalesBounds = {
 const DEFAULT_WINDOW_DAYS = 30;
 const MAX_WINDOW_DAYS = 730;
 
+export class InventorySalesPeriodError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "InventorySalesPeriodError";
+  }
+}
+
 function addDays(value: string, days: number) {
   const date = new Date(`${value}T00:00:00Z`);
   date.setUTCDate(date.getUTCDate() + days);
@@ -29,17 +36,17 @@ function isIsoDate(value: string | undefined): value is string {
 
 export function resolveInventorySalesPeriod(options: InventorySalesPeriodInput, salesBounds: InventorySalesBounds) {
   if ((options.startDate && !isIsoDate(options.startDate)) || (options.endDate && !isIsoDate(options.endDate))) {
-    throw new Error("库存统计周期日期格式无效，请使用 YYYY-MM-DD。");
+    throw new InventorySalesPeriodError("库存统计周期日期格式无效，请使用 YYYY-MM-DD。");
   }
   const defaultEndDate = salesBounds.endDate;
   const defaultStartDate = defaultEndDate ? addDays(defaultEndDate, -(DEFAULT_WINDOW_DAYS - 1)) : null;
   const requestedStartDate = options.startDate ?? defaultStartDate;
   const requestedEndDate = options.endDate ?? defaultEndDate;
   if (requestedStartDate && requestedEndDate && requestedStartDate > requestedEndDate) {
-    throw new Error("库存统计周期的开始日期不能晚于结束日期。");
+    throw new InventorySalesPeriodError("库存统计周期的开始日期不能晚于结束日期。");
   }
   if (requestedStartDate && requestedEndDate && dayDifference(requestedStartDate, requestedEndDate) + 1 > MAX_WINDOW_DAYS) {
-    throw new Error(`库存统计周期最多支持 ${MAX_WINDOW_DAYS} 天。`);
+    throw new InventorySalesPeriodError(`库存统计周期最多支持 ${MAX_WINDOW_DAYS} 天。`);
   }
   const startCandidate = requestedStartDate && salesBounds.startDate
     ? (requestedStartDate > salesBounds.startDate ? requestedStartDate : salesBounds.startDate)

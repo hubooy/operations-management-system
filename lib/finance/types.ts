@@ -43,6 +43,30 @@ export type ParsedFinanceWorkbook = {
   sourceSheetCount: number;
 };
 
+/** Opt-in evidence preview only. The Django importer does not accept v2. */
+export type FinanceNormalizedV2Candidate = {
+  schemaVersion: "finance-normalized-v2-candidate";
+  fileName: string;
+  fileSizeBytes: number;
+  rawFileHash: string;
+  rawFileHashVerifiedByBackend: false;
+  completeWorkbookBindingVerified: false;
+  financeShopMappingVerified: false;
+  backendImportSupported: false;
+} & ({
+  disposition: "candidate_only";
+  warnings: FinanceImportIssue[];
+  sourceSheetCount: number;
+  months: ParsedFinanceMonth[];
+  columnEvidence: Awaited<ReturnType<typeof import("./column-evidence-v2").extractFinanceColumnEvidenceV2>>[];
+  candidateDigest: string;
+} | {
+  disposition: "rejected";
+  warnings: FinanceImportIssue[];
+  errors: FinanceImportIssue[];
+  message: string;
+});
+
 export type FinanceImportBatch = {
   id: string;
   source: string;
@@ -68,21 +92,25 @@ export type FinanceTargetPeriodType = "month" | "year" | "project";
 
 export type FinanceTargetInput = {
   id?: string;
+  expectedVersion?: number;
   periodType: FinanceTargetPeriodType;
   periodKey: string;
+  platform?: string;
   shopName?: string;
   category?: string;
   manager?: string;
   salesTargetCents?: number;
   profitTargetCents?: number;
+  grossMarginBps?: number;
   smallMarginBps?: number;
   inventoryCleanupTargetCents?: number;
   promotionFeeRatioBps?: number;
   stagnantInventoryTargetCents?: number;
 };
 
-export type FinanceTarget = Required<Omit<FinanceTargetInput, "id">> & {
+export type FinanceTarget = Required<Omit<FinanceTargetInput, "id" | "expectedVersion">> & {
   id: string;
+  version: number;
   createdAt: string;
   updatedAt: string;
 };

@@ -1,0 +1,335 @@
+{
+  "at": "2026-09-13T23:42:40.5729209+08:00",
+  "sourceCommit": "5e4f303e3c42158cec6461f5613e16cd884ce0dc",
+  "authorization": {
+    "userRequest": "恢复其余图 片",
+    "scope": "Resume remaining eligible candidates in the four maintenance-paused existing plans; preserve all quarantined candidates"
+  },
+  "operation": {
+    "endpoint": "POST http://127.0.0.1:3000/api/market/annotations",
+    "action": "set_cloud_run_state",
+    "state": "running",
+    "requestCount": 4,
+    "newJobsCreated": 0,
+    "manualModelRequests": 0,
+    "failedItemsReset": 0,
+    "manualImports": 0,
+    "serviceRestarts": 0,
+    "deploymentChanged": false,
+    "naturalSchedulerInference": "Authorized existing scheduler resumed real inference and result writes"
+  },
+  "before": {
+    "at": "2026-09-13T23:40:36.7740704+08:00",
+    "jobs": [
+      {
+        "id": "market-annotation-job-ec555270-03c2-45d5-9747-af7fcc331f6f",
+        "category": "商用开水器蒸气奶泡机",
+        "completedCount": 3546,
+        "remainingInferenceCount": 1852
+      },
+      {
+        "id": "market-annotation-job-3eae2413-b0f5-481d-9d71-d4aa24f53b20",
+        "category": "商用洗碗机",
+        "completedCount": 3121,
+        "remainingInferenceCount": 1595
+      },
+      {
+        "id": "market-annotation-job-06d77104-6edd-49a3-89c3-0c81c6fe7725",
+        "category": "商用绞肉机切肉机切片机",
+        "completedCount": 3914,
+        "remainingInferenceCount": 3373
+      },
+      {
+        "id": "market-annotation-job-19ea5346-c3b4-4d5a-975e-2b3082e3f4f9",
+        "category": "商用净水设备",
+        "completedCount": 4050,
+        "remainingInferenceCount": 5262
+      }
+    ],
+    "cloudRuns": [
+      {
+        "jobId": "market-annotation-job-ec555270-03c2-45d5-9747-af7fcc331f6f",
+        "state": "paused",
+        "runConcurrency": 12,
+        "targetConcurrency": 12,
+        "recovering": false,
+        "nextRunAt": null,
+        "lastFailureCode": "inference_result_unknown",
+        "lastFailureMessage": "推理租约已过期且结果未知，已暂停并隔离该项；请人工核验后处理下一批",
+        "lastStartedAt": "2026-09-13T15:16:42.150937Z",
+        "lastHeartbeatAt": "2026-09-13T15:16:44.001338Z",
+        "completedAt": null,
+        "updatedAt": "2026-09-13T15:24:13.891115Z"
+      },
+      {
+        "jobId": "market-annotation-job-3eae2413-b0f5-481d-9d71-d4aa24f53b20",
+        "state": "paused",
+        "runConcurrency": 12,
+        "targetConcurrency": 12,
+        "recovering": false,
+        "nextRunAt": null,
+        "lastFailureCode": "inference_result_unknown",
+        "lastFailureMessage": "推理租约已过期且结果未知，已暂停并隔离该项；请人工核验后处理下一批",
+        "lastStartedAt": "2026-09-13T15:16:41.789711Z",
+        "lastHeartbeatAt": "2026-09-13T15:16:44.027649Z",
+        "completedAt": null,
+        "updatedAt": "2026-09-13T15:24:13.867788Z"
+      },
+      {
+        "jobId": "market-annotation-job-06d77104-6edd-49a3-89c3-0c81c6fe7725",
+        "state": "paused",
+        "runConcurrency": 12,
+        "targetConcurrency": 12,
+        "recovering": false,
+        "nextRunAt": null,
+        "lastFailureCode": "inference_result_unknown",
+        "lastFailureMessage": "推理租约已过期且结果未知，已暂停并隔离该项；请人工核验后处理下一批",
+        "lastStartedAt": "2026-09-13T15:16:38.808904Z",
+        "lastHeartbeatAt": "2026-09-13T15:16:44.35444Z",
+        "completedAt": null,
+        "updatedAt": "2026-09-13T15:24:13.841423Z"
+      },
+      {
+        "jobId": "market-annotation-job-19ea5346-c3b4-4d5a-975e-2b3082e3f4f9",
+        "state": "paused",
+        "runConcurrency": 12,
+        "targetConcurrency": 12,
+        "recovering": false,
+        "nextRunAt": null,
+        "lastFailureCode": "inference_result_unknown",
+        "lastFailureMessage": "推理租约已过期且结果未知，已暂停并隔离该项；请人工核验后处理下一批",
+        "lastStartedAt": "2026-09-13T15:16:43.761864Z",
+        "lastHeartbeatAt": "2026-09-13T15:16:43.761864Z",
+        "completedAt": null,
+        "updatedAt": "2026-09-13T15:24:13.828423Z"
+      }
+    ]
+  },
+  "commands": [
+    {
+      "at": "2026-09-13T23:40:37.0425902+08:00",
+      "jobId": "market-annotation-job-ec555270-03c2-45d5-9747-af7fcc331f6f",
+      "httpStatus": 200,
+      "revision": "915:159271707ca2",
+      "ok": true,
+      "result": {
+        "jobId": "market-annotation-job-ec555270-03c2-45d5-9747-af7fcc331f6f",
+        "state": "running",
+        "runConcurrency": 12,
+        "targetConcurrency": 12,
+        "recovering": false,
+        "nextRunAt": "2026-09-13T15:40:37.015351Z",
+        "lastFailureCode": "",
+        "lastFailureMessage": "",
+        "lastStartedAt": "2026-09-13T15:16:42.150937Z",
+        "lastHeartbeatAt": "2026-09-13T15:16:44.001338Z",
+        "completedAt": null,
+        "updatedAt": "2026-09-13T15:40:37.015351Z"
+      }
+    },
+    {
+      "at": "2026-09-13T23:40:37.1409046+08:00",
+      "jobId": "market-annotation-job-3eae2413-b0f5-481d-9d71-d4aa24f53b20",
+      "httpStatus": 200,
+      "revision": "915:159271707ca2",
+      "ok": true,
+      "result": {
+        "jobId": "market-annotation-job-3eae2413-b0f5-481d-9d71-d4aa24f53b20",
+        "state": "running",
+        "runConcurrency": 12,
+        "targetConcurrency": 12,
+        "recovering": false,
+        "nextRunAt": "2026-09-13T15:40:37.131163Z",
+        "lastFailureCode": "",
+        "lastFailureMessage": "",
+        "lastStartedAt": "2026-09-13T15:16:41.789711Z",
+        "lastHeartbeatAt": "2026-09-13T15:16:44.027649Z",
+        "completedAt": null,
+        "updatedAt": "2026-09-13T15:40:37.131163Z"
+      }
+    },
+    {
+      "at": "2026-09-13T23:40:37.1836279+08:00",
+      "jobId": "market-annotation-job-06d77104-6edd-49a3-89c3-0c81c6fe7725",
+      "httpStatus": 200,
+      "revision": "915:159271707ca2",
+      "ok": true,
+      "result": {
+        "jobId": "market-annotation-job-06d77104-6edd-49a3-89c3-0c81c6fe7725",
+        "state": "running",
+        "runConcurrency": 12,
+        "targetConcurrency": 12,
+        "recovering": false,
+        "nextRunAt": "2026-09-13T15:40:37.174807Z",
+        "lastFailureCode": "",
+        "lastFailureMessage": "",
+        "lastStartedAt": "2026-09-13T15:16:38.808904Z",
+        "lastHeartbeatAt": "2026-09-13T15:16:44.35444Z",
+        "completedAt": null,
+        "updatedAt": "2026-09-13T15:40:37.174807Z"
+      }
+    },
+    {
+      "at": "2026-09-13T23:40:37.2240699+08:00",
+      "jobId": "market-annotation-job-19ea5346-c3b4-4d5a-975e-2b3082e3f4f9",
+      "httpStatus": 200,
+      "revision": "915:159271707ca2",
+      "ok": true,
+      "result": {
+        "jobId": "market-annotation-job-19ea5346-c3b4-4d5a-975e-2b3082e3f4f9",
+        "state": "running",
+        "runConcurrency": 12,
+        "targetConcurrency": 12,
+        "recovering": false,
+        "nextRunAt": "2026-09-13T15:40:37.216093Z",
+        "lastFailureCode": "",
+        "lastFailureMessage": "",
+        "lastStartedAt": "2026-09-13T15:16:43.761864Z",
+        "lastHeartbeatAt": "2026-09-13T15:16:43.761864Z",
+        "completedAt": null,
+        "updatedAt": "2026-09-13T15:40:37.216093Z"
+      }
+    }
+  ],
+  "naturalProgress": [
+    {
+      "at": "2026-09-13T23:41:17.2964522+08:00",
+      "jobId": "market-annotation-job-ec555270-03c2-45d5-9747-af7fcc331f6f",
+      "category": "商用开水器蒸气奶泡机",
+      "httpStatus": 200,
+      "state": "running",
+      "activeClaims": 0,
+      "completedCount": 3559,
+      "totalCount": 5419,
+      "remainingInferenceCount": 1839,
+      "completedDelta": 13,
+      "lastHeartbeatAt": "2026-09-13T15:41:10.855393Z",
+      "lastFailureCode": "",
+      "runConcurrency": 12
+    },
+    {
+      "at": "2026-09-13T23:41:17.416406+08:00",
+      "jobId": "market-annotation-job-3eae2413-b0f5-481d-9d71-d4aa24f53b20",
+      "category": "商用洗碗机",
+      "httpStatus": 200,
+      "state": "running",
+      "activeClaims": 0,
+      "completedCount": 3141,
+      "totalCount": 4737,
+      "remainingInferenceCount": 1575,
+      "completedDelta": 20,
+      "lastHeartbeatAt": "2026-09-13T15:41:11.008642Z",
+      "lastFailureCode": "",
+      "runConcurrency": 12
+    },
+    {
+      "at": "2026-09-13T23:41:17.5319226+08:00",
+      "jobId": "market-annotation-job-06d77104-6edd-49a3-89c3-0c81c6fe7725",
+      "category": "商用绞肉机切肉机切片机",
+      "httpStatus": 200,
+      "state": "running",
+      "activeClaims": 0,
+      "completedCount": 3938,
+      "totalCount": 7301,
+      "remainingInferenceCount": 3349,
+      "completedDelta": 24,
+      "lastHeartbeatAt": "2026-09-13T15:41:10.942583Z",
+      "lastFailureCode": "",
+      "runConcurrency": 12
+    },
+    {
+      "at": "2026-09-13T23:41:17.5975349+08:00",
+      "jobId": "market-annotation-job-19ea5346-c3b4-4d5a-975e-2b3082e3f4f9",
+      "category": "商用净水设备",
+      "httpStatus": 200,
+      "state": "running",
+      "activeClaims": 0,
+      "completedCount": 4062,
+      "totalCount": 9330,
+      "remainingInferenceCount": 5250,
+      "completedDelta": 12,
+      "lastHeartbeatAt": "2026-09-13T15:41:12.154556Z",
+      "lastFailureCode": "",
+      "runConcurrency": 12
+    }
+  ],
+  "completedCandidatesAddedAtReadback": 69.0,
+  "quarantine": {
+    "before": {
+      "at": "2026-09-13T23:40:08.773382+08:00",
+      "source": "local PostgreSQL market reader, read-only transaction",
+      "scope": "All failed candidates with attempt_count >= 3 in the four authorized jobs; full row fingerprints",
+      "jobs": [
+        {
+          "jobId": "market-annotation-job-ec555270-03c2-45d5-9747-af7fcc331f6f",
+          "quarantinedCandidates": 21,
+          "fullRowsSha256": "fcb8b9313673d44abc7d98fe1b926482d76275f34312fe9e417ae3561e5b87c9"
+        },
+        {
+          "jobId": "market-annotation-job-3eae2413-b0f5-481d-9d71-d4aa24f53b20",
+          "quarantinedCandidates": 21,
+          "fullRowsSha256": "eaa3c00e860676e93afa262aac0273645add6028dd687ad7de9ecb54c062e325"
+        },
+        {
+          "jobId": "market-annotation-job-06d77104-6edd-49a3-89c3-0c81c6fe7725",
+          "quarantinedCandidates": 14,
+          "fullRowsSha256": "69120849227e333e2272a2b42eb4ec0b1ca39497c67411543524955095e23478"
+        },
+        {
+          "jobId": "market-annotation-job-19ea5346-c3b4-4d5a-975e-2b3082e3f4f9",
+          "quarantinedCandidates": 18,
+          "fullRowsSha256": "469b52fdc8f009587d61f5ca701e4861ab80d02063716d21b28fbc1f9344315f"
+        }
+      ]
+    },
+    "after": {
+      "at": "2026-09-13T23:41:40.386884+08:00",
+      "source": "local PostgreSQL market reader, read-only transaction",
+      "scope": "All failed candidates with attempt_count >= 3 in the four authorized jobs; full row fingerprints",
+      "jobs": [
+        {
+          "jobId": "market-annotation-job-ec555270-03c2-45d5-9747-af7fcc331f6f",
+          "quarantinedCandidates": 21,
+          "fullRowsSha256": "fcb8b9313673d44abc7d98fe1b926482d76275f34312fe9e417ae3561e5b87c9"
+        },
+        {
+          "jobId": "market-annotation-job-3eae2413-b0f5-481d-9d71-d4aa24f53b20",
+          "quarantinedCandidates": 21,
+          "fullRowsSha256": "eaa3c00e860676e93afa262aac0273645add6028dd687ad7de9ecb54c062e325"
+        },
+        {
+          "jobId": "market-annotation-job-06d77104-6edd-49a3-89c3-0c81c6fe7725",
+          "quarantinedCandidates": 14,
+          "fullRowsSha256": "69120849227e333e2272a2b42eb4ec0b1ca39497c67411543524955095e23478"
+        },
+        {
+          "jobId": "market-annotation-job-19ea5346-c3b4-4d5a-975e-2b3082e3f4f9",
+          "quarantinedCandidates": 18,
+          "fullRowsSha256": "469b52fdc8f009587d61f5ca701e4861ab80d02063716d21b28fbc1f9344315f"
+        }
+      ]
+    },
+    "rowFingerprintsUnchanged": true,
+    "totalPreserved": 74.0,
+    "fingerprintMethod": "SHA-256 of sorted JSON mapping item ID to PostgreSQL md5(row_to_json(full_row)::text); no row contents persisted"
+  },
+  "health": {
+    "at": "2026-09-13T23:41:41.5482258+08:00",
+    "health": {
+      "ok": true,
+      "backend": "django-postgresql",
+      "unavailableServices": [],
+      "status": "ready"
+    },
+    "untouchedCompletedPlan": {
+      "jobId": "market-annotation-job-dbc35162-b93e-4584-b7f1-db794b1e489f",
+      "jobStatus": "review_ready",
+      "cloudRunState": "completed",
+      "cloudRunUnchanged": true
+    }
+  },
+  "limitations": [
+    "Completed candidate increments may include cross-month reuse and are not a count of paid model requests.",
+    "The remaining plans are running; this is not a claim that every candidate has completed."
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "date": "2026-09-17", "batch": 43,
+  "status": "candidate_signed_screening_tools_not_report_runtime",
+  "verification": {
+    "node": {"passed": 53, "log": ".runtime/batch43-screening-tools-node.log"},
+    "typescript": {"files": 9, "diagnostics": 0, "log": ".runtime/batch43-screening-tools-types.log"},
+    "lint": {"exitCode": 0, "log": ".runtime/batch43-screening-tools-lint.log"},
+    "postgres": {"passed": 3, "seconds": 25.848, "log": ".runtime/ai-pg-d9d9df35b35d/tests.log", "suite": "ai_assistant.test_business_screening_routes"},
+    "build": {"exitCode": 0, "log": ".runtime/batch43-build.log"},
+    "boundary": {"modules": 491, "violations": 0},
+    "legacyCatalog": {"entries": 47, "canonicalDigest": "97a20fecfeeca62cca5436599a1b76eb1c158f11ee10cc44b3b09f6ca6106a01", "unchangedSurfaceRoleScopeCombinations": 96},
+    "staticReviewFix": "Wrap owning dict with HTTP response before dispatch checks status_code"
+  },
+  "remaining": ["Report creation and scheduler admission", "Actual per-job receipt gate", "Diagnosis and files", "Real model and production acceptance"],
+  "operations": {"productionBusinessReads": false, "productionWrites": false, "deployment": false, "serviceRestart": false, "paidModelCalls": false, "externalMessages": false}
+}

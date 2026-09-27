@@ -1,0 +1,179 @@
+{
+  "version": "teruisi-jd-market-new-ui-production-v1",
+  "date": "2026-09-16",
+  "status": "adopted",
+  "authorization": "User authorized short service downtime, new JD Business Intelligence page deployment and a full rerun.",
+  "source": {
+    "initialUiCommit": "24a8db23",
+    "sharedCalendarCommit": "18fb9c74e7f5132b5337f9090d6eb30f431db68c",
+    "observedUiCommit": "4dda3816",
+    "finalNoticeCommit": "9a3ba90512802831f87c9baeb5951d0a4f3ea544"
+  },
+  "contract": {
+    "page": "https://jdsz.jd.com/szweb/view/industry/industry-top.html",
+    "nativeDownload": "https://szgateway.jd.com/api/lowcode/industryTop/indProductRank/downloadProductRank.ajax",
+    "fileType": "native XLSX, one exact natural day per file",
+    "scope": "pop",
+    "dimension": "SKU",
+    "rankTab": "hot",
+    "channel": "all",
+    "categorySelectionRequiresQuery": true,
+    "dateSelectionRequiresEchoAndOverlayExit": true,
+    "exactThirdCategoryRequired": true,
+    "optionalSecondCategoryValidatedIfPresent": true,
+    "ordinaryNoticeOnly": "Unique visible jd-modal-wrap containing img alt=公告图片 with one visible close control",
+    "securityChallengeBypass": false,
+    "legacyV3ResumeAllowed": false
+  },
+  "verification": {
+    "finalRelatedRegression": { "passed": 79, "failed": 0, "skipped": 0, "runs": [62, 17] },
+    "marketAndNoticeTests": { "passed": 23, "failed": 0, "skipped": 0 },
+    "noticeBrowserSubcases": 5,
+    "noticeBrowserIsolation": "Ephemeral headless browser, synthetic DOM, no store profile or JD requests",
+    "realUiCategoriesVerified": 7,
+    "realUiProbeDownloads": "Intercepted and aborted before network submission; exact request payload checked",
+    "scopedLint": "passed",
+    "immutableFrontendAndHelperBuild": "passed",
+    "diffCheck": "passed",
+    "fullTypecheck": {
+      "status": "existing_errors_unchanged",
+      "baselineCommit": "4dda3816",
+      "baselineOutputLines": 220,
+      "candidateOutputLines": 220,
+      "newErrorLines": 0,
+      "note": "Existing tests and unrelated tools have type errors; not claimed as a full typecheck pass."
+    }
+  },
+  "businessExecution": {
+    "workflowId": "JdMarketSilentCopy2026",
+    "executionId": "2289",
+    "mode": "webhook",
+    "startedAt": "2026-09-16T00:12:12.108+08:00",
+    "finishedAt": "2026-09-16T00:13:06.782+08:00",
+    "state": "completed",
+    "runId": "jd-market-a8d1bcec-e5e1-437c-9c46-96fec4a8a5d4",
+    "planSha256": "d92b90245b877f977df90edbfe629fba4bf48740361c52627d2a2219cc82f10c",
+    "requestedDailyTask": "2026-09-15",
+    "dataDate": "2026-09-14",
+    "preservedPlanCutoffAfterMidnight": true,
+    "importedRows": 1400,
+    "categories": 7,
+    "warnings": 0,
+    "missingAfterImport": [],
+    "independentEvidence": "Local readonly daily-coverage API, exact category/pop/SKU/全部/2026-09-14, each rowCount=200 and missingDates=[]; all seven local files rehashed and sizes matched",
+    "runtimeRelease": "20260915T160134Z-c5775c8b64dd9c4b",
+    "ordinaryNotice": "Manually closed through the unique ordinary notice close control before successful full A/B/C rerun; final automatic notice patch is a later deployment, not the version used for execution 2289.",
+    "batches": [
+      { "category": "商用净水设备", "batchId": "market-pg-16525deb458d91cf6e04c4a6-13d954573198", "rows": 200, "sha256": "370ff3bea05582e975dad1136a787fb248bbafe3d8ad9cdffda8722b8bde8b4e", "bytes": 26238 },
+      { "category": "商用开水器蒸气奶泡机", "batchId": "market-pg-861718e9d8e682d5eec56207-6b22e003d67f", "rows": 200, "sha256": "a9a9b5d810f7680b69ecc00a6f360850b2254e860c82904dc1111a218ddc72e8", "bytes": 26701 },
+      { "category": "商用炒菜机", "batchId": "market-pg-5a8f097116143a4bbcbebaed-2242b2060e36", "rows": 200, "sha256": "ace26ab718123117156d175f7a4d1015d13a439aed4872fbb798ba2ec464956f", "bytes": 22055 },
+      { "category": "商用绞肉机切肉机切片机", "batchId": "market-pg-7ae577af267d2b22aa896bc1-0185f0995fa6", "rows": 200, "sha256": "ec4fa9bfb93f621f87e1dccb98a8fadf14c909c74f076fbaa5daf7f906438f43", "bytes": 28897 },
+      { "category": "商用切菜机", "batchId": "market-pg-c11a661128ed83f11dc73b1c-fbf28c9d8d9a", "rows": 200, "sha256": "6d6ca3498575fcfcba23a22a6b76445b9eceeababf0ad206f63480bd15b8e6e8", "bytes": 23358 },
+      { "category": "商用洗碗机", "batchId": "market-pg-f63ad292b1853fbae0adc72a-086a84dca392", "rows": 200, "sha256": "e1345b1cc2713b6976886417f597789b2d50540fbf64b74aa2b8575ca9ffc365", "bytes": 21780 },
+      { "category": "商用磨粉机粉碎机", "batchId": "market-pg-0e069697245a657b1cc6c25a-5be59850ecfc", "rows": 200, "sha256": "dfc21666b3759449eec37e936c7bf2d8a88acc86eba7add9cada660494ee890a", "bytes": 23689 }
+    ]
+  },
+  "retainedFailures": [
+    { "executionId": "2275", "reason": "waiting_login/security validation", "downloadSubmitted": false },
+    { "executionId": "2278", "reason": "new Selector/cascader differed from initial adapter", "downloadSubmitted": false },
+    { "executionId": "2287", "reason": "ordinary announcement intercepted product-tab click", "downloadSubmitted": false }
+  ],
+  "releases": [
+    { "releaseId": "20260915T153430Z-0ef56e4488220fb3", "sourceCommit": "18fb9c74e7f5132b5337f9090d6eb30f431db68c", "manifestSha256": "9f70f2107e825e51a545c0a86fb0fb18d9c18324a009372e17b512f2e41ed5e3", "maintenanceId": "ec7098bb37c84c298b5b4136f80181b3" },
+    { "releaseId": "20260915T160134Z-c5775c8b64dd9c4b", "sourceCommit": "4dda3816", "manifestSha256": "6269a34134ad8af8e4e7b7dc486c38eae799656c718e539bceac87a1248342f7", "maintenanceId": "a721bb764c584313928d21a66309b511", "startupVerified": true },
+    { "releaseId": "20260915T162551Z-78d9ad08f15648ec", "sourceCommit": "9a3ba90512802831f87c9baeb5951d0a4f3ea544", "manifestSha256": "5db41a3324bbd93a91ce6174c26213d10b0adf73ba2a4bb72541081c559f36b7", "planSha256": "f9545e2f06a8b220e0cbcdd5e0324dd231aef5e68e52fac3655151ea9148a6bc", "maintenanceId": "b65c993e7c0d47e59b29ab628ba933e9" }
+  ],
+  "finalMaintenance": {
+    "id": "b65c993e7c0d47e59b29ab628ba933e9",
+    "drainCheckedAt": "2026-09-16T00:22:48.1558371+08:00",
+    "cloudPlans": 38,
+    "cloudNonterminal": 0,
+    "helperBusy": false,
+    "helperActiveWorkflow": null,
+    "helperStoreExecutions": 0,
+    "n8nInProgressWorkflows": 0,
+    "endedWithExactId": true,
+    "finalMarker": null
+  },
+  "finalRuntime": {
+    "checkedAt": "2026-09-16T00:34:43.9279708+08:00",
+    "state": "Running",
+    "backendState": "Ready",
+    "workerState": "exact_release",
+    "releaseId": "20260915T162551Z-78d9ad08f15648ec",
+    "supervisorPid": 23456,
+    "workerPortPid": 39960,
+    "startupVerified": true,
+    "allTwelveBackendComponentsReady": true,
+    "pageHttpStatus": 200,
+    "helperReadyAndIdle": true,
+    "djangoSupervisor": {
+      "desiredState": "running",
+      "processState": "running",
+      "health": "healthy",
+      "code": "all_components_ready",
+      "lastHealthyAt": "2026-09-16T00:40:05+08:00",
+      "restoredAfterMaintenanceWithProtectedOperator": true,
+      "hiddenProcessPid": 5388,
+      "historicalPendingAlertsPreserved": 32
+    },
+    "dingtalkReceiver": "connected",
+    "startupBindingSha256": "e75879d6606b74e82198a7e70e22125140a0eb9bbdf80f1d78fc12e05868f0d3",
+    "successorSha256": "584a1af9f4a5087b43cf53717e364958bea6f2aab2c979aeda325b11e4405d87",
+    "consumptionSha256": "7b0bfbb67427bb6af4ab3856e4850148357990b088a42ad41f3ab46fa902ffa7",
+    "independentPostReleaseCoverage": { "date": "2026-09-14", "categories": 7, "rowsPerCategory": 200, "missingDates": [] },
+    "businessExecutionRepeatedAfterFinalNoticePatch": false
+  },
+  "djangoManifestSha256Unchanged": "ec56c6b5d5f327a45f980b567ef06bccfed84973388100f66511e5a224bb1856",
+  "migrations": [],
+  "n8nRestarted": false,
+  "n8nObservedPid": 8796,
+  "n8nObservedStartedAt": "2026-09-15T20:52:20+08:00",
+  "liveN8nDefinitionChanged": false,
+  "finalMaintenanceWeeklyChecks": {
+    "failedExecutions": ["2292", "2293"],
+    "naturalRecoveryExecution": "2294",
+    "naturalRecoveryFinishedAt": "2026-09-16T00:35:16.272+08:00",
+    "manualReplay": false
+  },
+  "backups": {
+    "beforeInitialRelease": {
+      "id": "daily-20260915T151836Z-edaac22f00b5",
+      "manifestSha256": "a7e37338d80fd9402761bf1df89d139eaf64f7d203137d30b805a1508e0f4973",
+      "dumpSha256": "787f52a036573afc0036329e5dd3e5249e2d2a926446cd09e03b98a15ef53b2a",
+      "contentSha256": "461fddc2ede086c53fce73cbc041288f83424f9a48a28a124d6cc900c623064a",
+      "independentRestoreId": "9f2c7a15bd40",
+      "independentRestorePort": 55477,
+      "independentRestoreMatched": true,
+      "productionDatabaseTouched": false,
+      "rehearsalCleanup": "isolated_data_removed",
+      "verifiedAndArchivedToE": true
+    },
+    "afterFirstRelease": {
+      "id": "daily-20260915T154833Z-b91354685d86",
+      "manifestSha256": "f091efaef1cc348c5602a4ba519ab23abb20b5b4e83edf298b38b5f435643433",
+      "dumpSha256": "bad9a623ee283c7c2377c30dbec442aa31c6550cc4c25d0a9403c172fec0335d",
+      "contentSha256": "826cb8f2e0cbe71780a0f77a6e8779cdce292eb158e9e41675774447c8d4ccec",
+      "verifiedAndArchivedToE": true
+    },
+    "afterFinalRelease": {
+      "id": "daily-20260915T163518Z-58525eb87ee3",
+      "manifestSha256": "e0c7cd9b4bf3749d79003207571382f83f0a1c99c0201adb959a2c1a38b17f5e",
+      "dumpSha256": "bf17b80954cbfdda4e60f18ac955734d3a709ebfef849971487b8da9e28819bd",
+      "contentSha256": "8ab546954633c4b9820d6f7bfb2bd5466391cf068d62cdf8e3a591b867876639",
+      "manifestSidecarSha256": "430f7ae32f59368687236bf5241df6196852c14ba1e0515e0efed33bf0cf4452",
+      "verifiedAndArchivedToE": true,
+      "archiveDirectory": "E:\\运营管理系统业务数据\\daily-20260915T163518Z-58525eb87ee3",
+      "originalOnDRetained": true
+    },
+    "afterSuccessfulImportBeforeFinalRelease": {
+      "id": "daily-20260915T161835Z-ce0bd8f378ca",
+      "manifestSha256": "acb45ee775705042b4f93f8cce51efa2cb081ce78c1ea322a79ec4d3a0cdffd4",
+      "dumpSha256": "063625e8dad84dbacc95089af7d7e718dd2ef27f7383c8d63bc5ff9350ece9ab",
+      "contentSha256": "aa602f3380321440475b60fcbb20942d6e47ec8a94f9a3da72b23bb98c0d1739",
+      "manifestSidecarSha256": "fd49689d60ef4ce6af7e76fec97d4e0c14a27bf13484e8ef11bcffc142b4e934",
+      "verifiedAndArchivedToE": true,
+      "archiveDirectory": "E:\\运营管理系统业务数据\\daily-20260915T161835Z-ce0bd8f378ca"
+    }
+  }
+}

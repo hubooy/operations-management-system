@@ -1,49 +1,124 @@
+import type { AppPrincipal } from "@/lib/auth/authorization";
 import {
-  ensureInventorySchema,
-  findLatestInventoryImportBatch,
-  getInventoryDatabase,
-  listReplenishmentPlans,
-} from "@/lib/inventory/database";
-import { getInventoryOverview } from "@/lib/inventory/overview";
-import { getProductSummary } from "@/lib/products/summary";
+  createDjangoSalesConsumerReader,
+  type SalesConsumerReader,
+} from "@/lib/django/sales-consumer-reader";
 import {
-  ensureSalesSchema,
-  findLatestSalesImportBatch,
-  getSalesDatabase,
-} from "@/lib/sales/database";
+  createDjangoProductsConsumerReader,
+  type ProductsConsumerReader,
+} from "@/lib/django/products-consumer-reader";
 import {
-  getSalesSummary,
+  createDjangoInventoryConsumerReader,
+  type InventoryConsumerReader,
+} from "@/lib/django/inventory-consumer-reader";
+import {
   isSalesRange,
-} from "@/lib/sales/summary";
+} from "@/lib/sales/read-contract";
 import { getOperationsBusinessDates } from "@/lib/ai/business-time";
+import { PublicApiError } from "@/lib/http/api-error";
+
+type OperationsToolDependencies = {
+  salesReader?: SalesConsumerReader;
+  productsReader?: ProductsConsumerReader;
+  inventoryReader?: InventoryConsumerReader;
+  signal?: AbortSignal;
+};
+
+function salesConsumerUnavailable(): PublicApiError {
+  return new PublicApiError(503, "service_unavailable", "Django 销售读取服务暂时不可用，请稍后重试。");
+}
+
+function validTextOrNull(value: unknown, maximum = 500): value is string | null {
+  return value === null || (typeof value === "string" && value.length <= maximum);
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return Boolean(value) && typeof value === "object" && !Array.isArray(value);
+}
+
+function validFreshnessData(value: unknown): boolean {
+  if (!isRecord(value) || !validTextOrNull(value.dataStartDate, 10)
+    || !validTextOrNull(value.dataCutoffDate, 10)) return false;
+  if (value.latestBatch === null) return true;
+  if (!isRecord(value.latestBatch)) return false;
+  return typeof value.latestBatch.id === "string" && value.latestBatch.id.length <= 200
+    && typeof value.latestBatch.fileName === "string" && value.latestBatch.fileName.length <= 500
+    && validTextOrNull(value.latestBatch.completedAt, 80)
+    && Number.isSafeInteger(value.latestBatch.rowCount) && Number(value.latestBatch.rowCount) >= 0;
+}
+
+function validSummaryData(value: unknown): boolean {
+  if (!isRecord(value) || typeof value.range !== "string" || !isSalesRange(value.range)
+    || typeof value.startDate !== "string" || typeof value.endDate !== "string"
+    || !validTextOrNull(value.dataCutoffDate, 10) || !isRecord(value.current)) return false;
+  return ["channels", "outlets", "shops", "platforms", "daily", "previousDaily", "yearAgoDaily"]
+    .every((key) => Array.isArray(value[key]));
+}
+
+function customSalesPeriod(startDate: string | undefined, endDate: string | undefined) {
+  const parse = (value: string | undefined): Date => {
+    if (!value || !/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+      throw new ToolInputError("custom 必须提供 YYYY-MM-DD 格式的 startDate 和 endDate。");
+    }
+    const parsed = new Date(`${value}T00:00:00Z`);
+    if (!Number.isFinite(parsed.getTime()) || parsed.toISOString().slice(0, 10) !== value
+      || value < "1900-01-01" || value > "2199-12-31") {
+      throw new ToolInputError("销售查询日期无效。");
+    }
+    return parsed;
+  };
+  const start = parse(startDate);
+  const end = parse(endDate);
+  const inclusiveDays = (end.getTime() - start.getTime()) / 86_400_000 + 1;
+  if (inclusiveDays < 1 || inclusiveDays > 366) {
+    throw new ToolInputError("销售查询开始日期不能晚于结束日期，且最多包含 366 天。");
+  }
+  // AI/page dates include the selected final business day. The internal sales
+  // consumer alone expects an exclusive end; do not change its shared contract.
+  end.setUTCDate(end.getUTCDate() + 1);
+  return { startDate, endDate: end.toISOString().slice(0, 10) };
+}
 
 export async function callOperationsTool(
   name: string,
   rawArguments: unknown,
+  principal: AppPrincipal,
+  dependencies: OperationsToolDependencies = {},
 ): Promise<Record<string, unknown>> {
   const args = asRecord(rawArguments);
+  const salesReader = dependencies.salesReader ?? createDjangoSalesConsumerReader();
+  const productsReader = dependencies.productsReader ?? createDjangoProductsConsumerReader();
+  const inventoryReader = dependencies.inventoryReader ?? createDjangoInventoryConsumerReader();
 
   if (name === "get_data_freshness") {
     assertOnlyKeys(args, []);
-    const db = getInventoryDatabase();
-    await Promise.all([ensureSalesSchema(db), ensureInventorySchema(db)]);
-    const [salesBatch, inventoryBatch, salesBounds] = await Promise.all([
-      findLatestSalesImportBatch(db),
-      findLatestInventoryImportBatch(db),
-      db.prepare("SELECT MAX(substr(ship_time, 1, 10)) AS end_date FROM sales_order_lines")
-        .first<{ end_date: string | null }>(),
+    const [sales, inventory] = await Promise.all([
+      salesReader.read(
+        principal,
+        { operation: "freshness" },
+        { signal: dependencies.signal },
+      ),
+      inventoryReader.read(
+        principal,
+        { operation: "freshness" },
+        { signal: dependencies.signal },
+      ),
     ]);
+    if (!sales || typeof sales.revision !== "string" || !sales.revision
+      || !validFreshnessData(sales.data)) {
+      throw salesConsumerUnavailable();
+    }
     const businessDates = getOperationsBusinessDates();
     return {
       sales: {
-        through: salesBounds?.end_date ?? null,
-        importedAt: salesBatch?.completedAt ?? null,
-        fileName: salesBatch?.fileName ?? null,
+        through: sales.data.dataCutoffDate,
+        importedAt: sales.data.latestBatch?.completedAt ?? null,
+        fileName: sales.data.latestBatch?.fileName ?? null,
       },
       inventory: {
-        asOf: inventoryBatch?.snapshotDate ?? null,
-        importedAt: inventoryBatch?.completedAt ?? null,
-        fileName: inventoryBatch?.fileName ?? null,
+        asOf: inventory.data.stock?.snapshotDate ?? null,
+        importedAt: inventory.data.stock?.completedAt ?? null,
+        fileName: inventory.data.stock?.fileName ?? null,
       },
       timezone: businessDates.timeZone,
       currentBusinessDate: businessDates.today,
@@ -55,101 +130,79 @@ export async function callOperationsTool(
     assertOnlyKeys(args, ["range", "startDate", "endDate"]);
     const requestedRange = optionalString(args.range) ?? "month";
     if (!isSalesRange(requestedRange)) throw new ToolInputError("range 参数无效");
-    const db = getSalesDatabase();
-    await ensureSalesSchema(db);
-    const summary = await getSalesSummary(db, {
+    const startDate = optionalString(args.startDate);
+    const endDate = optionalString(args.endDate);
+    const period = requestedRange === "custom"
+      ? customSalesPeriod(startDate, endDate)
+      : { startDate, endDate };
+    const summary = await salesReader.read(principal, {
+      operation: "summary",
       range: requestedRange,
-      startDate: optionalString(args.startDate),
-      endDate: optionalString(args.endDate),
-    });
-    return { ...summary, currency: "CNY", monetaryUnit: "cents" };
+      ...period,
+    }, { signal: dependencies.signal });
+    if (!summary || typeof summary.revision !== "string" || !summary.revision
+      || !validSummaryData(summary.data)) throw salesConsumerUnavailable();
+    return { ...summary.data, currency: "CNY", monetaryUnit: "cents" };
   }
 
   if (name === "get_inventory_health") {
     assertOnlyKeys(args, ["warehouse", "category", "status", "query", "limit"]);
-    const status = optionalEnum(args.status, ["urgent", "replenish", "healthy", "slow", "stagnant", "no_sales"] as const);
+    const status = optionalEnum(args.status, ["no_stock", "urgent", "warning", "stale", "slow", "healthy"] as const);
     const warehouse = optionalString(args.warehouse);
     const category = optionalString(args.category);
-    const query = optionalString(args.query)?.toLocaleLowerCase("zh-CN");
+    const query = optionalString(args.query);
     const limit = integer(args.limit, 20, 1, 100);
-    const db = getInventoryDatabase();
-    await Promise.all([ensureSalesSchema(db), ensureInventorySchema(db)]);
-    const overview = await getInventoryOverview(db);
-    const filtered = overview.items.filter((item) =>
-      (!status || item.status === status)
-      && (!warehouse || item.warehouse === warehouse)
-      && (!category || item.category === category)
-      && (!query || `${item.productCode} ${item.productName}`.toLocaleLowerCase("zh-CN").includes(query))
-    );
-    return {
-      sync: overview.sync,
-      settings: overview.settings,
-      metrics: overview.metrics,
-      health: overview.health,
-      filtersApplied: { status, warehouse, category, query: query ?? null },
-      totalMatched: filtered.length,
-      returned: Math.min(filtered.length, limit),
-      truncated: filtered.length > limit,
-      items: filtered.slice(0, limit),
-      currency: "CNY",
-      monetaryUnit: "cents",
-    };
+    const overview = await inventoryReader.read(principal, {
+      operation: "inventory_health",
+      warehouse: warehouse ?? null,
+      category: category ?? null,
+      status: status ?? null,
+      query: query ?? null,
+      limit,
+    }, { signal: dependencies.signal });
+    return overview.data;
   }
 
   if (name === "get_product_performance") {
     assertOnlyKeys(args, ["days", "category", "query", "sortBy", "direction", "limit"]);
     const days = integer(args.days, 30, 7, 365);
     const category = optionalString(args.category);
-    const query = optionalString(args.query)?.toLocaleLowerCase("zh-CN");
+    const query = optionalString(args.query);
     const sortBy = optionalEnum(args.sortBy, ["netSalesCents", "grossProfitCents", "grossMarginRate", "stockValueCents", "netQuantity"] as const) ?? "netSalesCents";
     const direction = optionalEnum(args.direction, ["asc", "desc"] as const) ?? "desc";
     const limit = integer(args.limit, 20, 1, 100);
-    const db = getInventoryDatabase();
-    await Promise.all([ensureSalesSchema(db), ensureInventorySchema(db)]);
-    const summary = await getProductSummary(db, days);
-    const filtered = summary.items.filter((item) =>
-      (!category || item.category === category)
-      && (!query || `${item.productCode} ${item.productName}`.toLocaleLowerCase("zh-CN").includes(query))
-    );
-    filtered.sort((left, right) => {
-      const leftValue = left[sortBy] ?? Number.NEGATIVE_INFINITY;
-      const rightValue = right[sortBy] ?? Number.NEGATIVE_INFINITY;
-      return direction === "asc" ? leftValue - rightValue : rightValue - leftValue;
-    });
-    return {
-      sync: summary.sync,
-      metrics: summary.metrics,
+    const summary = await productsReader.read(principal, {
+      operation: "product_performance",
       days,
-      filtersApplied: { category, query: query ?? null, sortBy, direction },
-      totalMatched: filtered.length,
-      returned: Math.min(filtered.length, limit),
-      truncated: filtered.length > limit,
-      items: filtered.slice(0, limit),
-      currency: "CNY",
-      monetaryUnit: "cents",
-    };
+      category: category ?? null,
+      query: query ?? null,
+      sortBy,
+      direction,
+      limit,
+    }, { signal: dependencies.signal });
+    return summary.data;
   }
 
   if (name !== "list_replenishment_plans") throw new ToolInputError("工具未注册");
   assertOnlyKeys(args, ["status", "warehouse", "query", "limit"]);
   const status = optionalEnum(args.status, ["draft", "confirmed", "completed", "cancelled"] as const);
   const warehouse = optionalString(args.warehouse);
-  const query = optionalString(args.query)?.toLocaleLowerCase("zh-CN");
+  const query = optionalString(args.query);
   const limit = integer(args.limit, 20, 1, 100);
-  const db = getInventoryDatabase();
-  await ensureInventorySchema(db);
-  const plans = await listReplenishmentPlans(db, 500);
-  const filtered = plans.filter((plan) =>
-    (!status || plan.status === status)
-    && (!warehouse || plan.warehouse === warehouse)
-    && (!query || `${plan.productCode} ${plan.productName}`.toLocaleLowerCase("zh-CN").includes(query))
-  );
+  const plans = await inventoryReader.read(principal, {
+    operation: "replenishment_search",
+    offset: 0,
+    limit,
+    status: status ?? null,
+    warehouse: warehouse ?? null,
+    query: query ?? "",
+  }, { signal: dependencies.signal });
   return {
     filtersApplied: { status, warehouse, query: query ?? null },
-    totalMatched: filtered.length,
-    returned: Math.min(filtered.length, limit),
-    truncated: filtered.length > limit,
-    items: filtered.slice(0, limit),
+    totalMatched: plans.data.total,
+    returned: plans.data.items.length,
+    truncated: plans.data.truncated,
+    items: plans.data.items,
   };
 }
 

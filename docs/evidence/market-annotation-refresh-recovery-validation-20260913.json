@@ -1,0 +1,99 @@
+{
+  "status": "candidate_not_deployed",
+  "date": "2026-09-13",
+  "baseMain": "4c0ba06dd07b418d35a946dcc26705b13595885a",
+  "branch": "codex/market-annotation-refresh-recovery",
+  "scope": "Recover annotation progress/review read errors without clearing command errors; bound and cancel stale reads.",
+  "confirmedDefects": [
+    "Background polling wrote read failures to shared command error state, with no corresponding success reset.",
+    "Progress fetch had no frontend deadline or cancellation/late-result fence on task change."
+  ],
+  "diagnosis": {
+    "source": "Local same-origin read-only public API; operations MCP unavailable.",
+    "original503TriggerReproduced": false,
+    "requests": [
+      {
+        "view": "annotations.workspace_fast",
+        "status": 200,
+        "elapsedMs": 1133
+      },
+      {
+        "view": "annotations.progress",
+        "status": 200,
+        "elapsedMs": 340
+      },
+      {
+        "view": "annotations.review",
+        "status": 200,
+        "elapsedMs": 534
+      },
+      {
+        "view": "annotations.candidate_counts",
+        "status": 200,
+        "elapsedMs": 1001
+      },
+      {
+        "view": "master.system_kpis",
+        "status": 200,
+        "elapsedMs": 269
+      },
+      {
+        "view": "master.database_primary",
+        "status": 503,
+        "elapsedMs": 30047,
+        "separateUnresolvedIssue": true
+      }
+    ]
+  },
+  "checks": {
+    "targeted": {
+      "tests": 73,
+      "passed": 73,
+      "failed": 0
+    },
+    "readChannelRegression": {
+      "tests": 8,
+      "passed": 8,
+      "failed": 0
+    },
+    "isolatedBuild": "passed",
+    "renderedHtml": {
+      "tests": 20,
+      "passed": 20,
+      "failed": 0
+    },
+    "backendBoundary": {
+      "modules": 433,
+      "violations": 0
+    },
+    "lint": {
+      "errors": 0,
+      "existingUnrelatedWarnings": 11
+    },
+    "typecheck": {
+      "status": "fails_in_unchanged_test_and_tool_files",
+      "changedFileErrors": 0
+    },
+    "diffCheck": "passed",
+    "fullUnit": {
+      "tests": 2167,
+      "passed": 2147,
+      "failed": 0,
+      "skipped": 20,
+      "durationMs": 271085.6206
+    }
+  },
+  "review": "Self-review of cancellation, timeout, stale response, cross-scope error isolation and read-only retry behavior.",
+  "productionActions": {
+    "deployment": false,
+    "serviceRestart": false,
+    "databaseMigration": false,
+    "businessWrite": false,
+    "modelCall": false
+  },
+  "limitations": [
+    "Original upstream 503 cause not established.",
+    "Separate master list timeout not fixed.",
+    "No production adoption or browser UI acceptance in this task."
+  ]
+}

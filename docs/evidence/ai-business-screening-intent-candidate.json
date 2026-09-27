@@ -1,0 +1,36 @@
+{
+  "date": "2026-09-17",
+  "branch": "codex/ai-business-analysis-stages",
+  "baseCommit": "2662be7d",
+  "batch": 40,
+  "status": "candidate_fixed_screening_intent_and_database_guards",
+  "migration": "0024_business_screening_runtime",
+  "ownedTableCount": 65,
+  "verification": {
+    "guardAndStore": {"passed": 17, "seconds": 58.270, "log": ".runtime/ai-pg-28fce02412e7/tests.log", "suites": ["ai_assistant.test_business_screening_runtime_guard", "ai_assistant.test_business_screening_store"]},
+    "screeningPackagesAndClaims": {"passed": 29, "seconds": 128.261, "log": ".runtime/ai-pg-114e513e25f2/tests.log", "suites": ["ai_assistant.test_business_diagnostic_screening", "ai_assistant.test_business_screening_packages", "ai_assistant.test_business_screening_claims"]},
+    "legacyAndNewBindings": {"passed": 36, "seconds": 77.938, "log": ".runtime/ai-pg-6b9e65d94569/tests.log", "suites": ["ai_assistant.test_business_integrated_guard", "ai_assistant.test_business_budget_bindings", "ai_assistant.test_business_budget_store", "ai_assistant.test_business_screening_runtime_guard"]},
+    "backupTestsPassed": 8,
+    "maintenanceNodeTestsPassed": 12,
+    "boundary": {"modules": 491, "violations": 0},
+    "independentReviews": {"sql": "excel_independent_review", "owningBindings": "workbench_gap_review", "remainingBlockers": 0, "fixed": ["Owning read and replay must recheck exact intent ID"]},
+    "upgradeRestore": {
+      "status": "passed",
+      "path": "0013->0014->0015->0016->0017->0018->0019->0020->0021->0022->0023->0024",
+      "log": ".runtime/ai-pg-d179fd10f6da/business-evidence-upgrade.json",
+      "port": 55485,
+      "all65TablesRestoredDigest": "758f64df348f38e9c7de6139abcb4334da12082992f9254cddfa0206c4b5fafd",
+      "previous65TablesBeforeRuntimeDigestPreserved": "7c9a656f434f7f248722d8317d3a0be58af9819686187e936025ff9c8686eef7",
+      "oldAndNewScreeningResultsRestored": 4,
+      "restrictedWriterPrepareCreateScanPublishReplay": true,
+      "restrictedReaderWriterRestoreWithoutFactRescan": true,
+      "unpublishedIntentBlocksReverse": true,
+      "latestFunctionAndTriggerHealthNegativeProbes": true,
+      "allOldRendererAndBudgetMappingChecksRetained": true
+    },
+    "firstRun": {"log": ".runtime/ai-pg-e582c66548ac/failure.log", "tests": 10, "failedTests": 1, "failedSubcases": 4, "cause": "Test incorrectly expected identical snapshot/input UPDATE to fail", "fix": "Test real changed values; preserve existing no-op behavior"},
+    "historicalTestIsolationFix": "0022 direct reverse/install probe now rolls back its savepoint to preserve the newer installed function bodies"
+  },
+  "remaining": ["Readiness lease and fact scan outside mutation", "Actual model and catalog capacity admission", "Registered tools and per-job proof integration", "Diagnosis and same-evidence files", "Real model and production acceptance"],
+  "operations": {"productionBusinessReads": false, "productionWrites": false, "productionMigration": false, "deployment": false, "serviceRestart": false, "paidModelCalls": false, "externalMessages": false}
+}

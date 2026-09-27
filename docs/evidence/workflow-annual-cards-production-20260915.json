@@ -1,0 +1,291 @@
+{
+  "version": "teruisi-workflow-annual-cards-production-v1",
+  "date": "2026-09-15",
+  "status": "adopted",
+  "featureCommit": "ed6c8f65",
+  "workerSourceCommit": "63b8c792",
+  "backendSourceCommit": "1abe2a1c2bb2e4aa92e51476c76f94ec8cfba1f2",
+  "readerRouteFixCommit": "a175441e576d123b3bd5133b411c8887e5ced3ed",
+  "scope": [
+    "Classification cards toggle filters off on second click; numeric monetary metrics remain display-only",
+    "Draft-only product code learning; explicit save required",
+    "Free-text optional shop plan and visible multiline project notes",
+    "Annual shop sales and profit targets with actuals from completed monthly financial reports"
+  ],
+  "deployment": {
+    "status": "activated",
+    "version": "teruisi-local-worker-release-successor-v1",
+    "planSha256": "bf8d7150b7cd468fadb86d733a4f302c5215f33c0d3e70c7651e3680bd73d0a6",
+    "predecessorReleaseId": "20260914T143237Z-3aaaa72257429512",
+    "releaseId": "20260914T154612Z-36b6fd5a8dbe31f7",
+    "manifestPath": "D:\\teruisi-runtime\\teruisi-worker-sales\\releases\\20260914T154612Z-36b6fd5a8dbe31f7\\deployment-manifest.json",
+    "manifestSha256": "47ce8f8f6ff8a5993d4f9d5fb60b167099c4729d3124ac2ae2036d3e9c3b5cd2",
+    "successorSha256": "5420632f81427355cd7dcac1c51a4510c7927798573966a93b41834dc7931766",
+    "consumptionSha256": "71ab9c2c8ee4224b9d9958aa44f66795a7097881fa6b84c90052c127f2f5f27b",
+    "startupBindingSha256": "2a576b48b248f68ab7ac9e082095a2775eb7a6b02d305c4f2bb246223950a9f9"
+  },
+  "finalApi": {
+    "status": "passed",
+    "at": "2026-09-14T16:12:10.221Z",
+    "releaseId": "20260914T154612Z-36b6fd5a8dbe31f7",
+    "manifestSha256": "47ce8f8f6ff8a5993d4f9d5fb60b167099c4729d3124ac2ae2036d3e9c3b5cd2",
+    "checks": [
+      {
+        "path": "/_teruisi/local/health/live",
+        "status": 200
+      },
+      {
+        "path": "/_teruisi/local/health/ready",
+        "status": 200
+      },
+      {
+        "path": "/api/finance/targets?view=annual&year=2026",
+        "status": 200
+      },
+      {
+        "path": "/api/workflow/launch-projects?page=1&pageSize=20",
+        "status": 200
+      },
+      {
+        "path": "/api/workflow/launch-projects?page=1&pageSize=20&status=in_progress",
+        "status": 200
+      },
+      {
+        "path": "/api/workflow/launch-projects?page=1&pageSize=20&status=blocked",
+        "status": 200
+      },
+      {
+        "path": "/api/workflow/launch-projects?page=1&pageSize=20&status=completed",
+        "status": 200
+      },
+      {
+        "path": "/api/inventory/age-analysis?cardFilter=invalid",
+        "status": 400
+      },
+      {
+        "path": "/api/inventory/age-analysis?cardFilter=aged90&cardFilter=zero_sales",
+        "status": 400
+      },
+      {
+        "path": "/api/finance/targets?view=annual&year=bad",
+        "status": 400
+      },
+      {
+        "path": "/api/workflow/new-product-lines/learn",
+        "status": 400
+      },
+      {
+        "path": "/api/workflow/new-product-lines",
+        "status": 200
+      },
+      {
+        "path": "/api/workflow/new-product-lines/learn?current-line-draft",
+        "status": 200
+      },
+      {
+        "path": "/assets/operations-view-B50hOvDH.js",
+        "status": 200
+      },
+      {
+        "path": "/assets/sales-module-view-SIs7PUox.js",
+        "status": 200
+      }
+    ],
+    "assets": [
+      {
+        "name": "operations-view-B50hOvDH.js",
+        "sha256": "9914a799cc04a2b07f5bfe14027567a86aba4d66a7ab017dad7fa06804c2c81b"
+      },
+      {
+        "name": "sales-module-view-SIs7PUox.js",
+        "sha256": "278c2e8a525194bf56b6aedf93261eaa9850144ab3b881ae5f6345e13a4dbde6"
+      }
+    ],
+    "annualShops": 28,
+    "launchReturned": 13,
+    "productionBusinessWrites": 0,
+    "djangoManifestSha256": "d68b74c2e098df145c5fe5b16ae0d6c5cc215e711e9c468c129ad748883e843a"
+  },
+  "system": {
+    "version": "teruisi-operations-system-control-v2",
+    "state": "Running",
+    "backendState": "Ready",
+    "workerState": "exact_release",
+    "releaseId": "20260914T154612Z-36b6fd5a8dbe31f7",
+    "supervisorProcessId": 23804,
+    "portProcessId": 3736,
+    "url": "http://localhost:3000/",
+    "reason": null,
+    "components": {
+      "core": true,
+      "finance": true,
+      "netshop": true,
+      "market": true,
+      "products": true,
+      "workflow": true,
+      "inventory": true,
+      "customerService": true,
+      "accessControl": true,
+      "erpReference": true,
+      "bi": true,
+      "ai": true
+    },
+    "checkedAt": "2026-09-15T00:21:32.3134689+08:00"
+  },
+  "supervisor": {
+    "status": "completed",
+    "desiredState": "running",
+    "supervisorProcess": "running",
+    "health": "healthy",
+    "code": "all_components_ready",
+    "lastHealthyAt": "09/15/2026 00:14:21",
+    "restartAttemptsInWindow": 1,
+    "pendingAlertCount": 29,
+    "serviceStateChanged": false
+  },
+  "permissions": [
+    {
+      "url": "http://127.0.0.1:8061/api/workflow/new-product-lines/learn?name=probe",
+      "status": 401,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:8061/api/workflow/new-product-lines/learn",
+      "status": 405,
+      "method": "POST"
+    },
+    {
+      "url": "http://127.0.0.1:8011/api/finance/targets?view=annual&year=2026",
+      "status": 401,
+      "method": "GET"
+    }
+  ],
+  "preservation": {
+    "tablesVerified": 25,
+    "shopPlanColumn": 1,
+    "originalRowsUnchanged": true,
+    "nonNullShopPlans": 0,
+    "finalReadOnlyLearningPreservedRows": true,
+    "readerAccessibleTablesOnly": true
+  },
+  "migration": "workflow.0008_new_product_shop_plan",
+  "verification": {
+    "postgres": 169,
+    "nodeFullRun": {
+      "passed": 2166,
+      "failed": 0,
+      "cancelled": 1,
+      "skipped": 20
+    },
+    "isolatedBrowserTestRetry": {
+      "passed": 7,
+      "failed": 0,
+      "reason": "A 30-second timeout in the unrelated Jackyun isolated menu browser test during concurrent full regression; all 7 tests passed on isolated retry"
+    },
+    "unresolvedFailures": 0,
+    "renderedHtml": 20,
+    "applicationTypes": "passed",
+    "scopedEslint": "passed",
+    "backendBoundary": "passed",
+    "browser": {
+      "launchToggle": [
+        13,
+        6,
+        13
+      ],
+      "annualTargets": "Annual sales and profit, report cutoff shown",
+      "lineEditor": "Learning button present; editor cancelled without save"
+    }
+  },
+  "maintenance": {
+    "marketPlansCompleted": 38,
+    "marketInFlight": 0,
+    "helperIdle": true,
+    "n8nRestarted": false,
+    "djangoAndPostgresRestarted": true,
+    "secondBackendDeployment": "Production GET learning path was missing from reader URLConf; fixed and verified GET 200, unsigned GET 401 and reader POST 405. No extra migration.",
+    "automaticTaskReplay": false
+  },
+  "backup": {
+    "before": {
+      "status": "completed",
+      "backupId": "daily-20260914T152707Z-d7298301be88",
+      "backupDirectory": "D:\\teruisi-runtime\\django-sales\\backups\\postgres-daily\\daily-20260914T152707Z-d7298301be88",
+      "manifestSha256": "05228887dbed932eec3dfc95d827bd79da58406948aab5073f9f8afbf1f9f624",
+      "dumpSha256": "19d57e67dea864e8e57ea26f4657163712a926966d8f8d9f2841f637070adf57",
+      "contentSha256": "e089e6039079b4445a656f7ecad408be740a42ca43d1f01ec7f6827fd2411ba1",
+      "completedAt": "09/14/2026 23:28:55",
+      "serviceStateChanged": false
+    },
+    "beforeVerify": {
+      "status": "completed",
+      "backupId": "daily-20260914T152707Z-d7298301be88",
+      "manifestSha256": "05228887dbed932eec3dfc95d827bd79da58406948aab5073f9f8afbf1f9f624",
+      "dumpSha256": "19d57e67dea864e8e57ea26f4657163712a926966d8f8d9f2841f637070adf57",
+      "contentSha256": "e089e6039079b4445a656f7ecad408be740a42ca43d1f01ec7f6827fd2411ba1",
+      "serviceStateChanged": false
+    },
+    "independentRestore": {
+      "version": "teruisi-postgres-restore-rehearsal-v1",
+      "status": "completed",
+      "rehearsalId": "f6184e091c32",
+      "startedAt": "2026-09-14T15:32:34.0336642+00:00",
+      "completedAt": "2026-09-14T15:37:16.9611927+00:00",
+      "backupId": "daily-20260914T152707Z-d7298301be88",
+      "backupManifestSha256": "05228887dbed932eec3dfc95d827bd79da58406948aab5073f9f8afbf1f9f624",
+      "dumpSha256": "19d57e67dea864e8e57ea26f4657163712a926966d8f8d9f2841f637070adf57",
+      "expectedContentSha256": "e089e6039079b4445a656f7ecad408be740a42ca43d1f01ec7f6827fd2411ba1",
+      "restoredContentSha256": "e089e6039079b4445a656f7ecad408be740a42ca43d1f01ec7f6827fd2411ba1",
+      "isolatedPort": 55467,
+      "productionDatabaseTouched": false,
+      "serviceStateChanged": false,
+      "cleanupStatus": "isolated_data_removed"
+    },
+    "after": {
+      "status": "completed",
+      "backupId": "daily-20260914T161418Z-4f9b8bdd4978",
+      "backupDirectory": "D:\\teruisi-runtime\\django-sales\\backups\\postgres-daily\\daily-20260914T161418Z-4f9b8bdd4978",
+      "manifestSha256": "e1e21fd303b241080b9abc3e22df4cc63aa2e1ec19f51284de2d9469b9402e9b",
+      "dumpSha256": "ac793029bc89b0814f8c4278d71a41892842eeefafd050dfe5389ef7424cdb6b",
+      "contentSha256": "81a0ac7dc4c18c8331271f8275ab561bb4a9b7b2b9db377ea3d186001b5739ff",
+      "completedAt": "09/15/2026 00:16:03",
+      "serviceStateChanged": false
+    },
+    "afterVerify": {
+      "status": "completed",
+      "backupId": "daily-20260914T161418Z-4f9b8bdd4978",
+      "manifestSha256": "e1e21fd303b241080b9abc3e22df4cc63aa2e1ec19f51284de2d9469b9402e9b",
+      "dumpSha256": "ac793029bc89b0814f8c4278d71a41892842eeefafd050dfe5389ef7424cdb6b",
+      "contentSha256": "81a0ac7dc4c18c8331271f8275ab561bb4a9b7b2b9db377ea3d186001b5739ff",
+      "serviceStateChanged": false
+    },
+    "archive": {
+      "files": [
+        {
+          "matched": true,
+          "sha256": "ac793029bc89b0814f8c4278d71a41892842eeefafd050dfe5389ef7424cdb6b",
+          "file": "teruisi-sales.dump"
+        },
+        {
+          "matched": true,
+          "sha256": "e1e21fd303b241080b9abc3e22df4cc63aa2e1ec19f51284de2d9469b9402e9b",
+          "file": "backup-manifest.json"
+        },
+        {
+          "matched": true,
+          "sha256": "c88cb9ee9e9589a1dc9960709f829f231c93a155d65bd246c51c60ce2e327133",
+          "file": "backup-manifest.json.sha256"
+        }
+      ],
+      "directory": "E:\\运营管理系统业务数据\\daily-20260914T161418Z-4f9b8bdd4978",
+      "backupId": "daily-20260914T161418Z-4f9b8bdd4978"
+    }
+  },
+  "startup": {
+    "status": "verified",
+    "version": "teruisi-local-worker-status-v1",
+    "releaseId": "20260914T154612Z-36b6fd5a8dbe31f7",
+    "manifestSha256": "47ce8f8f6ff8a5993d4f9d5fb60b167099c4729d3124ac2ae2036d3e9c3b5cd2",
+    "startupVerified": true
+  }
+}

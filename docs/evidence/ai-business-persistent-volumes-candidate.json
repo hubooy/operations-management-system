@@ -1,0 +1,43 @@
+{
+  "schemaVersion": "candidate-evidence-v1",
+  "date": "2026-09-17",
+  "branch": "codex/ai-business-analysis-stages",
+  "baseCommit": "7f4654ad",
+  "batch": 20,
+  "status": "candidate_not_production_adopted",
+  "changes": [
+    "Renderer 4 immutable volume chunks, separate from legacy chunks, with migration 0020 and version-aware backup evidence",
+    "Bound compact delivery manifest plus independently verified full JSON manifest artifact",
+    "Persistent whole-attempt build and recovery; retained historical chunks count against unchanged quotas",
+    "Aggregate temporary output high-water accounting with manifest reservation",
+    "Explicit owner-bound volume creation, per-volume reads, UI selection and complete client hash verification"
+  ],
+  "verification": {
+    "initialTargetedPostgres": {"tests": 24, "failed": 4, "log": ".runtime/ai-pg-ac1229276d80/failure.log", "fixed": "Draft int/bool binding mismatch"},
+    "fixedTargetedPostgres": {"tests": 33, "passed": 33, "log": ".runtime/ai-pg-72e201f380e3/tests.log"},
+    "finalUpgradeAndAiPostgres": {"tests": 408, "passed": 406, "skipped": 2, "log": ".runtime/ai-pg-b7340c1e45e7/tests.log", "upgradeEvidence": ".runtime/ai-pg-b7340c1e45e7/business-evidence-upgrade.json", "ownTables": 62, "oldTableDigestsPreserved": true, "restoredVolumeChunks": 6, "restoredVolumeBytes": 1048722, "v2AndV4ReverseMigrationRejectedSeparately": true, "realRoleAndWriteFences": true, "restoreFixtureStatus": "paused", "readyAcceptedBySeparateServiceTests": true},
+    "intermediateHarness": {"log": ".runtime/ai-pg-44ad2a37b983/failure.log", "note": "Upgrade and 408 AI tests passed; unrelated historical D1 continuation lacked its legacy source fixture. Final run explicitly used tests-only plus business-evidence-upgrade, preserving full upgrade and AI tests."},
+    "pureVolumeContracts": {"tests": 44, "passed": 44, "independentAgent": true},
+    "downloadTests": {"new": 29, "legacy": 10, "passed": 39, "independentReview": true},
+    "initialFullNode": {"tests": 2275, "passed": 2252, "failed": 2, "cancelled": 0, "skipped": 21, "log": ".runtime/batch20-full-node.log", "failures": "Two backup-generation tests; fixed in backup helpers and fixtures", "extraSkip": "Page client artifact freshness while final build was in progress; checked again afterward"},
+    "fixedBackupRegression": {"tests": 12, "passed": 12, "includesPythonTests": 8, "log": ".runtime/batch20-backup-regression.log"},
+    "freshArtifactRegression": {"passed": true, "log": ".runtime/batch20-artifact-budget.log"},
+    "newVolumeBrowser": {"checks": 5, "passed": 5, "volumes": 2, "actualSyntheticDownloads": 3, "htmlXlsxJsonExactBytes": true, "corruptChunkBlocked": true, "accountSwitchBlocked": true, "mobileWidth": 390, "evidence": ".runtime/batch20-volume-ui/evidence.json"},
+    "legacyFileBrowser": {"checks": 5, "passed": 5, "independentAgent": true},
+    "build": {"passed": true, "log": ".runtime/batch20-build.log"},
+    "renderedHtml": {"tests": 20, "passed": 20, "log": ".runtime/batch20-rendered-html.log"},
+    "lint": {"errors": 0, "existingWarnings": 11, "log": ".runtime/batch20-lint.log"},
+    "typecheck": {"existingDiagnostics": 153, "changedPathDiagnostics": 0, "log": ".runtime/batch20-typecheck.log"},
+    "backendBoundary": {"passed": true, "log": ".runtime/batch20-boundary.log"},
+    "independentReviews": {"remainingReportedBlockers": 0, "fixed": ["Draft bool binding", "Manifest size constant name", "Report-switch late callback", "Backup migration generation coverage"]}
+  },
+  "limits": [
+    "First-task workbench planner remains v1; v2 fixed report budget and budget Agent profile remain pending",
+    "Whole-attempt recovery only; no per-volume compute resume or dynamic byte splitting",
+    "Existing fact, logical table, file, owner and global limits remain unchanged",
+    "Database checks block identity and consistency; service checks entire file and full manifest proofs",
+    "Real-store, historical coverage, paid-provider and production acceptance remain outstanding",
+    "No complete phase declared"
+  ],
+  "operations": {"productionReads": false, "productionWrites": false, "newMigration": "0020_business_volume_files", "productionMigration": false, "deployment": false, "serviceRestart": false, "paidModelCalls": false, "externalMessages": false}
+}

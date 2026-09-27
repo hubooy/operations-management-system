@@ -1,0 +1,412 @@
+[
+  {
+    "name": "get_business_market_v2_screening_package",
+    "title": "读取市场v2报告的原词货角色证据包（候选）",
+    "description": "仅从同账号0053材料准入报告追到原词货报告的固定角色包。role为待运行角色声明，不证明Agent本人已读；offset按原分页，缺数据不补零。",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "reportId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,160}$"
+        },
+        "runId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,160}$"
+        },
+        "screeningId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,160}$"
+        },
+        "role": {
+          "type": "string",
+          "enum": [
+            "commerce",
+            "promotion",
+            "market_b2b",
+            "independent_review",
+            "report"
+          ]
+        },
+        "offset": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9999
+        }
+      },
+      "required": [
+        "reportId",
+        "runId",
+        "screeningId",
+        "role"
+      ],
+      "additionalProperties": false
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": true,
+      "openWorldHint": false
+    },
+    "risk": "read_only",
+    "allowedRoles": [
+      "admin"
+    ],
+    "scopePolicy": "unscoped_only",
+    "execution": {
+      "environment": "worker_inline",
+      "mode": "direct",
+      "allowedSurfaces": [
+        "business_agent_screening_promotion_market_v2"
+      ],
+      "timeoutMs": 12000,
+      "maxResultCharacters": 40000,
+      "maxCallsPerRequest": 8
+    }
+  },
+  {
+    "name": "get_business_market_v2_screening_analysis",
+    "title": "读取市场v2报告的原生或商品关联分析（候选）",
+    "description": "仅复用同账号原词货报告的固定原生/映射表。mode=native须sourceKey，mode=mapped须pairKey；歧义与缺侧保留。role声明不是已读回执。",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "reportId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,160}$"
+        },
+        "runId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,160}$"
+        },
+        "screeningId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,160}$"
+        },
+        "role": {
+          "type": "string",
+          "enum": [
+            "commerce",
+            "promotion",
+            "market_b2b",
+            "independent_review",
+            "report"
+          ]
+        },
+        "mode": {
+          "type": "string",
+          "enum": [
+            "native",
+            "mapped"
+          ]
+        },
+        "dimension": {
+          "type": "string",
+          "enum": [
+            "shop",
+            "category",
+            "spu",
+            "sku",
+            "keyword",
+            "searchTerm",
+            "daily",
+            "brand"
+          ]
+        },
+        "sourceKey": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,160}$"
+        },
+        "baselineKey": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,160}$"
+        },
+        "pairKey": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "baselinePairKey": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "offset": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 250000
+        }
+      },
+      "required": [
+        "reportId",
+        "runId",
+        "screeningId",
+        "role",
+        "mode",
+        "dimension"
+      ],
+      "additionalProperties": false
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": true,
+      "openWorldHint": false
+    },
+    "risk": "read_only",
+    "allowedRoles": [
+      "admin"
+    ],
+    "scopePolicy": "unscoped_only",
+    "execution": {
+      "environment": "worker_inline",
+      "mode": "direct",
+      "allowedSurfaces": [
+        "business_agent_screening_promotion_market_v2"
+      ],
+      "timeoutMs": 12000,
+      "maxResultCharacters": 40000,
+      "maxCallsPerRequest": 8
+    }
+  },
+  {
+    "name": "get_business_market_v2_screening_budget",
+    "title": "读取市场v2报告的固定预算（候选）",
+    "description": "仅promotion、independent_review、report角色可读原词货报告的固定预算；无预算返回明确不可用，不返回零预算或成功已读。",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "reportId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,160}$"
+        },
+        "runId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,160}$"
+        },
+        "screeningId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,160}$"
+        },
+        "role": {
+          "type": "string",
+          "enum": [
+            "promotion",
+            "independent_review",
+            "report"
+          ]
+        },
+        "offset": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 99
+        }
+      },
+      "required": [
+        "reportId",
+        "runId",
+        "screeningId",
+        "role"
+      ],
+      "additionalProperties": false
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": true,
+      "openWorldHint": false
+    },
+    "risk": "read_only",
+    "allowedRoles": [
+      "admin"
+    ],
+    "scopePolicy": "unscoped_only",
+    "execution": {
+      "environment": "worker_inline",
+      "mode": "direct",
+      "allowedSurfaces": [
+        "business_agent_screening_promotion_market_v2"
+      ],
+      "timeoutMs": 12000,
+      "maxResultCharacters": 40000,
+      "maxCallsPerRequest": 8
+    }
+  },
+  {
+    "name": "get_business_market_v2_keyword_sku",
+    "title": "读取市场v2报告的原词货推广SKU视图（候选）",
+    "description": "仅promotion、independent_review、report角色可读同账号原词货报告的固定推广来源。页/精确行互斥，词货费用不可相加；不证明本人已读。",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "reportId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,160}$"
+        },
+        "role": {
+          "type": "string",
+          "enum": [
+            "promotion",
+            "independent_review",
+            "report"
+          ]
+        },
+        "sourceKey": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,160}$"
+        },
+        "view": {
+          "type": "string",
+          "enum": [
+            "keyword_sku",
+            "keyword_sku_context"
+          ]
+        },
+        "baselineKey": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,160}$"
+        },
+        "offset": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 250000
+        },
+        "limit": {
+          "type": "integer",
+          "enum": [
+            20
+          ]
+        },
+        "rowIndex": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 249999
+        },
+        "rowId": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "reportId",
+        "role",
+        "sourceKey",
+        "view"
+      ],
+      "additionalProperties": false
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": true,
+      "openWorldHint": false
+    },
+    "risk": "read_only",
+    "allowedRoles": [
+      "admin"
+    ],
+    "scopePolicy": "unscoped_only",
+    "execution": {
+      "environment": "worker_inline",
+      "mode": "direct",
+      "allowedSurfaces": [
+        "business_agent_screening_promotion_market_v2"
+      ],
+      "timeoutMs": 12000,
+      "maxResultCharacters": 38000,
+      "maxCallsPerRequest": 8
+    }
+  },
+  {
+    "name": "get_business_promotion_market_v2",
+    "title": "读取市场v2已证明TOP样本（未登记Agent已读）",
+    "description": "仅在独立市场v2候选surface和明确开关下，读取同报告0045证明的价格带与双日进出榜summary/page/row。role仅允许market_b2b、independent_review、report；model参数不构成实际Agent身份。结果没有持久派发或本人已读回执，市场TOP样本不可加到本店销售、ERP或B端销售。",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "reportId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,160}$"
+        },
+        "marketContextDigest": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "marketManifestDigest": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "role": {
+          "type": "string",
+          "enum": [
+            "market_b2b",
+            "independent_review",
+            "report"
+          ]
+        },
+        "mode": {
+          "type": "string",
+          "enum": [
+            "summary",
+            "page",
+            "row"
+          ]
+        },
+        "view": {
+          "type": "string",
+          "enum": [
+            "price_band",
+            "rank_entry_exit"
+          ]
+        },
+        "offset": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 200000
+        },
+        "limit": {
+          "type": "integer",
+          "enum": [
+            20
+          ]
+        },
+        "rowIndex": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 199999
+        },
+        "rowId": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "reportId",
+        "marketContextDigest",
+        "marketManifestDigest",
+        "role",
+        "mode"
+      ],
+      "additionalProperties": false
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": true,
+      "openWorldHint": false
+    },
+    "risk": "read_only",
+    "allowedRoles": [
+      "admin"
+    ],
+    "scopePolicy": "unscoped_only",
+    "execution": {
+      "environment": "worker_inline",
+      "mode": "direct",
+      "allowedSurfaces": [
+        "business_agent_screening_promotion_market_v2"
+      ],
+      "timeoutMs": 12000,
+      "maxResultCharacters": 38000,
+      "maxCallsPerRequest": 8
+    }
+  }
+]

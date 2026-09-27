@@ -1,0 +1,17 @@
+{
+  "date":"2026-09-17","batch":51,"status":"candidate_complete_screening_multivolume_delivery",
+  "verification":{
+    "pureCompatibility":{"passed":32,"log":".runtime/batch51-screening-export-independent-pure.log"},
+    "legacyBytes":{"html":true,"xlsx":true,"compactManifest":true,"fullManifest":true,"withAndWithoutBudget":true,"log":".runtime/batch51-legacy-volume-byte-independent.log"},
+    "fourCombinationsAndPure":{"passed":3,"pure":2,"postgres":1,"seconds":79.309,"log":".runtime/ai-pg-e01ab3836bf6/tests.log"},
+    "durableResume":{"passed":1,"otherCaseFixtureError":1,"combinedSeconds":124.934,"log":".runtime/ai-pg-3b773d5fd594/failure.log"},
+    "candidateAndLateLedgerChanges":{"passed":3,"seconds":139.632,"log":".runtime/ai-pg-983e71e5df3c/tests.log"},
+    "signedHttpCreateResumeAndRollback":{"passed":2,"combinedSuitePassed":6,"combinedSeconds":166.309,"log":".runtime/ai-pg-88a1fa8ad32e/tests.log"},
+    "fixtureCorrection":"Candidate source re-sealing changes actual analysis row IDs; fixed synthetic budget targets now resolve identities from that new seal instead of reusing the original run",
+    "combinedTimeout":{"seconds":300,"tests":7,"increasedLimit":false,"allCasesCompletedInSmallerGroups":true},
+    "formalFiveAgentToDownload":{"passed":true,"combinedTests":4,"seconds":114.917,"log":".runtime/ai-pg-c5493384642b/tests.log","reassembledAllChunksAndVerifiedSha":true},
+    "actualExcelRecalculation":false
+  },
+  "limits":{"volumes":100,"columnsPerTable":160,"taskBytesIncludingFullManifest":1073741824,"jsonFragmentCharacters":7000},
+  "operations":{"productionBusinessReads":false,"productionWrites":false,"deployment":false,"serviceRestart":false,"paidModelCalls":false,"externalMessages":false}
+}

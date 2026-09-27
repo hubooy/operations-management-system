@@ -1,0 +1,81 @@
+{
+  "version": "teruisi-inventory-draft-bulk-confirm-production-v1",
+  "date": "2026-09-10",
+  "status": "completed",
+  "scope": [
+    "multi-select draft replenishment plans",
+    "sequential local confirmation followed by existing idempotent DingTalk table submission",
+    "retain failed, unprocessed and other-status selections for explicit retry"
+  ],
+  "source": {
+    "featureCommit": "7b1252ead4c5a57fab35a6bfbc45808e31f69577",
+    "mergedMainCommit": "2d65c7ea",
+    "remoteMainPushed": true,
+    "releaseWorktree": "D:\\运营管理系统-sales-django-release",
+    "releaseWorktreeCleanAtBuild": true
+  },
+  "candidateValidation": {
+    "focusedNode": { "tests": 7, "passed": 7, "failed": 0 },
+    "fullNode": { "tests": 2079, "passed": 2059, "skipped": 20, "failed": 0 },
+    "renderedBuild": { "tests": 20, "passed": 20, "failed": 0 },
+    "lint": { "errors": 0, "existingWarnings": 9 },
+    "backendBoundary": { "modules": 409, "violations": 0 },
+    "gitDiffCheck": "passed",
+    "build": "passed"
+  },
+  "preReleaseRecovery": {
+    "backupId": "daily-20260910T100036Z-0fec945e344c",
+    "manifestSha256": "9166505b4ac927eebd7b2d23a650cff0379f92aee8e08ee7fd299407cb5a8a6c",
+    "dumpSha256": "8e006c302ab0e137d25126c861bdddc15dcafb3ebd63bb8f483d31d76e5b22b0",
+    "contentSha256": "6e4570cdf78280610211476f354d198dee6bc6d5aec11949451d09d2d34f4584",
+    "rehearsalId": "a49d82f7c310",
+    "isolatedPort": 55464,
+    "restoredContentSha256": "6e4570cdf78280610211476f354d198dee6bc6d5aec11949451d09d2d34f4584",
+    "productionDatabaseTouched": false,
+    "serviceStateChanged": false,
+    "cleanupStatus": "isolated_data_removed"
+  },
+  "deployment": {
+    "workerOnlyMaintenanceStop": true,
+    "djangoAndPostgresKeptRunning": true,
+    "djangoDeploymentManifestSha256": "7de0c05d2d9a4025cf60c57aa4fb165e3388e6d3391a7035b51e188236bb1f84",
+    "migration": "none",
+    "workerPlanSha256": "28fe80446f83bebbde9d2540de3ed3654b711309be99ebdf1257597df661b57f",
+    "predecessorReleaseId": "20260910T083226Z-2c53e5a99e7232d9",
+    "releaseId": "20260910T100749Z-a4eaa6fb400fd7e5",
+    "workerManifestSha256": "258628cea22b668807c5d952b3e1b6daa816757ce5053c66ec2b96005416d8c6",
+    "successorSha256": "911044c8fd0eb47747f99df98c6af36ed089d68fb4c6e15bd6859cfe2efb2173",
+    "consumptionSha256": "08a1c8ee00681d5e382e5eefb9bea8af1475ed4c930c7bf8600a098639d1ba95",
+    "startupBindingSha256": "a2214e3259f767bbdc38c2fa88d0804dc5667c1a056e4aa0257ea5585fc1f8d3"
+  },
+  "productionReadback": {
+    "system": "Running",
+    "backend": "Ready",
+    "worker": "exact_release",
+    "allComponentsReady": true,
+    "homeHttpStatus": 200,
+    "newUiEntryFoundInImmutableRelease": true,
+    "newUiLabel": "一键确认并提交钉钉"
+  },
+  "postReleaseRecovery": {
+    "backupId": "daily-20260910T101507Z-27eba08077e4",
+    "manifestSha256": "165b409878be02031b5f74ea5a37b6601453bd0aa8fb599732f4981b04ded92f",
+    "dumpSha256": "37a3feb2d4bf8e77558dc6541ae6f64415625b67fc19b6c28541f31b2ecd2205",
+    "contentSha256": "4a666ac0628db5d744d7b09cf0b299c0ec8a7f1b23e3369a64f191d6e38ccd0b",
+    "rehearsalId": "c061ae5b97d2",
+    "isolatedPort": 55465,
+    "restoredContentSha256": "4a666ac0628db5d744d7b09cf0b299c0ec8a7f1b23e3369a64f191d6e38ccd0b",
+    "productionDatabaseTouched": false,
+    "serviceStateChanged": false,
+    "cleanupStatus": "isolated_data_removed"
+  },
+  "externalEffects": {
+    "productionReplenishmentPlansCreatedOrChangedDuringAcceptance": 0,
+    "replenishmentPlansSubmittedToDingTalkDuringAcceptance": 0,
+    "realDingTalkMessagesSentDuringAcceptance": 0
+  },
+  "limitations": [
+    "Acceptance verified the immutable production bundle and existing API contract without mutating a production draft plan.",
+    "A real DingTalk table write and group message were intentionally not used for release acceptance; business users should perform the first authorized submission on an actual draft."
+  ]
+}

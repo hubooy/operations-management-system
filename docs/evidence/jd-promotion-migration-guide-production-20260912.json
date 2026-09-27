@@ -1,0 +1,33 @@
+{
+  "date": "2026-09-12",
+  "scope": "京准通 AI 推广报表迁移提示安全关闭",
+  "sourceCommit": "ca0a80261843475510c38cb4ab91718d165e6eea",
+  "releaseId": "20260912T074346Z-e49e9dd1dc958ecc",
+  "manifestSha256": "8f651a99ea46295b13e4046ba5bfb5a5e289cecb410122705d56a75e177a5eb5",
+  "releasePlanSha256": "b769a012d91735e999ea59b1bb62a7c4546c571137e934285ca9d699e974ead7",
+  "predecessorReleaseId": "20260911T165424Z-941a792a6c05e33e",
+  "validation": {
+    "unitTests": { "passed": 2115, "failed": 0, "skipped": 20 },
+    "renderedHtmlTests": { "passed": 20, "failed": 0 },
+    "build": "passed",
+    "lint": "zero errors; existing warnings only",
+    "backendBoundary": "424 modules; zero violations",
+    "singleStoreDryRun": "three planned; zero completed; no business browser or import",
+    "preReleaseBackup": "daily-20260912T073624Z-3ccc36ca790b",
+    "preReleaseBackupManifestSha256": "44607be73801095f828dcce0a158f6fc0eb68d2f2c9b9aa3de926d134c2e7a27",
+    "isolatedRestore": "completed; restored content SHA-256 matched expected; production database untouched",
+    "postReleaseBackup": "daily-20260912T075117Z-8fe2aacf7f72",
+    "postReleaseBackupManifestSha256": "a3663026cc4eafd10aac63fbd99ecd236f9138534e1d661b1b1215f90759a464"
+  },
+  "readback": {
+    "system": "Running / Ready / exact_release",
+    "helper": "ready / idle",
+    "workerHomepageHttp": 200,
+    "n8nHealthHttp": 200,
+    "releasedScriptSha256MatchesMain": true,
+    "promotionWorkflows": "both unique active/published; Asia/Shanghai 13:00 and 13:10; hourly retry unchanged",
+    "newJdPromotionExecutionDuringRelease": false
+  },
+  "businessActionsDuringRelease": "none; no report generation, download, import or replay",
+  "limitation": "No new production business run was launched solely to exercise the migration-guide branch; the live script-byte and service checks do not replace a future natural execution."
+}

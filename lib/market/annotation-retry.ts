@@ -55,6 +55,22 @@ export type AnnotationRunRetryDecision = {
   concurrency: number;
   countedIncident: boolean;
   suppressedByGlobalRateLimit: boolean;
+  floorFailureCount: number;
+  shouldPause: boolean;
+};
+
+export const ANNOTATION_RETRY_FLOOR_FAILURE_LIMIT = 3;
+
+export type AnnotationRunRetrySnapshot = {
+  configuredConcurrency: number;
+  currentConcurrency: number;
+  transientFailureCount: number;
+  rateLimitFailureCount: number;
+  successfulImagesSinceFailure: number;
+  transientIncidentUntil: number;
+  globalRateLimitUntil: number;
+  floorFailureCount: number;
+  workerRetryUntil: Array<[number, number]>;
 };
 
 /**
@@ -71,12 +87,25 @@ export class AnnotationRunRetryController {
   private successfulImagesSinceFailure = 0;
   private transientIncidentUntil = 0;
   private globalRateLimitUntil = 0;
+  private floorFailureCount = 0;
   private readonly workerRetryUntil = new Map<number, number>();
 
-  constructor(configuredConcurrency: number) {
+  constructor(configuredConcurrency: number, snapshot?: Partial<AnnotationRunRetrySnapshot> | null) {
     const normalized = Math.max(1, Math.trunc(configuredConcurrency));
     this.configuredConcurrency = normalized;
-    this.currentConcurrency = normalized;
+    this.currentConcurrency = boundedInteger(snapshot?.currentConcurrency, normalized, 1, normalized);
+    this.transientFailureCount = boundedInteger(snapshot?.transientFailureCount, 0, 0, 1_000);
+    this.rateLimitFailureCount = boundedInteger(snapshot?.rateLimitFailureCount, 0, 0, 1_000);
+    this.successfulImagesSinceFailure = boundedInteger(snapshot?.successfulImagesSinceFailure, 0, 0, 1_000_000);
+    this.transientIncidentUntil = boundedTimestamp(snapshot?.transientIncidentUntil);
+    this.globalRateLimitUntil = boundedTimestamp(snapshot?.globalRateLimitUntil);
+    this.floorFailureCount = boundedInteger(snapshot?.floorFailureCount, 0, 0, ANNOTATION_RETRY_FLOOR_FAILURE_LIMIT);
+    for (const entry of Array.isArray(snapshot?.workerRetryUntil) ? snapshot.workerRetryUntil.slice(0, 50) : []) {
+      if (!Array.isArray(entry) || entry.length !== 2) continue;
+      const worker = boundedInteger(entry[0], -1, 0, 49);
+      const until = boundedTimestamp(entry[1]);
+      if (worker >= 0 && until > 0) this.workerRetryUntil.set(worker, until);
+    }
   }
 
   get targetConcurrency() {
@@ -91,6 +120,20 @@ export class AnnotationRunRetryController {
     return this.currentConcurrency < this.configuredConcurrency;
   }
 
+  snapshot(): AnnotationRunRetrySnapshot {
+    return {
+      configuredConcurrency: this.configuredConcurrency,
+      currentConcurrency: this.currentConcurrency,
+      transientFailureCount: this.transientFailureCount,
+      rateLimitFailureCount: this.rateLimitFailureCount,
+      successfulImagesSinceFailure: this.successfulImagesSinceFailure,
+      transientIncidentUntil: this.transientIncidentUntil,
+      globalRateLimitUntil: this.globalRateLimitUntil,
+      floorFailureCount: this.floorFailureCount,
+      workerRetryUntil: [...this.workerRetryUntil.entries()].slice(0, 50),
+    };
+  }
+
   updateTarget(configuredConcurrency: number) {
     const normalized = Math.max(1, Math.trunc(configuredConcurrency));
     const wasRecovering = this.recovering;
@@ -100,6 +143,7 @@ export class AnnotationRunRetryController {
       : normalized;
     this.successfulImagesSinceFailure = 0;
     if (!this.recovering) this.resetFailureCounts();
+    if (this.currentConcurrency > 1) this.floorFailureCount = 0;
   }
 
   schedule(
@@ -122,6 +166,7 @@ export class AnnotationRunRetryController {
           this.rateLimitFailureCount,
         );
         this.successfulImagesSinceFailure = 0;
+        this.recordFloorFailure(previousConcurrency);
       }
       const delayMs = annotationRetryDelayMs(kind, Math.max(1, this.rateLimitFailureCount), providerRetryAfterMs);
       this.globalRateLimitUntil = Math.max(this.globalRateLimitUntil, now + delayMs);
@@ -134,6 +179,8 @@ export class AnnotationRunRetryController {
         concurrency: this.currentConcurrency,
         countedIncident,
         suppressedByGlobalRateLimit: false,
+        floorFailureCount: this.floorFailureCount,
+        shouldPause: this.floorFailureCount >= ANNOTATION_RETRY_FLOOR_FAILURE_LIMIT,
       };
     }
 
@@ -147,6 +194,7 @@ export class AnnotationRunRetryController {
         this.transientFailureCount,
       );
       this.successfulImagesSinceFailure = 0;
+      this.recordFloorFailure(previousConcurrency);
     }
     const delayMs = annotationRetryDelayMs(kind, Math.max(1, this.transientFailureCount), providerRetryAfterMs);
     const localRetryUntil = Math.max(this.workerRetryUntil.get(workerIndex) ?? 0, now + delayMs);
@@ -161,6 +209,8 @@ export class AnnotationRunRetryController {
       concurrency: this.currentConcurrency,
       countedIncident,
       suppressedByGlobalRateLimit: globalRateLimitActive,
+      floorFailureCount: this.floorFailureCount,
+      shouldPause: this.floorFailureCount >= ANNOTATION_RETRY_FLOOR_FAILURE_LIMIT,
     };
   }
 
@@ -170,7 +220,9 @@ export class AnnotationRunRetryController {
 
   recordSuccess(successfulImages: number) {
     const previousConcurrency = this.currentConcurrency;
-    this.successfulImagesSinceFailure += Math.max(0, Math.trunc(successfulImages));
+    const normalizedSuccesses = Math.max(0, Math.trunc(successfulImages));
+    this.successfulImagesSinceFailure += normalizedSuccesses;
+    if (normalizedSuccesses > 0) this.floorFailureCount = 0;
     const recoveredConcurrency = annotationRecoveredConcurrency(
       this.currentConcurrency,
       this.configuredConcurrency,
@@ -195,6 +247,26 @@ export class AnnotationRunRetryController {
     this.transientFailureCount = 0;
     this.rateLimitFailureCount = 0;
   }
+
+  private recordFloorFailure(previousConcurrency: number) {
+    if (previousConcurrency === 1 && this.currentConcurrency === 1) {
+      this.floorFailureCount += 1;
+    } else if (this.currentConcurrency > 1) {
+      this.floorFailureCount = 0;
+    }
+  }
+}
+
+function boundedInteger(value: unknown, fallback: number, minimum: number, maximum: number) {
+  const normalized = Number(value);
+  return Number.isFinite(normalized)
+    ? Math.max(minimum, Math.min(maximum, Math.trunc(normalized)))
+    : fallback;
+}
+
+function boundedTimestamp(value: unknown) {
+  const normalized = Number(value);
+  return Number.isFinite(normalized) && normalized > 0 ? Math.trunc(normalized) : 0;
 }
 
 export function annotationRequestRetryKind(error: unknown): Exclude<AnnotationRetryKind, "waiting"> | null {

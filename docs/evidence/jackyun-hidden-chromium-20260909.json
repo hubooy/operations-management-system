@@ -1,0 +1,106 @@
+{
+  "version": "jackyun-hidden-chromium-local-adoption-v1",
+  "recordedAt": "2026-09-08T16:59:41.068Z",
+  "sourceCommit": "ffd78340fe63f859d603b369e3330f9e1754fa7a",
+  "release": {
+    "status": "activated",
+    "version": "teruisi-local-worker-release-successor-v1",
+    "planSha256": "37c2af085243d65da0da31736259c4de299151bdbffd59f14cd55bcc6dfa8a18",
+    "predecessorReleaseId": "20260908T150015Z-f5e22e45a3fab5b0",
+    "releaseId": "20260908T164747Z-01eadafc917073fa",
+    "manifestPath": "D:\\teruisi-runtime\\teruisi-worker-sales\\releases\\20260908T164747Z-01eadafc917073fa\\deployment-manifest.json",
+    "manifestSha256": "21bea4fb88be03acb7c700e5f033ef2aca1dbaa352d2dce405aceaaeb03ce1ae",
+    "successorSha256": "3ef3519b7de0ca0b4990a462839d1d9bbdc8dd13864d445d5aacf4744761f7df",
+    "consumptionSha256": "e8010a03a77753f3d6fce47152acfe98db934ba10707a239ce70c1d83c08e1b1",
+    "startupBindingSha256": "b142d9753f18f54d9ce6561a10c1c8f5851597d5ac1151de544cde02f5ded51a"
+  },
+  "status": {
+    "version": "teruisi-operations-system-control-v2",
+    "state": "Running",
+    "backendState": "Ready",
+    "workerState": "exact_release",
+    "releaseId": "20260908T164747Z-01eadafc917073fa",
+    "supervisorProcessId": 50608,
+    "portProcessId": 34096,
+    "url": "http://localhost:3000/",
+    "reason": null,
+    "components": {
+      "core": true,
+      "finance": true,
+      "netshop": true,
+      "market": true,
+      "products": true,
+      "workflow": true,
+      "inventory": true,
+      "customerService": true,
+      "accessControl": true,
+      "erpReference": true,
+      "bi": true,
+      "ai": true
+    },
+    "checkedAt": "2026-09-09T00:58:41.0944383+08:00"
+  },
+  "workflow": {
+    "checkedAt": "2026-09-08T16:58:16.103Z",
+    "workflowId": "J8kY2mQ5vR7sT4pN",
+    "active": true,
+    "versionId": "9dfa78ac-ec2d-45a9-bbab-02380f5e7c35",
+    "activeVersionId": "9dfa78ac-ec2d-45a9-bbab-02380f5e7c35",
+    "timezone": "Asia/Shanghai",
+    "schedule": "daily 00:10",
+    "nodeCount": 12,
+    "activeExecutions": [],
+    "helper": {
+      "ok": true,
+      "busy": false,
+      "activeWorkflow": null
+    }
+  },
+  "smoke": {
+    "startedAt": "2026-09-08T16:42:53.875Z",
+    "executablePath": "C:\\Users\\86137\\AppData\\Local\\Chromium\\Application\\chrome.exe",
+    "importsSubmitted": 0,
+    "exportsSubmitted": 0,
+    "occupiedBrowserUntouched": true,
+    "authentication": {
+      "authenticated": true,
+      "mainWindowHandle": 0,
+      "processId": 28196
+    },
+    "authenticationElapsedMs": 4043,
+    "browserClosed": true,
+    "ok": true,
+    "finishedAt": "2026-09-08T16:43:00.943Z"
+  },
+  "checks": {
+    "focusedPassed": 36,
+    "unitPassed": 2020,
+    "unitSkipped": 23,
+    "unitFailed": 0,
+    "renderedPassed": 20,
+    "build": "passed",
+    "helperBuild": "passed",
+    "typecheckExistingErrors": 142,
+    "changedFilesTypeErrors": 0
+  },
+  "notes": [
+    "No export or import was submitted during this adoption.",
+    "First Start did not reach readiness while backend processes were recovering; failure evidence is retained. A subsequent standard Start with inherited PSModulePath removed from that child succeeded. The first failure root cause was not independently reproduced."
+  ],
+  "evidenceHashes": {
+    "smoke.json": "70072527dfe4da82f6d79470c37f2a51e7fb00dc77c569670a228e2ba200d8c3",
+    "focused-tests.log": "7a56b10bd16c9304fb739a525e2e6ef1d2213a4fc823c02da39c373011a13e9d",
+    "unit-tests.log": "abf7f0ce9a870926e2184872578e5103326e6bb3dd4f89259870d5f30921f1fd",
+    "typecheck.log": "3aa43f16c72aebe79ca42efa4de237d49220bb39cbe1ba72ea28127851d84362",
+    "build.log": "136d49cfd5eed7d511d7c877d7493c9bcf46f06c7efac6d5d8e64e4cd3579e6e",
+    "rendered-tests.log": "ee0c4d472b818e0da6da4931a6c980831aa64361c7d4384947c9bfda48be1220",
+    "rotation-plan.log": "e7e68966dbcbd5f7b555c4d4c5feff794436b88d6dfb9051d45643c6fbd53c4a",
+    "rotation-apply.json": "061cb0f52993fc4a491049d8ef8609f717727e075cedb9e1442a3a27b6410107",
+    "stop.json": "27f9e083747826d3a714303b8f72b58c6d927bf5b9951bf7a7b3ccb06280d6a8",
+    "start.json": "29e75757861d66d8990db1507481f7bf0c1b194929f75284360fd725f0c43ae9",
+    "start-retry.json": "b879f82a355e2f866beed40d17d75fac79e1f34dd678e00350fa07cbab57aceb",
+    "status-after.json": "cc4960c1917f3ea1e37ee23ef97222c529f8be54085540a085fee3f0ee218f4d",
+    "workflow-before.json": "630793cf3147478da7103096fce06839f32ffd2b74a377e97c851189805246c1",
+    "workflow-after.json": "c08005222a51c026208482d438d1c53246240d3198e0789290cd888aa6e7d681"
+  }
+}

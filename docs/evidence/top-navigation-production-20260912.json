@@ -1,0 +1,158 @@
+{
+  "date": "2026-09-12",
+  "scope": "顶部单行导航、冻结模块 Tab、紧凑账号与统计周期",
+  "sourceCommit": "627ea7f104d4bcaa08fc989c31a64413ab1bc590",
+  "implementationCommit": "558c1dec57809194be97339a18205cde9edade43",
+  "adoption": {
+    "status": "activated",
+    "version": "teruisi-local-worker-release-successor-v1",
+    "planSha256": "b0f76f8d796d98333782b494a337266df1c3547ac2f048a1d914b0491ec44e7d",
+    "predecessorReleaseId": "20260912T093226Z-588560ad2bfc1239",
+    "releaseId": "20260912T095027Z-43c06ff99569edfa",
+    "manifestPath": "D:\\teruisi-runtime\\teruisi-worker-sales\\releases\\20260912T095027Z-43c06ff99569edfa\\deployment-manifest.json",
+    "manifestSha256": "cf2bc75ea8030818e99aae06ea12201adc06b45eb76fb89d7b91efc879a9bb66",
+    "successorSha256": "a03371044e9676043051e069817faad8b7742e06ed13208d4ee8083714717a63",
+    "consumptionSha256": "12f8ca4a4d575e86fe41df473198457aaa00a5349528abdda5e8af97afa5eec5",
+    "startupBindingSha256": "37d07e13ae7c2406ed16340316e74939740e4d8553ca46638e326b960400fb7b"
+  },
+  "validation": {
+    "unitTests": {
+      "failed": 0,
+      "passed": 2121,
+      "skipped": 20
+    },
+    "renderedBuildTests": {
+      "passed": 20,
+      "failed": 0
+    },
+    "previewSmokeChecks": 12,
+    "build": "passed",
+    "frontendTypeCheck": "passed",
+    "fullRepositoryTypeCheck": "existing diagnostics in untouched tests/tools; not claimed clean",
+    "lint": "0 errors; 11 pre-existing warnings",
+    "preBackup": {
+      "status": "completed",
+      "backupId": "daily-20260912T094108Z-1ad6a80d63bf",
+      "backupDirectory": "D:\\teruisi-runtime\\django-sales\\backups\\postgres-daily\\daily-20260912T094108Z-1ad6a80d63bf",
+      "manifestSha256": "7beb7482ebfc34361c0d1979c4e04126f0b6c1a9791b06637eaf04ae1dab3693",
+      "dumpSha256": "2700c5568f0f04078d5b83473da9a00b9dc57f39f891edeb7dcae670cd0754f9",
+      "contentSha256": "09ac3ee31a419aa4eea623f7a2e91dd3febf91263b6a0838e2bebf074b5dcb33",
+      "completedAt": "09/12/2026 17:42:56",
+      "serviceStateChanged": false
+    },
+    "preBackupVerify": {
+      "status": "completed",
+      "backupId": "daily-20260912T094108Z-1ad6a80d63bf",
+      "manifestSha256": "7beb7482ebfc34361c0d1979c4e04126f0b6c1a9791b06637eaf04ae1dab3693",
+      "dumpSha256": "2700c5568f0f04078d5b83473da9a00b9dc57f39f891edeb7dcae670cd0754f9",
+      "contentSha256": "09ac3ee31a419aa4eea623f7a2e91dd3febf91263b6a0838e2bebf074b5dcb33",
+      "serviceStateChanged": false
+    },
+    "isolatedRestore": {
+      "version": "teruisi-postgres-restore-rehearsal-v1",
+      "status": "completed",
+      "rehearsalId": "e18c03b952af",
+      "startedAt": "2026-09-12T17:44:38.6557816+08:00",
+      "completedAt": "2026-09-12T17:49:13.3717991+08:00",
+      "backupId": "daily-20260912T094108Z-1ad6a80d63bf",
+      "backupManifestSha256": "7beb7482ebfc34361c0d1979c4e04126f0b6c1a9791b06637eaf04ae1dab3693",
+      "dumpSha256": "2700c5568f0f04078d5b83473da9a00b9dc57f39f891edeb7dcae670cd0754f9",
+      "expectedContentSha256": "09ac3ee31a419aa4eea623f7a2e91dd3febf91263b6a0838e2bebf074b5dcb33",
+      "restoredContentSha256": "09ac3ee31a419aa4eea623f7a2e91dd3febf91263b6a0838e2bebf074b5dcb33",
+      "isolatedPort": 55472,
+      "productionDatabaseTouched": false,
+      "serviceStateChanged": false,
+      "cleanupStatus": "isolated_data_removed"
+    },
+    "postBackup": {
+      "status": "completed",
+      "backupId": "daily-20260912T095854Z-e435f3adc09f",
+      "backupDirectory": "D:\\teruisi-runtime\\django-sales\\backups\\postgres-daily\\daily-20260912T095854Z-e435f3adc09f",
+      "manifestSha256": "0887c119f9de16a81658e1599bcbd3b1b19ff4208de0bd380887f2e8cdb941e2",
+      "dumpSha256": "777915f2690589fb1be2cddde6b2e2607a8129fdf3a513dbfb9f5c4c465bd859",
+      "contentSha256": "66a68409c3790471774111b444318748d6090105a173b242d216fc1f56618c71",
+      "completedAt": "09/12/2026 18:00:35",
+      "serviceStateChanged": false
+    },
+    "postBackupVerify": {
+      "status": "completed",
+      "backupId": "daily-20260912T095854Z-e435f3adc09f",
+      "manifestSha256": "0887c119f9de16a81658e1599bcbd3b1b19ff4208de0bd380887f2e8cdb941e2",
+      "dumpSha256": "777915f2690589fb1be2cddde6b2e2607a8129fdf3a513dbfb9f5c4c465bd859",
+      "contentSha256": "66a68409c3790471774111b444318748d6090105a173b242d216fc1f56618c71",
+      "serviceStateChanged": false
+    }
+  },
+  "readback": {
+    "system": {
+      "version": "teruisi-operations-system-control-v2",
+      "state": "Running",
+      "backendState": "Ready",
+      "workerState": "exact_release",
+      "releaseId": "20260912T095027Z-43c06ff99569edfa",
+      "supervisorProcessId": 35392,
+      "portProcessId": 49944,
+      "url": "http://localhost:3000/",
+      "reason": null,
+      "components": {
+        "core": true,
+        "finance": true,
+        "netshop": true,
+        "market": true,
+        "products": true,
+        "workflow": true,
+        "inventory": true,
+        "customerService": true,
+        "accessControl": true,
+        "erpReference": true,
+        "bi": true,
+        "ai": true
+      },
+      "checkedAt": "2026-09-12T17:59:38.1431586+08:00"
+    },
+    "startup": {
+      "status": "verified",
+      "version": "teruisi-local-worker-status-v1",
+      "releaseId": "20260912T095027Z-43c06ff99569edfa",
+      "manifestSha256": "cf2bc75ea8030818e99aae06ea12201adc06b45eb76fb89d7b91efc879a9bb66",
+      "startupVerified": true
+    },
+    "liveAssets": {
+      "checkedAt": "2026-09-12T09:58:46.931Z",
+      "homepageHttp": 200,
+      "homepageBytes": 16256,
+      "assets": [
+        {
+          "name": "index-CPbr__Jw.css",
+          "sha256": "281c6e6dbdd94a17d6a96a9b77133e94398ced627cd58c683efbdd7126a0492b",
+          "bytes": 374154
+        },
+        {
+          "name": "page-9eCaQB7K.js",
+          "sha256": "bfc576692db81537b639fd008835c6cf4bf25be6cecb41ca4c32d9a9c834ad4d",
+          "bytes": 58475
+        }
+      ],
+      "markers": [
+        "single-row navigation CSS",
+        "章 account button",
+        "近30天",
+        "去年同期"
+      ],
+      "assetBytesMatchRelease": true
+    },
+    "helper": {
+      "busy": false,
+      "ok": true
+    }
+  },
+  "boundaries": {
+    "paidModelCall": false,
+    "djangoRestart": false,
+    "backendDeployment": false,
+    "productionVerification": "HTTP and release-asset byte checks; no live browser interaction test",
+    "businessWritesForAcceptance": false,
+    "n8nRestart": false,
+    "databaseMigration": false
+  }
+}

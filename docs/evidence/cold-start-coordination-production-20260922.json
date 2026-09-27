@@ -1,0 +1,437 @@
+{
+  "status": "adopted-and-verified",
+  "date": "2026-09-22",
+  "authorization": "User explicitly confirmed the proposed maintenance, deployment and verification in this conversation.",
+  "sourceCommit": "ccb51aa938b3fc4e481ead98be25582dd5066048",
+  "worker": {
+    "status": "activated",
+    "version": "teruisi-local-worker-release-successor-v1",
+    "planSha256": "785088c553355c9105e8bb4abf709226e5c675af1d26311db0dda803c6b1afc0",
+    "predecessorReleaseId": "20260921T075914Z-c49fb8780f856435",
+    "releaseId": "20260921T154059Z-6c629bc088e46315",
+    "manifestPath": "D:\\teruisi-runtime\\teruisi-worker-sales\\releases\\20260921T154059Z-6c629bc088e46315\\deployment-manifest.json",
+    "manifestSha256": "e4dd8e2b96015822c6d8bd6bf1aa98a5f734f88db9101b1a52c4d56eef242ab6",
+    "successorSha256": "93718aa066f40a783f2da6b09fac1d738e801b7912756868f0c039db6c989ef0",
+    "consumptionSha256": "6ac24f550bcd282de6965a63f408f49ae937240ef5139f5607324c7c16c55bf2",
+    "startupBindingSha256": "ed9f7f6db54bfe619f7755a8b96e48c05f7844365ccf9ef67125a8031746e745"
+  },
+  "django": {
+    "version": 2,
+    "deployedAt": "2026-09-21T23:45:49.0563107+08:00",
+    "sourceRoot": "D:\\运营管理系统-sales-django-release",
+    "fingerprintAlgorithm": "relative-path-file-sha256-ordinal-v2",
+    "fileCount": 2057,
+    "appFingerprint": "94102872d40b2f37d13a07f7a947e898e21da2317348c5905ced300d14939514"
+  },
+  "djangoManifestSha256": "0e7e778d376c0e092b7bc6e0d4b0fc898cc051d31f8cf55b20b47644c801b0a5",
+  "onlinePreparation": {
+    "worker": {
+      "status": "planned",
+      "version": "teruisi-local-worker-release-rotation-plan-v1",
+      "planSha256": "785088c553355c9105e8bb4abf709226e5c675af1d26311db0dda803c6b1afc0",
+      "planPath": "D:\\teruisi-runtime\\teruisi-worker-sales\\state\\worker-release-rotation-plans\\785088c553355c9105e8bb4abf709226e5c675af1d26311db0dda803c6b1afc0.json",
+      "predecessorReleaseId": "20260921T075914Z-c49fb8780f856435",
+      "candidateReleaseId": "20260921T154059Z-6c629bc088e46315",
+      "candidateManifestSha256": "e4dd8e2b96015822c6d8bd6bf1aa98a5f734f88db9101b1a52c4d56eef242ab6",
+      "candidateGuardReceiptSha256": "fedfcf406bcad58933a4e8ee556806845734dbd8630d823c9b375d014aceefe8",
+      "cutoverId": "sales-pg-20260829T204417Z-d9896e904d8092cb"
+    },
+    "django": {
+      "id": "d6b65682b01241009d2ebb94817f75e7",
+      "receiptSha256": "d7af7bad5ecc756969e43f5b7c43898fd4ad0cae8cb88fdb718b927d801d78ec",
+      "appFingerprint": "94102872d40b2f37d13a07f7a947e898e21da2317348c5905ced300d14939514"
+    }
+  },
+  "maintenance": {
+    "sourceCommit": "ccb51aa938b3fc4e481ead98be25582dd5066048",
+    "authorizedAt": "2026-09-21T23:37:19+08:00",
+    "maintenanceId": "5c35d6568b0b45d2bc1e84b8150d44de",
+    "keepPostgres": true,
+    "predecessorReleaseId": "20260921T075914Z-c49fb8780f856435",
+    "predecessorDjangoManifestSha256": "26e602bc02e83a32f80ea0bca8baf237c9058d8962c097ee4cffa380dd38c8bb",
+    "entered": {
+      "pid": 33944,
+      "step": "enter-maintenance",
+      "startedAt": "2026-09-21T23:50:25.6815952+08:00",
+      "completedAt": "2026-09-21T23:51:57.0098393+08:00",
+      "exitCode": 0
+    },
+    "exited": {
+      "startedAt": "2026-09-21T23:59:40.3377493+08:00",
+      "pid": 28748,
+      "exitCode": 0,
+      "completedAt": "2026-09-21T23:59:58.4568606+08:00",
+      "step": "exit-maintenance"
+    },
+    "result": {
+      "status": "maintenance",
+      "maintenanceId": "5c35d6568b0b45d2bc1e84b8150d44de",
+      "backendStopped": true,
+      "postgresPreserved": true
+    },
+    "postgres": {
+      "ProcessId": 26288,
+      "CreationDate": "2026-09-21T22:20:39.919611+08:00",
+      "ExecutablePath": "D:\\teruisi-runtime\\django-sales\\postgresql-17.11\\bin\\postgres.exe"
+    }
+  },
+  "runtime": {
+    "version": "teruisi-operations-system-control-v2",
+    "state": "Running",
+    "backendState": "Ready",
+    "workerState": "exact_release",
+    "releaseId": "20260921T154059Z-6c629bc088e46315",
+    "supervisorProcessId": 14968,
+    "portProcessId": 11964,
+    "url": "http://localhost:3000/",
+    "reason": null,
+    "components": {
+      "core": true,
+      "finance": true,
+      "netshop": true,
+      "market": true,
+      "products": true,
+      "workflow": true,
+      "inventory": true,
+      "customerService": true,
+      "accessControl": true,
+      "erpReference": true,
+      "bi": true,
+      "ai": true
+    },
+    "checkedAt": "2026-09-22T00:05:59.9381947+08:00"
+  },
+  "startup": {
+    "status": "verified",
+    "version": "teruisi-local-worker-status-v1",
+    "releaseId": "20260921T154059Z-6c629bc088e46315",
+    "manifestSha256": "e4dd8e2b96015822c6d8bd6bf1aa98a5f734f88db9101b1a52c4d56eef242ab6",
+    "startupVerified": true
+  },
+  "verification": {
+    "status": "verified",
+    "version": "teruisi-local-worker-release-verification-v1",
+    "manifestSha256": "e4dd8e2b96015822c6d8bd6bf1aa98a5f734f88db9101b1a52c4d56eef242ab6",
+    "releaseId": "20260921T154059Z-6c629bc088e46315",
+    "sourceFingerprint": "8c53a66115bc85498b30b75236259b0d20579b3ad86026d21bf04cd1da1f440f",
+    "buildFingerprint": "0a961915e049a79dc6676037faa146a8b3339f5d96d2f913a372479c2f5e0278",
+    "sourceD1PathSha256": "f0d4996d3d9ee2768996b95271957fb3ccd744657cfcc59269811f9267057ec5",
+    "persistRootPathSha256": "707232242c7126c9190e3f2641c1cbd99a3443a967d93e9a4e97259279c6d116",
+    "contractReceiptSha256": "aca6c1a361354eee2405b88d7efbbbb720f4495dce109ea4a66c61af3d966575",
+    "processState": "exact_release"
+  },
+  "desktop": {
+    "startedAt": "2026-09-22T00:00:53.7708231+08:00",
+    "pid": 6376,
+    "sha256": "7a7e3aee4149f153a8474a6949c71f971ca51a79c3c9a0c6e0f55688268ae501",
+    "launchCount": 1,
+    "executable": "C:\\Users\\86137\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\TERUISI\\Launcher\\运营管理系统.exe",
+    "completedAt": "2026-09-22T00:03:40.0170777+08:00",
+    "seconds": 166.2462546,
+    "controller": {
+      "version": "teruisi-operations-system-control-v2",
+      "status": "started",
+      "state": "Running",
+      "backendState": "Ready",
+      "workerState": "exact_release",
+      "releaseId": "20260921T154059Z-6c629bc088e46315",
+      "supervisorProcessId": 14968,
+      "portProcessId": 11964,
+      "url": "http://localhost:3000/",
+      "message": "��Ӫ����ϵͳ����Ψһ�ܿ����������ز顣���ʵ�ַ��http://localhost:3000/",
+      "checkedAt": "2026-09-22T00:03:40.0170777+08:00"
+    },
+    "links": [
+      {
+        "shortcut": "E:\\微软文件\\OneDrive\\桌面\\运营管理系统.lnk",
+        "target": "C:\\Users\\86137\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\TERUISI\\Launcher\\运营管理系统.exe",
+        "sha256": "7a7e3aee4149f153a8474a6949c71f971ca51a79c3c9a0c6e0f55688268ae501",
+        "controller": "D:\\运营管理系统\\tools\\operations-system-control.ps1"
+      },
+      {
+        "shortcut": "C:\\Users\\86137\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\运营管理系统.lnk",
+        "target": "C:\\Users\\86137\\AppData\\Local\\TERUISI\\Launcher\\运营管理系统.exe",
+        "sha256": "7a7e3aee4149f153a8474a6949c71f971ca51a79c3c9a0c6e0f55688268ae501",
+        "controller": "D:\\运营管理系统\\tools\\operations-system-control.ps1"
+      }
+    ],
+    "installedTestsPassed": true,
+    "shortcutHandling": "The existing desktop shortcut uses the Codex package cache alias. The installer updated the executable/config but refused to rewrite that differently spelled shortcut. Both desktop and Start Menu targets were verified as the same new executable bytes and expected controller; existing shortcut targets were preserved.",
+    "actualWindowsRebootPerformed": false
+  },
+  "supervisor": {
+    "status": "completed",
+    "desiredState": "running",
+    "supervisorProcess": "running",
+    "health": "healthy",
+    "code": "all_components_ready",
+    "lastHealthyAt": "09/22/2026 00:04:15",
+    "restartAttemptsInWindow": 1,
+    "pendingAlertCount": 56,
+    "serviceStateChanged": false
+  },
+  "ai": {
+    "AiReader": "running",
+    "AiWriter": "running",
+    "ReaderReadiness": "ready",
+    "WriterReadiness": "ready",
+    "PandasReadiness": "ready",
+    "DingTalkScheduler": "running",
+    "DingTalkStartup": "enabled",
+    "DingTalkReceiver": "running",
+    "DingTalkConnection": "connected"
+  },
+  "http": {
+    "at": "2026-09-21T16:07:24.479Z",
+    "127.0.0.1": {
+      "status": 200
+    },
+    "localhost": {
+      "status": 200
+    },
+    "live": {
+      "ok": true,
+      "status": "live"
+    },
+    "ready": {
+      "ok": true,
+      "backend": "django-postgresql",
+      "unavailableServices": [],
+      "status": "ready"
+    },
+    "helper": {
+      "ok": true,
+      "busy": false
+    }
+  },
+  "assets": [
+    {
+      "path": "/assets/ai-page-context-provider-Dc3lH0uZ.js",
+      "sha256": "81068a87be6359e62cb5aca4183656b0fdb30f82e4dab2532fd9e2caa6753858",
+      "matched": true
+    },
+    {
+      "path": "/assets/api-client-BkSFlZxp.js",
+      "sha256": "1668ca8a79bf454e2d7c8c8ef2783c19ca9d6640e5df6327400a57e8ccc5edbe",
+      "matched": true
+    },
+    {
+      "path": "/assets/api-error-CJCV3BJQ.js",
+      "sha256": "4efae8b1a9127677a8c80569e149000d507839d79d3fc807c2a37d490174941f",
+      "matched": true
+    },
+    {
+      "path": "/assets/dialog-CXm5GeIc.js",
+      "sha256": "62403b91d7d23f2e2c0f24b5941f9176e1a7ebf61f5cb8f770132bc6f8dc1ac5",
+      "matched": true
+    },
+    {
+      "path": "/assets/framework-CXnKph_e.js",
+      "sha256": "73b45b606448e4dc310fbe851d8089ee752f3eb081980b3a6fec88988820ee12",
+      "matched": true
+    },
+    {
+      "path": "/assets/index-DnHKKleU.js",
+      "sha256": "b1ed4e455a4936b30ec2571ef4e9ddee079545cd5b02b4f6e8e0d8fbbc36ee96",
+      "matched": true
+    },
+    {
+      "path": "/assets/index-EszXsfPr.css",
+      "sha256": "58a1530f60936a8462baf5e669b144cd4b8524f6eaa99b262fb768fb4c20d729",
+      "matched": true
+    },
+    {
+      "path": "/assets/layout-segment-context-B6qQElV7.js",
+      "sha256": "efccf1fe726539a67fcc981d8dd5f0f73b54a876cd0a76d564cc334950392474",
+      "matched": true
+    },
+    {
+      "path": "/assets/module-view-shared-C5DPvJ_4.js",
+      "sha256": "bef709b2ccd5a55e06911ae20a759ba86e015a641693a7ab40cd93607f8086d3",
+      "matched": true
+    },
+    {
+      "path": "/assets/navigation-catalog-DvolBk78.js",
+      "sha256": "c83bd576cc5d5ce20c2d4cd8cd67214cb338dc7f340405edad8b7ba11ae1efbe",
+      "matched": true
+    },
+    {
+      "path": "/assets/page-CX28QWVI.js",
+      "sha256": "a1dd663e5ae4a91f1825c8910267395a9ebc41c71c90b9989a18b05d9080460e",
+      "matched": true
+    },
+    {
+      "path": "/assets/page-context-DTMpRdSa.js",
+      "sha256": "5d9125e98d2820f2853aeb82cb368758d028ddd380e71062e35726a2cd774c52",
+      "matched": true
+    },
+    {
+      "path": "/assets/reloadable-lazy-BU4AV5pU.js",
+      "sha256": "89877a478fb2c752b38ed3187cc3c2976f3114b25c92131f6a3da6421188a432",
+      "matched": true
+    },
+    {
+      "path": "/assets/rolldown-runtime-S-ySWqyJ.js",
+      "sha256": "5db5ba82eef00d1dee7e86e663098c9427d01183a88d357437daff295aec3e75",
+      "matched": true
+    },
+    {
+      "path": "/assets/searchable-select-TuzqFU6k.js",
+      "sha256": "f423c656f508f5e8c08f6790e50b567b02f6e294204032fe6ba28e765310916f",
+      "matched": true
+    }
+  ],
+  "watchdog": {
+    "first": {
+      "LastRunTime": "2026-09-22T00:05:24+08:00",
+      "LastTaskResult": 0,
+      "NextRunTime": "2026-09-22T00:06:23+08:00"
+    },
+    "second": {
+      "LastRunTime": "2026-09-22T00:13:24+08:00",
+      "LastTaskResult": 0,
+      "NextRunTime": "2026-09-22T00:14:23+08:00"
+    }
+  },
+  "schema": {
+    "migrationsCount": 62,
+    "unchanged": true,
+    "tableCount": 233
+  },
+  "djangoFiles": {
+    "removed": [],
+    "changed": [
+      {
+        "before": null,
+        "path": "\\.wrangler\\cache\\cf.json",
+        "after": "80D8FCC761B715D111431821740E6AF88F9C3592621EDFFF4D4C3C9521BED69E"
+      },
+      {
+        "before": "033F21A3A406E5D8EA66B3C9586100D3996A05AC4B020631336EDB598B20C4B4",
+        "path": "\\runtime-tools\\wrangler-dependencies.json",
+        "after": "629BF0A93DD929981FBE5CDD82E315A63456AFA9AB0A3719816DDA1C2BB76B1C"
+      },
+      {
+        "before": "8F1C42AED8C9E61B3DEDDE6807EDA2776402CF84BE6755B4BB26F60C866420E0",
+        "path": "\\tools\\django-local-service.ps1",
+        "after": "A97A7897F831A5AFE23BC267AD79C3141C40A0AD1F16ADC7B60D0E7C26D93FE5"
+      }
+    ]
+  },
+  "backups": {
+    "before": {
+      "status": "completed",
+      "backupId": "daily-20260921T154008Z-a46b16a17e32",
+      "backupDirectory": "D:\\teruisi-runtime\\django-sales\\backups\\postgres-daily\\daily-20260921T154008Z-a46b16a17e32",
+      "manifestSha256": "ccae739c7d67e384890d0435759214dcd4c1186a1392f671edfbc4bb4468e4af",
+      "dumpSha256": "d79e606580395523a41f51fd7b662d11c365a51a2fb1b1f20341901cac7ba98c",
+      "contentSha256": "1f4cdd28f1da6b5cf10ffcde2ea48296ed9216c32f67f445b1ab6f2baa3bb35a",
+      "completedAt": "09/21/2026 23:42:17",
+      "serviceStateChanged": false
+    },
+    "restoreBefore": {
+      "version": "teruisi-postgres-restore-rehearsal-v1",
+      "status": "completed",
+      "rehearsalId": "509b52af9577",
+      "startedAt": "2026-09-21T23:43:43.999064+08:00",
+      "completedAt": "2026-09-21T23:49:27.0429533+08:00",
+      "backupId": "daily-20260921T154008Z-a46b16a17e32",
+      "backupManifestSha256": "ccae739c7d67e384890d0435759214dcd4c1186a1392f671edfbc4bb4468e4af",
+      "dumpSha256": "d79e606580395523a41f51fd7b662d11c365a51a2fb1b1f20341901cac7ba98c",
+      "expectedContentSha256": "1f4cdd28f1da6b5cf10ffcde2ea48296ed9216c32f67f445b1ab6f2baa3bb35a",
+      "restoredContentSha256": "1f4cdd28f1da6b5cf10ffcde2ea48296ed9216c32f67f445b1ab6f2baa3bb35a",
+      "isolatedPort": 55463,
+      "productionDatabaseTouched": false,
+      "serviceStateChanged": false,
+      "cleanupStatus": "isolated_data_removed"
+    },
+    "archiveBefore": {
+      "files": [
+        {
+          "sha256": "d79e606580395523a41f51fd7b662d11c365a51a2fb1b1f20341901cac7ba98c",
+          "file": "teruisi-sales.dump",
+          "verified": true
+        },
+        {
+          "sha256": "ccae739c7d67e384890d0435759214dcd4c1186a1392f671edfbc4bb4468e4af",
+          "file": "backup-manifest.json",
+          "verified": true
+        },
+        {
+          "sha256": "cf92208046a4ed8f172e589433a1f30c3b2c9fb3bb0e411644347f3ad625126e",
+          "file": "backup-manifest.json.sha256",
+          "verified": true
+        }
+      ],
+      "directory": "E:\\运营管理系统业务数据\\daily-20260921T154008Z-a46b16a17e32"
+    },
+    "after": {
+      "status": "completed",
+      "backupId": "daily-20260921T160456Z-f8f1b81e926a",
+      "backupDirectory": "D:\\teruisi-runtime\\django-sales\\backups\\postgres-daily\\daily-20260921T160456Z-f8f1b81e926a",
+      "manifestSha256": "e6846fd1c344cb82a668085848524538e056fbb69b986697f8a5fc5ecca9f258",
+      "dumpSha256": "813d9406c7022924165ce7210ce71a9476e522b906c275a7abea52215a804e36",
+      "contentSha256": "e20236572a2ba68314cb1dbde93e02ac22b8fde42fe9373bb9a151fcc0c0262f",
+      "completedAt": "09/22/2026 00:06:55",
+      "serviceStateChanged": false
+    },
+    "verifyAfter": {
+      "status": "completed",
+      "backupId": "daily-20260921T160456Z-f8f1b81e926a",
+      "manifestSha256": "e6846fd1c344cb82a668085848524538e056fbb69b986697f8a5fc5ecca9f258",
+      "dumpSha256": "813d9406c7022924165ce7210ce71a9476e522b906c275a7abea52215a804e36",
+      "contentSha256": "e20236572a2ba68314cb1dbde93e02ac22b8fde42fe9373bb9a151fcc0c0262f",
+      "serviceStateChanged": false
+    },
+    "archiveAfter": {
+      "directory": "E:\\运营管理系统业务数据\\daily-20260921T160456Z-f8f1b81e926a",
+      "files": [
+        {
+          "sha256": "813d9406c7022924165ce7210ce71a9476e522b906c275a7abea52215a804e36",
+          "file": "teruisi-sales.dump",
+          "verified": true
+        },
+        {
+          "sha256": "e6846fd1c344cb82a668085848524538e056fbb69b986697f8a5fc5ecca9f258",
+          "file": "backup-manifest.json",
+          "verified": true
+        },
+        {
+          "sha256": "c7d5226232f808c309cbc2313eec594a7d92bc66ea9d17837fd8e50e5ad1aa33",
+          "file": "backup-manifest.json.sha256",
+          "verified": true
+        }
+      ]
+    }
+  },
+  "preparationRetry": {
+    "firstDjangoPreparation": "Original R2 put command hit its unchanged 30-second timeout; installed app remained unchanged.",
+    "officialCacheRefresh": {
+      "at": "2026-09-21T23:44:33.2750743+08:00",
+      "source": "https://registry.npmjs.org/wrangler/latest",
+      "after": {
+        "latest": "4.136.0",
+        "lastUpdate": 1790005473254
+      },
+      "before": {
+        "latest": "4.135.0",
+        "lastUpdate": 1789982422894
+      }
+    },
+    "completeOriginalGatePassedOnRetry": true
+  },
+  "n8n": {
+    "restarted": false,
+    "healthStatus": 200,
+    "manualBusinessRuns": 0,
+    "manualNotifications": 0,
+    "validationLimit": "The previously used local SQLite snapshot has its last execution at 2026-09-21 22:15 Shanghai time, before the 22:18 Windows reboot. No maintenance-period rows exist in that snapshot. This is not evidence of current workflow execution or success. The live listener is healthy, but the login task last result is 1; this pre-existing entrypoint discrepancy was not changed."
+  },
+  "constraints": {
+    "noNewMigrations": true,
+    "noBusinessImports": true,
+    "noRuntimeDependencyUpgrade": true,
+    "realRebootAcceptancePending": true
+  },
+  "completedAt": "2026-09-21T16:15:01.561Z"
+}

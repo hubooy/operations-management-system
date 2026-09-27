@@ -1,0 +1,299 @@
+{
+  "source": "repository_definitions",
+  "entities": [
+    {
+      "key": "jackyun",
+      "name": "吉客云 ERP",
+      "platform": "ERP"
+    },
+    {
+      "key": "jd-yiyong-director",
+      "name": "志高商用设备旗舰店",
+      "platform": "京东"
+    },
+    {
+      "key": "jd-chudian-weizhang",
+      "name": "志高商用厨电旗舰店",
+      "platform": "京东"
+    },
+    {
+      "key": "jd-maidehao-operator1",
+      "name": "志高切肉机旗舰店",
+      "platform": "京东"
+    },
+    {
+      "key": "jd-cuizhiwang-dengweizhang",
+      "name": "志高商用洗碗机旗舰店",
+      "platform": "京东"
+    },
+    {
+      "key": "tmall-yijiu",
+      "name": "志高亿玖专卖店",
+      "platform": "天猫"
+    },
+    {
+      "key": "tmall-lili",
+      "name": "志高丽力专卖店",
+      "platform": "天猫"
+    },
+    {
+      "key": "tmall-tuofeng",
+      "name": "志高拓丰专卖店",
+      "platform": "天猫"
+    },
+    {
+      "key": "tmall-yiyong",
+      "name": "志高亿用专卖店",
+      "platform": "天猫"
+    },
+    {
+      "key": "tmall-cuizhiwang",
+      "name": "志高炊之王专卖店",
+      "platform": "天猫"
+    },
+    {
+      "key": "tmall-masitu",
+      "name": "志高马思图专卖店",
+      "platform": "天猫"
+    }
+  ],
+  "chains": [
+    {
+      "key": "jackyun",
+      "label": "吉客云 ERP · 五表",
+      "platform": "ERP",
+      "modules": [
+        "货品主数据",
+        "分仓库存",
+        "库龄",
+        "销售明细",
+        "组合装"
+      ],
+      "steps": [
+        "建立计划",
+        "五表导出",
+        "完整文件校验",
+        "按依赖顺序导入",
+        "独立批次回查"
+      ]
+    },
+    {
+      "key": "jd",
+      "label": "京东 · 商品数据",
+      "platform": "京东",
+      "modules": [
+        "商品 SKU 主数据",
+        "SKU 分天",
+        "SPU 分天"
+      ],
+      "steps": [
+        "固定日期与店铺",
+        "逐店串行下载并导入",
+        "批次与日期覆盖回查"
+      ]
+    },
+    {
+      "key": "jd_market",
+      "label": "京东商智 · 市场榜单",
+      "platform": "京东",
+      "modules": [
+        "商用净水设备",
+        "商用开水器蒸气奶泡机",
+        "商用炒菜机",
+        "商用绞肉机切肉机切片机",
+        "商用切菜机",
+        "商用洗碗机",
+        "商用磨粉机粉碎机"
+      ],
+      "steps": [
+        "计算榜单缺失日",
+        "分块下载、校验并导入",
+        "原目标日期覆盖回查"
+      ]
+    },
+    {
+      "key": "jd_promotion",
+      "label": "京准通 · AI 推广",
+      "platform": "京东",
+      "modules": [
+        "推广商品日数据"
+      ],
+      "steps": [
+        "固定店铺与日期",
+        "生成并下载报表",
+        "校验、导入与回查"
+      ]
+    },
+    {
+      "key": "tmall",
+      "label": "天猫 · 商品、推广与主数据",
+      "platform": "天猫",
+      "modules": [
+        "生意参谋商品日数据",
+        "推广商品日数据",
+        "店铺货品主数据"
+      ],
+      "steps": [
+        "规划缺失日期",
+        "商品日数据下载",
+        "签收、导入并回查",
+        "推广下载、导入并回查",
+        "按周期更新主数据"
+      ]
+    }
+  ],
+  "rules": [
+    {
+      "chainKey": "jackyun",
+      "entityKeys": [
+        "jackyun"
+      ],
+      "workflowId": "J8kY2mQ5vR7sT4pN",
+      "name": "吉客云导入系统",
+      "timezone": "Asia/Shanghai",
+      "schedules": [
+        "10 0 * * *"
+      ],
+      "definitionFile": "automation/n8n/jackyun-five-dataset-api.workflow.json"
+    },
+    {
+      "chainKey": "jd",
+      "entityKeys": [
+        "jd-yiyong-director",
+        "jd-chudian-weizhang",
+        "jd-maidehao-operator1",
+        "jd-cuizhiwang-dengweizhang"
+      ],
+      "workflowId": "JdN8nSilentCopy2026",
+      "name": "京东多店铺商品数据统一下载与导入（Chromium静默下载副本）",
+      "timezone": "Asia/Shanghai",
+      "schedules": [
+        "0 10 * * *"
+      ],
+      "definitionFile": "automation/n8n/jd-multi-store-daily.chromium-silent-copy.workflow.json"
+    },
+    {
+      "chainKey": "jd_market",
+      "entityKeys": [
+        "jd-cuizhiwang-dengweizhang"
+      ],
+      "workflowId": "JdMarketSilentCopy2026",
+      "name": "京东市场商品榜单缺失日下载与导入（Profile 3 Chromium静默下载副本）",
+      "timezone": "Asia/Shanghai",
+      "schedules": [
+        "30 10 * * *"
+      ],
+      "definitionFile": "automation/n8n/jd-market-ranking-daily.chromium-silent-copy.workflow.json"
+    },
+    {
+      "chainKey": "jd_promotion",
+      "entityKeys": [
+        "jd-yiyong-director"
+      ],
+      "workflowId": "JdPromotionDaily2026",
+      "name": "京东志高商用设备AI推广数据下载与导入",
+      "timezone": "Asia/Shanghai",
+      "schedules": [
+        "40 10 * * *"
+      ],
+      "definitionFile": "automation/n8n/jd-promotion-daily.workflow.json"
+    },
+    {
+      "chainKey": "jd_promotion",
+      "entityKeys": [
+        "jd-maidehao-operator1"
+      ],
+      "workflowId": "JdPromotionCutMeat2026",
+      "name": "京东志高切肉机AI推广数据下载与导入",
+      "timezone": "Asia/Shanghai",
+      "schedules": [
+        "50 10 * * *"
+      ],
+      "definitionFile": "automation/n8n/jd-promotion-cut-meat-20260813-14.workflow.json"
+    },
+    {
+      "chainKey": "tmall",
+      "entityKeys": [
+        "tmall-yijiu"
+      ],
+      "workflowId": "M4xY8kQ2vR6sT9pC",
+      "name": "天猫店铺数据导入（亿玖 P/M 直连·每日 M）",
+      "timezone": "Asia/Shanghai",
+      "schedules": [
+        "0 11 * * *"
+      ],
+      "definitionFile": "automation/n8n/tmall-yijiu-direct-pm-candidate.workflow.json",
+      "masterIntervalDays": 1
+    },
+    {
+      "chainKey": "tmall",
+      "entityKeys": [
+        "tmall-lili"
+      ],
+      "workflowId": "TmallLiliDaily2026",
+      "name": "天猫店铺数据导入-丽力",
+      "timezone": "Asia/Shanghai",
+      "schedules": [
+        "10 11 * * *"
+      ],
+      "definitionFile": "automation/n8n/tmall-lili-sycm-cookie-daily.workflow.json",
+      "masterIntervalDays": 1
+    },
+    {
+      "chainKey": "tmall",
+      "entityKeys": [
+        "tmall-tuofeng"
+      ],
+      "workflowId": "TmallTuofengDaily2026",
+      "name": "天猫店铺数据导入-拓丰",
+      "timezone": "Asia/Shanghai",
+      "schedules": [
+        "20 11 * * *"
+      ],
+      "definitionFile": "automation/n8n/tmall-tuofeng-sycm-cookie-daily.workflow.json",
+      "masterIntervalDays": 3
+    },
+    {
+      "chainKey": "tmall",
+      "entityKeys": [
+        "tmall-yiyong"
+      ],
+      "workflowId": "TmallYiyongDaily2026",
+      "name": "天猫店铺数据导入（亿用 P/M 直连试点·每日 M）",
+      "timezone": "Asia/Shanghai",
+      "schedules": [
+        "50 11 * * *"
+      ],
+      "definitionFile": "automation/n8n/tmall-yiyong-direct-pm-candidate.workflow.json",
+      "masterIntervalDays": 1
+    },
+    {
+      "chainKey": "tmall",
+      "entityKeys": [
+        "tmall-cuizhiwang"
+      ],
+      "workflowId": "TmallCuizhiwangDaily2026",
+      "name": "天猫店铺数据导入-炊之王",
+      "timezone": "Asia/Shanghai",
+      "schedules": [
+        "30 11 * * *"
+      ],
+      "definitionFile": "automation/n8n/tmall-cuizhiwang-sycm-cookie-daily.workflow.json",
+      "masterIntervalDays": 3
+    },
+    {
+      "chainKey": "tmall",
+      "entityKeys": [
+        "tmall-masitu"
+      ],
+      "workflowId": "TmallMasituDaily2026",
+      "name": "天猫店铺数据导入-马思图",
+      "timezone": "Asia/Shanghai",
+      "schedules": [
+        "40 11 * * *"
+      ],
+      "definitionFile": "automation/n8n/tmall-masitu-sycm-cookie-daily.workflow.json",
+      "masterIntervalDays": 3
+    }
+  ]
+}

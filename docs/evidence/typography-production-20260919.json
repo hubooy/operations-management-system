@@ -1,0 +1,75 @@
+{
+  "status": "adopted",
+  "sourceCommit": "87fb9e0b",
+  "sourceChanges": [
+    "e08395d7",
+    "291e8fbe"
+  ],
+  "releaseId": "20260919T054421Z-8396938e0c741f6c",
+  "manifestSha256": "7b0f2ee2989bdb7c28b94df6aa018a7afee085ee30fde17cdcd8da4746a1327e",
+  "planSha256": "75de5d790b051ef6138e853169852ca5227e039189a7f7bc7a61dd3ac9dec4a9",
+  "maintenance": {
+    "id": "a72cae6e125b4f7f93e038a1192b4def",
+    "ended": true,
+    "workerHelperAndBackendRestarted": true,
+    "djangoRedeployed": false,
+    "migrations": [],
+    "n8nRestarted": false,
+    "manualBusinessRerun": false,
+    "preview3100Stopped": true
+  },
+  "scope": "Shared typography tokens and overrides; sales KPI 24px and channel details 12–13px. Shared KPI token also affects other consumers.",
+  "validation": {
+    "isolatedBuildPassed": true,
+    "renderTestsPassed": 20,
+    "unitTestsPassed": 2208,
+    "unitTestsSkipped": 20,
+    "unitTestsFailed": 1,
+    "existingFailure": "frontend-foundation: color-surface-subtle is undefined; reproduced in predecessor source 676527bf.",
+    "releaseFocusedTestsPassed": 64,
+    "releaseCapacityTest": "Full suite passed in 235 seconds; redundant 120-second bounded rerun timed out. No gates relaxed.",
+    "backendBoundaryViolations": 0,
+    "lintErrors": 0,
+    "existingLintWarnings": 11,
+    "sourceStylesMatched": 4,
+    "servedAssetsMatchedRelease": 15,
+    "servedTypographyRulesVerified": true,
+    "browserVisualVerified": false,
+    "browserLimitation": "Codex auth token unavailable; HTTP and exact served bytes verified."
+  },
+  "finalRuntime": {
+    "checkedAt": "2026-09-19T13:55:20.6267080+08:00",
+    "state": "Running",
+    "backendState": "Ready",
+    "workerState": "exact_release",
+    "readyComponents": 12,
+    "startupVerified": true,
+    "supervisor": "running/healthy/all_components_ready",
+    "dingTalk": "running; current startup log connected",
+    "homepage": 200,
+    "liveness": 200,
+    "readiness": 200
+  },
+  "backups": {
+    "beforeId": "daily-20260919T024757Z-76c47fe7d233",
+    "beforeManifestSha256": "bbfe5364e2577513d9744aabf4d3505aa538040f1640eb34e3ad58e20c5355d7",
+    "restoreId": "291e8fbe2026",
+    "restoreContentMatched": true,
+    "isolatedPort": 55651,
+    "afterId": "daily-20260919T055353Z-d685373044e3",
+    "afterManifestSha256": "817596cd562b82a3961f638df1ad4f11bc247df1dcf4ca752010218b306862bf",
+    "afterVerified": true,
+    "beforeAndAfterArchivedToEWithFileHashes": true
+  },
+  "maintenanceEffects": {
+    "nextNaturalWeeklyCheckSucceeded": "3322",
+    "weeklyChecksFailed": [
+      "3318",
+      "3319"
+    ],
+    "tmallYiyongFailedExecution": "3320",
+    "existingSafetyRetryWaitingExecution": "3321",
+    "retryManuallyTriggered": false
+  },
+  "localEvidenceDirectory": "D:/codex-artifacts/typography-release-20260919"
+}

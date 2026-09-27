@@ -3,16 +3,35 @@ import { mkdir, mkdtemp, readFile, rename, rm, stat } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
-import type { Frame, Locator, Page } from "playwright-core";
+import type { Browser, Frame, Locator, Page } from "playwright-core";
 
 import { launchDedicatedChrome } from "../lib/jackyun/cdp-client";
 import { writeJsonAtomic } from "../lib/jackyun/json-file";
 import { connectPlaywrightBrowser } from "../lib/jackyun/playwright-client";
-import { inspectTmallImportBytes } from "../lib/netshop/import-service";
-import { getTmallStore, type TmallStore } from "../lib/netshop/tmall-store-registry";
+import { inspectTmallImportBytes } from "../lib/netshop/normalized-import";
+import {
+  getRegisteredTmallStore,
+  getTmallStore,
+  resolveTmallBrowserLaunchTarget,
+  type TmallStore,
+} from "../lib/netshop/tmall-store-registry";
+import {
+  autoLoginTmallWithSavedBrowserCredentials,
+  autoLoginTmallWithWindowsDpapiCredential,
+  inspectTmallLoginPageState,
+} from "./tmall-saved-login";
+import {
+  hasExactTmallImportVerification,
+  type TmallImportVerificationProof,
+} from "./tmall-import-verification";
 
 export const TMALL_SELLER_ON_SALE_URL = "https://myseller.taobao.com/home.htm/SellManage/on_sale?current=1&pageSize=20";
 export const TMALL_MASTER_EXPORT_PROMPT = "导出全部商品";
+export const TMALL_LILI_MASTER_EXPORT_PROMPT = "查询[商品状态:出售中]的商品，并批量导出到excel";
+
+export function resolveTmallMasterExportPrompt(storeKey: string) {
+  return storeKey === "tmall-lili" ? TMALL_LILI_MASTER_EXPORT_PROMPT : TMALL_MASTER_EXPORT_PROMPT;
+}
 export const TMALL_PRODUCT_MANAGER_LABEL = "商品管家";
 export const TMALL_IMPORTANT_NOTICE_LABEL = "重要通知";
 export const TMALL_IMPORTANT_MESSAGE_LABEL = "重要消息";
@@ -24,12 +43,17 @@ const tmallExportConfirmationLabels = ["确认导出", "确认任务", "确认�
 const tmallNoticeActionSelector = 'button,a,[role="button"],[aria-label],[title],[class*="close" i],:text-is("×"),:text-is("✕")';
 
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+export const tmallAutomationProjectRoot = projectRoot;
 const artifactDirectory = path.join(projectRoot, "outputs", "tmall-product-master-export");
+const directMtopArtifactDirectory = path.join(projectRoot, "outputs", "tmall-direct-product-master-export");
 const defaultChromeExecutable = "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe";
 const maximumWorkbookBytes = 25 * 1024 * 1024;
 const exportResultTimeoutMs = 10 * 60 * 1000;
 const exportRecordTimeoutMs = 3 * 60 * 1000;
 const exportRecordRefreshIntervalMs = 8_000;
+export const productManagerChatOpenTimeoutMs = 60_000;
+export const tmallSellerLoginRedirectGraceMs = 15_000;
+let retainedTmallSessionBrowser: Browser | null = null;
 
 type MasterImportBatch = {
   id?: string;
@@ -49,14 +73,7 @@ type MasterImportPayload = {
   message?: string;
   batch?: MasterImportBatch | null;
   warnings?: Array<{ code?: string; message?: string }>;
-  verification?: {
-    verified?: boolean;
-    parsedRowCount?: number;
-    readbackRowCount?: number;
-    dataset?: string;
-    platform?: string;
-    shopName?: string;
-  };
+  verification?: TmallImportVerificationProof;
 };
 
 type MasterFileEvidence = {
@@ -91,6 +108,7 @@ type MasterExportAudit = {
   stage: MasterExportAuditStage;
   entryMode?: "product_manager_opened" | "product_manager_floating_icon" | "product_manager_already_open" | "bulk_export_entry" | "assistant_direct";
   noticeState?: "dismissed" | "not_present";
+  exportSubmittedAt?: string;
   exportTaskCreatedAt?: string;
   file?: MasterFileEvidence;
   importResult?: {
@@ -100,6 +118,11 @@ type MasterExportAudit = {
     warningCount: number;
   };
   lastError?: string;
+  abandonment?: {
+    abandonedAt: string;
+    previousStage: "export_submitted" | "export_confirmed";
+    reason: string;
+  };
 };
 
 export type TmallProductMasterStageResult = {
@@ -121,6 +144,7 @@ type TextCandidate = {
   locator: Locator;
   score: number;
   signature: string;
+  top?: number;
 };
 
 type DownloadCandidate = {
@@ -138,10 +162,11 @@ type DownloadCandidate = {
 
 type TmallDownloadChoice = Omit<DownloadCandidate, "frame" | "locator">;
 
-type ExportRecordDownloadCandidate = {
+export type ExportRecordDownloadCandidate = {
   locator?: Locator;
   recordPage: Page;
   signature: string;
+  recordIdentity?: string;
   taskCreatedAt: string;
   status: string;
   downloadReady?: boolean;
@@ -234,8 +259,68 @@ export function hasAcceptedTmallExportTask(text: string) {
     && /任务\d*[:：]|待执行|任务已执行|执行结果|所有任务已完成|成功导出/.test(normalized);
 }
 
+export function countAcceptedTmallExportTasks(text: string) {
+  return text.replace(/\s+/g, "").match(/导出(?:\d+个)?商品到Excel/g)?.length ?? 0;
+}
+
+export function hasCompletedTmallExportResult(text: string) {
+  return /成功导出\s*\d+\s*个商品到Excel文件|所有任务已完成/.test(text.replace(/\s+/g, " "));
+}
+
+export function summarizeTmallExportAcknowledgement(text: string, promptStillInInput: boolean) {
+  // Persist only classifications/counts, never chat text, item IDs, URLs or credentials.
+  const normalized = text.replace(/\s+/g, "");
+  return {
+    promptStillInInput,
+    searchResultPresent: /商品查询结果[（(]共\d+个[）)]/.test(normalized),
+    acceptedTaskCount: countAcceptedTmallExportTasks(text),
+    completedResultPresent: hasCompletedTmallExportResult(text),
+  };
+}
+
+export async function waitForTmallExportAcknowledgement(
+  probe: () => Promise<{ ready: boolean; diagnostic: ReturnType<typeof summarizeTmallExportAcknowledgement> }>,
+  options: { timeoutMs?: number; now?: () => number; pause?: () => Promise<void> } = {},
+) {
+  const now = options.now ?? Date.now;
+  const pause = options.pause ?? (() => new Promise<void>((resolve) => setTimeout(resolve, 1_000)));
+  const deadline = now() + (options.timeoutMs ?? 90_000);
+  let diagnostic: ReturnType<typeof summarizeTmallExportAcknowledgement> | undefined;
+  while (now() < deadline) {
+    const observation = await probe();
+    diagnostic = observation.diagnostic;
+    if (observation.ready) return;
+    await pause();
+  }
+  throw new Error(`商品管家未出现导出确认、任务受理或下载结果；响应诊断=${JSON.stringify(diagnostic ?? null)}；请人工核对原会话，禁止重复提交`);
+}
+
+export function chooseTmallResumeSellerPageIndex(pages: readonly { hasCompletedResult: boolean }[]) {
+  const completedIndexes = pages.flatMap((page, index) => page.hasCompletedResult ? [index] : []);
+  if (completedIndexes.length > 1) {
+    throw new Error("多个千牛页面都显示已完成商品导出，无法唯一接管原任务");
+  }
+  return completedIndexes[0] ?? 0;
+}
+
 export function isResumableTmallExportStage(stage: string | undefined) {
   return stage === "export_submitted" || stage === "export_confirmed";
+}
+
+export function decideTmallMasterAuditRecovery(
+  requestedSnapshotDate: string,
+  audit: Pick<MasterExportAudit, "snapshotDate" | "stage">,
+) {
+  if (audit.snapshotDate === requestedSnapshotDate) {
+    return { action: "continue", snapshotDate: requestedSnapshotDate } as const;
+  }
+  if (audit.stage === "downloaded" || isResumableTmallExportStage(audit.stage)) {
+    return { action: "resume_previous", snapshotDate: audit.snapshotDate } as const;
+  }
+  if (audit.stage === "export_submitting") {
+    return { action: "block", snapshotDate: audit.snapshotDate } as const;
+  }
+  return { action: "discard", snapshotDate: requestedSnapshotDate } as const;
 }
 
 export function isTmallProductWorkbookFilename(fileName: string) {
@@ -243,6 +328,44 @@ export function isTmallProductWorkbookFilename(fileName: string) {
 }
 
 export function chooseLatestTmallDownloadSignature(candidates: readonly TmallDownloadChoice[]) {
+  const distinct = clusterTmallDownloadChoices(candidates);
+  if (distinct.length === 0) return null;
+  if (distinct.length === 1) return distinct[0]!.signature;
+  if (new Set(distinct.map((candidate) => candidate.frameUrl)).size !== 1) {
+    throw new Error("多个下载链接分布在不同页面，无法确认当前商品管家任务");
+  }
+  const completed = distinct.filter((candidate) => hasCompletedTmallExportResult(candidate.contextText));
+  if (completed.length === 0) return null;
+  const ordered = completed.sort((left, right) => left.top - right.top || left.left - right.left);
+  if (ordered.length > 1 && ordered.at(-1)!.top - ordered.at(-2)!.top < 16) {
+    throw new Error("多个成功下载链接位置并列，无法唯一确认最新商品管家任务");
+  }
+  return ordered.at(-1)!.signature;
+}
+
+export function chooseTmallResumedDownloadSignature(candidates: readonly TmallDownloadChoice[]) {
+  // A resumed task is already submitted: existing completed cards must remain
+  // visible to recovery, even after page reflow. The export-record timestamp
+  // check still binds the eventual download to the original submission.
+  return chooseLatestTmallDownloadSignature(candidates.filter((candidate) => hasCompletedTmallExportResult(candidate.contextText)));
+}
+
+export async function findTmallResumedCompletedDownload<T extends TmallDownloadChoice>(
+  readScoped: () => Promise<readonly T[]>,
+  readSamePage: () => Promise<readonly T[]>,
+): Promise<T | null> {
+  // Read-only recovery: the completed card can live outside the input overlay.
+  // This does not establish file ownership; the original export-record time
+  // and completion checks remain mandatory before accepting any download.
+  for (const read of [readScoped, readSamePage]) {
+    const candidates = await read();
+    const signature = chooseTmallResumedDownloadSignature(candidates);
+    if (signature) return candidates.find((candidate) => candidate.signature === signature) ?? null;
+  }
+  return null;
+}
+
+function clusterTmallDownloadChoices(candidates: readonly TmallDownloadChoice[]) {
   const visualClusters = new Map<string, TmallDownloadChoice>();
   for (const candidate of candidates) {
     const centerX = candidate.left + candidate.width / 2;
@@ -259,19 +382,23 @@ export function chooseLatestTmallDownloadSignature(candidates: readonly TmallDow
       contextText: representative.contextText || previous.contextText || candidate.contextText,
     });
   }
-  const distinct = [...visualClusters.values()];
-  if (distinct.length === 0) return null;
-  if (distinct.length === 1) return distinct[0]!.signature;
-  if (new Set(distinct.map((candidate) => candidate.frameUrl)).size !== 1) {
-    throw new Error("多个下载链接分布在不同页面，无法确认当前商品管家任务");
+  return [...visualClusters.values()];
+}
+
+export function countTmallCompletedDownloadCards(candidates: readonly TmallDownloadChoice[]) {
+  return clusterTmallDownloadChoices(candidates)
+    .filter((candidate) => hasCompletedTmallExportResult(candidate.contextText)).length;
+}
+
+export function chooseFreshTmallDownloadSignature(
+  candidates: readonly TmallDownloadChoice[],
+  baselineCompletedCount: number,
+) {
+  if (!Number.isInteger(baselineCompletedCount) || baselineCompletedCount < 0) {
+    throw new Error("商品管家下载基线数量无效");
   }
-  const completed = distinct.filter((candidate) => /成功导出\s*\d+\s*个商品到Excel文件|所有任务已完成/.test(candidate.contextText));
-  if (completed.length === 0) return null;
-  const ordered = completed.sort((left, right) => left.top - right.top || left.left - right.left);
-  if (ordered.length > 1 && ordered.at(-1)!.top - ordered.at(-2)!.top < 16) {
-    throw new Error("多个成功下载链接位置并列，无法唯一确认最新商品管家任务");
-  }
-  return ordered.at(-1)!.signature;
+  if (countTmallCompletedDownloadCards(candidates) <= baselineCompletedCount) return null;
+  return chooseLatestTmallDownloadSignature(candidates);
 }
 
 export function parseTmallShanghaiTaskTime(value: string) {
@@ -294,6 +421,15 @@ export function parseTmallShanghaiTaskTime(value: string) {
   return { text, epochMs };
 }
 
+export function parseTmallExportRecordStatus(value: string) {
+  const normalized = value.replace(/\s+/g, "");
+  if (normalized.includes("任务失败") || normalized.includes("生成失败")) return "任务失败" as const;
+  if (normalized.includes("已完成") || normalized.includes("生成成功")) return "已完成" as const;
+  if (normalized.includes("处理中") || normalized.includes("生成中")) return "处理中" as const;
+  if (normalized.includes("待执行")) return "待执行" as const;
+  return "未完成" as const;
+}
+
 export function chooseTmallExportRecordSignature(
   candidates: readonly TmallExportRecordChoice[],
   expectedRunStartedAt: string,
@@ -303,13 +439,28 @@ export function chooseTmallExportRecordSignature(
   return matched.signature;
 }
 
+export function dedupeTmallExportRecordChoices(candidates: readonly TmallExportRecordChoice[]) {
+  const unique = new Map<string, TmallExportRecordChoice>();
+  const score = (candidate: TmallExportRecordChoice) => (
+    (candidate.status.replace(/\s+/g, "") === "已完成" ? 10 : 0)
+    + (candidate.downloadReady ? 5 : 0)
+  );
+  for (const candidate of candidates) {
+    const key = candidate.recordIdentity ? `record:${candidate.recordIdentity}` : `candidate:${candidate.signature}`;
+    const previous = unique.get(key);
+    if (!previous || score(candidate) > score(previous)) unique.set(key, candidate);
+  }
+  return [...unique.values()];
+}
+
 export function matchTmallExportRecordChoice(
   candidates: readonly TmallExportRecordChoice[],
   expectedRunStartedAt: string,
 ) {
   const expectedMs = Date.parse(expectedRunStartedAt);
   if (!Number.isFinite(expectedMs)) throw new Error("天猫货品活动清单开始时间无效");
-  const eligible = candidates.flatMap((candidate) => {
+  const uniqueCandidates = dedupeTmallExportRecordChoices(candidates);
+  const eligible = uniqueCandidates.flatMap((candidate) => {
     const parsed = parseTmallShanghaiTaskTime(candidate.taskCreatedAt);
     if (!parsed) return [];
     const deltaMs = parsed.epochMs - expectedMs;
@@ -320,7 +471,11 @@ export function matchTmallExportRecordChoice(
   if (eligible[1] && eligible[1].distanceMs - eligible[0]!.distanceMs < 60_000) {
     throw new Error("导出记录中有多个创建时间同样接近的任务，无法唯一确认本轮文件");
   }
-  return eligible[0]!.candidate;
+  const matched = eligible[0]!.candidate;
+  if (matched.status.replace(/\s+/g, "") === "任务失败") {
+    throw new Error(`导出记录 ${matched.taskCreatedAt} 明确显示任务失败，拒绝下载失败文件或重复发送导出指令`);
+  }
+  return matched;
 }
 
 export function scoreImportantNoticeCloseCandidate(detail: PositionedUiElement, notice: PositionedUiElement) {
@@ -352,6 +507,11 @@ export function isExplicitTmallNoticeDismissAction(detail: PositionedUiElement) 
   }
   const label = `${detail.text} ${detail.attributes}`.replace(/\s+/g, " ").trim();
   return text === "忽略" || /关闭|close|dismiss|我知道了|知道了|^[×✕x]$/i.test(label);
+}
+
+export function isTmallNoticePointerInterceptionError(error: unknown) {
+  return error instanceof Error
+    && /intercepts pointer events|another element.*receives pointer events/i.test(error.message);
 }
 
 export function sameTmallNoticeActionTarget(left: PositionedUiElement, right: PositionedUiElement) {
@@ -401,7 +561,8 @@ export function scoreTmallBlockingNoticeCandidate(detail: PositionedUiElement, c
   if (detail.width < 2 || detail.height < 2 || detail.width > 800 || detail.height > 700) return -1;
   const text = detail.text.replace(/\s+/g, "").trim();
   const context = contextText.replace(/\s+/g, "").trim();
-  const structural = /notify[_-]?body/i.test(detail.attributes);
+  const closableOverlay = isTmallClosableOverlayNotice(detail);
+  const structural = /notify[_-]?body/i.test(detail.attributes) || closableOverlay;
   const importantNotice = text.includes(TMALL_IMPORTANT_NOTICE_LABEL);
   const importantMessage = text.includes(TMALL_IMPORTANT_MESSAGE_LABEL);
   const productInspection = text.includes(TMALL_PRODUCT_INSPECTION_NOTICE_LABEL);
@@ -432,9 +593,17 @@ export function scoreTmallBlockingNoticeCandidate(detail: PositionedUiElement, c
   if (importantMessage) score += 8;
   if (shippingException) score += 6;
   if (structural) score += 8;
+  if (closableOverlay) score += 20;
   score += Math.round((detail.left / detail.viewportWidth) * 5);
   score += Math.round((detail.top / detail.viewportHeight) * 5);
   return score;
+}
+
+export function isTmallClosableOverlayNotice(detail: PositionedUiElement) {
+  const attributes = detail.attributes.replace(/\s+/g, " ").trim();
+  return detail.role === "tooltip"
+    && /next-balloon/i.test(attributes)
+    && /closable/i.test(attributes);
 }
 
 function shanghaiToday(now = new Date()) {
@@ -493,6 +662,65 @@ async function writeActiveAudit(audit: MasterExportAudit, auditDirectory = artif
   const updated = { ...audit, updatedAt: new Date().toISOString() };
   await writeJsonAtomic(activeAuditPath(audit.storeKey, auditDirectory), updated);
   return updated;
+}
+
+export async function abandonActiveTmallProductMasterAudit(options: {
+  storeKey: string;
+  reason: string;
+  operatorConfirmed: boolean;
+  auditDirectory?: string;
+  now?: Date;
+}) {
+  if (options.operatorConfirmed !== true) {
+    throw new Error("作废已提交的天猫货品任务必须取得操作者明确确认");
+  }
+  const reason = options.reason.replace(/\s+/g, " ").trim();
+  if (reason.length < 4 || reason.length > 300) {
+    throw new Error("天猫货品任务作废原因必须为 4 至 300 个字符");
+  }
+  const store = await getTmallStore(options.storeKey);
+  const auditDirectory = path.resolve(options.auditDirectory ?? artifactDirectory);
+  const existing = await readActiveAudit(store.storeKey, auditDirectory);
+  if (!existing) throw new Error("当前店铺不存在可作废的天猫货品活动清单");
+  const audit = existing.audit;
+  if (audit.shopName !== store.shopName) {
+    throw new Error("天猫货品活动清单店铺身份不一致，拒绝作废");
+  }
+  if (!isResumableTmallExportStage(audit.stage)) {
+    throw new Error(`天猫货品活动清单阶段 ${audit.stage} 不允许按已提交任务作废`);
+  }
+  const previousStage = audit.stage;
+  const abandonedAt = (options.now ?? new Date()).toISOString();
+  const archiveFileName = `abandoned-${safeSegment(store.storeKey)}-${audit.snapshotDate}-${safeSegment(audit.runId)}.json`;
+  const archivePath = path.join(auditDirectory, archiveFileName);
+  if (await stat(archivePath).then(() => true).catch(() => false)) {
+    throw new Error("天猫货品任务作废归档已存在，拒绝覆盖");
+  }
+
+  // Renaming first removes the manifest from the active slot atomically while
+  // preserving its complete evidence. This entry point is intentionally not
+  // called by n8n or automatic recovery; it is only for an explicitly confirmed
+  // operator decision after the original platform task has been reviewed.
+  await rename(existing.filePath, archivePath);
+  const archivedAudit: MasterExportAudit = {
+    ...audit,
+    updatedAt: abandonedAt,
+    abandonment: {
+      abandonedAt,
+      previousStage,
+      reason,
+    },
+  };
+  await writeJsonAtomic(archivePath, archivedAudit);
+  return {
+    ok: true as const,
+    stage: "abandoned" as const,
+    storeKey: store.storeKey,
+    shopName: store.shopName,
+    snapshotDate: audit.snapshotDate,
+    previousStage,
+    archiveFileName,
+  };
 }
 
 export async function inspectTmallMasterFile(
@@ -575,19 +803,24 @@ export async function importTmallProductMasterFile(options: {
   });
   const payload = await response.json().catch(() => null) as MasterImportPayload | null;
   const batch = payload?.batch;
-  const expectedStatus = payload?.status === "imported" ? 201 : payload?.status === "duplicate" ? 200 : 0;
+  const importStatus = payload?.status === "imported" || payload?.status === "duplicate" ? payload.status : null;
+  const expectedStatus = importStatus === "imported" ? 201 : importStatus === "duplicate" ? 200 : 0;
   const verification = payload?.verification;
-  if (response.status !== expectedStatus || !payload?.ok || (payload.status !== "imported" && payload.status !== "duplicate")
+  if (response.status !== expectedStatus || !payload?.ok || importStatus === null
     || !batch?.id || batch.source !== "tmall_product_master" || batch.dataset !== "product_master"
     || batch.platform !== "天猫" || batch.shopName !== options.store.shopName || batch.snapshotDate !== options.snapshotDate
     || batch.status !== "completed" || batch.rowCount !== options.evidence.rowCount
-    || verification?.verified !== true || verification.dataset !== "product_master"
-    || verification.platform !== "天猫" || verification.shopName !== options.store.shopName
-    || verification.parsedRowCount !== options.evidence.rowCount || verification.readbackRowCount !== options.evidence.rowCount) {
+    || !hasExactTmallImportVerification(verification, {
+      status: importStatus,
+      rowCount: options.evidence.rowCount,
+      dataset: "product_master",
+      platform: "天猫",
+      shopName: options.store.shopName,
+    })) {
     throw new Error(payload?.message ?? `天猫货品主数据导入或落库回查失败（HTTP ${response.status}）`);
   }
   return {
-    status: payload.status,
+    status: importStatus,
     batchId: batch.id,
     rowCount: batch.rowCount,
     warningCount: Number(batch.warningCount ?? 0),
@@ -631,6 +864,7 @@ async function textCandidates(page: Page, labels: readonly string[], scopeFrame?
           locator,
           score,
           signature: `${frame.url()}|${label}|${detail.left}|${detail.top}|${detail.width}|${detail.height}`,
+          top: detail.top,
         });
       }
     }
@@ -769,6 +1003,7 @@ async function importantNoticeCandidates(page: Page) {
     const sources = [
       frame.getByText(/重要通知|重要消息|商品巡检|发货异常提醒|渠道活动快速报名/),
       frame.locator('[class*="notify_body" i],[class*="notify-body" i]'),
+      frame.locator('[role="tooltip"][class*="next-balloon" i][class*="closable" i]'),
     ];
     for (const matches of sources) {
       const count = Math.min(await matches.count().catch(() => 0), 30);
@@ -816,9 +1051,10 @@ async function receivesPointerAtCenter(locator: Locator) {
   }).catch(() => false);
 }
 
-async function dismissImportantNotice(page: Page) {
+export async function dismissImportantNotice(page: Page) {
   const initialDeadline = Date.now() + 4_000;
   let dismissedCount = 0;
+  let pointerInterceptionRetries = 0;
   while (dismissedCount < 4) {
     const notices = await importantNoticeCandidates(page);
     if (notices.length === 0) {
@@ -845,14 +1081,17 @@ async function dismissImportantNotice(page: Page) {
       if (!await locator.isVisible().catch(() => false)) continue;
       const detail = await positionedDetail(locator);
       if (!detail) continue;
+      const explicitDismiss = isExplicitTmallNoticeDismissAction(detail);
       const score = scoreImportantNoticeCloseCandidate(detail, notice.detail);
-      if (score < 0 || !await receivesPointerAtCenter(locator)) continue;
+      if (score < 0
+        || isTmallClosableOverlayNotice(notice.detail) && !explicitDismiss
+        || !await receivesPointerAtCenter(locator)) continue;
       candidates.push({
         locator,
         score,
         signature: `${detail.left}|${detail.top}|${detail.width}|${detail.height}|${detail.attributes}`,
         detail,
-        explicitDismiss: isExplicitTmallNoticeDismissAction(detail),
+        explicitDismiss,
       });
     }
     candidates.sort(compareTmallNoticeActionCandidates);
@@ -867,7 +1106,18 @@ async function dismissImportantNotice(page: Page) {
       throw new Error("右下角通知存在多个同等“忽略/关闭”候选，为防止误点已停止");
     }
     const noticeSignaturesBeforeClick = new Set(notices.map((candidate) => candidate.signature));
-    await distinctCandidates[0].locator.click({ timeout: 10_000 });
+    try {
+      await distinctCandidates[0].locator.click({ timeout: 10_000 });
+      pointerInterceptionRetries = 0;
+    } catch (error) {
+      if (!isTmallNoticePointerInterceptionError(error) || pointerInterceptionRetries >= 2) throw error;
+      pointerInterceptionRetries += 1;
+      // Some QianNiu balloons are created only after the pointer moves toward an
+      // underlying close icon. Never force-click through them: wait for the new
+      // top layer to become inspectable, then rebuild the safe candidate set.
+      await new Promise((resolve) => setTimeout(resolve, 250));
+      continue;
+    }
     await waitUntil(
       10_000,
       async () => {
@@ -1021,7 +1271,7 @@ async function openProductManagerChat(page: Page) {
   }
   await candidates[0].locator.click({ timeout: 10_000 });
   let input: Awaited<ReturnType<typeof maybeFindChatInput>> = null;
-  await waitUntil(20_000, async () => {
+  await waitUntil(productManagerChatOpenTimeoutMs, async () => {
     input = await maybeFindChatInput(page);
     return input !== null;
   }, "点击右下角“商品管家”后未出现右侧聊天输入框", 500);
@@ -1104,13 +1354,13 @@ async function downloadCandidates(page: Page, scopeFrame?: Frame, scopeLocator?:
         const rect = element.getBoundingClientRect();
         let contextText = "";
         let ancestor: Element | null = element;
-        for (let depth = 0; depth < 6 && ancestor; depth += 1, ancestor = ancestor.parentElement) {
+        // 商品管家会把任务结果渲染在独立右侧栏；其成功卡片的可滚动父容器
+        // 可能高于视口。继续向上查找，但仍限制文本长度，避免把整页历史误作结果卡片。
+        for (let depth = 0; depth < 12 && ancestor; depth += 1, ancestor = ancestor.parentElement) {
           const text = (ancestor.textContent ?? "").replace(/\s+/g, " ").trim();
-          const ancestorRect = ancestor.getBoundingClientRect();
           if (
             /成功导出\s*\d+\s*个商品到Excel文件|所有任务已完成/.test(text)
             && text.length <= 3_000
-            && ancestorRect.height <= Math.max(window.innerHeight * 0.75, 600)
           ) {
             contextText = text;
             break;
@@ -1145,7 +1395,7 @@ async function downloadCandidates(page: Page, scopeFrame?: Frame, scopeLocator?:
   return [...new Map(candidates.map((candidate) => [candidate.signature, candidate])).values()];
 }
 
-async function exportRecordDownloadCandidates(page: Page) {
+export async function exportRecordDownloadCandidates(page: Page) {
   const candidates: ExportRecordDownloadCandidate[] = [];
   const recordPages = new Set<Page>();
   const pages = page.context().pages();
@@ -1167,13 +1417,13 @@ async function exportRecordDownloadCandidates(page: Page) {
         const taskTime = parseTmallShanghaiTaskTime(rowText);
         if (!taskTime) continue;
         const normalizedRowText = rowText.replace(/\s+/g, "");
-        const status = normalizedRowText.includes("已完成")
-          ? "已完成"
-          : normalizedRowText.includes("处理中")
-            ? "处理中"
-            : normalizedRowText.includes("待执行")
-              ? "待执行"
-              : "未完成";
+        const stableRecordText = await row.evaluate((element) => {
+          const fields = Array.from(element.children)
+            .filter((child) => child.matches("td,[role='cell']"))
+            .map((child) => (child.textContent ?? "").replace(/\s+/g, "").trim());
+          return fields.length >= 8 ? fields.slice(0, -2).join("|") : "";
+        }).catch(() => "");
+        const status = parseTmallExportRecordStatus(normalizedRowText);
         const actions = row.locator('a,button,[role="button"]').filter({ hasText: /下载/ });
         const actionCount = Math.min(await actions.count().catch(() => 0), 10);
         const clickable: Array<{ locator: Locator; score: number; signature: string }> = [];
@@ -1230,6 +1480,7 @@ async function exportRecordDownloadCandidates(page: Page) {
           locator: firstClickable?.locator,
           recordPage: candidatePage,
           signature,
+          recordIdentity: createHash("sha256").update(stableRecordText || normalizedRowText).digest("hex"),
           taskCreatedAt: taskTime.text,
           status,
           downloadReady: Boolean(firstClickable),
@@ -1263,6 +1514,45 @@ export async function createTmallBrowserDownloadSession(page: Page) {
   return browser.newBrowserCDPSession();
 }
 
+export function tmallBrowserDownloadOutcome(
+  event: { guid: string; state?: string; filePath?: string },
+  activeGuid: string | undefined,
+) {
+  if (!activeGuid || event.guid !== activeGuid) return null;
+  if (event.state === "completed") {
+    return { ok: true as const, guid: event.guid, filePath: event.filePath };
+  }
+  if (event.state === "canceled") {
+    return { ok: false as const, guid: event.guid, error: "Chrome 已取消商品管家 XLSX 下载" };
+  }
+  return null;
+}
+
+export async function resolveTmallStagedDownloadPath(options: {
+  stagingDirectory: string;
+  guid: string;
+  suggestedFilename: string;
+  reportedFilePath?: string;
+}) {
+  const stagingDirectory = path.resolve(options.stagingDirectory);
+  const reported = options.reportedFilePath?.trim();
+  const candidates = [
+    reported
+      ? path.isAbsolute(reported)
+        ? path.resolve(reported)
+        : path.resolve(stagingDirectory, reported)
+      : undefined,
+    path.resolve(stagingDirectory, options.guid),
+    path.resolve(stagingDirectory, options.suggestedFilename),
+  ].filter((candidate): candidate is string => Boolean(candidate));
+  for (const candidate of new Set(candidates)) {
+    if (!inside(stagingDirectory, candidate)) continue;
+    const candidateStat = await stat(candidate).catch(() => null);
+    if (candidateStat?.isFile()) return candidate;
+  }
+  throw new Error("Chrome 下载结果未落入本轮受控暂存目录");
+}
+
 async function downloadWithBrowserEvents(options: {
   page: Page;
   locator: Locator;
@@ -1276,14 +1566,18 @@ async function downloadWithBrowserEvents(options: {
   const session = await createTmallBrowserDownloadSession(options.page);
   let activeGuid: string | undefined;
   let resolveStarted!: (value: { guid: string; suggestedFilename: string }) => void;
-  let resolveCompleted!: (value: { guid: string; filePath?: string }) => void;
-  let rejectCompleted!: (error: Error) => void;
+  let resolveCompleted!: (value:
+    | { ok: true; guid: string; filePath?: string }
+    | { ok: false; guid: string; error: string }
+  ) => void;
   const started = new Promise<{ guid: string; suggestedFilename: string }>((resolve) => {
     resolveStarted = resolve;
   });
-  const completed = new Promise<{ guid: string; filePath?: string }>((resolve, reject) => {
+  const completed = new Promise<
+    | { ok: true; guid: string; filePath?: string }
+    | { ok: false; guid: string; error: string }
+  >((resolve) => {
     resolveCompleted = resolve;
-    rejectCompleted = reject;
   });
   session.on("Browser.downloadWillBegin", (event) => {
     if (activeGuid) return;
@@ -1291,9 +1585,8 @@ async function downloadWithBrowserEvents(options: {
     resolveStarted({ guid: event.guid, suggestedFilename: event.suggestedFilename });
   });
   session.on("Browser.downloadProgress", (event) => {
-    if (!activeGuid || event.guid !== activeGuid) return;
-    if (event.state === "completed") resolveCompleted({ guid: event.guid, filePath: event.filePath });
-    if (event.state === "canceled") rejectCompleted(new Error("Chrome 已取消商品管家 XLSX 下载"));
+    const outcome = tmallBrowserDownloadOutcome(event, activeGuid);
+    if (outcome) resolveCompleted(outcome);
   });
   try {
     await session.send("Browser.setDownloadBehavior", {
@@ -1346,9 +1639,13 @@ async function downloadWithBrowserEvents(options: {
       throw new Error(`千牛返回的货品文件不是安全的 .xlsx：${safeSegment(start.suggestedFilename)}`);
     }
     const finish = await withDeadline(completed, 120_000, "Chrome 商品管家 XLSX 下载未在两分钟内完成");
-    const stagedPath = path.resolve(finish.filePath || path.join(stagingDirectory, finish.guid));
-    if (!inside(stagingDirectory, stagedPath)) throw new Error("Chrome 下载结果越过本轮暂存目录");
-    await stat(stagedPath);
+    if (!finish.ok) throw new Error(finish.error);
+    const stagedPath = await resolveTmallStagedDownloadPath({
+      stagingDirectory,
+      guid: finish.guid,
+      suggestedFilename: start.suggestedFilename,
+      reportedFilePath: finish.filePath,
+    });
     const targetExists = await stat(options.targetPath).then(() => true).catch(() => false);
     if (targetExists) throw new Error("本轮商品管家规范文件已存在，为防止覆盖已停止");
     await rename(stagedPath, options.targetPath);
@@ -1362,11 +1659,46 @@ async function downloadWithBrowserEvents(options: {
   }
 }
 
+export function isTmallSellerLoginUrl(url: string) {
+  return /(?:loginmyseller|login)\.taobao\.com|passport|member\/login/i.test(url);
+}
+
+export function isTmallSellerBusinessUrl(url: string) {
+  try {
+    return new URL(url).hostname.toLowerCase() === "myseller.taobao.com";
+  } catch {
+    return false;
+  }
+}
+
+export async function waitForTmallSellerSessionUrl(
+  readUrl: () => string,
+  wait: (milliseconds: number) => Promise<void> = async (milliseconds) => {
+    await new Promise((resolve) => setTimeout(resolve, milliseconds));
+  },
+  timeoutMs = tmallSellerLoginRedirectGraceMs,
+  pollIntervalMs = 500,
+) {
+  if (!Number.isFinite(timeoutMs) || timeoutMs <= 0 || !Number.isFinite(pollIntervalMs) || pollIntervalMs <= 0) {
+    throw new Error("千牛登录跳转等待参数无效");
+  }
+  const maximumPolls = Math.max(1, Math.ceil(timeoutMs / pollIntervalMs));
+  let url = readUrl();
+  for (let poll = 0; isTmallSellerLoginUrl(url) && poll < maximumPolls; poll += 1) {
+    await wait(pollIntervalMs);
+    url = readUrl();
+  }
+  if (isTmallSellerLoginUrl(url)) {
+    throw new Error("waiting_login：天猫店铺独立浏览器尚未登录千牛，请先在该浏览器完成登录后重试");
+  }
+  return url;
+}
+
 async function assertSellerIdentity(page: Page, store: TmallStore) {
   const url = page.url();
   const text = await combinedPageText(page);
-  if (/login\.taobao\.com|passport|member\/login/i.test(url) || /扫码登录|密码登录|账户登录/.test(text)) {
-    throw new Error("waiting_login：亿玖店独立浏览器尚未登录千牛，请先在该浏览器完成登录后重试");
+  if (isTmallSellerLoginUrl(url) || /扫码登录|密码登录|账户登录/.test(text)) {
+    throw new Error(`waiting_login：${store.shopName} 独立浏览器尚未登录千牛，请先在该浏览器完成登录后重试`);
   }
   const expected = store.shopName.replace(/^天猫-/, "");
   const shorter = expected.replace(/专卖店$/, "");
@@ -1376,32 +1708,138 @@ async function assertSellerIdentity(page: Page, store: TmallStore) {
   if (!text.includes("出售中")) throw new Error("千牛页面未进入“商品 > 出售中”列表");
 }
 
-async function launchStoreChrome(store: TmallStore) {
-  const chromeExecutable = process.env.CHROME_EXECUTABLE_PATH?.trim() || defaultChromeExecutable;
-  if (!path.isAbsolute(chromeExecutable)) throw new Error("CHROME_EXECUTABLE_PATH 必须是绝对路径");
-  const profileDirectory = path.resolve(projectRoot, store.browser.profileDir);
+export async function launchStoreChrome(store: TmallStore, interactiveLogin = false) {
+  const launchTarget = resolveTmallBrowserLaunchTarget(
+    store,
+    process.env.CHROME_EXECUTABLE_PATH?.trim() || defaultChromeExecutable,
+  );
+  if (!path.isAbsolute(launchTarget.executablePath)) throw new Error("天猫 Chromium 可执行文件必须是绝对路径");
   await mkdir(store.browser.downloadDir, { recursive: true });
   await launchDedicatedChrome({
-    executablePath: chromeExecutable,
-    profileDirectory,
+    executablePath: launchTarget.executablePath,
+    profileDirectory: launchTarget.profileDirectory,
+    profileName: launchTarget.profileName,
     port: store.browser.debugPort,
     startUrl: TMALL_SELLER_ON_SALE_URL,
     headless: false,
-    visible: true,
+    visible: interactiveLogin,
+    startMinimized: !interactiveLogin,
+    keepWindowHidden: !interactiveLogin,
   });
-  return { profileDirectory, debugPort: store.browser.debugPort };
+  return {
+    profileDirectory: launchTarget.profileDirectory,
+    profileName: launchTarget.profileName,
+    debugPort: store.browser.debugPort,
+  };
+}
+
+export async function ensureTmallSellerSession(page: Page, store: TmallStore) {
+  let authentication: "existing_session" | "saved_browser_credentials" | "windows_dpapi_credentials" = "existing_session";
+  await waitUntil(tmallSellerLoginRedirectGraceMs, async () => {
+    const text = await combinedPageText(page);
+    return text.includes("出售中") || isTmallSellerLoginUrl(page.url())
+      || /扫码登录|密码登录|账户登录|安全验证|人机验证|短信验证码|滑块验证/.test(text);
+  }, "等待千牛登录状态加载超时");
+  const initialText = await combinedPageText(page);
+  const loginRequired = isTmallSellerLoginUrl(page.url())
+    || /扫码登录|密码登录|账户登录|安全验证|人机验证|短信验证码|滑块验证/.test(initialText)
+      && !initialText.includes("出售中");
+  if (loginRequired) {
+    if (store.loginMode !== "saved_browser_credentials" && store.loginMode !== "windows_dpapi_credentials") {
+      if (isTmallSellerLoginUrl(page.url())) await waitForTmallSellerSessionUrl(() => page.url());
+      else throw new Error(`waiting_login：${store.shopName} 独立浏览器尚未登录千牛，请先人工登录后重试`);
+    } else {
+      const login = store.loginMode === "windows_dpapi_credentials"
+        ? await autoLoginTmallWithWindowsDpapiCredential(page, store.storeKey)
+        : await autoLoginTmallWithSavedBrowserCredentials(page);
+      const currentText = await combinedPageText(page);
+      const stillRequiresLogin = isTmallSellerLoginUrl(page.url())
+        || /扫码登录|密码登录|账户登录/.test(currentText) && !currentText.includes("出售中");
+      if (!stillRequiresLogin && !login.submitted) {
+        authentication = "existing_session";
+      } else if (login.reason === "challenge_present") {
+        throw new Error(`waiting_login：${store.shopName} 出现验证码或安全验证，需要人工处理`);
+      } else if (!login.submitted) {
+        const reason = login.reason === "saved_credentials_missing"
+          ? "未检测到 Chromium 已保存并自动填充的账号密码"
+          : login.reason === "login_control_ambiguous"
+            ? "登录页出现多个提交按钮"
+            : login.reason === "login_control_missing"
+              ? "登录按钮缺失或不可用"
+              : "登录表单尚未就绪";
+        throw new Error(`waiting_login：${store.shopName} ${reason}，请人工登录并选择保存密码`);
+      } else {
+        authentication = store.loginMode;
+      }
+    }
+  }
+  try {
+    await waitUntil(60_000, async () => {
+      const text = await combinedPageText(page);
+      if (authentication !== "existing_session") {
+        const loginState = await inspectTmallLoginPageState(page);
+        if (loginState.temporarilyLocked) {
+          throw new Error(`waiting_login：${store.shopName} 登录操作受限或过于频繁，需要稍后人工检查`);
+        }
+        if (loginState.credentialRejected) {
+          throw new Error(`waiting_login：${store.shopName} 本机加密凭据未被平台接受，请重新配置凭据并人工核验`);
+        }
+        if (loginState.challengePresent
+          || /安全验证|人机验证|短信验证码|动态验证码|滑块验证/.test(text)) {
+          throw new Error(`waiting_login：${store.shopName} 自动登录后出现验证码或安全验证，需要人工处理`);
+        }
+      }
+      return text.includes("出售中");
+    }, "等待千牛出售中页面加载超时");
+  } catch (error) {
+    if (error instanceof Error && error.message.startsWith("waiting_login")) throw error;
+    if (authentication !== "existing_session") {
+      throw new Error(`waiting_login：${store.shopName} 自动提交已保存密码后仍未进入千牛，可能需要验证码或安全验证`);
+    }
+    throw error;
+  }
+  await assertSellerIdentity(page, store);
+  return { status: "authenticated" as const, authentication };
+}
+
+export async function ensureTmallStoreAuthenticatedSession(storeKey = "tmall-yijiu") {
+  const store = await getTmallStore(storeKey);
+  await launchStoreChrome(store);
+  const browser = retainedTmallSessionBrowser?.isConnected()
+    ? retainedTmallSessionBrowser
+    : await connectPlaywrightBrowser(store.browser.debugPort);
+  retainedTmallSessionBrowser = browser;
+  const context = browser.contexts()[0];
+  if (!context) throw new Error(`${store.shopName} 独立 Chromium 没有可用上下文`);
+  const pages = context.pages();
+  const page = pages.find((candidate) => isTmallSellerBusinessUrl(candidate.url()))
+    ?? pages.find((candidate) => isTmallSellerLoginUrl(candidate.url()))
+    ?? await context.newPage();
+  page.setDefaultTimeout(15_000);
+  if (!isTmallSellerBusinessUrl(page.url()) && !isTmallSellerLoginUrl(page.url())) {
+    await page.goto(TMALL_SELLER_ON_SALE_URL, { waitUntil: "domcontentloaded", timeout: 60_000 });
+  }
+  const session = await ensureTmallSellerSession(page, store);
+  return {
+    ok: true,
+    status: session.status,
+    authentication: session.authentication,
+    storeKey: store.storeKey,
+    shopName: store.shopName,
+  };
 }
 
 export async function launchTmallProductMasterLogin(storeKey = "tmall-yijiu") {
-  const store = await getTmallStore(storeKey);
-  const browser = await launchStoreChrome(store);
+  const store = await getRegisteredTmallStore(storeKey);
+  const browser = await launchStoreChrome(store, true);
   return {
     ok: true,
     status: "browser_ready" as const,
     storeKey: store.storeKey,
     shopName: store.shopName,
     targetUrl: TMALL_SELLER_ON_SALE_URL,
-    ...browser,
+    debugPort: browser.debugPort,
+    instruction: "请完成登录，并在 Chromium 提示时为当前独立店铺 Profile 保存密码；程序不会读取或保存明文凭证。",
   };
 }
 
@@ -1410,6 +1848,8 @@ async function browserExport(options: {
   snapshotDate: string;
   runId: string;
   taskStartedAt: string;
+  prompt: string;
+  exportSubmittedAt?: string;
   resumeStage?: "export_submitted" | "export_confirmed";
   entryMode?: MasterExportAudit["entryMode"];
   noticeState?: MasterExportAudit["noticeState"];
@@ -1418,19 +1858,22 @@ async function browserExport(options: {
   await launchStoreChrome(options.store);
   const browser = await connectPlaywrightBrowser(options.store.browser.debugPort);
   const context = browser.contexts()[0];
-  if (!context) throw new Error("亿玖店独立 Chrome 没有可用上下文");
-  let page = context.pages().find((candidate) => /myseller\.taobao\.com/i.test(candidate.url()));
+  if (!context) throw new Error(`${options.store.shopName} 独立 Chromium 没有可用上下文`);
+  const sellerPages = context.pages().filter((candidate) => isTmallSellerBusinessUrl(candidate.url()));
+  let page = sellerPages[0];
+  if (options.resumeStage && sellerPages.length > 1) {
+    const observations = await Promise.all(sellerPages.map(async (candidate) => ({
+      hasCompletedResult: hasCompletedTmallExportResult(await combinedPageText(candidate)),
+    })));
+    page = sellerPages[chooseTmallResumeSellerPageIndex(observations)];
+  }
   if (!page) page = await context.newPage();
   page.setDefaultTimeout(15_000);
   try {
     if (!page.url().startsWith("https://myseller.taobao.com/home.htm/SellManage/on_sale")) {
       await page.goto(TMALL_SELLER_ON_SALE_URL, { waitUntil: "domcontentloaded", timeout: 60_000 });
     }
-    if (/login\.taobao\.com|passport|member\/login/i.test(page.url())) {
-      throw new Error("waiting_login：亿玖店独立浏览器尚未登录千牛，请先在该浏览器完成登录后重试");
-    }
-    await waitUntil(60_000, async () => (await combinedPageText(page!)).includes("出售中"), "等待千牛出售中页面加载超时");
-    await assertSellerIdentity(page, options.store);
+    await ensureTmallSellerSession(page, options.store);
     if (!options.resumeStage) await options.onStage("browser_ready");
 
     const currentNoticeState = await dismissImportantNotice(page);
@@ -1441,59 +1884,107 @@ async function browserExport(options: {
       : options.noticeState ?? currentNoticeState;
     let input = productManager.input;
     let chatScope = await chatOverlayScope(input);
-    const baselineDownloads = new Set<string>();
+    const chatText = async () => chatScope
+      ? await chatScope.innerText({ timeout: 5_000 }).catch(() => "")
+      : await frameText(input.frame);
+    let baselineAcceptedTaskCount = 0;
+    let baselineCompletedDownloadCount = 0;
+    let baselineConfirmationCount = 0;
     if (!options.resumeStage) {
       await clickText(page, ["新会话"], true, input.frame, chatScope ?? undefined);
       input = await findChatInput(page);
       chatScope = await chatOverlayScope(input);
-      for (const item of await downloadCandidates(page, input.frame, chatScope ?? undefined)) {
-        baselineDownloads.add(item.signature);
-      }
-      await input.locator.fill(TMALL_MASTER_EXPORT_PROMPT, { timeout: 10_000 });
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      baselineAcceptedTaskCount = countAcceptedTmallExportTasks(await chatText());
+      baselineCompletedDownloadCount = countTmallCompletedDownloadCards(
+        await downloadCandidates(page, input.frame, chatScope ?? undefined),
+      );
+      baselineConfirmationCount = (await textCandidates(
+        page,
+        tmallExportConfirmationLabels,
+        input.frame,
+        chatScope ?? undefined,
+      )).length;
+      await input.locator.fill(options.prompt, { timeout: 10_000 });
       await options.onStage("export_submitting", { entryMode, noticeState });
       await clickSendOrPressEnter(input);
-      await options.onStage("export_submitted", { entryMode, noticeState });
+      options.exportSubmittedAt = new Date().toISOString();
+      await options.onStage("export_submitted", {
+        entryMode,
+        noticeState,
+        exportSubmittedAt: options.exportSubmittedAt,
+      });
     }
 
-    const chatText = async () => chatScope
-      ? await chatScope.innerText({ timeout: 5_000 }).catch(() => "")
-      : await frameText(input.frame);
     if (options.resumeStage !== "export_confirmed") {
-      await waitUntil(90_000, async () => {
+      await waitForTmallExportAcknowledgement(async () => {
+        const promptStillInInput = await input.locator.evaluate((element, prompt) => {
+          const value = element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement
+            ? element.value : element.textContent ?? "";
+          return value.trim() === prompt;
+        }, options.prompt);
+        const diagnostic = summarizeTmallExportAcknowledgement(await chatText(), promptStillInInput);
+        if (options.resumeStage === "export_submitted") {
+          const completed = await findTmallResumedCompletedDownload(
+            () => downloadCandidates(page!, input.frame, chatScope ?? undefined),
+            () => downloadCandidates(page!),
+          );
+          if (completed) {
+            return { ready: true, diagnostic: summarizeTmallExportAcknowledgement(completed.contextText, promptStillInInput) };
+          }
+        }
         const confirmations = await textCandidates(
           page!,
           tmallExportConfirmationLabels,
           input.frame,
           chatScope ?? undefined,
         );
-        if (confirmations[0]) {
-          const best = confirmations[0];
-          if (confirmations[1] && confirmations[1].score === best.score && confirmations[1].signature !== best.signature) {
+        if (confirmations.length > baselineConfirmationCount) {
+          const ordered = [...confirmations].sort((left, right) => (right.top ?? -1) - (left.top ?? -1) || right.score - left.score);
+          const best = ordered[0]!;
+          if (ordered[1] && ordered[1].top === best.top && ordered[1].score === best.score && ordered[1].signature !== best.signature) {
             throw new Error("商品管家存在多个同等导出确认候选，为防止误点已停止");
           }
           await best.locator.click({ timeout: 10_000 });
-          return true;
+          return { ready: true, diagnostic };
         }
-        const downloads = (await downloadCandidates(page!, input.frame, chatScope ?? undefined))
-          .filter((candidate) => !baselineDownloads.has(candidate.signature));
-        return Boolean(chooseLatestTmallDownloadSignature(downloads)) || hasAcceptedTmallExportTask(await chatText());
-      }, "商品管家未出现导出确认、任务受理或下载结果");
+        const downloads = await downloadCandidates(page!, input.frame, chatScope ?? undefined);
+        return {
+          ready: Boolean(chooseFreshTmallDownloadSignature(downloads, baselineCompletedDownloadCount))
+            || diagnostic.acceptedTaskCount > baselineAcceptedTaskCount,
+          diagnostic,
+        };
+      });
       await options.onStage("export_confirmed", { entryMode, noticeState });
     }
 
     let newDownload: DownloadCandidate | null = null;
     await waitUntil(exportResultTimeoutMs, async () => {
       const current = await downloadCandidates(page!, input.frame, chatScope ?? undefined);
-      const fresh = current.filter((candidate) => !baselineDownloads.has(candidate.signature));
-      const selectedSignature = chooseLatestTmallDownloadSignature(fresh);
-      const selected = selectedSignature
-        ? fresh.find((candidate) => candidate.signature === selectedSignature)
+      const selectedSignature = options.resumeStage
+        ? chooseLatestTmallDownloadSignature(current)
+        : chooseFreshTmallDownloadSignature(current, baselineCompletedDownloadCount);
+      let selected = selectedSignature
+        ? current.find((candidate) => candidate.signature === selectedSignature)
         : undefined;
+      // A resumed task must not send another chat prompt. The product-manager side panel
+      // can preserve its completed card outside the current input overlay, so scan the
+      // same page as a fallback and still require the eventual export-record time match.
+      if (options.resumeStage && (!selected || !hasCompletedTmallExportResult(selected.contextText))) {
+        const pageWide = (await downloadCandidates(page!))
+          .filter((candidate) => hasCompletedTmallExportResult(candidate.contextText));
+        const pageWideSignature = chooseTmallResumedDownloadSignature(pageWide);
+        selected = pageWideSignature
+          ? pageWide.find((candidate) => candidate.signature === pageWideSignature)
+          : selected;
+      }
       if (selected) {
         const text = await chatText();
         if (
-          /成功导出\s*\d+\s*个商品到Excel文件|所有任务已完成/.test(selected.contextText)
-          || (!options.resumeStage && fresh.length === 1 && /成功导出\s*\d+\s*个商品到Excel文件|所有任务已完成/.test(text))
+          hasCompletedTmallExportResult(selected.contextText)
+          || (!options.resumeStage
+            && countTmallCompletedDownloadCards(current) > baselineCompletedDownloadCount
+            && hasCompletedTmallExportResult(text))
         ) {
           newDownload = selected;
         }
@@ -1509,7 +2000,7 @@ async function browserExport(options: {
       locator: newDownload!.locator,
       downloadDirectory: options.store.browser.downloadDir,
       targetPath,
-      expectedRunStartedAt: options.taskStartedAt,
+      expectedRunStartedAt: options.exportSubmittedAt ?? options.taskStartedAt,
     });
     return {
       targetPath,
@@ -1531,30 +2022,48 @@ export async function runTmallProductMasterStage(options: {
 } = {}): Promise<TmallProductMasterStageResult> {
   const store = await getTmallStore(options.storeKey ?? "tmall-yijiu");
   const baseUrl = normalizeLocalBaseUrl(options.baseUrl ?? process.env.OPERATIONS_SYSTEM_URL ?? "http://localhost:3000");
-  const snapshotDate = options.snapshotDate ?? shanghaiToday();
+  const requestedSnapshotDate = options.snapshotDate ?? shanghaiToday();
+  let snapshotDate = requestedSnapshotDate;
   const request = options.request ?? fetch;
   const runAuditDirectory = path.resolve(options.auditDirectory ?? artifactDirectory);
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(snapshotDate)) throw new Error("天猫货品快照日期必须是 YYYY-MM-DD");
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(requestedSnapshotDate)) throw new Error("天猫货品快照日期必须是 YYYY-MM-DD");
 
   await mkdir(runAuditDirectory, { recursive: true });
+  const directMtopActivePath = path.join(directMtopArtifactDirectory, `active-${safeSegment(store.storeKey)}.json`);
+  if (await stat(directMtopActivePath).then(() => true).catch(() => false)) {
+    throw new Error("检测到 MTOP 直连 M 节点仍有活动清单；必须先人工核对原任务，不能切换为商品管家导出");
+  }
   const existing = await readActiveAudit(store.storeKey, runAuditDirectory);
   let audit: MasterExportAudit | undefined = existing?.audit;
   let evidence: MasterFileEvidence | undefined;
   if (existing && audit) {
-    if (audit.snapshotDate !== snapshotDate || audit.shopName !== store.shopName) {
-      throw new Error(`存在未完成的天猫货品导出清单 ${existing.filePath}，其店铺或快照日期与本轮不一致，已停止以避免重复任务`);
+    if (audit.shopName !== store.shopName) {
+      throw new Error(`存在未完成的天猫货品导出清单 ${existing.filePath}，其店铺与本轮不一致，已停止以避免跨店任务`);
     }
-    if (audit.stage === "downloaded" && audit.file) {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(audit.snapshotDate)) {
+      throw new Error(`未完成的天猫货品导出清单 ${existing.filePath} 快照日期无效`);
+    }
+    const recovery = decideTmallMasterAuditRecovery(requestedSnapshotDate, audit);
+    if (recovery.action === "block") {
+      throw new Error(`检测到跨日未决千牛导出任务（${audit.stage}，快照日 ${audit.snapshotDate}，清单 ${existing.filePath}），为防止重复发送已停止，请先人工核对右侧聊天任务`);
+    }
+    if (recovery.action === "discard") {
+      await rm(existing.filePath, { force: true });
+      audit = undefined;
+    } else {
+      snapshotDate = recovery.snapshotDate;
+    }
+    if (audit?.stage === "downloaded" && audit.file) {
       await assertEvidenceUnchanged(audit.file, store);
       evidence = await inspectTmallMasterFile(audit.file.filePath, store, snapshotDate);
       if (evidence.sha256 !== audit.file.sha256 || evidence.rowCount !== audit.file.rowCount) {
         throw new Error("恢复文件重新校验后与活动清单不一致");
       }
-    } else if (audit.stage === "export_submitting") {
+    } else if (audit?.stage === "export_submitting") {
       throw new Error(`检测到未决千牛导出任务（${audit.stage}，清单 ${existing.filePath}），为防止重复发送已停止，请先人工核对右侧聊天任务`);
-    } else if (isResumableTmallExportStage(audit.stage)) {
+    } else if (audit && isResumableTmallExportStage(audit.stage)) {
       // Resume the isolated current chat without starting a new conversation or sending the prompt again.
-    } else {
+    } else if (audit) {
       await rm(existing.filePath, { force: true });
       audit = undefined;
     }
@@ -1569,7 +2078,7 @@ export async function runTmallProductMasterStage(options: {
       shopName: store.shopName,
       snapshotDate,
       targetUrl: TMALL_SELLER_ON_SALE_URL,
-      prompt: TMALL_MASTER_EXPORT_PROMPT,
+      prompt: resolveTmallMasterExportPrompt(store.storeKey),
       startedAt: now,
       updatedAt: now,
       stage: "planned",
@@ -1584,6 +2093,8 @@ export async function runTmallProductMasterStage(options: {
         snapshotDate,
         runId: activeAudit.runId,
         taskStartedAt: activeAudit.startedAt,
+        prompt: activeAudit.prompt,
+        exportSubmittedAt: activeAudit.exportSubmittedAt,
         resumeStage: isResumableTmallExportStage(activeAudit.stage)
           ? activeAudit.stage as "export_submitted" | "export_confirmed"
           : undefined,
@@ -1605,8 +2116,10 @@ export async function runTmallProductMasterStage(options: {
     }
 
     const imported = await importTmallProductMasterFile({ baseUrl, store, snapshotDate, evidence, request });
+    const completedAudit = { ...activeAudit };
+    delete completedAudit.lastError;
     activeAudit = await writeActiveAudit({
-      ...activeAudit,
+      ...completedAudit,
       stage: "completed",
       importResult: {
         status: imported.status,

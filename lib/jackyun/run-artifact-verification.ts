@@ -7,11 +7,13 @@ import path from "node:path";
 import { assertBoundDownloadProvenance, type JackyunDownloadProvenance } from "./download-provenance";
 import { readJsonFile } from "./json-file";
 import type { JackyunModule } from "./post-download";
+import { jackyunSalesPeriod } from "./sales-period";
 import {
-  assertJackyunHistoricalSnapshotEvidence,
+  assertJackyunSnapshotEvidence,
   assertJackyunHandoffEvidence,
   createJackyunInputContractHash,
   type JackyunInputContract,
+  jackyunExportFirstPolicyVersion,
 } from "./run-contract";
 
 export type JackyunArtifactManifestModule = {
@@ -58,6 +60,7 @@ export async function verifyJackyunModuleArtifact(options: {
   runId: string;
   module: JackyunModule;
   snapshotDate: string;
+  salesStartDate?: string;
   policyVersion: string;
   allowedDownloadHosts?: readonly string[];
   manifestModule: JackyunArtifactManifestModule;
@@ -165,10 +168,11 @@ export async function verifyJackyunModuleArtifact(options: {
       || !isDeepStrictEqual(inputContract.snapshotEvidence, source.snapshotEvidence)) {
       throw new Error(`吉客云 ${options.module} 历史快照证据与输入契约不一致`);
     }
-    assertJackyunHistoricalSnapshotEvidence(inputContract.snapshotEvidence, {
+    assertJackyunSnapshotEvidence(inputContract.snapshotEvidence, {
       module: options.module,
       runId: options.runId,
       snapshotDate: options.snapshotDate,
+      policyVersion: options.policyVersion,
       exportIntentAt: inputContract.exportStart,
     });
   } else if (inputContract.snapshotDate !== undefined || inputContract.snapshotEvidence !== undefined
@@ -177,6 +181,15 @@ export async function verifyJackyunModuleArtifact(options: {
   }
   if (options.module === "sales" && inputContract.asOfDate !== options.snapshotDate) {
     throw new Error(`吉客云 sales 截止日期不是 ${options.snapshotDate}`);
+  }
+  if (options.module === "sales") {
+    const period = jackyunSalesPeriod(options.snapshotDate, options.salesStartDate);
+    if (inputContract.salesStartDate !== options.salesStartDate) throw new Error("销售起始日期与输入契约不一致。");
+    if (options.salesStartDate !== undefined && !isDeepStrictEqual(record(imported?.result)?.salesPeriod, period)) {
+      throw new Error("销售处理范围未与滚动输入契约一致。");
+    }
+  } else if (inputContract.salesStartDate !== undefined || options.salesStartDate !== undefined) {
+    throw new Error("非销售模块不得携带销售起始日期。");
   }
 
   const outputPath = typeof output?.path === "string" ? path.resolve(output.path) : "";
@@ -204,11 +217,22 @@ export async function verifyJackyunModuleArtifact(options: {
     throw new Error(`吉客云 ${options.module} 精确完成批次证据无效`);
   }
   if (options.module !== "sales") {
-    const expectedBatchId = options.module === "inventory"
-      ? output.sha256
-      : `${options.module}:${output.sha256}`;
-    if (batchId !== expectedBatchId) {
-      throw new Error(`吉客云 ${options.module} 批次号未与本轮归档输出 SHA-256 绑定`);
+    if (options.policyVersion === jackyunExportFirstPolicyVersion) {
+      const receipt = record(record(imported?.result)?.djangoReceipt);
+      const expectedSource = options.module === "inventory" ? "inventory_stock" : options.module;
+      if (!receipt || !["imported", "duplicate"].includes(String(receipt.status))
+        || receipt.batchId !== batchId || receipt.sourceKey !== expectedSource
+        || receipt.inputSha256 !== output.sha256 || !validSha(receipt.contentHash) || !validSha(receipt.rawFileHash)
+        || (receipt.status === "imported" && receipt.rawFileHash !== output.sha256)) {
+        throw new Error(`吉客云 ${options.module} Django 回执未与本轮归档和精确批次绑定`);
+      }
+    } else {
+      const expectedBatchId = options.module === "inventory"
+        ? output.sha256
+        : `${options.module}:${output.sha256}`;
+      if (batchId !== expectedBatchId) {
+        throw new Error(`吉客云 ${options.module} 批次号未与本轮归档输出 SHA-256 绑定`);
+      }
     }
   }
   if (options.summaryResult && (options.summaryResult.batchId !== batchId

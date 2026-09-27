@@ -1,17 +1,20 @@
 import {
-  getSalesDatabase,
-  type SalesDatabase,
-} from "@/lib/sales/database";
+  getD1Database,
+  type D1Database,
+} from "@/lib/database/d1";
 import type { InventoryStockRow } from "@/lib/imports/inventory-stock";
 import {
   importReservationCommitFence,
+  rethrowImportPublishError,
   type ImportReservationFence,
 } from "@/lib/imports/content-fingerprint";
+import { normalizeInventoryPagination } from "@/lib/inventory/query-contract";
+import { PublicApiError } from "@/lib/http/api-error";
 
 export const INVENTORY_IMPORT_SOURCE = "吉客云 ERP · 分仓库存查询";
 const INVENTORY_IMPORT_CHUNK_SIZE = 300;
 
-export type InventoryDatabase = SalesDatabase;
+export type InventoryDatabase = D1Database;
 
 export type InventoryImportIssue = {
   row?: number;
@@ -84,6 +87,18 @@ export type ReplenishmentPlanItem = {
   status: "draft" | "confirmed" | "completed" | "cancelled";
   createdAt: string;
   updatedAt: string;
+};
+
+export type ReplenishmentPlanQuery = {
+  page?: number;
+  pageSize?: number;
+  status?: ReplenishmentPlanItem["status"];
+  includeCancelled?: boolean;
+  query?: string;
+  warehouse?: string;
+  warehouses?: string[];
+  brands?: string[];
+  categories?: string[];
 };
 
 export class ReplenishmentPlanTransitionError extends Error {
@@ -212,7 +227,7 @@ const schemaStatements = [
 const schemaReadyByDatabase = new WeakMap<object, Promise<void>>();
 
 export function getInventoryDatabase(): InventoryDatabase {
-  return getSalesDatabase();
+  return getD1Database();
 }
 
 export async function ensureInventorySchema(db = getInventoryDatabase()): Promise<void> {
@@ -366,18 +381,25 @@ export async function findLatestSystemCostSnapshot(
 
 export async function listInventoryImportBatches(
   db: InventoryDatabase,
-  limit = 20,
-): Promise<InventoryImportBatch[]> {
-  const result = await db
-    .prepare(
+  input: { page?: number; pageSize?: number } = {},
+) {
+  const page = input.page ?? 1;
+  const pageSize = input.pageSize ?? 20;
+  if (!Number.isSafeInteger(page) || page < 1 || page > 10_000) throw new PublicApiError(400, "invalid_request", "page 必须为 1 到 10000 的整数");
+  if (!Number.isSafeInteger(pageSize) || pageSize < 1 || pageSize > 100) throw new PublicApiError(400, "invalid_request", "pageSize 必须为 1 到 100 的整数");
+  const offset = (page - 1) * pageSize;
+  const [result, count] = await Promise.all([
+    db.prepare(
       `SELECT ${batchColumns}
        FROM inventory_import_batches
        ORDER BY created_at DESC, id DESC
-       LIMIT ?`,
-    )
-    .bind(Math.max(1, Math.min(100, Math.trunc(limit))))
-    .all<InventoryBatchRow>();
-  return result.results.map(mapBatch);
+       LIMIT ? OFFSET ?`,
+    ).bind(pageSize, offset).all<InventoryBatchRow>(),
+    db.prepare("SELECT COUNT(*) AS total FROM inventory_import_batches").first<{ total: number }>(),
+  ]);
+  const items = result.results.map(mapBatch);
+  const total = Number(count?.total ?? 0);
+  return { items, pagination: { page, pageSize, total, returned: items.length, truncated: offset + items.length < total } };
 }
 
 const insertStockSql = `
@@ -498,7 +520,13 @@ export async function saveInventoryImport(
   );
   if (input.reservationFence) statements.push(importReservationCommitFence(db, input.reservationFence));
 
-  const results = await db.batch(statements);
+  let results;
+  try {
+    results = await db.batch(statements);
+  } catch (error) {
+    if (input.reservationFence) return rethrowImportPublishError(db, input.reservationFence, error);
+    throw error;
+  }
   const created = Number(results[0]?.meta?.changes ?? 0) > 0;
   const batch = await findInventoryImportBatchByHash(db, input.fileHash);
   if (!batch) throw new Error("库存导入批次写入后无法读取");
@@ -536,18 +564,153 @@ export async function listReplenishmentPlans(
   db: InventoryDatabase,
   limit = 200,
 ): Promise<ReplenishmentPlanItem[]> {
-  const result = await db
+  const result = await queryReplenishmentPlans(db, {
+    page: 1,
+    pageSize: Math.max(1, Math.min(100, Math.trunc(limit))),
+  });
+  return result.items;
+}
+
+export async function getReplenishmentPlanById(
+  db: InventoryDatabase,
+  id: string,
+): Promise<ReplenishmentPlanItem | null> {
+  const row = await db.prepare(
+    `SELECT ${planColumns}
+     FROM replenishment_plan_items
+     WHERE id = ?
+     LIMIT 1`,
+  ).bind(id).first<PlanRow>();
+  return row ? mapPlan(row) : null;
+}
+
+function uniquePlanFilterValues(values: readonly string[] | undefined, maximum: number) {
+  return [...new Set((values ?? []).map((value) => value.trim()).filter(Boolean))].slice(0, maximum);
+}
+
+function buildReplenishmentPlanScopeFilter(
+  options: Pick<ReplenishmentPlanQuery, "query" | "warehouse" | "warehouses" | "brands" | "categories">,
+) {
+  const clauses: string[] = [];
+  const values: string[] = [];
+  const query = options.query?.trim().slice(0, 100);
+  if (query) {
+    const keywords = uniquePlanFilterValues(query.split(/[\s,，;；]+/), 8).map((value) => value.toLowerCase());
+    if (keywords.length > 0) {
+      clauses.push(`(${keywords.map(() => "(INSTR(LOWER(product_code), ?) > 0 OR INSTR(LOWER(product_name), ?) > 0 OR INSTR(LOWER(warehouse), ?) > 0)").join(" OR ")})`);
+      for (const keyword of keywords) values.push(keyword, keyword, keyword);
+    }
+  }
+  const warehouses = uniquePlanFilterValues([
+    ...(options.warehouses ?? []),
+    ...(options.warehouse ? [options.warehouse] : []),
+  ], 10);
+  if (warehouses.length > 0) {
+    clauses.push("warehouse IN (SELECT value FROM json_each(?))");
+    values.push(JSON.stringify(warehouses));
+  }
+  const brands = uniquePlanFilterValues(options.brands, 20);
+  if (brands.length > 0) {
+    clauses.push(`EXISTS (
+      SELECT 1 FROM inventory_stock_lines plan_stock
+      WHERE plan_stock.batch_id = replenishment_plan_items.source_batch_id
+        AND plan_stock.product_code = replenishment_plan_items.product_code
+        AND plan_stock.warehouse = replenishment_plan_items.warehouse
+        AND COALESCE(NULLIF(TRIM(plan_stock.brand), ''), '') IN (SELECT value FROM json_each(?))
+    )`);
+    values.push(JSON.stringify(brands));
+  }
+  const categories = uniquePlanFilterValues(options.categories, 20);
+  if (categories.length > 0) {
+    clauses.push(`EXISTS (
+      SELECT 1 FROM inventory_stock_lines plan_stock
+      WHERE plan_stock.batch_id = replenishment_plan_items.source_batch_id
+        AND plan_stock.product_code = replenishment_plan_items.product_code
+        AND plan_stock.warehouse = replenishment_plan_items.warehouse
+        AND COALESCE(NULLIF(TRIM(plan_stock.category), ''), '未分类') IN (SELECT value FROM json_each(?))
+    )`);
+    values.push(JSON.stringify(categories));
+  }
+  return { clauses, values };
+}
+
+export async function queryReplenishmentPlans(
+  db: InventoryDatabase,
+  options: ReplenishmentPlanQuery = {},
+) {
+  const { page, pageSize } = normalizeInventoryPagination(options);
+  const scope = buildReplenishmentPlanScopeFilter(options);
+  const clauses = [...scope.clauses];
+  const values: Array<string | number> = [...scope.values];
+  if (options.status) {
+    clauses.push("status = ?");
+    values.push(options.status);
+  } else if (!options.includeCancelled) {
+    clauses.push("status <> 'cancelled'");
+  }
+  const where = clauses.length > 0 ? `WHERE ${clauses.join(" AND ")}` : "";
+  const [result, countRow] = await Promise.all([
+    db
     .prepare(
       `SELECT ${planColumns}
        FROM replenishment_plan_items
-       WHERE status <> 'cancelled'
+       ${where}
        ORDER BY CASE status WHEN 'draft' THEN 0 WHEN 'confirmed' THEN 1 ELSE 2 END,
                 updated_at DESC
-       LIMIT ?`,
+       LIMIT ? OFFSET ?`,
     )
-    .bind(Math.max(1, Math.min(500, Math.trunc(limit))))
-    .all<PlanRow>();
-  return result.results.map(mapPlan);
+    .bind(...values, pageSize, (page - 1) * pageSize)
+    .all<PlanRow>(),
+    db.prepare(`SELECT COUNT(*) AS total FROM replenishment_plan_items ${where}`)
+      .bind(...values)
+      .first<{ total: number }>(),
+  ]);
+  const total = Number(countRow?.total ?? 0);
+  return {
+    items: result.results.map(mapPlan),
+    pagination: {
+      page,
+      pageSize,
+      total,
+      returned: result.results.length,
+      totalPages: total === 0 ? 0 : Math.ceil(total / pageSize),
+      truncated: (page - 1) * pageSize + result.results.length < total,
+    },
+  };
+}
+
+export async function getReplenishmentPlanSummary(
+  db: InventoryDatabase,
+  currentBatchId: string | null,
+  options: Pick<ReplenishmentPlanQuery, "query" | "warehouse" | "warehouses" | "brands" | "categories"> = {},
+) {
+  const scope = buildReplenishmentPlanScopeFilter(options);
+  const where = scope.clauses.length > 0 ? `WHERE ${scope.clauses.join(" AND ")}` : "";
+  const row = await db.prepare(
+    `SELECT
+       COALESCE(SUM(CASE WHEN status = 'draft' THEN 1 ELSE 0 END), 0) AS draft_count,
+       COALESCE(SUM(CASE WHEN status = 'confirmed' THEN 1 ELSE 0 END), 0) AS confirmed_count,
+       COALESCE(SUM(CASE WHEN status = 'completed' THEN 1 ELSE 0 END), 0) AS completed_count,
+       COALESCE(SUM(CASE WHEN status = 'cancelled' THEN 1 ELSE 0 END), 0) AS cancelled_count,
+       COALESCE(SUM(CASE
+         WHEN status IN ('draft', 'confirmed') OR (status = 'completed' AND source_batch_id = ?)
+         THEN planned_quantity ELSE 0 END), 0) AS active_quantity
+     FROM replenishment_plan_items
+     ${where}`,
+  ).bind(currentBatchId ?? "", ...scope.values).first<{
+    draft_count: number;
+    confirmed_count: number;
+    completed_count: number;
+    cancelled_count: number;
+    active_quantity: number;
+  }>();
+  return {
+    draftCount: Number(row?.draft_count ?? 0),
+    confirmedCount: Number(row?.confirmed_count ?? 0),
+    completedCount: Number(row?.completed_count ?? 0),
+    cancelledCount: Number(row?.cancelled_count ?? 0),
+    activeQuantity: Number(row?.active_quantity ?? 0),
+  };
 }
 
 export async function upsertReplenishmentPlan(

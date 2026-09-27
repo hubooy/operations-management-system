@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
-import { DatabaseSync } from "node:sqlite";
+import { DatabaseSync, type SQLInputValue } from "node:sqlite";
 import {
   ensureMarketMonthlySummaryCache,
   isMarketMonthlySummaryCacheEligible,
@@ -12,15 +12,16 @@ import {
   buildMarketMonthlySummaryRefreshSql,
   buildMarketOverviewAnalyticsSql,
 } from "../lib/market/overview-sql";
+import { getCachedMarketOverview } from "../lib/market/overview-response-cache";
 import { ensureMarketSchemaCore, type MarketSchemaDatabase } from "../lib/market/schema-core";
 
 function sqliteAdapter(sqlite: DatabaseSync): MonthlySummaryCacheDatabase {
   return {
     prepare(sql: string) {
       const statement = sqlite.prepare(sql);
-      let values: unknown[] = [];
+      let values: SQLInputValue[] = [];
       return {
-        bind(...nextValues: unknown[]) { values = nextValues; return this; },
+        bind(...nextValues: unknown[]) { values = nextValues as SQLInputValue[]; return this; },
         async first<T>() { return (statement.get(...values) ?? null) as T | null; },
         async all<T>() { return { results: statement.all(...values) as T[] }; },
         async run() { const result = statement.run(...values); return { meta: { changes: Number(result.changes) } }; },
@@ -72,11 +73,39 @@ function createSourceSchema(sqlite: DatabaseSync) {
     CREATE TABLE netshop_rows (
       id INTEGER PRIMARY KEY, sku_id TEXT NOT NULL DEFAULT '', spu_id TEXT NOT NULL DEFAULT '',
       product_code TEXT NOT NULL DEFAULT '', source_row_key TEXT NOT NULL DEFAULT '',
+      source TEXT NOT NULL DEFAULT 'jd_sku_daily', dataset TEXT NOT NULL DEFAULT 'sku_daily',
+      platform TEXT NOT NULL DEFAULT '京东', shop_name TEXT NOT NULL DEFAULT '', business_date TEXT,
+      last_import_batch_id TEXT,
+      metrics_json TEXT NOT NULL DEFAULT '{}',
       updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
     );
-    CREATE TABLE sales_order_lines (
-      id INTEGER PRIMARY KEY, product_code TEXT NOT NULL DEFAULT ''
+    CREATE TABLE netshop_import_batches (
+      id TEXT PRIMARY KEY, source TEXT NOT NULL, status TEXT NOT NULL,
+      platform TEXT NOT NULL DEFAULT '', shop_name TEXT NOT NULL DEFAULT '',
+      completed_at TEXT, created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
     );
+    CREATE TABLE sales_order_lines (
+      id INTEGER PRIMARY KEY, product_code TEXT NOT NULL DEFAULT '', allocated_amount_cents INTEGER NOT NULL DEFAULT 0,
+      sales_time TEXT NOT NULL DEFAULT '', ship_time TEXT NOT NULL DEFAULT ''
+    );
+    CREATE TABLE market_overview_response_cache (
+      cache_key TEXT PRIMARY KEY, revision_key TEXT NOT NULL, payload_json TEXT NOT NULL,
+      created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+    );
+    CREATE TABLE market_image_cache (
+      status TEXT NOT NULL, attempt_count INTEGER NOT NULL, updated_at TEXT NOT NULL
+    );
+    CREATE TABLE market_import_batches (
+      id TEXT NOT NULL, status TEXT NOT NULL, file_name TEXT NOT NULL,
+      created_at TEXT NOT NULL, completed_at TEXT, row_count INTEGER NOT NULL,
+      inserted_count INTEGER NOT NULL, updated_count INTEGER NOT NULL, warning_count INTEGER NOT NULL
+    );
+    CREATE TABLE market_subcategory_taxonomy (
+      status TEXT NOT NULL, updated_at TEXT NOT NULL
+    );
+    CREATE TABLE market_annotation_prompt_versions (id INTEGER PRIMARY KEY);
+    CREATE TABLE market_annotation_items (id INTEGER PRIMARY KEY);
+    CREATE TABLE market_master_identities (id INTEGER PRIMARY KEY);
     INSERT INTO market_price_band_versions VALUES ('default-band','*',1,'published','2020-01-01');
     INSERT INTO market_price_band_items VALUES
       ('low','default-band','0-499',0,50000,1),('high','default-band','500+',50000,NULL,2);
@@ -84,7 +113,11 @@ function createSourceSchema(sqlite: DatabaseSync) {
 }
 
 async function applyMonthlyCacheMigration(sqlite: DatabaseSync) {
-  for (const file of ["0048_market_monthly_summary_cache.sql", "0049_market_cache_invalidation_fix.sql"]) {
+  for (const file of [
+    "0048_market_monthly_summary_cache.sql",
+    "0049_market_cache_invalidation_fix.sql",
+    "0060_market_netshop_query_safety.sql",
+  ]) {
     const migration = await readFile(new URL(`../drizzle/${file}`, import.meta.url), "utf8");
     for (const statement of migration.split("--> statement-breakpoint").map((item) => item.trim()).filter(Boolean)) sqlite.exec(statement);
   }
@@ -122,10 +155,11 @@ function insertMarketRow(sqlite: DatabaseSync, id: number, sku: string, gmv: num
     VALUES (?,?,0,0,10,?,200)`).run(id, gmv, Math.round(gmv / 10));
 }
 
-test("monthly summary migration invalidates every material source", async () => {
+test("monthly summary invalidation follows atomic netshop projection and Django sales revisions", async () => {
   const sqlite = new DatabaseSync(":memory:");
   createSourceSchema(sqlite);
   await applyMonthlyCacheMigration(sqlite);
+  await ensureMarketMonthlySummaryCache(sqliteAdapter(sqlite));
   const revision = () => Number((sqlite.prepare("SELECT source_revision revision FROM market_monthly_summary_cache_state WHERE id=1").get() as { revision: number }).revision);
   const initial = revision();
   insertMarketRow(sqlite, 1, "SKU-1", 100000);
@@ -133,27 +167,45 @@ test("monthly summary migration invalidates every material source", async () => 
   assert.equal((sqlite.prepare("SELECT month FROM market_monthly_summary_dirty_keys WHERE sku_code='SKU-1'").get() as { month: string }).month, "2026-06");
   sqlite.exec("INSERT INTO market_price_snapshots (id,category,scope,sku_code,ranking_dimension,month) VALUES ('p','家电','POP','SKU-1','SKU','2026-06')");
   sqlite.exec("INSERT INTO netshop_rows (id,sku_id) VALUES (1,'SKU-1')");
-  const afterNetshopInsert = revision();
+  const afterLegacyNetshopInsert = revision();
   sqlite.exec("UPDATE netshop_rows SET source_row_key='natural-key',updated_at='2026-07-30 12:00:00' WHERE id=1");
-  assert.equal(revision(), afterNetshopInsert);
-  sqlite.exec("UPDATE netshop_rows SET sku_id=sku_id WHERE id=1");
-  assert.equal(revision(), afterNetshopInsert);
-  sqlite.exec("UPDATE netshop_rows SET sku_id='SKU-2' WHERE id=1");
-  assert.ok(revision() > afterNetshopInsert);
-  sqlite.exec("INSERT INTO sales_order_lines (id,product_code) VALUES (1,'SKU-1')");
-  const afterSalesInsert = revision();
+  assert.equal(revision(), afterLegacyNetshopInsert);
+  sqlite.exec(`INSERT INTO market_netshop_projection
+    (projection_revision,projection_key,kind,source,dataset,business_date,sku_id,transaction_amount_cents)
+    VALUES ('1:aaaaaaaaaaaa','metric:SKU-1','metric','jd_sku_daily','sku_daily','2026-06-02','SKU-1',200)`);
+  assert.equal(revision(), afterLegacyNetshopInsert, "staging must not invalidate the active market view");
+  sqlite.exec(`UPDATE market_netshop_projection_control
+    SET active_revision='1:aaaaaaaaaaaa',active_total=1 WHERE id=1`);
+  assert.ok(revision() > afterLegacyNetshopInsert);
+  const afterProjectionActivation = revision();
+  sqlite.exec(`UPDATE market_netshop_projection_control
+    SET active_revision=active_revision WHERE id=1`);
+  assert.equal(revision(), afterProjectionActivation);
+  const beforeSalesInsert = revision();
+  sqlite.exec("INSERT INTO sales_order_lines (id,product_code,allocated_amount_cents,sales_time) VALUES (1,'SKU-1',100,'2026-06-01')");
+  assert.equal(revision(), beforeSalesInsert);
+  const responseCacheDb = sqliteAdapter(sqlite);
+  const responseIdentity = { view: "ranking" as const, filters: { rankingDimensions: ["SKU"] }, salesRevision: "sales:1" };
+  let responseLoads = 0;
+  const loadResponse = async () => ({ load: ++responseLoads });
+  const validateResponse = (value: unknown) => Boolean(value) && typeof value === "object" && !Array.isArray(value);
+  assert.equal((await getCachedMarketOverview(responseCacheDb, responseIdentity, loadResponse, validateResponse)).status, "miss");
+  assert.equal((await getCachedMarketOverview(responseCacheDb, responseIdentity, loadResponse, validateResponse)).status, "hit");
   sqlite.exec("UPDATE sales_order_lines SET product_code=product_code WHERE id=1");
-  assert.equal(revision(), afterSalesInsert);
+  assert.equal(revision(), beforeSalesInsert);
+  sqlite.exec("UPDATE sales_order_lines SET allocated_amount_cents=200,sales_time='2026-06-02' WHERE id=1");
+  assert.equal(revision(), beforeSalesInsert);
+  assert.equal((await getCachedMarketOverview(responseCacheDb, { ...responseIdentity, salesRevision: "sales:2" }, loadResponse, validateResponse)).status, "miss");
+  assert.equal(responseLoads, 2);
   sqlite.exec("UPDATE sales_order_lines SET product_code='SKU-2' WHERE id=1");
-  assert.ok(revision() > afterSalesInsert);
+  assert.equal(revision(), beforeSalesInsert);
   sqlite.exec("UPDATE market_price_band_versions SET version=2 WHERE id='default-band'");
-  assert.ok(revision() >= initial + 5);
-  assert.ok(sqlite.prepare("SELECT 1 FROM market_monthly_summary_dirty_products WHERE product_code='SKU-1'").get());
+  assert.ok(revision() >= initial + 4);
   assert.ok(sqlite.prepare("SELECT 1 FROM market_monthly_summary_dirty_scopes WHERE category='*'").get());
   sqlite.close();
 });
 
-test("runtime replaces the original broad update triggers on an existing database", async () => {
+test("runtime replaces legacy netshop-row triggers with one projection activation trigger", async () => {
   const sqlite = new DatabaseSync(":memory:");
   createSourceSchema(sqlite);
   await applyOriginalMonthlyCacheMigration(sqlite);
@@ -164,6 +216,22 @@ test("runtime replaces the original broad update triggers on an existing databas
   sqlite.exec("UPDATE netshop_rows SET source_row_key='natural-key',updated_at='2026-07-30 12:00:00' WHERE id=1");
   const after = (sqlite.prepare("SELECT source_revision revision FROM market_monthly_summary_cache_state WHERE id=1").get() as { revision: number }).revision;
   assert.equal(after, before);
+  sqlite.exec(`UPDATE netshop_rows SET metrics_json='{"transactionAmountCents":300}' WHERE id=1`);
+  const afterLegacyMetrics = (sqlite.prepare("SELECT source_revision revision FROM market_monthly_summary_cache_state WHERE id=1").get() as { revision: number }).revision;
+  assert.equal(afterLegacyMetrics, after);
+  sqlite.exec(`UPDATE market_netshop_projection_control
+    SET active_revision='2:bbbbbbbbbbbb',active_total=0 WHERE id=1`);
+  const afterActivation = (sqlite.prepare("SELECT source_revision revision FROM market_monthly_summary_cache_state WHERE id=1").get() as { revision: number }).revision;
+  assert.ok(afterActivation > afterLegacyMetrics);
+  sqlite.exec("INSERT INTO sales_order_lines (id,product_code,allocated_amount_cents,sales_time) VALUES (1,'SKU-1',100,'2026-06-01')");
+  const beforeSalesCorrection = (sqlite.prepare("SELECT source_revision revision FROM market_monthly_summary_cache_state WHERE id=1").get() as { revision: number }).revision;
+  sqlite.exec("UPDATE sales_order_lines SET allocated_amount_cents=999,sales_time='2026-06-02' WHERE id=1");
+  const afterSalesCorrection = (sqlite.prepare("SELECT source_revision revision FROM market_monthly_summary_cache_state WHERE id=1").get() as { revision: number }).revision;
+  assert.equal(afterSalesCorrection, beforeSalesCorrection);
+  assert.equal(sqlite.prepare(`SELECT COUNT(*) count FROM sqlite_master
+    WHERE type='trigger' AND name LIKE 'market_monthly_summary_sales_%'`).get()?.count, 0);
+  assert.equal(sqlite.prepare(`SELECT COUNT(*) count FROM sqlite_master
+    WHERE type='trigger' AND name LIKE 'market_monthly_summary_netshop_%'`).get()?.count, 1);
   sqlite.close();
 });
 

@@ -4,9 +4,14 @@ import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
 import { readJsonFile, writeJsonAtomic } from "../lib/jackyun/json-file";
-import { inspectTmallImportBytes } from "../lib/netshop/import-service";
+import { inspectTmallImportBytes } from "../lib/netshop/normalized-import";
+import { netshopOutletKey } from "../lib/netshop/query-contract";
 import { loadTmallStores, type TmallStore } from "../lib/netshop/tmall-store-registry";
 import type { TmallDownloadReceipt } from "./tmall-download-receipt";
+import {
+  hasExactTmallImportVerification,
+  type TmallImportVerificationProof,
+} from "./tmall-import-verification";
 
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const auditDirectory = path.join(projectRoot, "outputs", "tmall-multi-store-import");
@@ -67,16 +72,7 @@ type ImportPayload = {
     dateMin?: string | null;
     dateMax?: string | null;
   };
-  verification?: {
-    verified?: boolean;
-    parsedRowCount?: number;
-    readbackRowCount?: number;
-    dateMin?: string | null;
-    dateMax?: string | null;
-    dataset?: string;
-    platform?: string;
-    shopName?: string;
-  };
+  verification?: TmallImportVerificationProof;
 };
 
 type VerifiedReceipt = { receiptPath: string; filePath: string; receipt: TmallDownloadReceipt; bytes: Uint8Array };
@@ -133,9 +129,21 @@ export function parseRunnerArgs(argv: string[], now = new Date()): RunnerOptions
   };
 }
 
+export function buildTmallSpuCoverageUrl(baseUrl: string, store: Pick<TmallStore, "shopName">, startDate: string, endDate: string) {
+  const params = new URLSearchParams({
+    dimension: "spu",
+    platform: "天猫",
+    outlet: netshopOutletKey("天猫", store.shopName),
+    startDate,
+    endDate,
+    page: "1",
+    pageSize: "1",
+  });
+  return `${baseUrl}/api/netshop/product-performance?${params}`;
+}
+
 async function getActualDates(baseUrl: string, store: TmallStore, startDate: string, endDate: string, request: typeof fetch = fetch) {
-  const params = new URLSearchParams({ dimension: "spu", platform: "天猫", shop: store.shopName, startDate, endDate, page: "1", pageSize: "1" });
-  const response = await request(`${baseUrl}/api/netshop/product-performance?${params}`, { signal: AbortSignal.timeout(30_000) });
+  const response = await request(buildTmallSpuCoverageUrl(baseUrl, store, startDate, endDate), { signal: AbortSignal.timeout(30_000) });
   const payload = await response.json().catch(() => null) as CoveragePayload | null;
   const actualDates = payload?.coverage?.actualDates;
   if (!response.ok || payload?.requestedPeriod?.startDate !== startDate || payload.requestedPeriod.endDate !== endDate || !Array.isArray(actualDates)
@@ -196,24 +204,58 @@ export function validateImportPayload(
 ) {
   const batch = payload?.batch;
   const verification = payload?.verification;
-  const expectedStatus = payload?.status === "imported" ? 201 : payload?.status === "duplicate" ? 200 : 0;
-  if (httpStatus !== expectedStatus || !payload?.ok || (payload.status !== "imported" && payload.status !== "duplicate")
+  const importStatus = payload?.status === "imported" || payload?.status === "duplicate" ? payload.status : null;
+  const expectedStatus = importStatus === "imported" ? 201 : importStatus === "duplicate" ? 200 : 0;
+  if (httpStatus !== expectedStatus || !payload?.ok || importStatus === null
     || !batch?.id || batch.source !== "tmall_product_daily" || batch.dataset !== "spu_daily" || batch.platform !== "天猫"
     || batch.shopName !== store.shopName || batch.status !== "completed" || batch.dateMin !== businessDate || batch.dateMax !== businessDate
     || !Number.isInteger(expectedRowCount) || expectedRowCount <= 0 || batch.rowCount !== expectedRowCount
-    || !Number.isFinite(batch.warningCount) || verification?.verified !== true
-    || verification.parsedRowCount !== expectedRowCount || verification.readbackRowCount !== expectedRowCount
-    || verification.dataset !== "spu_daily" || verification.platform !== "天猫" || verification.shopName !== store.shopName
-    || verification.dateMin !== businessDate || verification.dateMax !== businessDate) {
+    || !Number.isFinite(batch.warningCount)
+    || !hasExactTmallImportVerification(verification, {
+      status: importStatus,
+      rowCount: expectedRowCount,
+      dataset: "spu_daily",
+      platform: "天猫",
+      shopName: store.shopName,
+      dateMin: businessDate,
+      dateMax: businessDate,
+    })) {
     throw new Error(payload?.message ?? `天猫 SPU 导入回查不一致 (HTTP ${httpStatus})`);
   }
   return {
-    status: payload.status,
+    status: importStatus,
     batchId: batch.id,
     rowCount: batch.rowCount!,
     warningCount: batch.warningCount!,
     warnings: (payload.warnings ?? []).map((warning) => warning.message ?? "").filter(Boolean),
   };
+}
+
+export async function postTmallImportWithNetworkRetry(options: {
+  url: string;
+  buildForm: () => FormData;
+  request?: typeof fetch;
+  wait?: (delayMs: number) => Promise<void>;
+  timeoutMs?: number;
+}) {
+  const request = options.request ?? fetch;
+  const wait = options.wait ?? ((delayMs: number) => new Promise<void>((resolve) => {
+    setTimeout(resolve, delayMs);
+  }));
+  const timeoutMs = options.timeoutMs ?? 120_000;
+  for (let attempt = 1; attempt <= 2; attempt += 1) {
+    try {
+      return await request(options.url, {
+        method: "POST",
+        body: options.buildForm(),
+        signal: AbortSignal.timeout(timeoutMs),
+      });
+    } catch (error) {
+      if (attempt >= 2 || !(error instanceof TypeError)) throw error;
+      await wait(500);
+    }
+  }
+  throw new Error("天猫导入网络重试未返回结果");
 }
 
 async function importReceipt(baseUrl: string, store: TmallStore, businessDate: string, candidate: VerifiedReceipt, request: typeof fetch = fetch) {
@@ -227,16 +269,23 @@ async function importReceipt(baseUrl: string, store: TmallStore, businessDate: s
     expectedEndDate: businessDate,
   });
   if (inspected.errors.length) throw new Error(inspected.errors.map((issue) => issue.message).join("；"));
-  const form = new FormData();
-  form.set("source", "tmall_product_daily");
-  form.set("platform", "天猫");
-  form.set("shopName", store.shopName);
-  form.set("expectedDataset", "spu_daily");
-  form.set("expectedStartDate", businessDate);
-  form.set("expectedEndDate", businessDate);
   const fileBuffer = candidate.bytes.buffer.slice(candidate.bytes.byteOffset, candidate.bytes.byteOffset + candidate.bytes.byteLength) as ArrayBuffer;
-  form.set("file", new File([fileBuffer], path.basename(candidate.filePath), { type: "application/vnd.ms-excel" }));
-  const response = await request(`${baseUrl}/api/netshop/import`, { method: "POST", body: form, signal: AbortSignal.timeout(120_000) });
+  const buildForm = () => {
+    const form = new FormData();
+    form.set("source", "tmall_product_daily");
+    form.set("platform", "天猫");
+    form.set("shopName", store.shopName);
+    form.set("expectedDataset", "spu_daily");
+    form.set("expectedStartDate", businessDate);
+    form.set("expectedEndDate", businessDate);
+    form.set("file", new File([fileBuffer], path.basename(candidate.filePath), { type: "application/vnd.ms-excel" }));
+    return form;
+  };
+  const response = await postTmallImportWithNetworkRetry({
+    url: `${baseUrl}/api/netshop/import`,
+    buildForm,
+    request,
+  });
   const payload = await response.json().catch(() => null) as ImportPayload | null;
   const imported = validateImportPayload(payload, response.status, store, businessDate, inspected.totals.rowCount);
   const actualDates = await getActualDates(baseUrl, store, businessDate, businessDate, request);

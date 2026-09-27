@@ -4,7 +4,7 @@ import path from "node:path";
 import { pathToFileURL } from "node:url";
 
 import { writeJsonAtomic } from "../lib/jackyun/json-file";
-import { inspectTmallImportBytes } from "../lib/netshop/import-service";
+import { inspectTmallImportBytes } from "../lib/netshop/normalized-import";
 import { getTmallStore } from "../lib/netshop/tmall-store-registry";
 
 export type TmallDownloadReceipt = {

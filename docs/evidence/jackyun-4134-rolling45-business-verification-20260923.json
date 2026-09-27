@@ -1,0 +1,199 @@
+{
+  "status": "verified_success",
+  "checkedAt": "2026-09-23T04:52:19.956Z",
+  "source": "authorized local read-only APIs; operations MCP unavailable",
+  "execution": {
+    "id": 4134,
+    "workflowId": "J8kY2mQ5vR7sT4pN",
+    "status": "success",
+    "mode": "manual",
+    "startedAt": "2026-09-23 04:47:28.845",
+    "stoppedAt": "2026-09-23 04:51:37.044"
+  },
+  "runId": "n8n-export-first-4134",
+  "snapshotDate": "2026-09-23",
+  "salesPeriod": {
+    "startDate": "2026-08-09",
+    "endDate": "2026-09-22"
+  },
+  "planSha256": "2b34ee086b8c0fd5beacb12c26b4c7309f27da2fa5ff183012fd2d4e9c3ea360",
+  "manifestSha256": "11075c270c28324f8785ec7afbbc2c30a30a866e11b85bf63d8c81a713ca8f94",
+  "modules": [
+    {
+      "module": "products",
+      "status": "completed",
+      "batchId": "products:63c37ac7662ef98833cc62326f882a5d0ca0d4dff51fb9e6570ce9f445aa5150",
+      "rowCount": 8517,
+      "warningCount": 0,
+      "outputSha256": "15347d161b1ee039962e8a60d7fe2b729a7f23a8166e007d375b394620611b2a",
+      "djangoReceipt": {
+        "status": "duplicate",
+        "inputSha256": "15347d161b1ee039962e8a60d7fe2b729a7f23a8166e007d375b394620611b2a",
+        "batchId": "products:63c37ac7662ef98833cc62326f882a5d0ca0d4dff51fb9e6570ce9f445aa5150",
+        "sourceKey": "products",
+        "contentHash": "e42cd04d616b1cd87d30d1fd57746669b900a965728bf1e5d847ff093011174e",
+        "rawFileHash": "37f664057647ed88d07c8a38513293ba433552b90346380f86374f9fc5c94a0e"
+      }
+    },
+    {
+      "module": "inventory",
+      "status": "completed",
+      "batchId": "9baf39e517aef91ae1211c68cdb21c42c395b7ece1b26f1dc59bfd5a4e77b217",
+      "rowCount": 23953,
+      "warningCount": 6,
+      "outputSha256": "8b0bbcd1c3ccc14070fa48065339aab2328e4237e2c1c298c6a7a2ccb7f2fb8c",
+      "djangoReceipt": {
+        "status": "imported",
+        "inputSha256": "8b0bbcd1c3ccc14070fa48065339aab2328e4237e2c1c298c6a7a2ccb7f2fb8c",
+        "batchId": "9baf39e517aef91ae1211c68cdb21c42c395b7ece1b26f1dc59bfd5a4e77b217",
+        "sourceKey": "inventory_stock",
+        "contentHash": "150d603c576df400247c74e1c2ca1eccb654a6e6446b3a25bdb1807639771448",
+        "rawFileHash": "8b0bbcd1c3ccc14070fa48065339aab2328e4237e2c1c298c6a7a2ccb7f2fb8c"
+      }
+    },
+    {
+      "module": "inventory_age",
+      "status": "completed",
+      "batchId": "inventory_age:41bbfa19c7e1caeba8f5686e52ddfa5d23c4b5b1ae80c925beadae513b0565d5",
+      "rowCount": 5747,
+      "warningCount": 0,
+      "outputSha256": "ee5aecf27341aae9db735fb3e8a2305af9c6237cfa420931b6864b2d77928763",
+      "djangoReceipt": {
+        "status": "duplicate",
+        "inputSha256": "ee5aecf27341aae9db735fb3e8a2305af9c6237cfa420931b6864b2d77928763",
+        "batchId": "inventory_age:41bbfa19c7e1caeba8f5686e52ddfa5d23c4b5b1ae80c925beadae513b0565d5",
+        "sourceKey": "inventory_age",
+        "contentHash": "00be241d9077097678531ec7f05ee0b715558eec444067d8d1f786867328571d",
+        "rawFileHash": "ee5aecf27341aae9db735fb3e8a2305af9c6237cfa420931b6864b2d77928763"
+      }
+    },
+    {
+      "module": "sales",
+      "status": "completed",
+      "batchId": "ded5253f093d46345817d82dab039477e9d23bf78dc03c6122edbf6e064a2e88",
+      "rowCount": 39614,
+      "warningCount": 115,
+      "outputSha256": "8eae50eb4591942a13d3e6fe87843bacbd888c44d495a59d6bf3a59c6195490f"
+    },
+    {
+      "module": "combos",
+      "status": "completed",
+      "batchId": "combos:4ec77bc293be6332d18d5be50e1a5b599a23642cfce193949ad739e58628b814",
+      "rowCount": 4452,
+      "warningCount": 2,
+      "outputSha256": "2d2364b0a1318573076bee00de50548edc064ce994d377c28042b90a4d88bde1",
+      "djangoReceipt": {
+        "status": "imported",
+        "inputSha256": "2d2364b0a1318573076bee00de50548edc064ce994d377c28042b90a4d88bde1",
+        "batchId": "combos:4ec77bc293be6332d18d5be50e1a5b599a23642cfce193949ad739e58628b814",
+        "sourceKey": "combos",
+        "contentHash": "2a61c6152748fa0961af11f10185cd52565b5fc048bab2ba61b3d2e9ba98084e",
+        "rawFileHash": "2d2364b0a1318573076bee00de50548edc064ce994d377c28042b90a4d88bde1"
+      }
+    }
+  ],
+  "workflowUnchanged": true,
+  "pinnedDataAbsent": true,
+  "exactBatchesVerified": true,
+  "sourceAndProcessedFileHashesVerified": true,
+  "salesFreshness": {
+    "status": "available",
+    "source": "django_postgresql",
+    "authority": "sales_single_write",
+    "revision": "36:35",
+    "timeZone": "Asia/Shanghai",
+    "currentBusinessDate": "2026-09-23",
+    "expectedThroughDate": "2026-09-22",
+    "checkedAt": "2026-09-23T04:52:19.181Z",
+    "coverage": {
+      "startDate": "2025-01-01",
+      "cutoffDate": "2026-09-22",
+      "coveredDayCount": 630,
+      "lagDaysToCurrentBusinessDate": 1,
+      "throughYesterday": true
+    },
+    "latestBatch": {
+      "id": "ded5253f093d46345817d82dab039477e9d23bf78dc03c6122edbf6e064a2e88",
+      "fileName": "销售单明细账_2026-08-09_2026-09-22_已筛选并匹配成本.xlsx",
+      "completedAt": "2026-09-23T04:51:25.399741+00:00",
+      "rowCount": 39614
+    }
+  },
+  "cleanup": {
+    "helperReady": true,
+    "helperBusy": false,
+    "helperActiveWorkflow": null,
+    "lockAbsent": true,
+    "browserPortClosed": true,
+    "nonterminalForJackyun": 0
+  },
+  "warningSummaries": [
+    {
+      "module": "inventory",
+      "total": 6,
+      "returnedWarningCount": 6,
+      "codesInReturnedSample": {
+        "RETAINED_ZERO_UNIT_COST": 1,
+        "MISSING_SPEC_SUPPLIER": 1,
+        "WAREHOUSE_NOT_COUNTED_IN_OVERVIEW": 1,
+        "MISSING_LOCKED_QUANTITY": 1,
+        "MISSING_IN_TRANSIT_QUANTITY": 1,
+        "MANUAL_SNAPSHOT_DATE": 1
+      },
+      "warningSampleTruncated": false
+    },
+    {
+      "module": "sales",
+      "total": 115,
+      "returnedWarningCount": 115,
+      "codesInReturnedSample": {
+        "ALLOCATED_AMOUNT_MISMATCH": 114,
+        "SYSTEM_COST_UNRESOLVED": 1
+      },
+      "warningSampleTruncated": false
+    },
+    {
+      "module": "combos",
+      "total": 2,
+      "returnedWarningCount": 2,
+      "codesInReturnedSample": {
+        "DUPLICATE_KEYS": 1,
+        "NORMALIZED_DISPLAY_WHITESPACE": 1
+      },
+      "warningSampleTruncated": false
+    }
+  ],
+  "authorization": "用户明确要求重新导入测试；从原 n8n 完整手动入口启动一次五表同步。",
+  "onlyOneManualExecutionStarted": true,
+  "n8nRestarted": false,
+  "servicesRestarted": false,
+  "workflowScheduleChanged": false,
+  "planVersion": 2,
+  "inclusiveSalesDays": 45,
+  "uiVerifiedSuccess": true,
+  "durationSeconds": 248.199,
+  "executionsSinceBaseline": [
+    {
+      "id": 4134,
+      "status": "success",
+      "mode": "manual"
+    }
+  ],
+  "salesVerification": {
+    "rowCount": 39614,
+    "minShipTime": "2026-08-09 07:59:35",
+    "maxShipTime": "2026-09-22 23:33:02",
+    "excludedWarehouseRows": 0,
+    "rowsNotOwnedByBatch": 0,
+    "systemCost": {
+      "sourceBatchId": "9baf39e517aef91ae1211c68cdb21c42c395b7ece1b26f1dc59bfd5a4e77b217",
+      "snapshotDate": "2026-09-23",
+      "cleanedRows": 0,
+      "matchedByWarehouseRows": 0,
+      "matchedByProductFallbackRows": 0,
+      "skippedPriceAdjustmentRows": 2,
+      "unresolvedRows": 6803
+    },
+    "unresolvedCostPolicy": "保留原始零成本继续导入；成功导入不代表成本质量已解决"
+  }
+}

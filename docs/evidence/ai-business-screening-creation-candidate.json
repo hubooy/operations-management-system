@@ -1,0 +1,13 @@
+{
+  "date":"2026-09-17","batch":48,"status":"candidate_creation_with_private_atomic_http_commit",
+  "verification":{
+    "pure":{"passed":3,"log":".runtime/batch48-screening-creation-pure.log"},
+    "postgresSixCases":{"passed":6,"failedFixture":1,"log":".runtime/ai-pg-c443a04f59c3/failure.log"},
+    "fourCombinationsCorrected":{"passed":1,"combinedSuitePassed":14,"combinedSeconds":182.278,"log":".runtime/ai-pg-bbb1de0ded78/tests.log"},
+    "initialFixtureErrors":{"count":5,"reason":"fixture catalog list shadowed helper method; renamed helper catalog_response","log":".runtime/ai-pg-93e340aa5a35/failure.log"},
+    "activeLimitFixtureCorrection":"cancel only inherited older queued report so four new combinations reach owner limit; fifth still rejected",
+    "httpCommitCallback":{"creationPassed":2,"combinedSuitePassed":6,"combinedSeconds":166.309,"log":".runtime/ai-pg-88a1fa8ad32e/tests.log"}
+  },
+  "limits":{"activePerOwner":4,"activeGlobal":24,"nodes":6},
+  "operations":{"productionBusinessReads":false,"productionWrites":false,"deployment":false,"serviceRestart":false,"paidModelCalls":false,"externalMessages":false}
+}

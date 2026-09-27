@@ -3,7 +3,7 @@ export const AI_MODEL_TOOL_BUDGET_LIMITS = {
   defaultTotalCalls: 12,
   increaseBy: 50,
   maximumRounds: 62,
-  maximumTotalCalls: 74,
+  maximumTotalCalls: 300,
 } as const;
 
 export const AI_MODEL_TOOL_BUDGET_MIGRATION_KEY = "ai-model-tool-budget-increase-2026-07-30";

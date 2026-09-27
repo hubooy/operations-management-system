@@ -25,6 +25,8 @@ description: Download, validate, and import JD Business Intelligence product-det
    npm run jdsz:product-detail-export -- --dimension SPU --start-date YYYY-MM-DD --end-date YYYY-MM-DD
    ```
 
+   日常默认 `headless=new`；首次登录或人工排障增加 `--interactive-login`。只有登录/验证码/安全验证/店铺登录身份异常会打开当前店铺可见 Chrome，任务仍失败关闭且不得自动重放确认或下载。
+
 5. 创建任务前验证：SPU 标签唯一且 `aria-selected=true`、日期起止状态和页面回显正确、下载弹窗唯一、真实单选状态为“分天下载”和“不包含对比时间”。单日区间必须连续点击同一天两次以分别建立 `start/end`；仅显示“当前：时间戳”或日历仍打开都不算成功。不得点击品类/渠道“查询”强行关闭日历；仅含“下载设置/最多 1000 行”的弹窗是实时汇总下载，必须在写 manifest 和确认前停止。
 6. 创建任务前刷新下载中心并确认 baseline 连续两次快照一致；首帧空数组不能视作已加载，真正无历史任务时第二次空快照即可继续。在最终确认前落盘 SPU manifest，提交后补入唯一新增行的任务 ID 或“标题 + 创建时间”指纹。若 manifest 仍为 `submitting`，只接管创建时间紧邻 manifest 的唯一同标题行并补写指纹；找不到或出现歧义时停止，禁止重新创建。SKU 使用独立 manifest，二者不能互用。
 7. 将最终文件名明确标记为 `SPU`，避免与相同区间的 SKU 文件混淆。

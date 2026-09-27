@@ -16,12 +16,12 @@ export type AiToolAnnotations = {
 };
 
 export type AiToolRisk = "read_only" | "write" | "dangerous";
-export const aiToolSurfaces = ["ai_chat", "market_ai", "customer_service_ai", "codex_mcp", "test"] as const;
+export const aiToolSurfaces = ["ai_chat", "dingtalk_chat", "ai_agent", "ai_sandbox", "market_ai", "customer_service_ai", "codex_mcp", "test", "business_collection", "business_agent_v2", "business_agent_budget_v1", "business_agent_integrated_v1", "business_agent_screening_v1", "business_agent_screening_promotion_v1", "business_agent_screening_promotion_market_v2"] as const;
 export type AiToolSurface = (typeof aiToolSurfaces)[number];
 export type AiToolScopePolicy = "unscoped_only" | "principal_scope" | "metadata_safe";
 export type AiToolExecutionMode = "direct" | "confirmation_required" | "background_job";
 export type AiToolExecutionPolicy = {
-  environment: "worker_inline";
+  environment: "worker_inline" | "isolated_container";
   mode: AiToolExecutionMode;
   allowedSurfaces: readonly AiToolSurface[];
   timeoutMs: number;
@@ -122,7 +122,7 @@ export function validateToolRegistry(entries: readonly AiToolEntry[]): void {
       throw new Error(`AI 工具 scope 策略无效：${entry.name}`);
     }
     const policy = entry.execution;
-    if (!policy || policy.environment !== "worker_inline") throw new Error(`AI 工具未声明受支持的执行环境：${entry.name}`);
+    if (!policy || !["worker_inline", "isolated_container"].includes(policy.environment)) throw new Error(`AI 工具未声明受支持的执行环境：${entry.name}`);
     if (!["direct", "confirmation_required", "background_job"].includes(policy.mode)) {
       throw new Error(`AI 工具执行模式无效：${entry.name}`);
     }
@@ -132,7 +132,11 @@ export function validateToolRegistry(entries: readonly AiToolEntry[]): void {
       throw new Error(`AI 工具入口范围无效：${entry.name}`);
     }
     validatePolicyInteger(entry.name, "timeoutMs", policy.timeoutMs, AI_TOOL_EXECUTION_POLICY_LIMITS.timeoutMs);
-    validatePolicyInteger(entry.name, "maxResultCharacters", policy.maxResultCharacters, AI_TOOL_EXECUTION_POLICY_LIMITS.maxResultCharacters);
+    const collector = ["get_business_source_page", "get_business_netshop_continuation_page", "get_business_sales_continuation_page", "get_business_market_continuation_page"].includes(entry.name) && policy.allowedSurfaces.length === 1
+      && policy.allowedSurfaces[0] === "business_collection" && entry.risk === "read_only"
+      && entry.allowedRoles.length === 1 && entry.allowedRoles[0] === "admin" && entry.scopePolicy === "unscoped_only";
+    validatePolicyInteger(entry.name, "maxResultCharacters", policy.maxResultCharacters,
+      collector ? { minimum: 1000, maximum: 131_072 } : AI_TOOL_EXECUTION_POLICY_LIMITS.maxResultCharacters);
     validatePolicyInteger(entry.name, "maxCallsPerRequest", policy.maxCallsPerRequest, AI_TOOL_EXECUTION_POLICY_LIMITS.maxCallsPerRequest);
     if (policy.mode === "direct" && entry.risk !== "read_only") {
       throw new Error(`写入或危险工具不能以内联直接模式执行：${entry.name}`);
@@ -156,13 +160,14 @@ export function getToolsForPrincipal(
 ): readonly AiToolEntry[] {
   return entries.filter((entry) => entry.allowedRoles.includes(principal.role)
     && entry.execution.allowedSurfaces.includes(surface)
-    && entry.execution.environment === "worker_inline"
+    && ["worker_inline", "isolated_container"].includes(entry.execution.environment)
     && entry.execution.mode === "direct"
     && entry.risk === "read_only"
     && (principal.scope === null || entry.scopePolicy !== "unscoped_only"));
 }
 
 export function getOpenAiTools(principal: AppPrincipal, surface: AiToolSurface, entries: readonly AiToolEntry[]): OpenAiToolDefinition[] {
+  if (surface === "business_collection") return [];
   return getToolsForPrincipal(principal, surface, entries).map((entry) => ({
     type: "function",
     function: { name: entry.name, description: entry.description, parameters: entry.inputSchema },
@@ -170,6 +175,7 @@ export function getOpenAiTools(principal: AppPrincipal, surface: AiToolSurface, 
 }
 
 export function getAnthropicTools(principal: AppPrincipal, surface: AiToolSurface, entries: readonly AiToolEntry[]): AnthropicToolDefinition[] {
+  if (surface === "business_collection") return [];
   return getToolsForPrincipal(principal, surface, entries).map((entry) => ({
     name: entry.name,
     description: entry.description,
@@ -238,7 +244,13 @@ export async function executeToolCallWithRegistry(
   const providerCallId = context.providerCallId?.slice(0, 200) || undefined;
   let parsedArguments: Record<string, unknown> = {};
   let argumentsForAudit: unknown = rawArguments;
+  let argumentsValidated = false;
   const summarize = options.summarizeArguments ?? ((value: unknown) => value);
+  // Only the signed internal collection surface sends the exact validated
+  // handler arguments to Django. Django persists their digest, never this
+  // object; every other surface retains the existing redacted summary.
+  const auditArguments = () => context.surface === "business_collection" && argumentsValidated
+    ? argumentsForAudit : summarize(argumentsForAudit);
   try {
     if (!entry) throw new RegistryToolError("unknown_tool", "工具不存在或未注册");
     if (!entry.allowedRoles.includes(context.principal.role)) {
@@ -247,8 +259,8 @@ export async function executeToolCallWithRegistry(
     if (!entry.execution.allowedSurfaces.includes(context.surface)) {
       throw new RegistryToolError("forbidden", "当前入口无权调用此工具");
     }
-    if (entry.execution.environment !== "worker_inline") {
-      throw new RegistryToolError("unsupported_execution_environment", "当前执行器只允许 worker_inline 工具");
+    if (!["worker_inline", "isolated_container"].includes(entry.execution.environment)) {
+      throw new RegistryToolError("unsupported_execution_environment", "当前执行器不支持该工具环境");
     }
     if (context.principal.scope !== null && entry.scopePolicy === "unscoped_only") {
       throw new RegistryToolError("forbidden", "此工具不能安全应用当前账号的数据范围");
@@ -266,6 +278,7 @@ export async function executeToolCallWithRegistry(
     parsedArguments = parseToolArguments(rawArguments);
     validateToolArguments(parsedArguments, entry.inputSchema);
     argumentsForAudit = parsedArguments;
+    argumentsValidated = true;
     const preflightAudited = await tryAudit(options.audit, {
       requestId: context.requestId,
       invocationId,
@@ -274,7 +287,7 @@ export async function executeToolCallWithRegistry(
       actorRole: context.principal.role,
       surface: context.surface,
       toolName: name,
-      arguments: summarize(argumentsForAudit),
+      arguments: auditArguments(),
       status: "started",
       durationMs: performance.now() - startedAt,
     });
@@ -293,7 +306,7 @@ export async function executeToolCallWithRegistry(
       actorRole: context.principal.role,
       surface: context.surface,
       toolName: name,
-      arguments: summarize(argumentsForAudit),
+      arguments: auditArguments(),
       status: "succeeded",
       durationMs: performance.now() - startedAt,
       result: data,
@@ -321,7 +334,7 @@ export async function executeToolCallWithRegistry(
       actorRole: context.principal.role,
       surface: context.surface,
       toolName: name,
-      arguments: summarize(argumentsForAudit),
+      arguments: auditArguments(),
       status: "failed",
       durationMs: performance.now() - startedAt,
       errorCode: code,

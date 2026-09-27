@@ -1,0 +1,69 @@
+{
+  "status": "source_not_ready",
+  "checkedAtShanghai": "2026-09-27 00:31",
+  "workflowId": "TmallLiliDaily2026",
+  "workflowActive": true,
+  "workflowVersionMatchesPublished": true,
+  "dailyCronShanghai": "10 11 * * *",
+  "originalRetry": {
+    "executionId": 4595,
+    "status": "success",
+    "meaning": "The retry coordinator created a new complete Lili execution; this is not a Lili import success."
+  },
+  "businessExecution": {
+    "executionId": 4610,
+    "mode": "webhook",
+    "status": "error",
+    "startedAtShanghai": "2026-09-27 00:29:16",
+    "stoppedAtShanghai": "2026-09-27 00:29:23",
+    "a": {
+      "status": "success",
+      "storeKey": "tmall-lili",
+      "shopName": "天猫-志高丽力专卖店",
+      "authenticationStatus": "authenticated",
+      "authenticationSource": "existing_session",
+      "targetBusinessDate": "2026-09-26",
+      "missingProductDates": ["2026-09-26"],
+      "missingPromotionDates": ["2026-09-26"]
+    },
+    "b": {
+      "status": "error",
+      "code": "SOURCE_NOT_READY",
+      "details": ["NO_DATA_ROWS", "MISSING_EXPECTED_DATES"]
+    },
+    "cRan": false,
+    "pRan": false,
+    "mRan": false,
+    "newDownloads": 0,
+    "newImports": 0
+  },
+  "retryClassification": {
+    "errorExecutionId": 4611,
+    "status": "success",
+    "newHourlyWaitCreated": false
+  },
+  "independentLocalReadOnlyImportVerification": [
+    {"source": "tmall_product_daily", "status": "completed", "rowCount": 77, "warningCount": 1, "dateMin": "2026-09-25", "dateMax": "2026-09-25"},
+    {"source": "tmall_promotion", "status": "completed", "rowCount": 44, "warningCount": 0, "dateMin": "2026-09-25", "dateMax": "2026-09-25"},
+    {"source": "tmall_product_master", "status": "completed", "rowCount": 2488, "warningCount": 3, "snapshotDate": "2026-09-25"}
+  ],
+  "resourceCleanup": {"helperReadyAndIdle": true, "liliBrowserPortClosed": true},
+  "finalService": {
+    "state": "Running",
+    "backendState": "Ready",
+    "workerState": "exact_release",
+    "releaseId": "20260926T151320Z-78a1701b451cdc4a",
+    "readyComponents": 12,
+    "postgresPidUnchanged": true,
+    "n8nPidUnchanged": true
+  },
+  "otherFindings": {
+    "userImageShowsSellerLoginExpiredAlert": true,
+    "sellerPagePreviouslyStoppedRespondingToCdp": true,
+    "n8nStop4595Attempt": "rejected_401_missing_browser_id",
+    "originalMThreadCrashReproduced": false,
+    "supervisorOutageBeforeRetry": "Recovered by existing watchdog and Worker Start engine; underlying exit cause not established."
+  },
+  "nextNaturalLiliScheduleShanghai": "2026-09-27 11:10",
+  "limitation": "The platform had not published importable 2026-09-26 product-day rows at the exact retry time. Do not infer the full workflow or master import succeeded."
+}

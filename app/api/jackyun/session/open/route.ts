@@ -1,13 +1,18 @@
 import { launchDedicatedChrome, waitForChrome } from "@/lib/jackyun/cdp-client";
 import { resolveJackyunChromeProfileDirectory } from "@/lib/jackyun/runtime-path";
 import { withJackyunRunLock } from "@/lib/jackyun/run-lock";
-import { authorizationErrorResponse, requireAppPrincipal } from "@/lib/auth/authorization";
+import {
+  authorizationErrorResponse,
+  requireAppPrincipal,
+  requireUnrestrictedDataScope,
+} from "@/lib/auth/authorization";
+import { safeApiErrorResponse } from "@/lib/http/api-error";
 
 export const runtime = "nodejs";
 
 const runtimeProcess = typeof process === "undefined" ? undefined : process;
 const runtimeCwd = typeof runtimeProcess?.cwd === "function" ? runtimeProcess.cwd() : undefined;
-const runtimeEnv = runtimeProcess?.env ?? {};
+const runtimeEnv = (runtimeProcess?.env ?? {}) as Record<string, string | undefined>;
 const chromePath = runtimeEnv.JACKYUN_CHROME_PATH ?? "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe";
 const profileDirectory = resolveJackyunChromeProfileDirectory({
   cwd: runtimeCwd,
@@ -18,7 +23,8 @@ const startUrl = "https://web.jackyun.com/login/login_web.html";
 
 export async function POST() {
   try {
-    await requireAppPrincipal(["operator", "admin"]);
+    const principal = await requireAppPrincipal(["operator", "admin"]);
+    requireUnrestrictedDataScope(principal, "吉客云登录会话", "修改");
     await withJackyunRunLock(
       { runId: "session-open", purpose: "manual_login_browser" },
       async () => {
@@ -26,10 +32,13 @@ export async function POST() {
         await waitForChrome(port);
       },
     );
-    return Response.json({ ok: true, status: "login_browser_ready", url: startUrl });
+    return Response.json({ ok: true, status: "login_browser_ready", url: startUrl }, { headers: { "cache-control": "no-store" } });
   } catch (error) {
     const authResponse = authorizationErrorResponse(error);
     if (authResponse) return authResponse;
-    return Response.json({ ok: false, message: error instanceof Error ? error.message : "打开吉客云登录页失败" }, { status: 500 });
+    return safeApiErrorResponse(error, "打开吉客云登录页失败", {
+      shape: "import",
+      headers: { "cache-control": "no-store" },
+    });
   }
 }

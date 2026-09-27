@@ -1,0 +1,81 @@
+{
+  "date": "2026-09-17",
+  "branch": "codex/ai-business-analysis-stages",
+  "baseCommit": "3737c3e2",
+  "batch": 38,
+  "status": "candidate_internal_capacity_preview_no_runtime_admission",
+  "implementation": [
+    "backend/ai_assistant/business_screening_runtime_contract.py",
+    "backend/ai_assistant/business_screening_preflight.py",
+    "backend/ai_assistant/test_business_screening_preflight.py"
+  ],
+  "protocol": {
+    "profile": "business-agent-screening-reference-v1",
+    "surface": "business_agent_screening_v1",
+    "tools": ["get_business_screening_package_v1", "get_business_screening_analysis_table_v1", "get_business_screening_budget_v1"],
+    "roles": ["commerce", "promotion", "market_b2b", "independent_review", "report"],
+    "humanReview": true,
+    "outputByteCaps": {"commerce": 2000, "promotion": 2000, "market_b2b": 2000, "independent_review": 1500, "report": 8000},
+    "intentFields": ["schemaVersion", "id", "selectionPlanDigest", "selectionPolicy", "algorithmVersion", "capacityPolicy", "packagePolicy"],
+    "sourceWorkflowInputUnchanged": true,
+    "proposedWorkflowInputIsPreviewOnly": true,
+    "registeredByThisBatch": false
+  },
+  "verification": {
+    "pure": {
+      "suite": "ai_assistant.test_business_screening_preflight",
+      "passed": 11,
+      "failed": 0,
+      "seconds": 28.770,
+      "log": ".runtime/batch38-screening-preflight-tests.log",
+      "runner": "django.setup then standard unittest.TextTestRunner; no Django database test runner",
+      "actualComponents": ["screening plan", "full pure scanner", "screening storage serialization", "five-role package codec", "budget calculator and pages", "provider.tool_frames", "fit_context"],
+      "coverage": ["complete five-role decode and matching source metadata", "fixed storage and package hashes", "complete budget binding and pagination", "strict numeric types", "old versus proposed input", "both provider protocols", "160-character call IDs", "role and screening ID arguments", "model calls rounds tokens", "double-escaped dependencies", "human input byte cap", "reject context dropping", "large complete candidates without clipping", "bounded malformed inputs"]
+    },
+    "measurements": {
+      "unit": "UTF-8 bytes",
+      "aggregation": "maximum across both protocols and quote/less-than dependency probes",
+      "protocols": ["openai_compatible", "anthropic"],
+      "callIdCharacters": 160,
+      "model": {"contextWindowTokens": 128000, "maxOutputTokens": 2048, "maxToolCalls": 40, "maxToolRounds": 20},
+      "catalog": "three explicit synthetic tool definitions from the test fixture; not a registered production catalog",
+      "caps": {"nodeInputBytes": 24576, "transcriptBytes": 196608, "perToolCalls": 8, "frames": 64},
+      "small": {
+        "fixture": "fixture(rich=True, rows=1)",
+        "fits": true,
+        "rolePages": {"commerce": 1, "promotion": 1, "market_b2b": 1, "independent_review": 1, "report": 1},
+        "transcriptBytes": {"commerce": 43226, "promotion": 40681, "market_b2b": 40118, "independent_review": 86551, "report": 97980}
+      },
+      "sevenSources55Partitions": {
+        "fixture": "fixture(rich=False, rows=2)",
+        "partitions": 55,
+        "fits": false,
+        "rolePages": {"commerce": 4, "promotion": 3, "market_b2b": 3, "independent_review": 4, "report": 4},
+        "transcriptBytes": {"commerce": 134554, "promotion": 115995, "market_b2b": 98595, "independent_review": 193559, "report": 204916},
+        "reportFailure": "transcript_limit_exceeded"
+      },
+      "larger55Partitions": {"fixture": "fixture(rich=False, rows=32)", "fits": false, "observedLimits": ["tool_limit_exceeded", "transcript_limit_exceeded", "ai_context_budget_exceeded"]},
+      "candidateClipping": false,
+      "inputMutation": false,
+      "optionalAnalysisReserved": false,
+      "remainingCapacityReturned": ["remainingTranscriptBytes", "remainingToolCalls", "remainingToolRounds"],
+      "systemAndCatalogCountedInTokenEstimate": true,
+      "fullInstructionsAndDependenciesCounted": true,
+      "fitContextDroppingRejected": true
+    },
+    "compile": true,
+    "diffCheck": true,
+    "postgresRunByThisSubtask": false
+  },
+  "resultFlags": {"previewOnly": true, "runtimeAdmissionGranted": false, "modelDispatched": false},
+  "remaining": [
+    "Exact new profile/tool/API registration with old catalogs unchanged",
+    "Immutable intent creation and owner-bound atomic ready publication",
+    "Actual scheduler and dispatch admission using current model/catalog and ready record",
+    "Per-job role binding, complete page receipts, early-final gates and unknown-dispatch recovery",
+    "Candidate/native/mapped references integrated with complete diagnosis/actions and human review",
+    "Same-evidence screening-bound HTML/XLSX volume delivery and download revalidation",
+    "Real five-Agent model quality and representative capacity acceptance"
+  ],
+  "operations": {"databaseStarted": false, "productionBusinessReads": false, "productionWrites": false, "migration": false, "deployment": false, "serviceRestart": false, "paidModelCalls": false, "externalMessages": false}
+}

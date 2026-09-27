@@ -1,26 +1,32 @@
-import { authorizationErrorResponse, requireAppPrincipal } from "@/lib/auth/authorization";
+import { authorizationErrorResponse, requireAppPrincipal, requireUnrestrictedDataScope } from "@/lib/auth/authorization";
 import { analyzeCustomerServiceConversations } from "@/lib/customer-service/analysis";
 import { resolveChatModel } from "@/lib/ai/assistant-service";
-import { getSalesDatabase } from "@/lib/sales/database";
+import { safeApiErrorResponse } from "@/lib/http/api-error";
 
 export async function GET() {
   try {
-    await requireAppPrincipal(["operator", "admin"]);
-    return Response.json({ configured: Boolean(await resolveChatModel(getSalesDatabase())) }, { headers: { "cache-control": "no-store" } });
+    const principal = await requireAppPrincipal(["operator", "admin"]);
+    requireUnrestrictedDataScope(principal, "客服 AI 分析");
+    return Response.json({ configured: Boolean(await resolveChatModel(principal)) }, { headers: { "cache-control": "no-store" } });
   } catch (error) {
     const auth = authorizationErrorResponse(error); if (auth) return auth;
-    return Response.json({ error: error instanceof Error ? error.message : "读取 AI 分析状态失败" }, { status: 500 });
+    return safeApiErrorResponse(error, "读取 AI 分析状态失败。", { headers: { "cache-control": "no-store" } });
   }
 }
 
 export async function POST(request: Request) {
   try {
     const principal = await requireAppPrincipal(["operator", "admin"]);
+    requireUnrestrictedDataScope(principal, "客服 AI 分析", "修改");
     const body = await request.json().catch(() => null) as { ids?: unknown } | null;
-    const ids = Array.isArray(body?.ids) ? body.ids.map(Number) : [];
-    return Response.json({ ok: true, ...(await analyzeCustomerServiceConversations(ids, principal)) });
+    const result = await analyzeCustomerServiceConversations(body?.ids, principal);
+    const partial = result.incomplete > 0;
+    return Response.json(
+      { ok: !partial, ...result },
+      { status: partial ? 207 : 200, headers: { "cache-control": "no-store" } },
+    );
   } catch (error) {
     const auth = authorizationErrorResponse(error); if (auth) return auth;
-    return Response.json({ error: error instanceof Error ? error.message : "AI 客服分析失败" }, { status: 400 });
+    return safeApiErrorResponse(error, "AI 客服分析失败。", { headers: { "cache-control": "no-store" } });
   }
 }

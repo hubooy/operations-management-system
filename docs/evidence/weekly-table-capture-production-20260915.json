@@ -1,0 +1,102 @@
+{
+  "version": "teruisi-weekly-table-capture-production-v1",
+  "date": "2026-09-15",
+  "databaseMigration": false,
+  "servedAssetsMatchRelease": ["ai-dingtalk-schedules-view-DjJUHxSh.js", "operations-view-CIji7Enz.js"],
+  "sourceCommit": "e09a46da",
+  "scope": "Previous complete Shanghai week; full launch-followup DingTalk preview table",
+  "validation": {
+    "isolatedPostgres": {
+      "tests": 227,
+      "passed": 225,
+      "skipped": 2,
+      "failures": 0
+    },
+    "node": {
+      "passed": 2166,
+      "cancelled": 1,
+      "skipped": 20,
+      "failures": 0,
+      "isolatedRetry": {
+        "tests": 10,
+        "passed": 10,
+        "failed": 0
+      }
+    },
+    "renderedHtml": {
+      "passed": 20,
+      "failed": 0
+    },
+    "browserFixture": "full horizontal and vertical overflow; dates, rows, loading, failed images and final identity",
+    "backendBoundary": {
+      "modules": 444,
+      "violations": 0
+    }
+  },
+  "preBackup": {
+    "id": "daily-20260914T173026Z-b3ec86d24b07",
+    "manifestSha256": "e65281180068fa373ed0e36c976dbd2aa36e656ee821490807a807d03086df7e",
+    "rehearsalId": "b7c5e9f102a3",
+    "port": 55467,
+    "contentSha256": "a889d9da8890bf17e143b8ce39db5b7318978262faa04fa359279effe5c87ff7",
+    "restoredContentMatched": true,
+    "productionDatabaseTouched": false
+  },
+  "screenshot": {
+    "weekStart": "2026-09-07",
+    "weekEnd": "2026-09-13",
+    "rows": 12,
+    "weeks": 6,
+    "dataCutoff": "2026-09-14",
+    "path": "D:/运营管理系统/outputs/钉钉周报完整截图-2026-09-07至2026-09-13.png",
+    "bytes": 105707,
+    "sha256": "005d68539e400058eda0c49d2bf45717ae70e46d2a7a8313dc90c7440364e650",
+    "deployedCodeCapture": true
+  },
+  "maintenance": {
+    "activeCloudRuns": 0,
+    "completedCloudRuns": 38,
+    "activeScheduleRuns": 0,
+    "helperBusy": false
+  },
+  "django": {
+    "manifestSha256": "39020d49c6e18331b00ef9acfd971ff57cf0688b5a28d64ce2a0131c811b6c39",
+    "appFingerprint": "45987b79cdefe4033a613d87c53eb0ddee7aecbe174f25e90d9fa6e418caa7fb"
+  },
+  "worker": {
+    "releaseId": "20260914T174729Z-5d49f49fa3939989",
+    "manifestSha256": "695bb18f3e139c97d342371d7569cfd5782b80321a46a0bd3918d9d7481d3c7d",
+    "planSha256": "76932b5ef595f488d1086305c3781f751fcb352af085a8fdd45a1f5d09f10792"
+  },
+  "task": {
+    "id": "ding-schedule-16eb85c3-b092-4629-a168-74ff335885c2",
+    "name": "新品上新周销量趋势",
+    "contentType": "screenshot",
+    "sourceRef": "workflow:launch-followup",
+    "version": 2,
+    "cadence": "daily",
+    "hour": 9,
+    "minute": 0,
+    "enabled": true,
+    "nextRunAt": "2026-09-15T01:00:00+00:00",
+    "historyPreserved": true,
+    "runTriggered": false
+  },
+  "postBackup": {
+    "id": "daily-20260914T175517Z-2339dccd07f2",
+    "manifestSha256": "a35e2c3acb7e59a0302be14464214a3fe43aeafbd9a374b8682e04ded011728f",
+    "contentSha256": "d4de20885cd6fd5a813a707406700edf64a466cc65edbd6c224d7a146b8d241f",
+    "verified": true,
+    "eDriveArchive": "E:/运营管理系统业务数据/daily-20260914T175517Z-2339dccd07f2",
+    "archiveFiles": 3,
+    "archiveHashesMatch": true
+  },
+  "system": {
+    "state": "Running",
+    "backendState": "Ready",
+    "workerState": "exact_release",
+    "supervisor": "running/healthy/all_components_ready",
+    "receiver": "running/connected"
+  },
+  "status": "adopted_without_live_image_delivery"
+}

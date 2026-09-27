@@ -1,0 +1,54 @@
+{
+  "date": "2026-09-17",
+  "batch": 50,
+  "status": "candidate_fixed_screening_real_queue_and_atomic_http",
+  "verification": {
+    "execution": {
+      "cases": 7,
+      "initialPassed": 6,
+      "initialFixtureError": "Immutable tool identity correctly rejected the test's attempted SQL corruption; revised test preserves the database guard and injects a corrupt read separately",
+      "initialLog": ".runtime/ai-pg-db7a04005694/failure.log",
+      "correctedCasePassed": true,
+      "correctedCombinedSuite": {"passed": 9, "seconds": 158.777, "log": ".runtime/ai-pg-85cba69e34d5/tests.log"}
+    },
+    "signedHttp": {
+      "executionCases": 4,
+      "fileCases": 2,
+      "passed": 6,
+      "seconds": 166.309,
+      "log": ".runtime/ai-pg-88a1fa8ad32e/tests.log",
+      "readerWriterSettingsAndActualTestAuthority": true,
+      "heavyReadsOutsideAtomic": true,
+      "businessAndCompletedReceiptRollback": true,
+      "processingReceiptPreserved": true,
+      "fixtureCorrection": "Activate synthetic authority with the actual required migration verification metadata; no production authority guard was mocked"
+    },
+    "childBindingAndFormalPipeline": {
+      "passed": 4,
+      "bindingCases": 3,
+      "pipelineCases": 1,
+      "seconds": 114.917,
+      "log": ".runtime/ai-pg-c5493384642b/tests.log",
+      "actualInitialParallelJobs": 3,
+      "actualCompletedIndependentJobs": 5,
+      "humanApproval": true,
+      "formalHtmlAndXlsx": true,
+      "allFileAndFullManifestChunksReassembledAndShaVerified": true,
+      "providerBoundary": "synthetic responses; no real model reasoning acceptance",
+      "reviewCorrection": "Check actual child membership, role, input, guidance, owner, policy and completed output before copying any dependency result"
+    },
+    "legacyReportsAndParallel": {
+      "passed": 33,
+      "seconds": 19.892,
+      "log": ".runtime/ai-pg-5d4fadbdda37/tests.log"
+    },
+    "legacyIntegratedAndBudget": {
+      "passed": 9,
+      "seconds": 80.813,
+      "log": ".runtime/ai-pg-bacdf983e5fb/tests.log",
+      "fiveAgentMappedAndBudgetFilePaths": true
+    },
+    "independentFinalReview": {"remainingBlockers": 0, "productionOrPaidCalls": false}
+  },
+  "operations": {"productionBusinessReads": false, "productionWrites": false, "deployment": false, "serviceRestart": false, "paidModelCalls": false, "externalMessages": false}
+}

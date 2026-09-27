@@ -1,0 +1,251 @@
+{
+  "version": "teruisi-ai-natural-question-recovery-v1",
+  "adoptedAt": "2026-09-09T18:04:02.1835415+08:00",
+  "scope": "Local Django AI chat reliability; existing Worker release retained",
+  "source": {
+    "sourceCommit": "1cc5f8e7a0e87a0c51eee099864f66faedb96595",
+    "files": [
+      {
+        "file": "chat.py",
+        "sha256": "eaeb571dcbefa7d9dce9db47fb7dcf5c17979f6ca6a57bd4f73726ccfb14a938"
+      },
+      {
+        "file": "transport.py",
+        "sha256": "b9d62e16b0e4e8a183b5ae3c8c7c3b320aadc4077c0eeda12fae91bed52b7fea"
+      },
+      {
+        "file": "provider.py",
+        "sha256": "00a087ed58dede83beb3a3fed45784b45bfb0ee7787615074007492c9d5be6da"
+      }
+    ],
+    "manifestSha256": "8f1e77c8caef853d24f8c6172f045c9bc1006fd362f77dc77ce69bd07ad94862"
+  },
+  "observedFailures": [
+    {
+      "receiptId": "ai-chat-request-8d568683-b07a-4753-9823-07fa486e5af4",
+      "createdAt": "2026-09-09 09:31:50.440131+00:00",
+      "completedAt": "2026-09-09 09:34:53.718212+00:00",
+      "elapsedSeconds": 183.278081,
+      "lastProviderStartedAt": "2026-09-09 09:33:53.714599+00:00",
+      "lastProviderElapsedSeconds": 60.003613,
+      "status": "unknown",
+      "terminalCode": "ai_chat_result_unknown"
+    },
+    {
+      "receiptId": "ai-chat-request-60a8d86a-32fd-4380-a5b8-59dc5ab92e0a",
+      "createdAt": "2026-09-09 09:10:57.962530+00:00",
+      "completedAt": "2026-09-09 09:13:33.699162+00:00",
+      "elapsedSeconds": 155.736632,
+      "lastProviderStartedAt": "2026-09-09 09:12:33.697326+00:00",
+      "lastProviderElapsedSeconds": 60.001836,
+      "status": "unknown",
+      "terminalCode": "ai_chat_result_unknown"
+    }
+  ],
+  "diagnosis": "Market tool queries succeeded. Both final provider calls exhausted the configured 60-second socket timeout; generic exception mapping hid the cause.",
+  "configuration": {
+    "id": "ai-model-2d82fdcf-221e-44c1-b277-3f59d99f8eba",
+    "previousVersion": 2,
+    "version": 3,
+    "previousTimeoutMs": 60000,
+    "timeoutMs": 120000,
+    "apiKeyChanged": false
+  },
+  "changes": [
+    "Default model single-call timeout 60s to 120s within existing contract; 260s conversation budget retained",
+    "Concise complete market overview; reuse overview summaries and clarify ambiguous filters",
+    "Distinct timeout and JSON errors; provider success/failure duration audit",
+    "Explicit notice for provider output truncation; never automatically replay unknown paid requests"
+  ],
+  "backup": {
+    "status": "completed",
+    "backupId": "daily-20260909T094336Z-9e151db97420",
+    "backupDirectory": "D:\\teruisi-runtime\\django-sales\\backups\\postgres-daily\\daily-20260909T094336Z-9e151db97420",
+    "manifestSha256": "49970505f72aab03172119facca980caadc4f1c5ebd7089b32ebfd4bd9613a60",
+    "dumpSha256": "a1db8da5eca2748090f3986781fa68910db70573da8a9d07d523d44a6607b197",
+    "contentSha256": "0554c428178af96fb2cf29db8fed662b44c7afdf47215ff955db18f2f371d88e",
+    "completedAt": "09/09/2026 17:45:07",
+    "serviceStateChanged": false
+  },
+  "existingSameDayIsolatedRecoveryProof": {
+    "version": "teruisi-postgres-restore-rehearsal-v1",
+    "status": "completed",
+    "rehearsalId": "092609a1d5f3",
+    "startedAt": "2026-09-09T15:24:24.2745437+08:00",
+    "completedAt": "2026-09-09T15:28:54.7480527+08:00",
+    "backupId": "daily-20260909T072216Z-61df53b173e2",
+    "backupManifestSha256": "4a27cd8e59772bdd8f4aa782ce8ccdff4943373598d0671910a69d6dc8fc9d38",
+    "dumpSha256": "305e87bf1c1ea3a619d121a994af6a242144dc220fdd854be624c0f2e07566c8",
+    "expectedContentSha256": "0490b8c29fc172981d2967e15d2122ac1bb771cddf6c8070ce52d3d3c00fa6b6",
+    "restoredContentSha256": "0490b8c29fc172981d2967e15d2122ac1bb771cddf6c8070ce52d3d3c00fa6b6",
+    "isolatedPort": 55432,
+    "productionDatabaseTouched": false,
+    "serviceStateChanged": false,
+    "cleanupStatus": "isolated_data_removed"
+  },
+  "recoveryProofScope": "Existing successful isolated recovery of the same schema from earlier maintenance today; no schema or business fact changes in this update.",
+  "validation": {
+    "build": "passed",
+    "diffCheck": "passed",
+    "migrationDryRun": "No changes detected",
+    "aiTests": {
+      "skipped": 1,
+      "total": 67,
+      "failed": 0,
+      "passed": 66
+    },
+    "typescriptUnit": {
+      "skipped": 21,
+      "total": 2053,
+      "failed": 0,
+      "passed": 2032
+    },
+    "backendBoundary": "passed"
+  },
+  "configurationOnlyAcceptance": {
+    "replyCharacters": 597,
+    "conversationId": "ai-conversation-7220d0ab-42e5-405d-8f8b-ea1ec32a4797",
+    "elapsedMs": 166114,
+    "persisted": true,
+    "completedAt": "2026-09-09T17:43:54.7555735+08:00",
+    "assistantMessageId": "ai-msg-6f215028-a881-498e-890d-3e2284153470",
+    "status": "completed",
+    "clientRequestId": "ai-natural-market-timeout-20260909-0945"
+  },
+  "configurationOnlyLimitation": "Natural prompt returned after timeout adjustment, but the long report was truncated; this was not used as final acceptance.",
+  "browserAcceptance": {
+    "status": "completed",
+    "prompt": "切肉机市场分析",
+    "surface": "Actual browser AI chat form",
+    "uiStatus": "消息已发送并完成服务端同步。",
+    "clientRequestId": "7734ce1b-a30e-490c-9a8d-7b5a4ef1211c",
+    "receiptId": "ai-chat-request-d488dcb9-7683-4bf6-839c-ddccc2412bcc",
+    "conversationId": "ai-conversation-55e19084-398b-420e-98f8-d470e28f93d0",
+    "assistantMessageId": "ai-msg-b6496145-9506-434a-aed2-f292d1eb9b73",
+    "elapsedSeconds": 141.215377,
+    "replyCharacters": 1111,
+    "persisted": true,
+    "truncated": false,
+    "completedAt": "2026-09-09 10:00:38.194278+00:00",
+    "providerCalls": 4,
+    "audit": [
+      {
+        "tool_name": "ai_chat_provider",
+        "status": "started",
+        "duration_ms": 0,
+        "error_code": null
+      },
+      {
+        "tool_name": "ai_chat_provider",
+        "status": "succeeded",
+        "duration_ms": 11734,
+        "error_code": null
+      },
+      {
+        "tool_name": "get_market_workspace_data",
+        "status": "started",
+        "duration_ms": 1,
+        "error_code": null
+      },
+      {
+        "tool_name": "get_market_workspace_data",
+        "status": "succeeded",
+        "duration_ms": 148,
+        "error_code": null
+      },
+      {
+        "tool_name": "ai_chat_provider",
+        "status": "started",
+        "duration_ms": 0,
+        "error_code": null
+      },
+      {
+        "tool_name": "ai_chat_provider",
+        "status": "succeeded",
+        "duration_ms": 53312,
+        "error_code": null
+      },
+      {
+        "tool_name": "get_market_overview",
+        "status": "started",
+        "duration_ms": 0,
+        "error_code": null
+      },
+      {
+        "tool_name": "get_market_overview",
+        "status": "failed",
+        "duration_ms": 17173,
+        "error_code": "tool_timeout"
+      },
+      {
+        "tool_name": "ai_chat_provider",
+        "status": "started",
+        "duration_ms": 0,
+        "error_code": null
+      },
+      {
+        "tool_name": "ai_chat_provider",
+        "status": "succeeded",
+        "duration_ms": 12485,
+        "error_code": null
+      },
+      {
+        "tool_name": "get_market_overview",
+        "status": "started",
+        "duration_ms": 0,
+        "error_code": null
+      },
+      {
+        "tool_name": "get_market_overview",
+        "status": "succeeded",
+        "duration_ms": 4028,
+        "error_code": null
+      },
+      {
+        "tool_name": "ai_chat_provider",
+        "status": "started",
+        "duration_ms": 0,
+        "error_code": null
+      },
+      {
+        "tool_name": "ai_chat_provider",
+        "status": "succeeded",
+        "duration_ms": 41938,
+        "error_code": null
+      },
+      {
+        "tool_name": "ai_question",
+        "status": "succeeded",
+        "duration_ms": 0,
+        "error_code": null
+      }
+    ],
+    "limitation": "Initial broad market query hit tool timeout; a subsequent narrower date query succeeded and the model returned a complete overview."
+  },
+  "status": {
+    "version": "teruisi-operations-system-control-v2",
+    "state": "Running",
+    "backendState": "Ready",
+    "workerState": "exact_release",
+    "releaseId": "20260909T082314Z-77039002a8332b1d",
+    "supervisorProcessId": 40656,
+    "portProcessId": 31196,
+    "url": "http://localhost:3000/",
+    "reason": null,
+    "components": {
+      "core": true,
+      "finance": true,
+      "netshop": true,
+      "market": true,
+      "products": true,
+      "workflow": true,
+      "inventory": true,
+      "customerService": true,
+      "accessControl": true,
+      "erpReference": true,
+      "bi": true,
+      "ai": true
+    },
+    "checkedAt": "2026-09-09T17:57:43.9258762+08:00"
+  }
+}

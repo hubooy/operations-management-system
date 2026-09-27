@@ -1,0 +1,126 @@
+{
+  "status": "verified_success",
+  "businessDate": "2026-09-25",
+  "authorization": [
+    "用户明确授权发布 4163 精确关闭规则并从原 n8n 工作流完整补跑一次。",
+    "用户明确授权将另一项目的 190 个闲置隔离测试目录移到 E 盘留存，以完成发布前独立恢复演练。"
+  ],
+  "originalFailure": {
+    "executionId": 4163,
+    "mode": "trigger",
+    "status": "error",
+    "startedAtShanghai": "2026-09-25 00:10:04",
+    "stoppedAtShanghai": "2026-09-25 00:10:19",
+    "failedNode": "B·接口校验与五表下载",
+    "errorClass": "waiting_login DPAPI binding",
+    "exportsEmpty": true,
+    "exportIntentAbsent": true,
+    "businessEffectPathsAbsent": 4,
+    "automaticRetryStoppedWithoutNewBusinessExecution": true
+  },
+  "loginPreflight": {
+    "credentialReady": true,
+    "authenticatedByCurrentUserDpapi": true,
+    "tenantVerified": true,
+    "businessExportTriggered": false,
+    "underlyingMidnightBindingCauseConfirmed": false
+  },
+  "sourceAndRelease": {
+    "sourceCommit": "c69573ac",
+    "mergedAndPushedMain": true,
+    "focusedTestsPassed": 58,
+    "targetedLintPassed": true,
+    "rotationPlanSha256": "2b7500b2b9be7e36b02b23287ee510f5541bc6c3555ff824aefd35802e794265",
+    "predecessorReleaseId": "20260923T160810Z-66a1c457be10d0fa",
+    "releaseId": "20260924T170238Z-67f8e2ddf8f93e16",
+    "manifestSha256": "0b7e6d7e7679fdba80f4fe5dd9dd2abbc82f4c8c832d9a3048da293e86a4aa30",
+    "effectiveReleaseVerified": true,
+    "djangoAppRedeployed": false,
+    "n8nRestarted": false
+  },
+  "storageRecovery": {
+    "firstIsolatedRestoreFailedForDiskSpace": true,
+    "productionDatabaseTouchedByFailedRestore": false,
+    "isolatedArchive": "E:\\TERUISI-isolated-test-archive\\ai-business-analysis-20260925",
+    "archiveVerificationSha256": "e219bfaeda8079cb9b23a6aa19befec3d63d94ac5bb196b7e35e5922b1cb5dc6",
+    "directoryCount": 190,
+    "fileCount": 328896,
+    "logicalBytes": 15710041850,
+    "aggregateFileSha256": "948a38cf1901a780a35752c2a4ddad5b0da0989f9dceb2bebe90271518347c8f",
+    "verifiedCopiesOnE": 190,
+    "originalDirectoriesMovedToE": 190,
+    "remainingOriginalDirectoriesOnD": 0
+  },
+  "beforeBackup": {
+    "backupId": "daily-20260924T210526Z-740a795034f8",
+    "manifestSha256": "e261a3485e33f2ebc30f52a1bfc9cedd4532f767df7c863fe4ae3809c355b4c5",
+    "contentSha256": "ebecbb0388b203a6a8a3727f6b88887eadfed7da25d4492cbb2740907041adbb",
+    "independentRestoreId": "bfc6cd820858",
+    "independentRestoreCompleted": true,
+    "restoredContentMatches": true,
+    "archivedToEWithThreeFileHashesVerified": true
+  },
+  "closure": {
+    "executionId": 4163,
+    "status": "closed_before_business",
+    "reason": "audited_4163_dpapi_before_api_exports",
+    "receiptSha256": "557e0314476fc24426511ac139a5dbd105200981384858e8dc4c86b7d47b9239",
+    "verifiedByDeployedValidator": true,
+    "originalPlanAndActiveBytesUnchangedAtClosure": true,
+    "originalN8nErrorRetained": true
+  },
+  "businessRun": {
+    "executionId": 4165,
+    "mode": "manual",
+    "status": "success",
+    "startedAtShanghai": "2026-09-25 05:28:16",
+    "stoppedAtShanghai": "2026-09-25 05:32:54",
+    "runId": "n8n-export-first-4165",
+    "planPhase": "completed",
+    "salesStartDate": "2026-08-11",
+    "salesEndDate": "2026-09-24",
+    "snapshotDate": "2026-09-25",
+    "planSha256": "88a1e2f71f8b4f1043386fe15a6a7a80cf439c1dfbb275f8ce8ef31359abef59",
+    "manifestSha256": "23a9a3a6494c43f43e50fc0028a7c020e30f31b639338f52b89d4ecd70a624bf"
+  },
+  "independentReadOnlyBatchVerification": {
+    "ok": true,
+    "modules": [
+      { "module": "products", "rowCount": 8522, "warningCount": 0, "batchId": "products:35a3d4c77c789928ffbf7fdcf9e660a7e8c98b559e18a8e0709c0deb54ede1bc" },
+      { "module": "inventory", "rowCount": 23968, "warningCount": 6, "batchId": "56600daff6ab48dffe620bc75c12cb596d9c60173dcd25fae959358cb31a6114" },
+      { "module": "inventory_age", "rowCount": 5712, "warningCount": 0, "batchId": "inventory_age:b9b6d9236c1b2367182c6907f2c5d1b1182397ceeb4c0f55946a07030b4864ff" },
+      { "module": "sales", "rowCount": 39948, "warningCount": 118, "batchId": "1f58cb3b64e6cc4cfb792eada615619be4cca22cb56301cd27164c060ef8b4fe" },
+      { "module": "combos", "rowCount": 4454, "warningCount": 2, "batchId": "combos:544a352d7fb3c44496a195ea198bc38541fb0602b93cdcdd8f8853227ade4d54" }
+    ]
+  },
+  "salesFreshness": {
+    "source": "django_postgresql",
+    "revision": "38:38",
+    "cutoffDate": "2026-09-24",
+    "throughYesterday": true,
+    "latestBatchMatchesRun": true
+  },
+  "afterBackup": {
+    "backupId": "daily-20260924T213619Z-90d26a3f2735",
+    "manifestSha256": "bfd42d5319d465dc0180a799a30a1c254384d8571e2678f05c33deedd17cf17f",
+    "contentSha256": "03821c837d32758d2393396c9a68386be64945e46a3ac2edc7b131fd1fc660aa",
+    "verified": true,
+    "archivedToEWithThreeFileHashesVerified": true
+  },
+  "finalState": {
+    "system": "Running",
+    "backend": "Ready",
+    "worker": "exact_release",
+    "componentsReady": 12,
+    "workflowActive": true,
+    "workflowPublishedVersionUnchanged": true,
+    "helperReadyAndIdle": true,
+    "jackyunLockAbsent": true,
+    "dedicatedBrowserPortClosed": true,
+    "nonterminalJackyunExecutions": 0,
+    "watchdogNaturalRoundsSucceededAtShanghai": ["2026-09-25 05:40", "2026-09-25 05:41"],
+    "oneTransientUnresponsiveSnapshotAfterImport": true,
+    "laterSystemProbesAndStatusRunning": true
+  },
+  "authorizationLimit": "本轮授权仅覆盖上述 4163 精确恢复、受控发布和一次完整业务补跑，不授予未来维护、闭合或补跑授权。"
+}

@@ -1,0 +1,36 @@
+{
+  "date": "2026-09-13",
+  "status": "validated_candidate_not_deployed",
+  "baseCommit": "16822763bcf30ee7f10450ddd5adb1efc795ea67",
+  "branch": "codex/market-annotation-throughput",
+  "scope": ["market annotation queue", "owner authorization", "bounded parallel inference", "review selection", "batched commit"],
+  "readOnlyDiagnosis": {
+    "source": "local same-origin market API; operations MCP unavailable",
+    "runningPlans": 5,
+    "sampledPlanTotal": 9330,
+    "sampledPlanFailed": 5386,
+    "sampledFailure": "账号或数据权限已变化",
+    "note": "Counts describe the initial observation, not a full error census or current data coverage."
+  },
+  "verification": {
+    "postgresMarketTests": { "passed": 51, "failed": 0, "port": 55447, "syntheticDataOnly": true, "clusterStopped": true },
+    "leastPrivilege": { "readerQueriesIncludingDispatch": "passed", "writerClaimComplete": "passed", "readerForbiddenActionsRejected": 5, "writerForbiddenActionsRejected": 4 },
+    "unitSuite": { "passed": 2129, "failed": 0, "skipped": 23 },
+    "focusedMarketSuite": { "passed": 105, "failed": 0 },
+    "finalRunnerAndDispatchTests": { "passed": 11, "failed": 0 },
+    "lint": { "errors": 0, "unrelatedExistingWarnings": 11 },
+    "productionBoundary": { "checkedModules": 430, "violations": 0 },
+    "isolatedBuild": "passed using repository npm run build",
+    "diffCheck": "passed",
+    "typecheck": "Full tsc --noEmit still reports errors in untouched legacy tests and tools; it is not reported as passing. No errors were reported in the modified application/market modules."
+  },
+  "limits": {
+    "productionWrites": 0,
+    "paidModelCalls": 0,
+    "productionRestarts": 0,
+    "productionMigrations": 0,
+    "oldTasksReplayed": 0,
+    "realProviderThroughputMeasured": false,
+    "mergeOrDeploymentPerformed": false
+  }
+}

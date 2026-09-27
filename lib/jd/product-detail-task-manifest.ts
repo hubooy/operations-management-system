@@ -5,10 +5,13 @@ export type JdProductDetailTaskRow = {
 };
 
 export type JdProductDetailTaskManifest = {
-  version: 1;
+  version: 1 | 2;
   status: "submitting" | "pending";
   dimension: "SKU" | "SPU";
   shopId: string;
+  /** Version 2 binds recovery to the controlled registry entry and visible store. */
+  storeKey?: string;
+  shopName?: string;
   startDate: string;
   endDate: string;
   baseline: string[];
@@ -45,9 +48,15 @@ export function selectManifestTaskRow(
   return matches[0] ?? null;
 }
 
-export function assertJdProductDetailTaskManifest(manifest: JdProductDetailTaskManifest, input: Pick<JdProductDetailTaskManifest, "dimension" | "shopId" | "startDate" | "endDate">) {
-  if (manifest.version !== 1 || manifest.dimension !== input.dimension
+export function assertJdProductDetailTaskManifest(
+  manifest: JdProductDetailTaskManifest,
+  input: Pick<JdProductDetailTaskManifest, "dimension" | "shopId" | "startDate" | "endDate"> & { storeKey: string; shopName: string },
+) {
+  if ((manifest.version !== 1 && manifest.version !== 2) || manifest.dimension !== input.dimension
     || manifest.shopId !== input.shopId || manifest.startDate !== input.startDate || manifest.endDate !== input.endDate) {
     throw new Error("JD product-detail task manifest does not match this requested export.");
+  }
+  if (manifest.version === 2 && (manifest.storeKey !== input.storeKey || manifest.shopName !== input.shopName)) {
+    throw new Error("JD product-detail task manifest does not match this controlled store identity.");
   }
 }

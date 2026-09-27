@@ -1,0 +1,121 @@
+{
+  "version": "teruisi-jackyun-headless-dpapi-production-v1",
+  "date": "2026-09-17",
+  "status": "adopted_and_completed",
+  "authorization": "User explicitly approved short service maintenance and rerunning the original Jackyun workflow in this conversation.",
+  "sourceCommit": "2db371506b22c29161fce297a6639876d36a63b2",
+  "candidateEvidence": "jackyun-headless-dpapi-candidate-20260917.json",
+  "diagnosis": {
+    "failedExecutionId": "2621",
+    "observedFailureStage": "DPAPI initialize before any export or import",
+    "reproducedDefect": "Console encoding setters throw invalid-handle IOException in a detached Windows PowerShell child. Explicit UTF-8 standard streams work without a console.",
+    "productionOriginalInnerExceptionAvailable": false,
+    "credentialsChanged": false,
+    "securityBoundariesPreserved": ["CurrentUser DPAPI", "tenant/profile binding", "ACL checks", "login/security challenge failure closure", "no uncertain POST replay"]
+  },
+  "release": {
+    "maintenanceId": "2db3715017174a7c9a03000000000001",
+    "maintenanceStartedAt": "2026-09-17T03:39:18.0022366+08:00",
+    "systemReadyAt": "2026-09-17T03:51:45.9280847+08:00",
+    "predecessorReleaseId": "20260916T020314Z-21945e0e18c57de1",
+    "releaseId": "20260916T194114Z-df8da4ea6ac81cf6",
+    "manifestSha256": "bac85632ae51f769156f0c935e2ac98a322daf0528d80296e845115aceb169f6",
+    "planSha256": "a43df33b1c1531ed1f0a1340074ff4cec3db2a83cc3d588e7a398a8ac73112a1",
+    "successorSha256": "31debc5922b558787771af244c7257a0c9a3478d67b7f86f1071eb89257e0097",
+    "consumptionSha256": "f3f67946f6054bc00beaec3534a339c67e64616e2657d6c1b9f518c9456a2ae2",
+    "startupBindingSha256": "6ff027a82434ead2aba60b28f3d86446ef40f97e14225db40b237c757af25da1",
+    "fourChangedRuntimeSourcesMatchCandidateSnapshot": true,
+    "databaseMigrations": [],
+    "djangoRedeployed": false,
+    "n8nRestarted": false,
+    "n8nProcessId": 8796,
+    "originalWorkflowDefinitionUnchanged": true,
+    "workflowVersionId": "e11b4c5e-dcd7-4517-b3ea-5f3cb4b8f2d7"
+  },
+  "recovery": {
+    "originalExecutionId": "2621",
+    "proposalSha256": "d3e4f3f76d8ccb64d6a4f9b1c01ad432608b81da7f815158514d6edfefd80642",
+    "closureSha256": "a5f2482b7999081d4e1241a60292a2a1fdc6a3103f76fc282ba44687f2aa5e44",
+    "closure": "create-only closed_before_business; original plan and failed execution retained",
+    "newExecutionId": "2667",
+    "workflowId": "J8kY2mQ5vR7sT4pN",
+    "mode": "webhook",
+    "trigger": "One POST to the existing registered loopback full-workflow entry, beginning with the shared helper claim",
+    "startedAt": "2026-09-17T03:52:19.317+08:00",
+    "stoppedAt": "2026-09-17T03:55:20.082+08:00",
+    "status": "success",
+    "snapshotDate": "2026-09-17",
+    "salesStartDate": "2026-09-01",
+    "salesEndDate": "2026-09-16"
+  },
+  "imports": [
+    { "module": "products", "batchId": "products:05b0d5de479e051f5849c6247afa55803571dcc45473f1e7891d00a3eb3bc125", "rowCount": 8506, "warningCount": 0, "receiptStatus": "imported" },
+    { "module": "inventory", "batchId": "4693004b55f950a1d50f83275f6c0242b6f8948a2453266382161e538e570409", "rowCount": 22792, "warningCount": 5, "receiptStatus": "imported", "snapshotDate": "2026-09-17" },
+    { "module": "inventory_age", "batchId": "inventory_age:c8d9d85aaa08c97381b525370d2aab7e39945cb9e3ad5b62221844d5cd003f69", "rowCount": 5684, "warningCount": 0, "receiptStatus": "imported", "snapshotDate": "2026-09-17" },
+    { "module": "sales", "batchId": "a3054ab9420f16230f5193361046453fec6476a7b04331936e38684582192514", "rowCount": 14461, "warningCount": 46, "startDate": "2026-09-01", "endDate": "2026-09-16" },
+    { "module": "combos", "batchId": "combos:b5ca97dffdc507d1e69e12e4ded097beb6d54bbedac54438fb7cfb35921f08f3", "rowCount": 4431, "warningCount": 2, "receiptStatus": "duplicate", "note": "Unchanged normalized content reused the prior exact completed batch; no duplicate business write." }
+  ],
+  "warnings": {
+    "inventoryCodes": ["MANUAL_SNAPSHOT_DATE", "MISSING_IN_TRANSIT_QUANTITY", "MISSING_LOCKED_QUANTITY", "MISSING_SPEC_SUPPLIER", "WAREHOUSE_NOT_COUNTED_IN_OVERVIEW"],
+    "salesWarningCount": 46,
+    "salesReturnedSample": { "count": 20, "codes": ["ALLOCATED_AMOUNT_MISMATCH"] },
+    "comboCodes": ["DUPLICATE_KEYS", "NORMALIZED_DISPLAY_WHITESPACE"],
+    "disposition": "Importer warnings retained under existing business rules; no source-data correction or warning suppression was performed."
+  },
+  "independentVerification": {
+    "checkedAt": "2026-09-17T03:55:52.721+08:00",
+    "source": "Authorized local read-only APIs; operations MCP unavailable",
+    "allFiveExactBatchesCompleted": true,
+    "currentInventoryBatch": true,
+    "receiptContentAndRawFileHashesMatch": true,
+    "salesCoverageCutoffDate": "2026-09-16",
+    "salesThroughYesterday": true,
+    "salesRowsNotOwnedByBatch": 0,
+    "salesExcludedWarehouseRows": 0,
+    "nonWhitelistSalesChannels": []
+  },
+  "maintenanceEffects": {
+    "marketRunsBeforeMaintenance": 38,
+    "allMarketRunsCompleted": true,
+    "helperIdleBeforeMaintenance": true,
+    "nonterminalN8nExecutionsBeforeMaintenance": 0,
+    "weeklyChecksFailedDuringMaintenance": ["2664", "2665", "2666"],
+    "weeklyNaturalRecoveryExecution": "2668",
+    "weeklyNaturalRecoveryStatus": "success",
+    "weeklyMessagesManuallyReplayed": false
+  },
+  "backups": {
+    "before": {
+      "backupId": "daily-20260916T193043Z-f3cff0d7dff4",
+      "manifestSha256": "54332cf491bc327b6b6469c6eecfbe0525224c69ca808dc4852fb495739cd57a",
+      "dumpSha256": "41c878854b9db06d990122ef3eb17d374af5e452d398ad16f727f082e08848e3",
+      "contentSha256": "fe194b89a692572990320d690f9d3edec73f74d340de176e90094263c20093b6",
+      "restoreRehearsalId": "2db371501717",
+      "restorePort": 55642,
+      "restoredContentMatched": true,
+      "productionDatabaseTouchedByRehearsal": false,
+      "archivedThreeFilesToEWithHashesMatched": true
+    },
+    "after": {
+      "backupId": "daily-20260916T195642Z-c6114cb8db6b",
+      "manifestSha256": "34c44098a42fbc6360a503b6f41735cd523d609ccb912cf8393d818d7464e6a0",
+      "dumpSha256": "2004ddd3515c90b8430f80a486b6d4a1f10a258c6661616d467de89de7b12b44",
+      "contentSha256": "b4d0dc271fe8c28fbadaf33ed9310a5a5149719593f56ade3e68ed2430914d2b",
+      "verifyCompleted": true,
+      "archivedThreeFilesToEWithHashesMatched": true,
+      "originalOnDRetained": true
+    }
+  },
+  "finalRuntime": {
+    "state": "Running",
+    "backendState": "Ready",
+    "workerState": "exact_release",
+    "allTwelveComponentsReady": true,
+    "startupVerified": true,
+    "helperReadyAndIdle": true,
+    "dingTalkReceiverRunningAndConnected": true,
+    "maintenanceMarker": null,
+    "nonterminalN8nExecutionsAfterCompletion": 0
+  },
+  "localEvidenceDirectory": "D:\\codex-artifacts\\jackyun-headless-dpapi-20260917"
+}

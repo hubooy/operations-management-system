@@ -1,0 +1,134 @@
+{
+  "task": "Publish Xiaote pandas dataset analysis in a controlled container",
+  "recordedAt": "2026-09-11T16:28:00+08:00",
+  "status": "production_adopted",
+  "source": {
+    "commit": "1b9397c37d07358cf4f01b2b87e7625d0db4ba06",
+    "branch": "main",
+    "remote": "origin/main",
+    "releaseSourceRoot": "D:\\运营管理系统-sales-django-release",
+    "releaseSourceClean": true
+  },
+  "verification": {
+    "preRelease": "pandas-sandbox-pre-release-20260911.json",
+    "finalRuntimeRegression": {
+      "passed": 42,
+      "failed": 0,
+      "skipped": 0
+    },
+    "production": {
+      "systemState": "Running",
+      "backendState": "Ready",
+      "workerState": "exact_release",
+      "componentsReady": 12,
+      "homeStatus": 200,
+      "publicToolEntries": 1,
+      "pandasReadiness": "ready",
+      "smoke": {
+        "requestId": "pandas-production-8e9d6a09375348f286b8472ee6ae6521",
+        "publicPrincipalVerified": true,
+        "centralToolAndPolicyDigestVerified": true,
+        "freshnessQueriedFirst": true,
+        "source": "local_authoritative_system_dataset",
+        "dataset": "rows_ai_models",
+        "columns": [
+          "id",
+          "status"
+        ],
+        "dataCutoffDate": null,
+        "sourceRows": 5,
+        "sourceComplete": true,
+        "resultMatchesAuthoritativeCount": true,
+        "cleanupVerified": true,
+        "toolAuditVerified": true,
+        "invalidHostPathRejected": true
+      },
+      "supervisor": {
+        "desiredState": "running",
+        "health": "healthy",
+        "workingDirectory": "D:\\teruisi-runtime\\django-sales",
+        "historicalLastRestartAttempt": "2026-09-09T00:45:13.0213155+00:00",
+        "releaseTriggeredAutomaticRestart": false
+      },
+      "workerFullVerification": "Passed the mandatory immutable-release verification in controlled Start; final total control reports exact_release."
+    }
+  },
+  "django": {
+    "deploymentManifestSha256": "d337f14cf64caad2e8efe01c9ecb00f34f2cdca8abc65af6d4f11c2c41dfb0dc",
+    "appFingerprint": "e9803056d3e2815796a4484a1e5f4531493f9a6c3fa988a8792dfc6a3c059d8f",
+    "fileCount": 2018,
+    "newSchemaMigration": false
+  },
+  "worker": {
+    "releaseId": "20260911T081342Z-6b7a6a81082f9a5b",
+    "manifestSha256": "fa1ff44c85aa3ab64fb276738742d9964590dd9aa9b9484e9f79fe5d43dfc8ff",
+    "planSha256": "65f4694956d11994b68ce2d76e92045615536159548ca913457218d90f42a68f",
+    "successorSha256": "961c88adf306bef15b19a64bdbbdf5f493875b3a14c64b957d8a62aadbbe0f79",
+    "consumptionSha256": "6d4ce996623f7f051ed441614a6c5fed42d4df4c95baa8272e9f57071e892275",
+    "startupBindingSha256": "38503e7ff308893baf051bf728abcb805c3daaec8777c4b3874ba6960e65597f",
+    "startupVerified": true,
+    "predecessorReleaseId": "20260911T035534Z-683ed76137b93190",
+    "successorCount": 131
+  },
+  "pandas": {
+    "image": "sha256:b3b657aa2ff87fe3d8cef0bc26872a3f4253fafe82f839980c82edb64c01cffe",
+    "runnerSha256": "3173042892d14e6edcf8465b8ea97e878f307e08fdb1c81d2752f82e03dcc610",
+    "distro": "TERUISI-Pandas",
+    "rootlessDocker": "29.8.0",
+    "windowsKeyProtection": "CurrentUser DPAPI; independent channel, restricted ACL",
+    "linuxInstall": "root-owned immutable package; private nonroot config; systemd unit",
+    "managedKeepalive": true,
+    "statusIncludesSignedProbe": true,
+    "automaticBrokerRecovery": false
+  },
+  "backups": {
+    "before": {
+      "backupId": "daily-20260911T080426Z-a9ca4acc6f33",
+      "manifestSha256": "3863282a9a5c1dd046b64610a027663477e331d8066b78c8eb14d67e944c7e0b",
+      "dumpSha256": "d14e5dcf8443bfb11210f6d8e533eefd9f81c3c39884c42eaefad71e7c0650c5",
+      "contentSha256": "df0bb3d28eea639cde159174c9226d161f0c6ef49f6c368ba26bda67aa965e17",
+      "verified": true
+    },
+    "beforeRestore": {
+      "status": "completed",
+      "rehearsalId": "8d2a7c5e1f39",
+      "isolatedPort": 55448,
+      "expectedContentSha256": "df0bb3d28eea639cde159174c9226d161f0c6ef49f6c368ba26bda67aa965e17",
+      "restoredContentSha256": "df0bb3d28eea639cde159174c9226d161f0c6ef49f6c368ba26bda67aa965e17",
+      "productionDatabaseTouched": false,
+      "serviceStateChanged": false,
+      "cleanupStatus": "isolated_data_removed"
+    },
+    "after": {
+      "backupId": "daily-20260911T082442Z-ab81624653f5",
+      "manifestSha256": "a89f20f3dec3cab6d8a0903246a22a076527c4231889ef490bef62d3239d1790",
+      "dumpSha256": "4d62feca1d4160afa9c0072a370248e0dfcc5aace5ceb5db4d00042dd5dbf775",
+      "contentSha256": "dbe6aba785ab4a9862d46ba2fdf4bf66058b37446ec466ad25bfbead13dfbcaa",
+      "verified": true
+    },
+    "afterRestore": {
+      "performed": false,
+      "basis": "No schema migration or backup/restore operator change; successful independent pre-release restore plus separately verified post-release backup."
+    }
+  },
+  "retainedLogs": {
+    "directory": "D:\\teruisi-runtime\\pandas-sandbox\\adoption-20260911",
+    "sha256": {
+      "isolated-postgres-ai-tests.log": "f5833c700ead76c0507c07bc197c947d4fe40526cd8d93a448800b31db7a9cb5",
+      "pandas-final-runtime-tests.log": "12cca6feb9b2ef82ca954bdbbe4a4d49727e2d86fc25f7cea1df8ff280376d4f",
+      "pandas-production-smoke.log": "e7f02c1ef5008bd4888d3812d2f78a4286d4fe2f98c9e1c145e027176d614dc3",
+      "pandas-release-build.log": "4f05492dd36e08a30f7a0ce66c9f6cb5de9e2fd2cba612b05c44d2ff15742838",
+      "pandas-worker-apply.log": "121b1c44a98b6049e7eac83eb97d1b311038aa6d06135a6a82e889a1675e2a2a",
+      "pandas-worker-plan.log": "bbf80c6b76179609918daa19e6bc808c3c278c385e488576165c7cbfb6d2a705"
+    }
+  },
+  "boundaries": {
+    "paidModelCalls": 0,
+    "realDingTalkMessages": 0,
+    "businessFactWrites": false,
+    "aiAuditAndReceiptWrites": true,
+    "noD1Fallback": true,
+    "noHostPythonExecution": true,
+    "modelAutoToolChoiceEndToEndNotTested": true
+  }
+}

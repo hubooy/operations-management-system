@@ -1,0 +1,61 @@
+{
+  "adoptedAt": "2026-09-11T10:25:42+08:00",
+  "verifiedAt": "2026-09-11T10:30:35+08:00",
+  "implementationCommit": "e7fa647a",
+  "task": "TERUISI-n8n-Service",
+  "launcher": {
+    "path": "D:\\teruisi-runtime\\n8n-launcher\\da6896ea50aa85806d6c0632f672b9582917cdfec23f88729ed1acacc93606ba\\Teruisi.N8n.NoConsole.exe",
+    "binarySha256": "5fcedde648fd6162e1745a9408eedcb996ca9794e2f5ee9b738ee2dd510b9d40",
+    "peSubsystem": "Windows GUI",
+    "childCreation": "CREATE_NO_WINDOW | CREATE_SUSPENDED; NUL stdio; kill-on-close job before resume",
+    "taskNonActionSettingsUnchanged": true,
+    "retryInterval": "PT1M",
+    "retryCount": 999,
+    "processesVerifiedWithoutConsoleWindow": [4784, 42864, 32352, 39324]
+  },
+  "commandNodePatch": {
+    "n8nVersion": "2.32.7",
+    "beforeSha256": "19e52aa39d6a3e576bc64ef0dc0b8ac4caf0453ba1aac46965e61c2ecdc0421e",
+    "afterSha256": "848f261c13b66b4df792aff008300dd78800d4813eed7202ef840e0a15386ce1",
+    "windowsDetached": false,
+    "commandAndTaskkillWindowsHide": true,
+    "stdoutStderrExitCodeAndCancellationVerified": true,
+    "startupVerificationEnabled": true,
+    "backupRoot": "D:\\teruisi-runtime\\n8n-launcher\\vendor-patches"
+  },
+  "validation": {
+    "syntheticWindowsLauncherIntegration": "passed: no console, native descendants, Unicode paths, exits 0/37/64, scheduler stop tree",
+    "commandPatchTests": "3 passed, including real Windows PowerShell",
+    "existingN8nRegressionTests": "6 passed",
+    "actualInstalledCommandModuleProbe": "stdout/stderr, exit 37, abort and hidden taskkill passed; synthetic commands only",
+    "healthz": "ok",
+    "listener": "127.0.0.1:5678",
+    "activeWorkflowCount": 13,
+    "workflowDefinitionsUnchanged": true,
+    "webhooksUnchanged": true,
+    "ownersUnchanged": true,
+    "sqliteBackupIntegrity": "ok"
+  },
+  "naturalRun": {
+    "workflowId": "NewProductWeeklyDingTalk2026",
+    "cadence": "*/5 * * * *",
+    "executionId": "956",
+    "mode": "trigger",
+    "status": "success",
+    "startedAt": "2026-09-11T10:30:00.039+08:00",
+    "stoppedAt": "2026-09-11T10:30:20.918+08:00",
+    "observedAt": "2026-09-11T10:29:45.383+08:00/2026-09-11T10:30:35.402+08:00",
+    "commandPid": 43188,
+    "powerShellPid": 49572,
+    "newWindowsTerminalOrOpenConsoleProcesses": 0,
+    "manuallyTriggered": false
+  },
+  "operationalNotes": [
+    "Only n8n startup and its command-node Windows spawn options were changed; no Worker or Django deployment or restart.",
+    "At 10:25 the active-execution gate refused shutdown; adoption proceeded only after the execution ended.",
+    "An earlier launcher attempt used an inaccessible scheduled-task path and incomplete stdio handling; the original service was restored before the corrected build was adopted.",
+    "Backups, original task XML, module bytes and local detailed verification remain retained.",
+    "n8n upgrades must re-review the installed command node; startup refuses a missing or incompatible patch.",
+    "A Windows internal invisible conhost process is not a visible console window."
+  ]
+}

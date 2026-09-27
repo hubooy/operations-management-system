@@ -1,0 +1,419 @@
+{
+  "legacySurfaces": [
+    "ai_chat",
+    "dingtalk_chat",
+    "ai_agent",
+    "ai_sandbox",
+    "market_ai",
+    "customer_service_ai",
+    "codex_mcp",
+    "test",
+    "business_collection",
+    "business_agent_v2",
+    "business_agent_budget_v1"
+  ],
+  "legacyToolNames": [
+    "get_business_budget_directory_v1",
+    "get_business_budget_analysis_table_v1",
+    "get_business_budget_scenarios_v1",
+    "get_business_evidence_directory_v2",
+    "get_business_analysis_table_v2",
+    "run_pandas_analysis",
+    "get_system_dataset_records",
+    "describe_system_datasets",
+    "query_system_dataset",
+    "search_system_knowledge",
+    "search_personal_memory",
+    "list_my_agent_jobs",
+    "list_my_agent_workflows",
+    "get_data_freshness",
+    "get_sales_summary",
+    "get_sales_category_analysis",
+    "get_inventory_health",
+    "get_product_performance",
+    "list_replenishment_plans",
+    "get_customer_service_conversations",
+    "get_market_overview",
+    "get_market_sku_trend",
+    "get_market_brand_analysis",
+    "get_market_price_band_analysis",
+    "get_market_pending_review_summary",
+    "get_business_source_page",
+    "get_netshop_analysis_records",
+    "get_sales_analysis_records",
+    "get_market_analysis_records",
+    "get_business_analysis_table",
+    "get_business_budget_scenarios",
+    "get_business_analysis_evidence",
+    "get_netshop_performance",
+    "search_system_data",
+    "get_finance_page_data",
+    "get_inventory_page_data",
+    "get_netshop_page_data",
+    "get_workflow_page_data",
+    "get_import_status",
+    "get_automation_run_status",
+    "get_market_workspace_data",
+    "get_operating_settings_summary",
+    "describe_analysis_datasets",
+    "run_analysis_plan"
+  ],
+  "registry": {
+    "count": 44,
+    "sha256": "48a2b381df15c7e107199fec9ec494e5c68f4080f60ebecee9d1267840653d9e"
+  },
+  "catalogs": {
+    "ai_chat/viewer/unscoped": {
+      "count": 18,
+      "sha256": "fd72da2559c20058d73a884089b12322333420130ca573e1173e1d769f326832"
+    },
+    "ai_chat/viewer/scoped": {
+      "count": 13,
+      "sha256": "21df8c15b7e40c0e7a1377c13f9bfd1a69122c5ecd702647099075c47950a910"
+    },
+    "ai_chat/analyst/unscoped": {
+      "count": 31,
+      "sha256": "3df08c901679d6942ab9b5e2c8f7580065b7109bc2f98130bf1344a05522a6fc"
+    },
+    "ai_chat/analyst/scoped": {
+      "count": 16,
+      "sha256": "2690f244a7a0941dd10a8f4d037bfb6e964fce594fba5d3b1b94dccb102af26f"
+    },
+    "ai_chat/operator/unscoped": {
+      "count": 31,
+      "sha256": "3df08c901679d6942ab9b5e2c8f7580065b7109bc2f98130bf1344a05522a6fc"
+    },
+    "ai_chat/operator/scoped": {
+      "count": 16,
+      "sha256": "2690f244a7a0941dd10a8f4d037bfb6e964fce594fba5d3b1b94dccb102af26f"
+    },
+    "ai_chat/admin/unscoped": {
+      "count": 38,
+      "sha256": "a9110d7244ea0aeebefc315e534e0cab9d0d97cbf6af64afda4bffdf7d35c354"
+    },
+    "ai_chat/admin/scoped": {
+      "count": 16,
+      "sha256": "2690f244a7a0941dd10a8f4d037bfb6e964fce594fba5d3b1b94dccb102af26f"
+    },
+    "dingtalk_chat/viewer/unscoped": {
+      "count": 15,
+      "sha256": "2612bd2c84b308ee286afac1f7cc8723d80fd9582a7a4be741de95ca29828e6e"
+    },
+    "dingtalk_chat/viewer/scoped": {
+      "count": 10,
+      "sha256": "129678035b61c189c537da8612a95764e1a687732ae1fb3235a4b7e1c3a3fad2"
+    },
+    "dingtalk_chat/analyst/unscoped": {
+      "count": 27,
+      "sha256": "6390bb2285649b3717f04765bd18e88dceaee70f388dec785590d963e5bf80e6"
+    },
+    "dingtalk_chat/analyst/scoped": {
+      "count": 12,
+      "sha256": "6185a8011422397c099ce55b0635c10be5bf2505055077b7310ca2f01f0143a7"
+    },
+    "dingtalk_chat/operator/unscoped": {
+      "count": 27,
+      "sha256": "6390bb2285649b3717f04765bd18e88dceaee70f388dec785590d963e5bf80e6"
+    },
+    "dingtalk_chat/operator/scoped": {
+      "count": 12,
+      "sha256": "6185a8011422397c099ce55b0635c10be5bf2505055077b7310ca2f01f0143a7"
+    },
+    "dingtalk_chat/admin/unscoped": {
+      "count": 28,
+      "sha256": "03d2dc1c06d3d516fc5ddf9d7aa8ad540bc14a2eb2e442e8c104f700187e11c7"
+    },
+    "dingtalk_chat/admin/scoped": {
+      "count": 12,
+      "sha256": "6185a8011422397c099ce55b0635c10be5bf2505055077b7310ca2f01f0143a7"
+    },
+    "ai_agent/viewer/unscoped": {
+      "count": 18,
+      "sha256": "fd72da2559c20058d73a884089b12322333420130ca573e1173e1d769f326832"
+    },
+    "ai_agent/viewer/scoped": {
+      "count": 13,
+      "sha256": "21df8c15b7e40c0e7a1377c13f9bfd1a69122c5ecd702647099075c47950a910"
+    },
+    "ai_agent/analyst/unscoped": {
+      "count": 31,
+      "sha256": "3df08c901679d6942ab9b5e2c8f7580065b7109bc2f98130bf1344a05522a6fc"
+    },
+    "ai_agent/analyst/scoped": {
+      "count": 16,
+      "sha256": "2690f244a7a0941dd10a8f4d037bfb6e964fce594fba5d3b1b94dccb102af26f"
+    },
+    "ai_agent/operator/unscoped": {
+      "count": 31,
+      "sha256": "3df08c901679d6942ab9b5e2c8f7580065b7109bc2f98130bf1344a05522a6fc"
+    },
+    "ai_agent/operator/scoped": {
+      "count": 16,
+      "sha256": "2690f244a7a0941dd10a8f4d037bfb6e964fce594fba5d3b1b94dccb102af26f"
+    },
+    "ai_agent/admin/unscoped": {
+      "count": 38,
+      "sha256": "a9110d7244ea0aeebefc315e534e0cab9d0d97cbf6af64afda4bffdf7d35c354"
+    },
+    "ai_agent/admin/scoped": {
+      "count": 16,
+      "sha256": "2690f244a7a0941dd10a8f4d037bfb6e964fce594fba5d3b1b94dccb102af26f"
+    },
+    "ai_sandbox/viewer/unscoped": {
+      "count": 1,
+      "sha256": "3c5f6d535e6b8054b96c08977553cd4db898f00ac7e72f383de527ff25e2ca25"
+    },
+    "ai_sandbox/viewer/scoped": {
+      "count": 1,
+      "sha256": "3c5f6d535e6b8054b96c08977553cd4db898f00ac7e72f383de527ff25e2ca25"
+    },
+    "ai_sandbox/analyst/unscoped": {
+      "count": 2,
+      "sha256": "f4ec3f475e4f43afcca340e56aad57e1a56a579d45d95b513bec9228b6ceb659"
+    },
+    "ai_sandbox/analyst/scoped": {
+      "count": 2,
+      "sha256": "f4ec3f475e4f43afcca340e56aad57e1a56a579d45d95b513bec9228b6ceb659"
+    },
+    "ai_sandbox/operator/unscoped": {
+      "count": 2,
+      "sha256": "f4ec3f475e4f43afcca340e56aad57e1a56a579d45d95b513bec9228b6ceb659"
+    },
+    "ai_sandbox/operator/scoped": {
+      "count": 2,
+      "sha256": "f4ec3f475e4f43afcca340e56aad57e1a56a579d45d95b513bec9228b6ceb659"
+    },
+    "ai_sandbox/admin/unscoped": {
+      "count": 2,
+      "sha256": "f4ec3f475e4f43afcca340e56aad57e1a56a579d45d95b513bec9228b6ceb659"
+    },
+    "ai_sandbox/admin/scoped": {
+      "count": 2,
+      "sha256": "f4ec3f475e4f43afcca340e56aad57e1a56a579d45d95b513bec9228b6ceb659"
+    },
+    "market_ai/viewer/unscoped": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "market_ai/viewer/scoped": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "market_ai/analyst/unscoped": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "market_ai/analyst/scoped": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "market_ai/operator/unscoped": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "market_ai/operator/scoped": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "market_ai/admin/unscoped": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "market_ai/admin/scoped": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "customer_service_ai/viewer/unscoped": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "customer_service_ai/viewer/scoped": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "customer_service_ai/analyst/unscoped": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "customer_service_ai/analyst/scoped": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "customer_service_ai/operator/unscoped": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "customer_service_ai/operator/scoped": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "customer_service_ai/admin/unscoped": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "customer_service_ai/admin/scoped": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "codex_mcp/viewer/unscoped": {
+      "count": 18,
+      "sha256": "fd72da2559c20058d73a884089b12322333420130ca573e1173e1d769f326832"
+    },
+    "codex_mcp/viewer/scoped": {
+      "count": 13,
+      "sha256": "21df8c15b7e40c0e7a1377c13f9bfd1a69122c5ecd702647099075c47950a910"
+    },
+    "codex_mcp/analyst/unscoped": {
+      "count": 30,
+      "sha256": "4077b42ab4fe35866e61f27bea1cd94e1ea69af6f72e59c442a499c8da11790e"
+    },
+    "codex_mcp/analyst/scoped": {
+      "count": 15,
+      "sha256": "c7f4834a546a7ed21e5b5506e049192fef3e748641259001597194973744f049"
+    },
+    "codex_mcp/operator/unscoped": {
+      "count": 30,
+      "sha256": "4077b42ab4fe35866e61f27bea1cd94e1ea69af6f72e59c442a499c8da11790e"
+    },
+    "codex_mcp/operator/scoped": {
+      "count": 15,
+      "sha256": "c7f4834a546a7ed21e5b5506e049192fef3e748641259001597194973744f049"
+    },
+    "codex_mcp/admin/unscoped": {
+      "count": 37,
+      "sha256": "736891d06890c10818b4cf1677a862e3815d1fa3f679e5aaf8892949e73df8c9"
+    },
+    "codex_mcp/admin/scoped": {
+      "count": 15,
+      "sha256": "c7f4834a546a7ed21e5b5506e049192fef3e748641259001597194973744f049"
+    },
+    "test/viewer/unscoped": {
+      "count": 18,
+      "sha256": "fd72da2559c20058d73a884089b12322333420130ca573e1173e1d769f326832"
+    },
+    "test/viewer/scoped": {
+      "count": 13,
+      "sha256": "21df8c15b7e40c0e7a1377c13f9bfd1a69122c5ecd702647099075c47950a910"
+    },
+    "test/analyst/unscoped": {
+      "count": 31,
+      "sha256": "3df08c901679d6942ab9b5e2c8f7580065b7109bc2f98130bf1344a05522a6fc"
+    },
+    "test/analyst/scoped": {
+      "count": 16,
+      "sha256": "2690f244a7a0941dd10a8f4d037bfb6e964fce594fba5d3b1b94dccb102af26f"
+    },
+    "test/operator/unscoped": {
+      "count": 31,
+      "sha256": "3df08c901679d6942ab9b5e2c8f7580065b7109bc2f98130bf1344a05522a6fc"
+    },
+    "test/operator/scoped": {
+      "count": 16,
+      "sha256": "2690f244a7a0941dd10a8f4d037bfb6e964fce594fba5d3b1b94dccb102af26f"
+    },
+    "test/admin/unscoped": {
+      "count": 38,
+      "sha256": "a9110d7244ea0aeebefc315e534e0cab9d0d97cbf6af64afda4bffdf7d35c354"
+    },
+    "test/admin/scoped": {
+      "count": 16,
+      "sha256": "2690f244a7a0941dd10a8f4d037bfb6e964fce594fba5d3b1b94dccb102af26f"
+    },
+    "business_collection/viewer/unscoped": {
+      "count": 1,
+      "sha256": "f40ed46d9f4238c6cb8ba1528f91b914122df50e88e8858866b40041ff725604"
+    },
+    "business_collection/viewer/scoped": {
+      "count": 1,
+      "sha256": "f40ed46d9f4238c6cb8ba1528f91b914122df50e88e8858866b40041ff725604"
+    },
+    "business_collection/analyst/unscoped": {
+      "count": 1,
+      "sha256": "f40ed46d9f4238c6cb8ba1528f91b914122df50e88e8858866b40041ff725604"
+    },
+    "business_collection/analyst/scoped": {
+      "count": 1,
+      "sha256": "f40ed46d9f4238c6cb8ba1528f91b914122df50e88e8858866b40041ff725604"
+    },
+    "business_collection/operator/unscoped": {
+      "count": 1,
+      "sha256": "f40ed46d9f4238c6cb8ba1528f91b914122df50e88e8858866b40041ff725604"
+    },
+    "business_collection/operator/scoped": {
+      "count": 1,
+      "sha256": "f40ed46d9f4238c6cb8ba1528f91b914122df50e88e8858866b40041ff725604"
+    },
+    "business_collection/admin/unscoped": {
+      "count": 2,
+      "sha256": "6b419898211faca7acc42555400d0e8874e2ff63a7ed43ea0e355310ac741cd8"
+    },
+    "business_collection/admin/scoped": {
+      "count": 1,
+      "sha256": "f40ed46d9f4238c6cb8ba1528f91b914122df50e88e8858866b40041ff725604"
+    },
+    "business_agent_v2/viewer/unscoped": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "business_agent_v2/viewer/scoped": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "business_agent_v2/analyst/unscoped": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "business_agent_v2/analyst/scoped": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "business_agent_v2/operator/unscoped": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "business_agent_v2/operator/scoped": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "business_agent_v2/admin/unscoped": {
+      "count": 2,
+      "sha256": "8fe980218d345df11189231ab97a8df1d9838d4dd74e6b58fdde7be060527d19"
+    },
+    "business_agent_v2/admin/scoped": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "business_agent_budget_v1/viewer/unscoped": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "business_agent_budget_v1/viewer/scoped": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "business_agent_budget_v1/analyst/unscoped": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "business_agent_budget_v1/analyst/scoped": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "business_agent_budget_v1/operator/unscoped": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "business_agent_budget_v1/operator/scoped": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "business_agent_budget_v1/admin/unscoped": {
+      "count": 3,
+      "sha256": "c960ed25d39c0c6f1145bc56472b1f2e105052aec68273826c0fc0a8429cdfd1"
+    },
+    "business_agent_budget_v1/admin/scoped": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    }
+  }
+}

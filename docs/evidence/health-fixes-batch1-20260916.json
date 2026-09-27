@@ -1,0 +1,208 @@
+{
+  "createdAt": "2026-09-15T19:53:35.939504+00:00",
+  "baseCommit": "be2c4dff85ba80e2c8b1020dd04b1d25c158f29c",
+  "branch": "codex/health-fixes-batch1-20260916",
+  "scope": [
+    "H03",
+    "H04",
+    "H05"
+  ],
+  "sourceFiles": [
+    {
+      "path": "app/customer-service-view.tsx",
+      "sha256": "00007899ab31337ba2486bbdaa974dacb4fc52e2e02d3e86ba6ef2ed3402ce43"
+    },
+    {
+      "path": "backend/market/admin.py",
+      "sha256": "99ce8f8cd235f65e44ea3f1726877a48b0de49fb13103a180b9874d6414ceb58"
+    },
+    {
+      "path": "backend/market/system_kpis.py",
+      "sha256": "1423e59ba415c58ed1199e235dc7771463d1dbdfae5d8c1c60cec7dcd1b9687d"
+    },
+    {
+      "path": "backend/market/tests/test_api.py",
+      "sha256": "fa56dd0567348d6a3cb5fbc9c2acd1e9e6abc3ba47cd83c5e9f846fa314217fc"
+    },
+    {
+      "path": "backend/market/tests/test_system_kpis.py",
+      "sha256": "b843c98ea64e99bbe1c411966af1c047420bfded5747ffd9451e4cf8aa9e7f31"
+    },
+    {
+      "path": "backend/system_datasets/manifest.json",
+      "sha256": "77fb5348adc5ae99451137972bd3a13cee25e984304027517b021195310b5081"
+    },
+    {
+      "path": "backend/system_datasets/tests.py",
+      "sha256": "528389eeebf084e62369498faa55a35f603699efb4a08311c60bb857c6ee6ed9"
+    },
+    {
+      "path": "tests/customer-save-recovery-interaction.test.ts",
+      "sha256": "daf678af4b6205434fb7c552b6b6f65423ae5f8436ccb18392b6dd78790006cc"
+    }
+  ],
+  "tests": {
+    "relatedPostgreSQL": {
+      "tests": 193,
+      "seconds": 65.361,
+      "passed": true,
+      "failures": []
+    },
+    "finalFocusedPostgreSQL": {
+      "tests": 19,
+      "seconds": 1.472,
+      "passed": true,
+      "failures": []
+    },
+    "sqliteCompatibility": {
+      "tests": 18,
+      "seconds": 0.255,
+      "passed": true,
+      "failures": []
+    },
+    "signedApi": {
+      "tests": 1,
+      "seconds": 0.144,
+      "passed": true,
+      "failures": []
+    },
+    "nodeFull": {
+      "tests": 2211,
+      "pass": 2190,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 21,
+      "duration_ms": 396156.3799
+    },
+    "artifactBudgetRecheck": {
+      "tests": 5,
+      "pass": 5,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "duration_ms": 1193.2699
+    },
+    "customerBrowserFinal": {
+      "tests": 1,
+      "pass": 1,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "duration_ms": 2631.6604
+    },
+    "renderedHtml": {
+      "tests": 20,
+      "pass": 20,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "duration_ms": 964.4568
+    }
+  },
+  "checks": {
+    "build": 0,
+    "lint": {
+      "exit": 0,
+      "errors": 0,
+      "existingWarnings": 11
+    },
+    "changedLint": 0,
+    "backendBoundary": 0,
+    "migrationDryRun": "No changes detected"
+  },
+  "performance": {
+    "source": "final implementation; select-only role; read-only transaction",
+    "syntheticOnly": true,
+    "identities": 50000,
+    "snapshots": 100000,
+    "resultRows": 25000,
+    "singleUser": [
+      {
+        "sample": 0,
+        "elapsedMs": 916.57,
+        "correct": true
+      },
+      {
+        "sample": 1,
+        "elapsedMs": 938.03,
+        "correct": true
+      },
+      {
+        "sample": 2,
+        "elapsedMs": 938.95,
+        "correct": true
+      }
+    ],
+    "fourUsers": [
+      {
+        "sample": 0,
+        "elapsedMs": 1063.49,
+        "correct": true
+      },
+      {
+        "sample": 1,
+        "elapsedMs": 1063.55,
+        "correct": true
+      },
+      {
+        "sample": 2,
+        "elapsedMs": 1080.76,
+        "correct": true
+      },
+      {
+        "sample": 3,
+        "elapsedMs": 1100.83,
+        "correct": true
+      },
+      {
+        "sample": 4,
+        "elapsedMs": 1148.39,
+        "correct": true
+      },
+      {
+        "sample": 5,
+        "elapsedMs": 1163.96,
+        "correct": true
+      },
+      {
+        "sample": 6,
+        "elapsedMs": 1121.68,
+        "correct": true
+      },
+      {
+        "sample": 7,
+        "elapsedMs": 1105.95,
+        "correct": true
+      }
+    ]
+  },
+  "leastPrivilege": {
+    "selectOnlyPassed": true,
+    "readOnlyTransactionPassed": true,
+    "writeDenied": true,
+    "tables": [
+      "market_master_identities",
+      "market_price_snapshots",
+      "market_image_cache",
+      "market_annotation_items",
+      "market_annotation_prompt_versions",
+      "market_subcategory_taxonomy"
+    ]
+  },
+  "limitations": [
+    "Synthetic PostgreSQL workload; not production latency or model execution.",
+    "Initial Node run skipped one stale-artifact check; final artifact tests 5/5 passed. 20 historical D1 specifications remain skipped.",
+    "Runtime and random credentials are excluded; no raw customer data."
+  ],
+  "noProductionRelease": true,
+  "noBusinessReplay": true,
+  "noModelCalls": true,
+  "noMigration": true,
+  "cleanup": {
+    "checkedAt": "2026-09-16T03:53:35.8157985+08:00",
+    "port": 55451,
+    "remainingListeners": [],
+    "privateCredentialsRemoved": true,
+    "productionServicesChanged": false
+  }
+}

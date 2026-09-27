@@ -1,0 +1,87 @@
+{
+  "date": "2026-09-10",
+  "status": "candidate_verified_not_deployed",
+  "branch": "codex/dingtalk-group-ai",
+  "base": "2abd205b",
+  "changes": [
+    "Separate administrator AI group settings with optimistic versioning and audit",
+    "Replies and acknowledgements route to authenticated source group; DM stays DM",
+    "27 explicit read-only tools with dataset discovery over 12 system data domains",
+    "Nested dataset calls preserve dingtalk_chat authorization and audit surface"
+  ],
+  "validation": {
+    "django": {
+      "tests": 137,
+      "passed": 136,
+      "skipped": 1
+    },
+    "node": {
+      "tests": 2075,
+      "passed": 2055,
+      "skipped": 20,
+      "failed": 0
+    },
+    "finalFocusedNode": {
+      "tests": 21,
+      "passed": 21
+    },
+    "build": "passed in isolated worktree",
+    "renderedBuild": {
+      "tests": 20,
+      "passed": 20
+    },
+    "lint": {
+      "errors": 0,
+      "existingWarnings": 9
+    },
+    "migrationDrift": "No changes detected",
+    "backendBoundary": {
+      "modules": 406,
+      "violations": 0
+    },
+    "postgres": {
+      "status": "passed",
+      "port": 55457,
+      "aiTables": 49,
+      "oldConversationRetained": true,
+      "readerWriterReadiness": true,
+      "negativePermissions": true,
+      "immutableIdentities": true,
+      "dumpRestoreDigest": "4b91be329b67691b1c5e6cb24e4f04a71d5b3841913ac1294ae3388a816db184",
+      "productionTouched": false,
+      "externalMessages": 0,
+      "tests": 82,
+      "evidence": "isolated runtime log; no production data"
+    },
+    "preview": {
+      "url": "http://127.0.0.1:3100/?module=settings&view=dingtalk",
+      "httpStatus": 200,
+      "data": "synthetic only",
+      "writeAndExternalEffects": "disabled by preview guard"
+    }
+  },
+  "production": {
+    "merged": false,
+    "deployed": false,
+    "migrated": false,
+    "serviceLifecycleChanged": false,
+    "externalMessages": 0,
+    "liveModelAcceptance": "not performed"
+  },
+  "releaseRequirements": [
+    "User preview acceptance and explicit local production release authorization",
+    "Consistent backup and independent restore",
+    "Deploy Django, AI 0008, ProvisionRoles and readiness",
+    "Controlled Worker successor adoption and startup binding",
+    "Guarded receiver startup adopts approved runtime identity and groups",
+    "Verify real DM, source-group replies and representative cross-domain queries",
+    "Post-release consistent backup and independent restore"
+  ],
+  "limitations": [
+    "Existing model timeout and reliability constraints still apply",
+    "Record datasets require unrestricted administrator; source scopes, owner filters and field exclusions remain",
+    "Only the existing explicitly bound application robot is supported",
+    "Credentials, raw customer chats, file bytes and other users private content are excluded",
+    "No production merge or deployment has been executed"
+  ]
+}

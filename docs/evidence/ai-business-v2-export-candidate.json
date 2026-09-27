@@ -1,0 +1,37 @@
+{
+  "schemaVersion": "candidate-evidence-v1",
+  "date": "2026-09-17",
+  "branch": "codex/ai-business-analysis-stages",
+  "baseCommit": "4aaffaa5",
+  "batch": 19,
+  "status": "candidate_not_production_adopted",
+  "changes": [
+    "Shared sealed reader for legacy and v2 source identity, immutable page chains and complete reconciliation",
+    "Internal v2 budget resolution with unchanged legacy arithmetic and output",
+    "Full sealed catalog to bound temporary multi-volume HTML/XLSX, including empty tables and all comparison windows",
+    "Prepared package lifetime and per-table semantic digest binding",
+    "Renderer 4 mobile layout; default and explicit legacy layout remain byte-compatible"
+  ],
+  "verification": {
+    "initialFullPostgres": {"tests": 528, "passed": 525, "skipped": 2, "failed": 1, "log": ".runtime/ai-pg-2bdbc58e8ee9/failure.log", "failure": "Synthetic ERP fixture supplied business_date instead of authoritative ship timestamps; corrected fixture"},
+    "correctedTargetedPostgres": {"tests": 41, "passed": 41, "log": ".runtime/ai-pg-19afeb8c2766/tests.log"},
+    "finalChangedAndLegacyPostgres": {"tests": 155, "passed": 155, "log": ".runtime/ai-pg-ced4aff432c4/tests.log"},
+    "syntheticCatalog": {"sources": 19, "tables": 156, "volumes": 2, "files": 4, "owningReadersAndCalculationReal": true, "providerCalls": false, "transportMocked": true, "emptyMasterIncluded": true, "erpComparisonDifferenceCents": 0},
+    "browser": {"volumesPassed": 2, "desktopWidth": 1440, "mobileWidth": 390, "searchAndCsv": true, "externalRequests": 0, "errors": 0, "evidence": ".runtime/batch19-synthetic-volumes/browser-evidence.json"},
+    "fullNode": {"tests": 2245, "passed": 2224, "failed": 1, "skipped": 20, "log": ".runtime/batch19-full-node.log", "failure": "Unchanged local-worker-start test file hit Node IPC deserialization error; full run not claimed green"},
+    "workerStartIsolatedRerun": {"tests": 23, "passed": 23, "log": ".runtime/batch19-worker-start-rerun.log"},
+    "lint": {"errors": 0, "existingWarnings": 11, "log": ".runtime/batch19-lint.log"},
+    "browserToolLint": {"errors": 0, "log": ".runtime/batch19-browser-lint.log"},
+    "backendBoundary": {"passed": true, "log": ".runtime/batch19-boundary.log"},
+    "independentReview": {"remainingReportedBlockers": 0, "fixed": ["Prepared alias binding", "Wide table combined snapshot node limit", "Long comparison column names overflowed mobile controls"]}
+  },
+  "limits": [
+    "Temporary files only; persistent volume storage, recovery and downloads remain pending",
+    "V2 fixed report budgets and model budget tools remain gated",
+    "Existing facts, table rows, temporary storage and file size limits remain",
+    "Source reference authority remains the sealed catalog and checkpoints; owning-reader digest formulas are not duplicated",
+    "Real-store, historical coverage, paid-provider and production acceptance remain outstanding",
+    "No complete phase declared"
+  ],
+  "operations": {"productionReads": false, "productionWrites": false, "newMigration": false, "productionMigration": false, "deployment": false, "serviceRestart": false, "paidModelCalls": false, "externalMessages": false}
+}

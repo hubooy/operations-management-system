@@ -1,0 +1,43 @@
+{
+  "version": "teruisi-guangdong-worker-liveness-candidate-v1",
+  "date": "2026-09-15",
+  "status": "candidate_verified",
+  "baseCommit": "60e22737937d2695009a77f0d8c85bed7653b4d0",
+  "integrationCommit": "19107b28438e8cc629aea25694822c714c1af202",
+  "mergedBranches": [
+    "codex/guangdong-health-increase-only-20260915",
+    "codex/worker-liveness-20260914"
+  ],
+  "scope": {
+    "guangdong": [
+      "manual healthy overrides reset only on strict exact-Guangdong on-hand increase",
+      "remaining order quantity from complete daily positive on-hand deltas",
+      "bounded current-page or export calculation shared by UI, workbook and AI projection"
+    ],
+    "worker": [
+      "immutable supervisor observes the D1-free loopback liveness endpoint",
+      "fourteen consecutive failures terminate the owned Wrangler/workerd tree before recovery",
+      "existing 3072 MiB heap adapter, readiness semantics and restart-storm fence remain active"
+    ]
+  },
+  "validation": {
+    "targetedNode": { "passed": 49, "failed": 0 },
+    "isolatedPostgres": { "passed": 101, "failed": 0, "minimumRoles": "passed", "backupRestoreMatches": true },
+    "isolatedUi": { "status": "passed", "requests": 19 },
+    "fullNode": { "passed": 2175, "failed": 0, "skipped": 23, "cancelledByTimeout": 2 },
+    "isolatedTimeoutRetries": { "passed": 10, "failed": 0 },
+    "lint": { "errors": 0, "existingWarnings": 11 },
+    "backendBoundary": { "checkedModules": 448, "violations": 0 },
+    "build": "passed",
+    "renderedHtml": { "passed": 20, "failed": 0 },
+    "newMigrations": 0,
+    "unresolvedFailures": 0
+  },
+  "production": {
+    "adopted": false,
+    "databaseWrites": false,
+    "serviceStateChanged": false,
+    "externalMessages": 0,
+    "modelCalls": 0
+  }
+}

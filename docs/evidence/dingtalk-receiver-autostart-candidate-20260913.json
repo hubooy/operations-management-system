@@ -1,0 +1,44 @@
+{
+  "version": "teruisi-dingtalk-receiver-autostart-candidate-v1",
+  "date": "2026-09-13",
+  "status": "candidate_validated_not_deployed",
+  "baseCommit": "da880009",
+  "branch": "codex/dingtalk-receiver-autostart",
+  "scope": "Opt-in receiver startup after the existing system startup engine establishes backend and Worker readiness; no additional scheduler or receiver crash-restart loop.",
+  "validation": {
+    "nodeFullRegression": { "tests": 2145, "passed": 2122, "failed": 0, "skipped": 23 },
+    "finalTargetedAfterApprovalFencingRefinement": { "tests": 6, "passed": 6, "failed": 0 },
+    "workerStartupAndJsonTargeted": { "passed": 4, "failed": 0 },
+    "powershellVersions": ["Windows PowerShell 5.1", "PowerShell 7"],
+    "negativeCoverage": [
+      "missing or disabled startup approval produces no receiver dispatch",
+      "verification failure cannot persist approval",
+      "config hash or startup/live authority mismatch fails closed",
+      "malformed startup configuration is rejected",
+      "fresh launch occurs once and subsequent process receipt reuses the singleton",
+      "process identity conflict fails without takeover",
+      "manual receiver stop disables startup under the service mutex",
+      "whole-stack stop preserves startup preference",
+      "isolated system startup cannot call the production receiver",
+      "receiver startup failure is surfaced without stopping already-ready system services"
+    ],
+    "lint": { "errors": 0, "existingWarnings": 11 },
+    "backendBoundary": { "checkedModules": 426, "violations": 0 },
+    "gitDiffCheck": "passed",
+    "frontendBuild": "not_required_for_controller_and_documentation_only_change",
+    "databaseMigration": "none"
+  },
+  "productionAdoption": {
+    "deployed": false,
+    "startupApprovalWritten": false,
+    "windowsStartupReconfigured": false,
+    "realMessageSentByCandidateTests": false,
+    "paidModelCalledByCandidateTests": false,
+    "requires": "Controlled Worker and Django controller release, then EnableDingTalkStartup and actual system-start/connected-log readback."
+  },
+  "limitations": [
+    "Existing login startup requires the original Windows user and DPAPI identity; not unattended pre-login execution.",
+    "Receiver process running does not prove Stream connection or message delivery.",
+    "Receiver-only crash recovery remains manual; no unbounded authentication retry or missed-slot replay."
+  ]
+}

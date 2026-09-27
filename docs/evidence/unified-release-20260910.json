@@ -1,0 +1,96 @@
+{
+  "date": "2026-09-10",
+  "scope": "current Windows host only",
+  "authorization": "User explicitly requested all branches merged into main, unified publication and branch cleanup.",
+  "sourceCommit": "59baecc728041974bfac0cd69ef1b5412d685c9d",
+  "includedFeatureBranches": [
+    "codex/ai-chat-tool-budget-20260909",
+    "codex/ai-module-conversations-20260909",
+    "codex/dingtalk-readonly-chat-20260909",
+    "codex/isolated-preview-20260909",
+    "codex/jd-export-entry-stability-20260909",
+    "codex/jd-market-ai-overlay-20260910",
+    "codex/jd-market-submenu-scroll-20260910",
+    "codex/jd-market-menu-overlay-20260910"
+  ],
+  "validation": {
+    "djangoIntegrated": {"total": 145, "passed": 144, "skipped": 1},
+    "nodeIntegrated": {"total": 2073, "passed": 2053, "skipped": 20},
+    "finalDingTalkFix": {"total": 50, "passed": 49, "skipped": 1},
+    "finalJdAndAiServiceTestsPassed": 18,
+    "finalAiRuntimeTestsPassed": 2,
+    "lastJdMenuOverlapTestsPassed": 13,
+    "build": "passed, including final controlled Worker/helper release build",
+    "renderedWorkerTestsPassed": 20,
+    "lint": {"errors": 0, "existingWarnings": 9},
+    "backendBoundaryViolations": 0,
+    "syntheticPreview": "passed; stopped and isolated from production writes",
+    "isolatedPostgresRehearsal": {"port": 55457, "relatedTestsPassed": 59, "aiTables": 48, "dumpRestoreDigest": "5062d61875fdbc7e952cba5e3c8245d8bb30e2b4f2e87050da23bfa72db7763c"}
+  },
+  "django": {
+    "sourceCommit": "4bb940010eb4e77030ba5b4bb8899d71f1060f6d",
+    "deploymentManifestSha256": "eab2932578b3427497083e496406e7e9ab977f22b102f26410e5d3c07e1d0724",
+    "deployedAt": "2026-09-10T11:14:38.2704328+08:00",
+    "appFingerprint": "14c4159aeccc556f80ecf564e9fc8a567fa448c3d2e41ddfe9fff1dd39095a6a",
+    "fileCount": 1993,
+    "migration": "ai_assistant.0007_dingtalk_readonly applied; runtime grants and AI ProvisionRoles completed",
+    "healthyServices": 23
+  },
+  "worker": {
+    "releaseId": "20260910T033345Z-954b74d3e05a6399",
+    "manifestSha256": "e7c5390999fba86df6b031e96227e299ac6df01cc05bb2a356014e49479b60b2",
+    "planSha256": "21bf367797ef186d21d50d475756f9ad6457fcf2a1d4b8abb84a4740e5dd0b1c",
+    "successorSha256": "414ec146ec37cbb18861132a49793216b6f9cb17f7f407b06c8f72d015b45722",
+    "consumptionSha256": "433213b51b0e312cd139d651e59224da6803eab057b6a55de7bc576c9bed23cb",
+    "startupBindingSha256": "106c03ae16903546d7360ea327b78832e1aa23b9ef2cbe63ae52ff69f806d6da",
+    "jdMarketSourceSha256": "e33ddbe2c8fbd9f0bd541effaa083f8957bb30a264ab97210148c1f7519b36dd",
+    "systemStart": "2026-09-10T11:40:49.2014771+08:00",
+    "state": "Running / Ready / exact_release",
+    "homepageStatus": 200,
+    "helperHealthStatus": 200
+  },
+  "dingtalk": {
+    "enabled": true,
+    "connectedLog": "django-ai-dingtalk.20260910-112542-179c2877.stdout.log",
+    "replyMode": "direct_to_bound_sender",
+    "domains": ["sales", "inventory", "netshop"],
+    "realIngress": {"personalDm": true, "authorizedGroupMention": true},
+    "userConfirmedPrivateReplies": true,
+    "fullAnalysisAcceptance": "A fresh real sales question was requested after the receipt fix; no complete analysis acceptance is claimed by this release record.",
+    "initialReceiptIssue": "The two initial real messages received acknowledgement replies confirmed by the user, but the old adapter expected ok=true and marked delivery_unknown. Final code validates the real success/processQueryKey receipt. Historical unknown records were preserved and not replayed.",
+    "automaticAccessTokenRefresh": "Uses existing DWS refresh grant via live get-self before cached profile validation; no authorization expansion.",
+    "knownLimits": [
+      "Receiver requires explicit StartDingTalk after reboot or terminal connection failure.",
+      "Existing model timeout/tool-selection limitations still apply; real analysis in all three domains is not claimed as accepted."
+    ]
+  },
+  "preReleaseBackup": {
+    "backupId": "daily-20260910T023338Z-0e964339af8a",
+    "manifestSha256": "28d5f539a029e73c6b17ad86a773576cf51e7a9349ff26e130d90618f8dcc86f",
+    "dumpSha256": "3537909f87d5c5b0e1c4fbecabe3a5b6b4fb5c4919a69134506b50f32d58ee3a",
+    "contentSha256": "fee6bc585c6078d2809bd4cf8902c1a44aacaf4213f73c8d7823199bf22cca61",
+    "restoreRehearsalId": "a17319cf827d",
+    "restoreMatched": true,
+    "productionDatabaseTouchedByRestore": false
+  },
+  "postReleaseBackup": {
+    "backupId": "daily-20260910T032603Z-a11ce4d28cf4",
+    "manifestSha256": "72aef1337eba1b2efa7768aab16ea3ccdaf8feefc1e88acfc9784ba4ec449840",
+    "dumpSha256": "d3aec6951b24b6cc89655d4ca19406a92a0ec129ba9951f8987c6e3820439363",
+    "contentSha256": "cac8a2dfedced9957edfcb2277dff7f606749fbd7c866bad8eacb5b81d8ff15f",
+    "restoreRehearsalId": "b2e49f831c07",
+    "status": "completed",
+    "restoreCompletedAt": "2026-09-10T03:32:35.3439584+00:00",
+    "restoreMatched": true,
+    "productionDatabaseTouchedByRestore": false,
+    "serviceStateChanged": false,
+    "timing": "Backup followed the Django/DingTalk production adoption. The later helper-only successor changes no database schema, roles or business data; this verified database restore remains applicable."
+  },
+  "cleanup": {
+    "allEightFeatureCommitsMerged": true,
+    "peerFeatureBranchesRemovedLocalAndRemote": 7,
+    "releaseBranchCleanupOrder": "Merge this evidence to main, then remove the clean release worktree and its local/remote feature branch; final Git state is authoritative.",
+    "finalCleanupReceipt": "D:/运营管理系统/.runtime/unified-release-cleanup-20260910.json",
+    "retained": ["main checkout", "fixed detached deployment worktree required by release operator"]
+  }
+}

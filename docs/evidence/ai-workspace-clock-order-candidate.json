@@ -1,0 +1,13 @@
+{
+  "status": "candidate_validated",
+  "productionAdopted": false,
+  "problem": "Equal or backward wall-clock timestamps caused reactivated conversations to sort behind other conversations.",
+  "change": "Under the existing AI mutation lock, assign a monotonic last_opened_at watermark relative to the same owner and module. Preserve actual conversation updated_at, ownership, context and module identity.",
+  "reproduction": {"deterministicFrozenClockTestFailedBeforeFix": true, "log": ".runtime/ai-pg-22cab985126e/failure.log"},
+  "validation": {
+    "sameTimestampAndBackwardClock": true,
+    "otherOwnerAndOtherModuleIsolated": true,
+    "fullAiAndBusinessAnalysis": {"log": ".runtime/ai-pg-9e8883926338/tests.log", "total": 321, "passed": 319, "skipped": 2, "failed": 0}
+  },
+  "productionOperations": {"migration": false, "restart": false, "deployment": false, "queries": false, "modelCalls": false, "notifications": false}
+}

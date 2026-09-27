@@ -1,0 +1,19 @@
+{
+  "date": "2026-09-17",
+  "branch": "codex/ai-business-analysis-stages",
+  "baseCommit": "ec5b5788",
+  "batch": 36,
+  "status": "candidate_internal_report_bound_promotion_views",
+  "verification": {
+    "postgres": {"passed": 8, "seconds": 28.113, "port": 55485, "log": ".runtime/ai-pg-8d07e97287eb/tests.log", "suite": "ai_assistant.test_business_promotion_views"},
+    "realRestrictedReader": {"actualDatabaseGrants": true, "superuser": false, "bypassRls": false, "viewsCompared": ["plan", "unit", "unit_match"], "baseline": "previous", "exactRowReferences": true, "sealedChunksActuallyRead": true, "directBusinessSelectAndAiWritesDenied": true, "readerOrAuthorizationMocked": false},
+    "pureRegression": {"passed": 75, "seconds": 1.824, "suites": ["business_analysis.test_screening_storage", "business_analysis.test_screening_plan", "business_analysis.test_diagnostic_screening", "business_analysis.test_promotion_views", "business_analysis.test_results"]},
+    "independentReview": "Different Agent reviewed source/baseline binding, complete stream exhaustion, final context permission check and exact references; independent 23-wide-row pagination probe recovered every row across 8 pages with exact hashes and offsets",
+    "boundary": {"checkedModules": 491, "violations": 0},
+    "firstCombinedFailure": {"log": ".runtime/ai-pg-825136860e8e/failure.log", "cause": "Test asserted SQL must start SELECT, but Django streams with DECLARE quoted_cursor NO SCROLL CURSOR FOR SELECT", "fix": "Allow the precise read cursor syntax while retaining no-lock and closed READ_TABLES checks", "serviceResultDifference": false},
+    "diffCheck": true
+  },
+  "behavior": ["Exact actual authorized report catalog and sealed Reader metadata", "Only JD promotion ad source supported; cross-shop baseline rejected", "Full current and baseline traversal, then reauthorization after table context closes", "Full owning response limited to 38000 UTF-8 bytes with exact whole-row prefix and next offset", "Exact view/source/baseline row identity resolves from sealed facts", "Current and baseline totals conserved with separate missing-identity buckets", "Cross-owner, scope, binding drift, bad offsets, tail errors and late revocation rejected"],
+  "remaining": ["Versioned fixed promotion selection in report", "Agent tool and independent reading proofs", "Rule scanner and structured diagnostic reference integration", "HTML/XLSX and persisted file delivery", "Tmall plan-grain source not reconstructable from current aggregated import", "Actual JD field coverage and model quality acceptance"],
+  "operations": {"productionBusinessReads": false, "productionWrites": false, "migration": false, "deployment": false, "serviceRestart": false, "paidModelCalls": false, "externalMessages": false}
+}

@@ -1,0 +1,661 @@
+{
+  "status": "adopted-and-verified",
+  "date": "2026-09-21",
+  "authorization": "User explicitly requested publication after reviewing the candidate.",
+  "sourceCommit": "313925f2fc8d3d03f8ce4af7727c86d8e0eee75e",
+  "worker": {
+    "status": "activated",
+    "version": "teruisi-local-worker-release-successor-v1",
+    "planSha256": "51eda0b761c3fb346cdba07d7c88142a4edb8ae18b415f34a81931778cbabbcf",
+    "predecessorReleaseId": "20260920T140333Z-59334faade4e48ec",
+    "releaseId": "20260921T075914Z-c49fb8780f856435",
+    "manifestPath": "D:\\teruisi-runtime\\teruisi-worker-sales\\releases\\20260921T075914Z-c49fb8780f856435\\deployment-manifest.json",
+    "manifestSha256": "f5e1a1e6ea1a5729c76e55f03fe0e350422d627ee480b5afd006bc7c61839517",
+    "successorSha256": "27980a41707fc23546b3076b138c30fbb2a702259e8da7695896684672968fdf",
+    "consumptionSha256": "ee7d8639deaaee7d5c860e09125eb0a789015da720dce8a2872cd2815b0042f6",
+    "startupBindingSha256": "a07b931a2210d8ad47916f27387db2de6b62d9355467f88dbd6b8141f403ad87"
+  },
+  "django": {
+    "version": 2,
+    "deployedAt": "2026-09-21T16:02:49.5829447+08:00",
+    "sourceRoot": "D:\\运营管理系统-sales-django-release",
+    "fingerprintAlgorithm": "relative-path-file-sha256-ordinal-v2",
+    "fileCount": 2056,
+    "appFingerprint": "bae62c9710f647a5d1bd484d35ff2b457566cbf6495d3e3c68e8c54e5fe5d005"
+  },
+  "djangoManifestSha256": "26e602bc02e83a32f80ea0bca8baf237c9058d8962c097ee4cffa380dd38c8bb",
+  "onlinePreparation": {
+    "worker": {
+      "status": "planned",
+      "version": "teruisi-local-worker-release-rotation-plan-v1",
+      "planSha256": "51eda0b761c3fb346cdba07d7c88142a4edb8ae18b415f34a81931778cbabbcf",
+      "planPath": "D:\\teruisi-runtime\\teruisi-worker-sales\\state\\worker-release-rotation-plans\\51eda0b761c3fb346cdba07d7c88142a4edb8ae18b415f34a81931778cbabbcf.json",
+      "predecessorReleaseId": "20260920T140333Z-59334faade4e48ec",
+      "candidateReleaseId": "20260921T075914Z-c49fb8780f856435",
+      "candidateManifestSha256": "f5e1a1e6ea1a5729c76e55f03fe0e350422d627ee480b5afd006bc7c61839517",
+      "candidateGuardReceiptSha256": "940e3f58e50454d54d0ec9e6e56c6ad72cf0c1d88e69a6931fd70703d905ab0f",
+      "cutoverId": "sales-pg-20260829T204417Z-d9896e904d8092cb"
+    },
+    "django": {
+      "id": "c1cab00dca6a43df9c5b0d28255f3443",
+      "receiptSha256": "b442c88c861e4773c9e1c3dcf6c0a36be3f7df30b1592bb0364ffe3aa5256de9",
+      "appFingerprint": "bae62c9710f647a5d1bd484d35ff2b457566cbf6495d3e3c68e8c54e5fe5d005"
+    },
+    "productionStayedRunningDuringPreparation": true
+  },
+  "maintenance": {
+    "id": "cde5f2d43fb2482ebbfe001cd22f2235",
+    "scope": "full (first adoption)",
+    "preservedDatabaseModeProductionCycleExercised": false
+  },
+  "runtime": {
+    "version": "teruisi-operations-system-control-v2",
+    "state": "Running",
+    "backendState": "Ready",
+    "workerState": "exact_release",
+    "releaseId": "20260921T075914Z-c49fb8780f856435",
+    "supervisorProcessId": 30764,
+    "portProcessId": 20012,
+    "url": "http://localhost:3000/",
+    "reason": null,
+    "components": {
+      "core": true,
+      "finance": true,
+      "netshop": true,
+      "market": true,
+      "products": true,
+      "workflow": true,
+      "inventory": true,
+      "customerService": true,
+      "accessControl": true,
+      "erpReference": true,
+      "bi": true,
+      "ai": true
+    },
+    "checkedAt": "2026-09-21T16:40:22.2607327+08:00"
+  },
+  "startup": {
+    "status": "verified",
+    "version": "teruisi-local-worker-status-v1",
+    "releaseId": "20260921T075914Z-c49fb8780f856435",
+    "manifestSha256": "f5e1a1e6ea1a5729c76e55f03fe0e350422d627ee480b5afd006bc7c61839517",
+    "startupVerified": true
+  },
+  "supervisor": {
+    "status": "completed",
+    "desiredState": "running",
+    "supervisorProcess": "running",
+    "health": "healthy",
+    "code": "all_components_ready",
+    "lastHealthyAt": "2026-09-21T08:39:06.1122490+00:00",
+    "restartAttemptsInWindow": 1,
+    "pendingAlertCount": 49,
+    "serviceStateChanged": false
+  },
+  "ai": {
+    "AiReader": "running",
+    "AiWriter": "running",
+    "ReaderReadiness": "ready",
+    "WriterReadiness": "ready",
+    "CheckedAt": "2026-09-21T08:41:02.7135664+00:00",
+    "PandasReadiness": "ready",
+    "DingTalkScheduler": "running",
+    "DingTalkStartup": "enabled",
+    "DingTalkReceiver": "running",
+    "DingTalkConnection": "connected"
+  },
+  "http": {
+    "ready": {
+      "ok": true,
+      "backend": "django-postgresql",
+      "unavailableServices": [],
+      "status": "ready"
+    },
+    "homepageStatus": 200,
+    "live": {
+      "ok": true,
+      "status": "live"
+    },
+    "helper": {
+      "busy": false,
+      "ok": true
+    },
+    "at": "2026-09-21T16:43:09.2521382+08:00"
+  },
+  "backendStartup": {
+    "startedAt": "2026-09-21T16:34:46.3340384+08:00",
+    "completedAt": "2026-09-21T16:36:13.9738775+08:00",
+    "seconds": 87.6398391,
+    "processStarts": 24,
+    "events": [
+      {
+        "timestamp": "2026-09-21T16:34:46.3340384+08:00",
+        "event": "action_started",
+        "message": ""
+      },
+      {
+        "timestamp": "2026-09-21T16:34:58.0929073+08:00",
+        "event": "runtime_acl_verified",
+        "message": "objects=99099 elapsedMilliseconds=7196"
+      },
+      {
+        "timestamp": "2026-09-21T16:35:00.1624056+08:00",
+        "event": "postgres_started",
+        "message": ""
+      },
+      {
+        "timestamp": "2026-09-21T16:35:04.9992636+08:00",
+        "event": "django_migrations_applied",
+        "message": ""
+      },
+      {
+        "timestamp": "2026-09-21T16:35:06.6150914+08:00",
+        "event": "process_started",
+        "message": "django-reader pid=13628"
+      },
+      {
+        "timestamp": "2026-09-21T16:35:07.2509644+08:00",
+        "event": "process_started",
+        "message": "django-writer pid=43320"
+      },
+      {
+        "timestamp": "2026-09-21T16:35:10.6934588+08:00",
+        "event": "process_started",
+        "message": "django-finance-reader pid=58972"
+      },
+      {
+        "timestamp": "2026-09-21T16:35:12.2479853+08:00",
+        "event": "process_started",
+        "message": "django-finance-writer pid=49396"
+      },
+      {
+        "timestamp": "2026-09-21T16:35:14.2780515+08:00",
+        "event": "service_stack_ready",
+        "message": ""
+      },
+      {
+        "timestamp": "2026-09-21T16:35:14.3228097+08:00",
+        "event": "orchestrated_lifecycle_acl_context_issued",
+        "message": ""
+      },
+      {
+        "timestamp": "2026-09-21T16:35:14.4306756+08:00",
+        "event": "orchestrated_lifecycle_acl_reused",
+        "message": "domain=netshop"
+      },
+      {
+        "timestamp": "2026-09-21T16:35:16.671252+08:00",
+        "event": "process_started",
+        "message": "django-netshop-reader pid=26924"
+      },
+      {
+        "timestamp": "2026-09-21T16:35:17.3111811+08:00",
+        "event": "process_started",
+        "message": "django-netshop-writer pid=58332"
+      },
+      {
+        "timestamp": "2026-09-21T16:35:18.9094222+08:00",
+        "event": "orchestrated_lifecycle_acl_reused",
+        "message": "domain=market"
+      },
+      {
+        "timestamp": "2026-09-21T16:35:21.2810896+08:00",
+        "event": "process_started",
+        "message": "django-market-reader pid=6020"
+      },
+      {
+        "timestamp": "2026-09-21T16:35:21.9334788+08:00",
+        "event": "process_started",
+        "message": "django-market-writer pid=48228"
+      },
+      {
+        "timestamp": "2026-09-21T16:35:23.6121777+08:00",
+        "event": "orchestrated_lifecycle_acl_reused",
+        "message": "domain=products"
+      },
+      {
+        "timestamp": "2026-09-21T16:35:25.9701056+08:00",
+        "event": "process_started",
+        "message": "django-products-reader pid=21284"
+      },
+      {
+        "timestamp": "2026-09-21T16:35:26.6572328+08:00",
+        "event": "process_started",
+        "message": "django-products-writer pid=58780"
+      },
+      {
+        "timestamp": "2026-09-21T16:35:28.7413203+08:00",
+        "event": "orchestrated_lifecycle_acl_reused",
+        "message": "domain=inventory"
+      },
+      {
+        "timestamp": "2026-09-21T16:35:31.1566203+08:00",
+        "event": "process_started",
+        "message": "django-inventory-reader pid=41196"
+      },
+      {
+        "timestamp": "2026-09-21T16:35:31.842174+08:00",
+        "event": "process_started",
+        "message": "django-inventory-writer pid=38876"
+      },
+      {
+        "timestamp": "2026-09-21T16:35:36.039873+08:00",
+        "event": "orchestrated_lifecycle_acl_reused",
+        "message": "domain=workflow"
+      },
+      {
+        "timestamp": "2026-09-21T16:35:38.5545567+08:00",
+        "event": "process_started",
+        "message": "django-workflow-reader pid=38608"
+      },
+      {
+        "timestamp": "2026-09-21T16:35:39.3001603+08:00",
+        "event": "process_started",
+        "message": "django-workflow-writer pid=58732"
+      },
+      {
+        "timestamp": "2026-09-21T16:35:41.0734686+08:00",
+        "event": "orchestrated_lifecycle_acl_reused",
+        "message": "domain=customer-service"
+      },
+      {
+        "timestamp": "2026-09-21T16:35:43.4838257+08:00",
+        "event": "process_started",
+        "message": "django-customer-service-reader pid=6164"
+      },
+      {
+        "timestamp": "2026-09-21T16:35:44.241507+08:00",
+        "event": "process_started",
+        "message": "django-customer-service-writer pid=48912"
+      },
+      {
+        "timestamp": "2026-09-21T16:35:45.904136+08:00",
+        "event": "orchestrated_lifecycle_acl_reused",
+        "message": "domain=access-control"
+      },
+      {
+        "timestamp": "2026-09-21T16:35:48.3707499+08:00",
+        "event": "process_started",
+        "message": "django-access-control-reader pid=20612"
+      },
+      {
+        "timestamp": "2026-09-21T16:35:49.1014547+08:00",
+        "event": "process_started",
+        "message": "django-access-control-writer pid=21240"
+      },
+      {
+        "timestamp": "2026-09-21T16:35:50.5530379+08:00",
+        "event": "orchestrated_lifecycle_acl_reused",
+        "message": "domain=ai"
+      },
+      {
+        "timestamp": "2026-09-21T16:35:54.4274633+08:00",
+        "event": "process_started",
+        "message": "ai-pandas-wsl pid=21752"
+      },
+      {
+        "timestamp": "2026-09-21T16:36:01.1300801+08:00",
+        "event": "process_started",
+        "message": "django-ai-reader pid=24424"
+      },
+      {
+        "timestamp": "2026-09-21T16:36:01.9595799+08:00",
+        "event": "process_started",
+        "message": "django-ai-writer pid=59376"
+      },
+      {
+        "timestamp": "2026-09-21T16:36:03.578507+08:00",
+        "event": "orchestrated_lifecycle_acl_reused",
+        "message": "domain=erp-reference"
+      },
+      {
+        "timestamp": "2026-09-21T16:36:06.0422127+08:00",
+        "event": "process_started",
+        "message": "django-erp-reference-reader pid=47276"
+      },
+      {
+        "timestamp": "2026-09-21T16:36:06.8074423+08:00",
+        "event": "process_started",
+        "message": "django-erp-reference-writer pid=40096"
+      },
+      {
+        "timestamp": "2026-09-21T16:36:09.5019716+08:00",
+        "event": "orchestrated_lifecycle_acl_reused",
+        "message": "domain=bi"
+      },
+      {
+        "timestamp": "2026-09-21T16:36:12.0540803+08:00",
+        "event": "process_started",
+        "message": "django-bi-reader pid=524"
+      },
+      {
+        "timestamp": "2026-09-21T16:36:13.9738775+08:00",
+        "event": "action_completed",
+        "message": ""
+      }
+    ]
+  },
+  "startupTimingLimit": "87.6398391 seconds is the Django Start interval; the earlier 126.311075-second observation had different load. This is not an end-to-end startup SLA.",
+  "timelineLimit": "The temporary HTTP sampler omitted x-teruisi-local-health and returned 404 both before and after maintenance. Its records were retained but not used as readiness/downtime acceptance; final correctly headed probes returned live/ready.",
+  "callerObservation": {
+    "receipt": "start.log",
+    "healthConfirmed": true,
+    "businessProcessesTerminated": false,
+    "status": "controller_completed_caller_pipe_retained",
+    "callerProcessOnlyTerminated": 42848,
+    "at": "2026-09-21T16:39:52.6007220+08:00"
+  },
+  "schema": {
+    "migrationsUnchanged": true,
+    "afterTables": 233,
+    "beforeTables": 233,
+    "count": 62
+  },
+  "deployedFiles": [
+    {
+      "path": "tools/django-local-service.ps1",
+      "sha256": "8f1c42aed8c9e61b3dedde6807eda2776402cf84be6755b4bb26f60c866420e0",
+      "matched": true
+    },
+    {
+      "path": "tools/django-market-service.ps1",
+      "sha256": "61ae009acef28bfc8648cb8bced6659434d461f08c499fbc109830e9a6c9f0d3",
+      "matched": true
+    },
+    {
+      "path": "tools/django-netshop-service.ps1",
+      "sha256": "67b800027332019b90c77145b104b115c625e1c3d1e788a00b50438210d8b8b1",
+      "matched": true
+    },
+    {
+      "path": "tools/django-products-service.ps1",
+      "sha256": "f7c0c9b6f7e2731810f5595a875c7d32a1b4700a304c85258c6337efc8e95db4",
+      "matched": true
+    },
+    {
+      "path": "tools/django-inventory-service.ps1",
+      "sha256": "629a854e8673b1685177a9dbcbc25d966833283d163cea3ff9487fb74e02c4e6",
+      "matched": true
+    },
+    {
+      "path": "tools/django-workflow-service.ps1",
+      "sha256": "9afdc71bf7949b52b907055329a9c40eb46410421113ddb4cee4f2f77f1a76e6",
+      "matched": true
+    },
+    {
+      "path": "tools/django-customer-service.ps1",
+      "sha256": "646b08c6c66cb92c5b80918d59ddaf4137ffeec4c700d9036a32b26b19717aa6",
+      "matched": true
+    },
+    {
+      "path": "tools/django-access-control.ps1",
+      "sha256": "e73c8d801f0e383e84227c9e011d20690af39d7aae0e639c5612fbb27fe3d5ae",
+      "matched": true
+    },
+    {
+      "path": "tools/django-erp-reference.ps1",
+      "sha256": "31a6b0245d7747e4f9a65b4b0b076b5378d8f1a95b5085b85493b35901f37510",
+      "matched": true
+    },
+    {
+      "path": "tools/django-ai.ps1",
+      "sha256": "cae76aab3ab96a03f2082e9c0b0ad5e522566f07702b7750b96d94a57bc78c2d",
+      "matched": true
+    },
+    {
+      "path": "backend/sales/summary.py",
+      "sha256": "7293934b6fe45ad584852365ebb86b52ca0f6e26a5b8ff8f9da53de6d100d58a",
+      "matched": true
+    },
+    {
+      "path": "backend/bi/query.py",
+      "sha256": "ab43b9748b8445964aa225c1f7365fa3b5eff8d276701d41a521827969f48f3a",
+      "matched": true
+    }
+  ],
+  "pageAssets": [
+    {
+      "path": "/assets/ai-page-context-provider-Dc3lH0uZ.js",
+      "sha256": "81068a87be6359e62cb5aca4183656b0fdb30f82e4dab2532fd9e2caa6753858",
+      "matched": true
+    },
+    {
+      "path": "/assets/api-client-BkSFlZxp.js",
+      "sha256": "1668ca8a79bf454e2d7c8c8ef2783c19ca9d6640e5df6327400a57e8ccc5edbe",
+      "matched": true
+    },
+    {
+      "path": "/assets/api-error-CJCV3BJQ.js",
+      "sha256": "4efae8b1a9127677a8c80569e149000d507839d79d3fc807c2a37d490174941f",
+      "matched": true
+    },
+    {
+      "path": "/assets/dialog-CXm5GeIc.js",
+      "sha256": "62403b91d7d23f2e2c0f24b5941f9176e1a7ebf61f5cb8f770132bc6f8dc1ac5",
+      "matched": true
+    },
+    {
+      "path": "/assets/framework-CXnKph_e.js",
+      "sha256": "73b45b606448e4dc310fbe851d8089ee752f3eb081980b3a6fec88988820ee12",
+      "matched": true
+    },
+    {
+      "path": "/assets/index-DnHKKleU.js",
+      "sha256": "b1ed4e455a4936b30ec2571ef4e9ddee079545cd5b02b4f6e8e0d8fbbc36ee96",
+      "matched": true
+    },
+    {
+      "path": "/assets/index-EszXsfPr.css",
+      "sha256": "58a1530f60936a8462baf5e669b144cd4b8524f6eaa99b262fb768fb4c20d729",
+      "matched": true
+    },
+    {
+      "path": "/assets/layout-segment-context-B6qQElV7.js",
+      "sha256": "efccf1fe726539a67fcc981d8dd5f0f73b54a876cd0a76d564cc334950392474",
+      "matched": true
+    },
+    {
+      "path": "/assets/module-view-shared-C5DPvJ_4.js",
+      "sha256": "bef709b2ccd5a55e06911ae20a759ba86e015a641693a7ab40cd93607f8086d3",
+      "matched": true
+    },
+    {
+      "path": "/assets/navigation-catalog-DvolBk78.js",
+      "sha256": "c83bd576cc5d5ce20c2d4cd8cd67214cb338dc7f340405edad8b7ba11ae1efbe",
+      "matched": true
+    },
+    {
+      "path": "/assets/page-context-DTMpRdSa.js",
+      "sha256": "5d9125e98d2820f2853aeb82cb368758d028ddd380e71062e35726a2cd774c52",
+      "matched": true
+    },
+    {
+      "path": "/assets/page-CX28QWVI.js",
+      "sha256": "a1dd663e5ae4a91f1825c8910267395a9ebc41c71c90b9989a18b05d9080460e",
+      "matched": true
+    },
+    {
+      "path": "/assets/reloadable-lazy-BU4AV5pU.js",
+      "sha256": "89877a478fb2c752b38ed3187cc3c2976f3114b25c92131f6a3da6421188a432",
+      "matched": true
+    },
+    {
+      "path": "/assets/rolldown-runtime-S-ySWqyJ.js",
+      "sha256": "5db5ba82eef00d1dee7e86e663098c9427d01183a88d357437daff295aec3e75",
+      "matched": true
+    },
+    {
+      "path": "/assets/searchable-select-TuzqFU6k.js",
+      "sha256": "f423c656f508f5e8c08f6790e50b567b02f6e294204032fe6ba28e765310916f",
+      "matched": true
+    }
+  ],
+  "backups": {
+    "before": {
+      "status": "completed",
+      "backupId": "daily-20260921T075850Z-bd920c7d5013",
+      "backupDirectory": "D:\\teruisi-runtime\\django-sales\\backups\\postgres-daily\\daily-20260921T075850Z-bd920c7d5013",
+      "manifestSha256": "d23faaca6002aca501f04961ed1bc41a3e003b6bac9321fefb0b02ce438b72c4",
+      "dumpSha256": "665e3724b7883a69ad642d64dcf2d45ce8e27b53535178c81568727f6adfd4a6",
+      "contentSha256": "e84554ade8f63c6632481d21cad9c01684e0388b40351ea18379c1e9d5685c6c",
+      "completedAt": "2026-09-21T16:16:11.8373857+08:00",
+      "serviceStateChanged": false
+    },
+    "beforeRestore": {
+      "version": "teruisi-postgres-restore-rehearsal-v1",
+      "status": "completed",
+      "rehearsalId": "b91ac095ed41",
+      "startedAt": "2026-09-21T16:18:30.252978+08:00",
+      "completedAt": "2026-09-21T16:24:11.5508059+08:00",
+      "backupId": "daily-20260921T075850Z-bd920c7d5013",
+      "backupManifestSha256": "d23faaca6002aca501f04961ed1bc41a3e003b6bac9321fefb0b02ce438b72c4",
+      "dumpSha256": "665e3724b7883a69ad642d64dcf2d45ce8e27b53535178c81568727f6adfd4a6",
+      "expectedContentSha256": "e84554ade8f63c6632481d21cad9c01684e0388b40351ea18379c1e9d5685c6c",
+      "restoredContentSha256": "e84554ade8f63c6632481d21cad9c01684e0388b40351ea18379c1e9d5685c6c",
+      "isolatedPort": 55463,
+      "productionDatabaseTouched": false,
+      "serviceStateChanged": false,
+      "cleanupStatus": "isolated_data_removed"
+    },
+    "beforeArchive": {
+      "files": [
+        {
+          "file": "teruisi-sales.dump",
+          "sha256": "665e3724b7883a69ad642d64dcf2d45ce8e27b53535178c81568727f6adfd4a6",
+          "verified": true
+        },
+        {
+          "file": "backup-manifest.json",
+          "sha256": "d23faaca6002aca501f04961ed1bc41a3e003b6bac9321fefb0b02ce438b72c4",
+          "verified": true
+        },
+        {
+          "file": "backup-manifest.json.sha256",
+          "sha256": "60f4fd1944652f624db178e9f1b30f113e50f96d78c02d7aee78f04b866aba9b",
+          "verified": true
+        }
+      ],
+      "directory": "E:\\运营管理系统业务数据\\daily-20260921T075850Z-bd920c7d5013"
+    },
+    "after": {
+      "status": "completed",
+      "backupId": "daily-20260921T084011Z-69912573e754",
+      "backupDirectory": "D:\\teruisi-runtime\\django-sales\\backups\\postgres-daily\\daily-20260921T084011Z-69912573e754",
+      "manifestSha256": "044542f856bc6f029f9ba702254bc83b58bc6b60edc8e2158ed37647a247f034",
+      "dumpSha256": "72cbfe9d94e49a96f80bdbc2146e1af0457e0ad754c93b1abf6cf56ab0dd872c",
+      "contentSha256": "e05bbb8c8156cee8ab5fc356d094d423722949dfa774eddb759843e69aa70509",
+      "completedAt": "2026-09-21T16:42:18.7192087+08:00",
+      "serviceStateChanged": false
+    },
+    "afterVerification": {
+      "status": "completed",
+      "backupId": "daily-20260921T084011Z-69912573e754",
+      "manifestSha256": "044542f856bc6f029f9ba702254bc83b58bc6b60edc8e2158ed37647a247f034",
+      "dumpSha256": "72cbfe9d94e49a96f80bdbc2146e1af0457e0ad754c93b1abf6cf56ab0dd872c",
+      "contentSha256": "e05bbb8c8156cee8ab5fc356d094d423722949dfa774eddb759843e69aa70509",
+      "serviceStateChanged": false
+    },
+    "afterArchive": {
+      "directory": "E:\\运营管理系统业务数据\\daily-20260921T084011Z-69912573e754",
+      "files": [
+        {
+          "file": "teruisi-sales.dump",
+          "sha256": "72cbfe9d94e49a96f80bdbc2146e1af0457e0ad754c93b1abf6cf56ab0dd872c",
+          "verified": true
+        },
+        {
+          "file": "backup-manifest.json",
+          "sha256": "044542f856bc6f029f9ba702254bc83b58bc6b60edc8e2158ed37647a247f034",
+          "verified": true
+        },
+        {
+          "file": "backup-manifest.json.sha256",
+          "sha256": "329b249b8ccd85760b2dac20918d3f027a5070d9fe4b7b667d8234cc2b48f1c3",
+          "verified": true
+        }
+      ]
+    }
+  },
+  "watchdog": {
+    "taskObservations": [
+      {
+        "LastRunTime": "2026-09-21T16:42:24+08:00",
+        "LastTaskResult": 0,
+        "NextRunTime": "2026-09-21T16:43:23+08:00"
+      },
+      {
+        "LastRunTime": "2026-09-21T16:46:24+08:00",
+        "LastTaskResult": 0,
+        "NextRunTime": "2026-09-21T16:47:23+08:00"
+      }
+    ],
+    "before": {
+      "lastCheck": "2026-09-21T16:19:03.8589564+08:00",
+      "lastHealthy": "2026-09-21T14:24:58.4723599+08:00",
+      "decision": "alert_only",
+      "failures": 110,
+      "lastMode": "running",
+      "marketFailureOpen": true,
+      "notification": "identity_failed",
+      "notificationReason": "identity:preflight_failed"
+    },
+    "after": {
+      "lastCheck": "2026-09-21T16:46:57.2841961+08:00",
+      "lastHealthy": "2026-09-21T14:24:58.4723599+08:00",
+      "decision": "alert_only",
+      "failures": 15,
+      "lastMode": "running",
+      "marketFailureOpen": true,
+      "notification": "identity_failed",
+      "notificationReason": "identity:preflight_failed"
+    },
+    "installationChanged": false
+  },
+  "n8nExecutions": [
+    [
+      3865,
+      "NewProductWeeklyDingTalk2026",
+      "error",
+      "trigger",
+      "2026-09-21 08:30:00.027",
+      "2026-09-21 08:30:30.611"
+    ],
+    [
+      3866,
+      "NewProductWeeklyDingTalk2026",
+      "error",
+      "trigger",
+      "2026-09-21 08:35:00.016",
+      "2026-09-21 08:35:30.611"
+    ],
+    [
+      3867,
+      "NewProductWeeklyDingTalk2026",
+      "success",
+      "trigger",
+      "2026-09-21 08:40:01.174",
+      "2026-09-21 08:42:34.549"
+    ],
+    [
+      3868,
+      "NewProductWeeklyDingTalk2026",
+      "success",
+      "trigger",
+      "2026-09-21 08:45:00.796",
+      "2026-09-21 08:45:39.672"
+    ]
+  ],
+  "businessReplay": false,
+  "manualMessageSent": false,
+  "n8nRestarted": false,
+  "knownRemainingIssue": "Pre-existing market query timeouts and watchdog identity/preflight notification failure remain open. Component readiness does not close the business incident.",
+  "validation": {
+    "candidateUnitPassed": 2218,
+    "candidateUnitSkipped": 23,
+    "unchangedBaselineFailures": 2,
+    "targetedLifecyclePassed": 42,
+    "immutableWorkerContractPassed": 42,
+    "renderedHtmlPassed": 20,
+    "salesComparisonPeriodPassed": 9
+  }
+}

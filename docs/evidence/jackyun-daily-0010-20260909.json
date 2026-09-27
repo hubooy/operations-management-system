@@ -1,0 +1,28 @@
+{
+  "version": "jackyun-daily-local-schedule-v1",
+  "windowsTimezone": "China Standard Time",
+  "published": {
+    "checkedAt": "2026-09-08T16:09:22.586Z",
+    "status": "verified",
+    "published": true,
+    "workflowId": "J8kY2mQ5vR7sT4pN",
+    "versionId": "9dfa78ac-ec2d-45a9-bbab-02380f5e7c35",
+    "activeVersionId": "9dfa78ac-ec2d-45a9-bbab-02380f5e7c35",
+    "active": true,
+    "timezone": "Asia/Shanghai",
+    "schedule": "daily 00:10",
+    "manualPreserved": true,
+    "nodeCount": 12,
+    "unrelatedDefinitionsVerified": 16
+  },
+  "firstObservedTrigger": {
+    "id": 912,
+    "mode": "trigger",
+    "status": "running",
+    "startedAt": "2026-09-08 16:10:00.029",
+    "stoppedAt": null
+  },
+  "observedAt": "2026-09-08T16:10:37.537Z",
+  "backendServiceRestarted": false,
+  "definitionBackupDirectory": "D:\\codex-artifacts\\jackyun-schedule-20260909"
+}

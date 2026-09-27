@@ -1,0 +1,209 @@
+{
+  "status": "diagnostic_release_adopted_single_replay_failed_before_M",
+  "sourceCommit": "fc8661b4",
+  "sourceBranch": "codex/lili-thread-diagnostics",
+  "release": {
+    "status": "activated",
+    "version": "teruisi-local-worker-release-successor-v1",
+    "planSha256": "36123977e1acea2efb5d2e0d70fe5b10fe875550b3f713181aeaaf4ca2592e28",
+    "predecessorReleaseId": "20260925T213040Z-e45b1332207bc4cf",
+    "releaseId": "20260926T151320Z-78a1701b451cdc4a",
+    "manifestPath": "D:\\teruisi-runtime\\teruisi-worker-sales\\releases\\20260926T151320Z-78a1701b451cdc4a\\deployment-manifest.json",
+    "manifestSha256": "197201c1bd4c4e52b5988d1184f99da7f77d0230511e12c2fdb4ddd880f9c020",
+    "successorSha256": "cf2730b60642d2c16087b568c070ac079cdc312f66d6625ed313d4a6fd2f22d9",
+    "consumptionSha256": "db6e07dc7c008d4cf76a7f4affab0ae5f1e799f0275de6107712275f8332780d",
+    "startupBindingSha256": "74608c8038a6d9c45f6d678da3aaf65e440335c793046a6dc7960e86aac085f8"
+  },
+  "authorization": "User authorized adoption of this diagnostic version and one complete original n8n Lili execution to capture the exception.",
+  "storage": {
+    "archivedBackupDirectories": 33,
+    "archivedFiles": 99,
+    "archivedBytes": 24684182278,
+    "destination": "E:/TERUISI-candidate-artifacts/lili-thread-diagnostics-20260926/archived-D-postgres-backups",
+    "preexistingMirror": "E:/运营管理系统业务数据",
+    "everyFileVerifiedBeforeAndAfter": true,
+    "productionDatabaseMoved": false
+  },
+  "beforeBackup": {
+    "status": "completed",
+    "backupId": "daily-20260926T151330Z-5018e630cf26",
+    "backupDirectory": "D:\\teruisi-runtime\\django-sales\\backups\\postgres-daily\\daily-20260926T151330Z-5018e630cf26",
+    "manifestSha256": "af11ea048bee6eb70e92d811a341912611604bfa9dcc4ce6fcdc1dbd39d30106",
+    "dumpSha256": "f324e771c7d10c954cab7b076ee241123642fa58f8d968f4e5bdf6ae315f752c",
+    "contentSha256": "c154860f2cef6ca8352c95cdcb8e5419dd63cb1287ff6022c035e75e56756ba7",
+    "completedAt": "09/26/2026 23:16:17",
+    "serviceStateChanged": false,
+    "verified": true,
+    "eArchiveVerified": true,
+    "independentRestore": {
+      "version": "teruisi-postgres-restore-rehearsal-v1",
+      "status": "completed",
+      "rehearsalId": "6b5675e74853",
+      "startedAt": "2026-09-26T15:17:25.7757463+00:00",
+      "completedAt": "2026-09-26T15:24:12.3950836+00:00",
+      "backupId": "daily-20260926T151330Z-5018e630cf26",
+      "backupManifestSha256": "af11ea048bee6eb70e92d811a341912611604bfa9dcc4ce6fcdc1dbd39d30106",
+      "dumpSha256": "f324e771c7d10c954cab7b076ee241123642fa58f8d968f4e5bdf6ae315f752c",
+      "expectedContentSha256": "c154860f2cef6ca8352c95cdcb8e5419dd63cb1287ff6022c035e75e56756ba7",
+      "restoredContentSha256": "c154860f2cef6ca8352c95cdcb8e5419dd63cb1287ff6022c035e75e56756ba7",
+      "isolatedPort": 55473,
+      "productionDatabaseTouched": false,
+      "serviceStateChanged": false,
+      "cleanupStatus": "isolated_data_removed"
+    }
+  },
+  "afterBackup": {
+    "status": "completed",
+    "backupId": "daily-20260926T153137Z-1f09eb83ae96",
+    "backupDirectory": "D:\\teruisi-runtime\\django-sales\\backups\\postgres-daily\\daily-20260926T153137Z-1f09eb83ae96",
+    "manifestSha256": "e37ed5d30649427468315585ba26c7b5f16def37df40fde107a6677f45fd2b92",
+    "dumpSha256": "57220e09b45b9b30cdd613db83c12dafe169c3af9086993de5100ef1af1a2aec",
+    "contentSha256": "007bc497eb260f1e57964f9734523f32e918649fe9609a779c462b87a34722de",
+    "completedAt": "09/26/2026 23:33:50",
+    "serviceStateChanged": false,
+    "verified": true,
+    "eArchiveVerified": true
+  },
+  "workflow": {
+    "id": "TmallLiliDaily2026",
+    "versionId": "a4cdc9e1-3aec-4ce6-8735-56835045c6b4",
+    "executionId": 4594,
+    "mode": "webhook",
+    "startedAtShanghai": "2026-09-26 23:29:01.791",
+    "stoppedAtShanghai": "2026-09-26 23:29:16.321",
+    "status": "error",
+    "failureNode": "A·计划目标日期",
+    "httpCode": 500,
+    "error": "browserType.connectOverCDP: Timeout 10000ms exceeded",
+    "transport": "WebSocket connected; browser initialization did not complete",
+    "browserClosure": {
+      "ok": true,
+      "status": "closed"
+    },
+    "MReached": false,
+    "originalMThreadCrashReproduced": false,
+    "threadFailureDiagnosticEvents": 0,
+    "newBusinessDownloads": 0,
+    "newBusinessImports": 0
+  },
+  "automaticRetry": {
+    "executionId": 4595,
+    "status": "waiting",
+    "waitUntilShanghai": "2026-09-27 00:29:16.565",
+    "existingPolicyUnchanged": true,
+    "additionalManualExecution": false
+  },
+  "independentLocalReadOnlyVerification": {
+    "checkedAt": "2026-09-26T15:32:10.816Z",
+    "workflowCount": 18,
+    "workflowDefinitionsUnchanged": true,
+    "djangoManifestUnchanged": true,
+    "retry": {
+      "id": 4595,
+      "status": "waiting",
+      "waitTill": "2026-09-26 16:29:16.565"
+    },
+    "batches": [
+      {
+        "http": 200,
+        "source": "tmall_product_daily",
+        "id": "tmall_product_daily:%E5%A4%A9%E7%8C%AB:%E5%A4%A9%E7%8C%AB-%E5%BF%97%E9%AB%98%E4%B8%BD%E5%8A%9B%E4%B8%93%E5%8D%96%E5%BA%97:841fe388097fa640ec7b9d682a8877bf5cd8aad3ec4bf0567192156ef6dde0ee",
+        "status": "completed",
+        "rowCount": 77,
+        "dateMin": "2026-09-25",
+        "dateMax": "2026-09-25",
+        "snapshotDate": null,
+        "warningCount": 1
+      },
+      {
+        "http": 200,
+        "source": "tmall_promotion",
+        "id": "tmall_promotion:%E5%A4%A9%E7%8C%AB:%E5%A4%A9%E7%8C%AB-%E5%BF%97%E9%AB%98%E4%B8%BD%E5%8A%9B%E4%B8%93%E5%8D%96%E5%BA%97:a1afbd1170d6c60202ef8c4c3e428d6b91492262b42e5deaccbdf97378af6c95",
+        "status": "completed",
+        "rowCount": 44,
+        "dateMin": "2026-09-25",
+        "dateMax": "2026-09-25",
+        "snapshotDate": null,
+        "warningCount": 0
+      },
+      {
+        "http": 200,
+        "source": "tmall_product_master",
+        "id": "tmall_product_master:%E5%A4%A9%E7%8C%AB:%E5%A4%A9%E7%8C%AB-%E5%BF%97%E9%AB%98%E4%B8%BD%E5%8A%9B%E4%B8%93%E5%8D%96%E5%BA%97:2cb55acf5356cfc86fc5472a3182dcd14829d91001c489c23abe725c0e5269b6",
+        "status": "completed",
+        "rowCount": 2488,
+        "dateMin": null,
+        "dateMax": null,
+        "snapshotDate": "2026-09-25",
+        "warningCount": 3
+      }
+    ]
+  },
+  "finalState": {
+    "version": "teruisi-operations-system-control-v2",
+    "state": "Running",
+    "backendState": "Ready",
+    "workerState": "exact_release",
+    "releaseId": "20260926T151320Z-78a1701b451cdc4a",
+    "supervisorProcessId": 26428,
+    "portProcessId": 5820,
+    "url": "http://localhost:3000/",
+    "reason": null,
+    "components": {
+      "core": true,
+      "finance": true,
+      "netshop": true,
+      "market": true,
+      "products": true,
+      "workflow": true,
+      "inventory": true,
+      "customerService": true,
+      "accessControl": true,
+      "erpReference": true,
+      "bi": true,
+      "ai": true
+    },
+    "checkedAt": "2026-09-26T23:31:00.2320783+08:00",
+    "helperReadyAndIdle": true,
+    "liliBrowserPortClosed": true,
+    "databasePidUnchanged": 11332,
+    "n8nPidUnchanged": 17868,
+    "djangoManifestUnchanged": true,
+    "startupVerified": true,
+    "watchdogRounds": [
+      {
+        "startedAtShanghai": "2026-09-26 23:31:24",
+        "result": 0,
+        "healthy": true
+      },
+      {
+        "startedAtShanghai": "2026-09-26T23:32:24.7927013+08:00",
+        "result": 0,
+        "healthy": true
+      }
+    ]
+  },
+  "validation": {
+    "focusedTests": 12,
+    "compiledSixStoreMirrorPassed": true,
+    "businessActionsInMirror": 0,
+    "fullUnit": {
+      "total": 2281,
+      "passed": 2256,
+      "skipped": 23,
+      "failed": 2,
+      "failuresIndependentlyReproducedOnBaseline": true
+    },
+    "lint": {
+      "errors": 0,
+      "existingWarnings": 11
+    }
+  },
+  "limitations": [
+    "The original M-thread error was not captured because the single authorized replay failed at A.",
+    "Initialization timeout was independently observed before diagnostic deployment; it is not proof of the historical worker crash root cause.",
+    "No browser upgrade, memory increase, profile reset, Django deployment, database migration or n8n restart was performed."
+  ],
+  "migrationsUnchanged": true,
+  "migrationCount": 62
+}

@@ -1,0 +1,35 @@
+{
+  "status": "candidate-only",
+  "batch": 12,
+  "aiOwnedTables": 60,
+  "newMigration": false,
+  "capabilities": [
+    "exact capped weighted allocation in integer cents with reserve and unallocated balance",
+    "immutable report parameters bound to fully verified current promotion aggregates",
+    "explicit scenario assumptions, missing and low-sample states, separate reporting bases",
+    "promotion and independent-review agents must read every budget object",
+    "read-only online parameter preview and idempotent new report version",
+    "same snapshot budget tables in HTML and XLSX"
+  ],
+  "verification": {
+    "postgresAiAndCalculation": {"total": 311, "passed": 309, "skipped": 2, "log": ".runtime/ai-pg-aced4913f125/tests.log"},
+    "finalBudgetAndActualZipCellComparison": {"passed": 17, "log": ".runtime/ai-pg-187c6b5b25a4/tests.log"},
+    "targetedNode": {"passed": 18, "log": ".runtime/batch12-node2.log"},
+    "fullNode": {"total": 2233, "passed": 2212, "failed": 0, "skipped": 21, "log": ".runtime/batch12-full-node.log", "additionalSkip": "page client budget saw the pre-build artifact; retested after final build"},
+    "finalBuiltClientBudget": {"passed": 5, "skipped": 0, "log": ".runtime/batch12-bundle-final.log"},
+    "chromeSyntheticComponent": {"checks": 3, "log": ".runtime/batch12-ui.log", "realPureCalculationEngine": true, "simulatedHttp": true},
+    "build": {"status": "passed", "log": ".runtime/batch12-build-final.log"},
+    "fullRepositoryLint": {"status": "passed", "log": ".runtime/batch12-full-lint.log"},
+    "productionBoundary": "passed",
+    "typecheck": {"existingErrors": 153, "newErrorsInChangedPaths": 0, "log": ".runtime/batch12-types-final.log"},
+    "initialRegression": "local read import shadowed other endpoint reads; renamed and full PostgreSQL suite passed"
+  },
+  "limits": {"targets": 100, "scenarios": 5, "budgetCents": 1000000000000, "planUtf8Bytes": 48000, "modelPageRows": 20},
+  "notValidated": ["downloaded HTML or XLSX parameter editing and recalculation", "real paid multi-agent report", "production adoption", "full reference report business equivalence"],
+  "productionWrites": false,
+  "productionMigrations": false,
+  "serviceRestarts": false,
+  "paidModelCalls": false,
+  "externalMessages": false,
+  "allFivePhasesComplete": false
+}

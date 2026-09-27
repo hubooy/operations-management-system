@@ -1,0 +1,51 @@
+{
+  "status": "candidate-only",
+  "batch": 13,
+  "migration": "ai_assistant.0017_business_file_renderer",
+  "aiOwnedTables": 60,
+  "newRendererVersion": 2,
+  "legacyRendererPreserved": true,
+  "capabilities": [
+    "offline HTML parameter editing with exact BigInt intermediates and half-up rounding",
+    "initial server comparison, invalid-input clearing and precision-bound rejection",
+    "unreviewed local scenario versions and JSON downloads, original report tables preserved",
+    "immutable renderer binding and old/new task coexistence"
+  ],
+  "verification": {
+    "pythonJavaScriptEquivalence": {"cases": 158, "negativeCases": 5, "log": ".runtime/batch13-offline-final.log"},
+    "chrome": {"editableMoneyAndWeights": true, "unknownMargin": true, "originalPreserved": true, "localVersionDownload": true, "invalidClearsResults": true, "mobileLayout": true, "inertSourceText": true, "initialMismatchBlocksCalculation": true, "externalRequests": 0, "desktopAndMobileImagesInspected": true},
+    "pureBudgetAndFiles": {"passed": 12, "log": ".runtime/batch13-pure.log"},
+    "targetedNode": {"passed": 28, "log": ".runtime/batch13-node.log"},
+    "fullPostgresBeforeFixtureCorrection": {"total": 315, "passed": 312, "failed": 1, "skipped": 2, "log": ".runtime/ai-pg-41c0c3bd2af1/failure.log", "failure": "new test incorrectly assumed tied creation timestamps imply renderer 1 runs first; corrected to verify each claimed task's own renderer and both versions regardless of order"},
+    "finalFilesAndConversationRetest": {"passed": 15, "log": ".runtime/ai-pg-81286da19b5b/tests.log"},
+    "upgradeAndRestore": {
+      "path": "0013->0014->0015->0016->0017",
+      "old56TableDigestPreserved": "7124726e012481cf773c70262da8320c6cce63d410438a0d0f017674a58e33c9",
+      "restrictedRolesAndFences": true,
+      "secondMigrationNoop": true,
+      "bothRendererVersionsRestored": true,
+      "binaryRestoreBytes": 524288,
+      "binaryRestoreSha256": "33bc8aab40703678c3ebe94d2dd8f2afff285dd901f9234e841e4679f8204fd5",
+      "log": ".runtime/batch13-upgrade-final.log",
+      "followingAiSuite": "279 total: 276 passed, 2 skipped, 1 existing conversation activation ordering failure; this test passed in subsequent full suite and focused retest, implementation unchanged"
+    },
+    "migrationDevelopmentCorrection": "first irreversible draft blocked isolated historical-upgrade testing; replaced by a reverse operation which refuses any existing immutable v2 task and otherwise restores the v1 constraint",
+    "fullRepositoryLint": {"errors": 0, "existingWarnings": 11, "log": ".runtime/batch13-lint.log"},
+    "productionBoundary": "passed"
+  },
+  "limits": {
+    "targets": 100,
+    "scenarios": 5,
+    "offlineUnsafePrecision": "reject instead of truncating; original report remains readable",
+    "xlsxParameters": "fixed original snapshot; editable linked formulas still pending",
+    "localJsonImportToSystem": false,
+    "localScenarioReview": "not reviewed and not a system report revision"
+  },
+  "followUp": ["XLSX editable formulas", "natural-language first task and source planning", "real multi-store/multi-period business acceptance", "conversation activation ordering stability"],
+  "productionWrites": false,
+  "productionMigrations": false,
+  "serviceRestarts": false,
+  "paidModelCalls": false,
+  "externalMessages": false,
+  "allFivePhasesComplete": false
+}

@@ -2,18 +2,16 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
 
-const domainServices = [
+const retainedD1FingerprintImplementations = [
   "lib/netshop/import-service.ts",
   "lib/inventory/import-service.ts",
   "lib/erp-reference/import-service.ts",
-  "lib/sales/import-service.ts",
   "lib/finance/import-service.ts",
-  "lib/customer-service/database.ts",
   "lib/market/import-service.ts",
 ] as const;
 
-test("全部七类导入领域都在解析后使用共享业务内容指纹", async () => {
-  for (const file of domainServices) {
+test("保留的 D1 导入实现都在解析后使用共享业务内容指纹", async () => {
+  for (const file of retainedD1FingerprintImplementations) {
     const source = await readFile(new URL(`../${file}`, import.meta.url), "utf8");
     assert.match(source, /buildImportContentFingerprint\(/, file);
     assert.match(source, /lockScope:/, file);
@@ -26,12 +24,49 @@ test("全部七类导入领域都在解析后使用共享业务内容指纹", as
   }
 });
 
-test("全部七类导入入口都审计预校验拒绝且不让坏文件参与业务判重", async () => {
+test("销售导入通过 Django 写 API 执行 PostgreSQL 指纹、审计和发布事务", async () => {
+  const [service, writer, backend] = await Promise.all([
+    readFile(new URL("../lib/sales/import-service.ts", import.meta.url), "utf8"),
+    readFile(new URL("../lib/django/sales-writer.ts", import.meta.url), "utf8"),
+    readFile(new URL("../backend/sales/write_service.py", import.meta.url), "utf8"),
+  ]);
+  assert.match(service, /requestDjangoSalesService/);
+  assert.match(service, /SALES_STAGED_IMPORTS_PATH/);
+  assert.doesNotMatch(service, /buildImportContentFingerprint|reserveImportFingerprint|getSalesDatabase|sales_order_lines/);
+  assert.match(writer, /export const SALES_STAGED_IMPORTS_PATH/);
+  assert.match(backend, /def _record_prevalidation_rejection/);
+  assert.match(backend, /SalesImportAttempt\.objects\.create/);
+  assert.match(backend, /def _content_hash/);
+  assert.match(backend, /with transaction\.atomic\(\)/);
+  assert.match(backend, /select_for_update\(\)/);
+});
+
+test("商品导入通过 Django 写 API 执行 PostgreSQL 指纹、审计和原子替换", async () => {
+  const [service, backend] = await Promise.all([
+    readFile(new URL("../lib/products/shipping-rate-import-service.ts", import.meta.url), "utf8"),
+    readFile(new URL("../backend/products/import_service.py", import.meta.url), "utf8"),
+  ]);
+  assert.match(service, /PRODUCTS_IMPORTS_PATH/);
+  assert.match(service, /kind: "rejection"/);
+  assert.doesNotMatch(service, /buildImportContentFingerprint|reserveImportFingerprint|shipping-rate-database/);
+  assert.match(backend, /def record_rejection/);
+  assert.match(backend, /ProductImportAttempt\.objects\.create/);
+  assert.match(backend, /def _content_hash/);
+  assert.match(backend, /with transaction\.atomic\(\)/);
+  assert.match(backend, /ProductImportScopeHead\.objects\.select_for_update\(\)/);
+  assert.match(backend, /ProductShippingRate\.objects\.all\(\)\.delete\(\)/);
+  const rejection = backend.slice(
+    backend.indexOf("def record_rejection"),
+    backend.indexOf("def _lock_scope"),
+  );
+  assert.doesNotMatch(rejection, /ProductImportFingerprint|ProductImportScopeHead/);
+});
+
+test("各导入入口都审计预校验拒绝且不让坏文件参与业务判重", async () => {
   for (const file of [
     "lib/netshop/import-service.ts",
     "lib/inventory/import-service.ts",
     "lib/erp-reference/import-service.ts",
-    "lib/sales/import-service.ts",
     "lib/finance/import-service.ts",
   ]) {
     const source = await readFile(new URL(`../${file}`, import.meta.url), "utf8");
@@ -39,8 +74,6 @@ test("全部七类导入入口都审计预校验拒绝且不让坏文件参与�
   }
   for (const file of [
     "lib/market/import-service.ts",
-    "app/api/customer-service/import/route.ts",
-    "app/api/customer-service/import/chunks/route.ts",
   ]) {
     const source = await readFile(new URL(`../${file}`, import.meta.url), "utf8");
     assert.match(source, /recordRejectedImportAttempt/, file);
@@ -55,15 +88,32 @@ test("全部七类导入入口都审计预校验拒绝且不让坏文件参与�
   assert.doesNotMatch(rejectedBlock, /INSERT INTO import_content_fingerprints|UPDATE import_scope_heads|INSERT INTO import_scope_heads/);
 });
 
-test("七类事实发布事务都安装共享 owner 提交栅栏", async () => {
+test("客服导入通过 Django writer 保存结构化拒绝和业务内容指纹", async () => {
+  const [edge, database, backend] = await Promise.all([
+    readFile(new URL("../app/api/customer-service/import/route.ts", import.meta.url), "utf8"),
+    readFile(new URL("../lib/customer-service/database.ts", import.meta.url), "utf8"),
+    readFile(new URL("../backend/customer_service/import_service.py", import.meta.url), "utf8"),
+  ]);
+  assert.match(database, /CUSTOMER_SERVICE_IMPORTS_PATH/);
+  assert.doesNotMatch(edge, /recordRejectedImportAttempt|import_content_fingerprints/);
+  for (const source of [edge, database]) {
+    assert.match(source, /recordRejectedCustomerServiceImport|action: "reject"/);
+    assert.doesNotMatch(source, /recordRejectedImportAttempt|import_content_fingerprints/);
+  }
+  assert.match(backend, /CustomerServiceImportAttempt\.objects\.create/);
+  assert.match(backend, /CustomerServiceImportFingerprint\.objects\.create/);
+  assert.match(backend, /CustomerServiceImportScopeHead\.objects\.select_for_update\(\)/);
+  assert.match(backend, /with transaction\.atomic\(\)/);
+});
+
+test("保留的 D1 事实发布实现都安装共享 owner 提交栅栏", async () => {
   for (const file of [
-    "lib/sales/database.ts",
     "lib/inventory/database.ts",
     "lib/finance/database.ts",
     "lib/erp-reference/database.ts",
     "lib/netshop/database.ts",
     "lib/market/import-core.ts",
-    "lib/customer-service/database.ts",
+    "lib/products/shipping-rate-database.ts",
   ]) {
     const source = await readFile(new URL(`../${file}`, import.meta.url), "utf8");
     assert.match(source, /importReservationCommitFence\(/, file);

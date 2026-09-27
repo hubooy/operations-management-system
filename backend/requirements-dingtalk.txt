@@ -1,0 +1,4 @@
+# Optional, isolated Stream receiver dependencies; install only for the receiver.
+-r requirements.txt
+dingtalk-stream==0.24.3
+websockets==17.1

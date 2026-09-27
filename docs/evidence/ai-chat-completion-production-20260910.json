@@ -1,0 +1,429 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-09-10",
+  "status": "deployed-and-real-dialogues-verified",
+  "scope": "Repair shared AI chat failure/empty-answer paths and the sales tool contract failures which triggered repeated alternate queries.",
+  "authorization": "User requested repair and previously authorized publishing; later clarified the focus is inability to produce replies, not a particular business answer.",
+  "baseMain": "60fdf5b02735ac16d37a127eda21d48693186ffc",
+  "sourceCommit": "796ba299bc46f46b98f7f9a333637bc73b4284e0",
+  "sourceMergedAndPushedToMain": true,
+  "rootCauses": {
+    "confirmed": [
+      "Inclusive AI sales dates were passed to an exclusive-end consumer; same-day failed and multi-day omitted its final day.",
+      "AI category adapter expected an array instead of the authoritative trend object.",
+      "Chat discarded the interleaved reasoning_content required by GLM tool turns.",
+      "The prior empty-answer error discarded finish reason, and high round limits did not reserve time for final generation."
+    ],
+    "notProven": "Historical empty responses did not preserve finish reason/usage, so output-limit exhaustion cannot be asserted as the cause of each historical request."
+  },
+  "safeguards": {
+    "reasoningOnlyInLiveChatTranscript": true,
+    "reasoningNotExposedOrAudited": true,
+    "knownCompletedEmptyGlmResponseMayFinalizeOnceWithinExistingLimits": true,
+    "networkTimeoutOrUnknownDispatchNotRetried": true,
+    "savedModelConfigurationUnchanged": true,
+    "paidQuotaAndAuditCheckedBeforeFinalization": true,
+    "noNewDatabaseMigrations": true,
+    "noRoleChanges": true,
+    "noBusinessImports": true,
+    "noExternalNotifications": true,
+    "noAutomationScheduleChanges": true
+  },
+  "tests": {
+    "node": {
+      "total": 2064,
+      "passed": 2044,
+      "skipped": 20,
+      "failed": 0
+    },
+    "djangoAi": {
+      "total": 88,
+      "passed": 87,
+      "skipped": 1,
+      "failed": 0
+    },
+    "djangoSales": {
+      "passed": 24
+    },
+    "renderedBuild": {
+      "passed": 20
+    },
+    "productionBuild": "passed",
+    "backendBoundary": {
+      "modules": 402,
+      "violations": 0
+    },
+    "lint": {
+      "errors": 0,
+      "existingWarnings": 9
+    },
+    "typecheck": {
+      "exitCode": 2,
+      "existingDiagnosticCount": 142,
+      "changedFileDiagnostics": 0
+    },
+    "migrationDryRun": "No changes detected"
+  },
+  "intermediateRelease": {
+    "sourceCommit": "1f9ca99e7a9ddd8e8bb57a33cc87562d1f6dddf4",
+    "releaseId": "20260909T154048Z-c36429c58cc5b463",
+    "summaryQueryAnswered": true,
+    "categoryFollowupStillFailedWithEmptyBody": true,
+    "notConsideredComplete": true
+  },
+  "django": {
+    "manifestSha256": "4f427e8d2d4354091cf34d70c93c33434b7e7c86f35401b8d152aff0245c04bb",
+    "files": [
+      {
+        "path": "backend/ai_assistant/chat.py",
+        "sha256": "3128e00d9c5e04f037a62fe218e07340418994afa7fdd165cb83d1b99821c644",
+        "matches": true
+      },
+      {
+        "path": "backend/ai_assistant/provider.py",
+        "sha256": "2aa76bc52178f137930f908b991cc09dca15c17fb37111979ab618b6665e1984",
+        "matches": true
+      }
+    ]
+  },
+  "workerSources": [
+    {
+      "path": "lib/ai/operations-tools.ts",
+      "sha256": "2458d941b0c3f929926b220ee58d2a05232ad0806bdb8816ba352dbf1a7d3f80",
+      "matches": true
+    },
+    {
+      "path": "lib/ai/tool-registry.ts",
+      "sha256": "8f7b317f356c879c1bc846ef1cb898af63b27e78f7cd9e00eebb30d41e0519a3",
+      "matches": true
+    },
+    {
+      "path": "lib/sales/category-ai-tool.ts",
+      "sha256": "7c521960ce8f40fb067e199493d265ae04d9cb0e443d408a21bf224ff7e027f7",
+      "matches": true
+    }
+  ],
+  "quiescence": {
+    "status": "passed",
+    "checkedAt": "2026-09-09T16:47:33.189Z",
+    "helperIdle": true,
+    "n8nNonterminalCount": 0,
+    "aiDatasetsChecked": [
+      "rows_ai_chat_request_receipts",
+      "rows_ai_agent_jobs",
+      "rows_ai_workflow_runs",
+      "rows_ai_space_jobs",
+      "rows_ai_space_job_items",
+      "rows_ai_agent_provider_dispatches",
+      "rows_ai_agent_tool_dispatches"
+    ],
+    "activeAiJobs": 0,
+    "scope": "current authenticated principal only"
+  },
+  "controlledStop": {
+    "version": "teruisi-operations-system-service-v1",
+    "action": "Stop",
+    "status": "stopped",
+    "workerStatus": "stopped",
+    "backendStopped": true,
+    "checkedAt": "2026-09-10T00:49:06.7885686+08:00"
+  },
+  "workerPlan": {
+    "status": "planned",
+    "version": "teruisi-local-worker-release-rotation-plan-v1",
+    "planSha256": "81c7a286432f970003790dec3279b7fe45607771d5f36a0cc584ff5a7fa127a9",
+    "planPath": "D:\\teruisi-runtime\\teruisi-worker-sales\\state\\worker-release-rotation-plans\\81c7a286432f970003790dec3279b7fe45607771d5f36a0cc584ff5a7fa127a9.json",
+    "predecessorReleaseId": "20260909T154048Z-c36429c58cc5b463",
+    "candidateReleaseId": "20260909T165119Z-57c98600b9650dbc",
+    "candidateManifestSha256": "ccd1d9cdf0bb85472d5966e617e279b28ff030c0512013fd844850f0380c6ba0",
+    "candidateGuardReceiptSha256": "f5ec6b7435e0240b7217705ac3f73dad3e192787304b33dabbddb0530845a547",
+    "cutoverId": "sales-pg-20260829T204417Z-d9896e904d8092cb"
+  },
+  "workerActivation": {
+    "status": "activated",
+    "version": "teruisi-local-worker-release-successor-v1",
+    "planSha256": "81c7a286432f970003790dec3279b7fe45607771d5f36a0cc584ff5a7fa127a9",
+    "predecessorReleaseId": "20260909T154048Z-c36429c58cc5b463",
+    "releaseId": "20260909T165119Z-57c98600b9650dbc",
+    "manifestPath": "D:\\teruisi-runtime\\teruisi-worker-sales\\releases\\20260909T165119Z-57c98600b9650dbc\\deployment-manifest.json",
+    "manifestSha256": "ccd1d9cdf0bb85472d5966e617e279b28ff030c0512013fd844850f0380c6ba0",
+    "successorSha256": "0dd0079cdfa4d674db63c6223d204195b0f2b2312a6dd0f02016fac349fff1d1",
+    "consumptionSha256": "6cee1f24ccc0176f6f5883d9d5ec67663b785079eb508eccc17c3b5a2876e712",
+    "startupBindingSha256": "ff1eef1fdccbae6178d9e5ce18f618459eb171674ae2b55040524a4dc5a85a28"
+  },
+  "effectiveHead": {
+    "status": "resolved",
+    "version": "teruisi-local-worker-effective-release-v1",
+    "releaseId": "20260909T165119Z-57c98600b9650dbc",
+    "manifestPath": "D:\\teruisi-runtime\\teruisi-worker-sales\\releases\\20260909T165119Z-57c98600b9650dbc\\deployment-manifest.json",
+    "manifestSha256": "ccd1d9cdf0bb85472d5966e617e279b28ff030c0512013fd844850f0380c6ba0",
+    "guardReceiptSha256": "f5ec6b7435e0240b7217705ac3f73dad3e192787304b33dabbddb0530845a547",
+    "successorCount": 119,
+    "chainStateSha256": "30ba889e37cbf85fd8ee43cc9c8d3d53bbf9293289c65fd731a443710c1935cf"
+  },
+  "controlledStart": {
+    "version": "teruisi-operations-system-control-v2",
+    "status": "started",
+    "state": "Running",
+    "backendState": "Ready",
+    "workerState": "exact_release",
+    "releaseId": "20260909T165119Z-57c98600b9650dbc",
+    "supervisorProcessId": 32180,
+    "portProcessId": 22460,
+    "url": "http://localhost:3000/",
+    "checkedAt": "2026-09-10T00:58:12.2113116+08:00"
+  },
+  "readiness": {
+    "ok": true,
+    "backend": "django-postgresql",
+    "unavailableServices": [],
+    "status": "ready"
+  },
+  "toolContractChecks": {
+    "status": "passed",
+    "checkedAt": "2026-09-09T16:58:33.780Z",
+    "freshness": {
+      "coverage": {
+        "startDate": "2025-01-01",
+        "cutoffDate": "2026-09-09",
+        "coveredDayCount": 617,
+        "lagDaysToCurrentBusinessDate": 1,
+        "throughYesterday": true
+      },
+      "revision": "20:16",
+      "timeZone": "Asia/Shanghai"
+    },
+    "results": [
+      {
+        "dataset": "sales_summary",
+        "query": {
+          "range": "custom",
+          "startDate": "2026-09-08",
+          "endDate": "2026-09-08"
+        },
+        "status": 200,
+        "durationMs": 920,
+        "dataCutoffDate": "2026-09-09",
+        "pageTotalsMatch": true,
+        "dateBoundaryMatches": true,
+        "summarySha256": "a4aac658fa02db93dd6576957dfb4c076f76574b5aef7c4725f7d21931527073",
+        "truncated": false
+      },
+      {
+        "dataset": "sales_category",
+        "query": {
+          "startDate": "2026-09-08",
+          "endDate": "2026-09-08",
+          "productQueries": [
+            "直饮机"
+          ],
+          "limit": 20
+        },
+        "status": 200,
+        "durationMs": 2060,
+        "dataCutoffDate": null,
+        "pageTotalsMatch": true,
+        "dateBoundaryMatches": true,
+        "summarySha256": "ae057c1999261e7786ccc2e4f191ffbf52139fc49de940b7a8ee3773770e248b",
+        "truncated": false
+      },
+      {
+        "dataset": "sales_summary",
+        "query": {
+          "range": "custom",
+          "startDate": "2026-09-07",
+          "endDate": "2026-09-08"
+        },
+        "status": 200,
+        "durationMs": 467,
+        "dataCutoffDate": "2026-09-09",
+        "pageTotalsMatch": true,
+        "dateBoundaryMatches": true,
+        "summarySha256": "e1ca3faeb7c8ca93ab805658fde0fdccf4fa1e4add15ad4339b386f34dc4c80e",
+        "truncated": false
+      },
+      {
+        "dataset": "sales_category",
+        "query": {
+          "startDate": "2026-09-08",
+          "endDate": "2026-09-08",
+          "limit": 1
+        },
+        "status": 200,
+        "durationMs": 294,
+        "dataCutoffDate": "2026-09-08",
+        "pageTotalsMatch": true,
+        "dateBoundaryMatches": true,
+        "summarySha256": "6eecb0582c410dc2828862caaca4237b80d600fede45ed2c32e077f9766f37c8",
+        "truncated": true
+      }
+    ],
+    "modelCalls": 0
+  },
+  "realDialogues": [
+    {
+      "module": "sales",
+      "receiptId": "ai-chat-request-de3d6531-547d-42dd-a50d-b9aa70e97d6c",
+      "requestId": "5d90d2c5-0d46-467e-a253-3e02ce58ce21",
+      "prompt": "2026年9月8日，直饮机一共卖了多少？",
+      "expectedDispatches": 3,
+      "receipt": {
+        "id": "ai-chat-request-de3d6531-547d-42dd-a50d-b9aa70e97d6c",
+        "client_request_id": "ef368ab4-3187-4e47-8adc-0a04a5651768",
+        "conversation_id": "ai-conversation-4ebd6269-9bdc-4166-96eb-2a660f84b6f9",
+        "status": "succeeded",
+        "assistant_message_id": "ai-msg-7653b35e-a5aa-41a1-8a29-4d23bf6d5545",
+        "error_code": null,
+        "admitted_at": "2026-09-10T00:59:50.981452+08:00",
+        "completed_at": "2026-09-10T01:00:43.523388+08:00"
+      },
+      "message": {
+        "clientRequestId": "ef368ab4-3187-4e47-8adc-0a04a5651768",
+        "status": "succeeded",
+        "conversationId": "ai-conversation-4ebd6269-9bdc-4166-96eb-2a660f84b6f9",
+        "assistantMessageId": "ai-msg-7653b35e-a5aa-41a1-8a29-4d23bf6d5545",
+        "characters": 731,
+        "sha256": "5b486608340a70c5e905ad4e22b597df6ccfa89fef7827dc4752964061718d79",
+        "exactMessageReadback": true
+      },
+      "elapsedMs": 52542,
+      "modelCalls": [
+        {
+          "durationMs": 18078,
+          "errorCode": null
+        },
+        {
+          "durationMs": 16171,
+          "errorCode": null
+        },
+        {
+          "durationMs": 17625,
+          "errorCode": null
+        }
+      ],
+      "successfulTools": [
+        {
+          "name": "get_sales_category_analysis",
+          "durationMs": 223
+        },
+        {
+          "name": "get_sales_category_analysis",
+          "durationMs": 151
+        }
+      ],
+      "browserReplyVisible": true,
+      "browserReloadRestored": true,
+      "refreshAddedProviderDispatches": 0,
+      "note": "Repeated the previous failing category follow-up with an explicit date after midnight. All three provider turns succeeded; empty-response finalization was not needed in this live test."
+    },
+    {
+      "module": "inventory",
+      "receiptId": "ai-chat-request-7377ab02-e43e-472c-8cf6-63b25aed59d5",
+      "requestId": "4e181fc9-b0f4-428f-a5a2-49a3699f2691",
+      "prompt": "当前库存有哪些需要关注的问题？请简要说明。",
+      "expectedDispatches": 1,
+      "receipt": {
+        "id": "ai-chat-request-7377ab02-e43e-472c-8cf6-63b25aed59d5",
+        "client_request_id": "fbae53d6-71cd-45ee-ad8a-d502bb91651c",
+        "conversation_id": "ai-conversation-f2414dc9-20b5-43ba-8e81-bff3587a5dbc",
+        "status": "succeeded",
+        "assistant_message_id": "ai-msg-fffcfe3e-8e67-4a15-94cd-461d578a8faa",
+        "error_code": null,
+        "admitted_at": "2026-09-10T01:03:04.534162+08:00",
+        "completed_at": "2026-09-10T01:03:28.613104+08:00"
+      },
+      "message": {
+        "clientRequestId": "fbae53d6-71cd-45ee-ad8a-d502bb91651c",
+        "status": "succeeded",
+        "conversationId": "ai-conversation-f2414dc9-20b5-43ba-8e81-bff3587a5dbc",
+        "assistantMessageId": "ai-msg-fffcfe3e-8e67-4a15-94cd-461d578a8faa",
+        "characters": 680,
+        "sha256": "5f704dfe39763384a766845f783aad08d584babecbcd2846dc33d10761e01f01",
+        "exactMessageReadback": true
+      },
+      "elapsedMs": 24079,
+      "modelCalls": [
+        {
+          "durationMs": 24000,
+          "errorCode": null
+        }
+      ],
+      "successfulTools": [],
+      "browserReplyVisible": true,
+      "browserReloadRestored": true,
+      "refreshAddedProviderDispatches": 0,
+      "note": "Continued existing inventory conversation using its prior evidence; this test did not initiate a fresh inventory query."
+    }
+  ],
+  "backups": {
+    "before": {
+      "status": "completed",
+      "backupId": "daily-20260909T164421Z-f7129f330018",
+      "backupDirectory": "D:\\teruisi-runtime\\django-sales\\backups\\postgres-daily\\daily-20260909T164421Z-f7129f330018",
+      "manifestSha256": "6e20b23b7b4f12e03370a2b988dd7bf2a4b4320bbe9e46ab675f18e22afb1649",
+      "dumpSha256": "3f3ade6ed6f5aba7cb1651590ed33874ef8ab61abd5b377d137b7417d8a4d69e",
+      "contentSha256": "df0edd6504f52be48f5912306e211bbb6f074d394828f4d5561c7580cba184ef",
+      "completedAt": "2026-09-09T16:46:13.7800778+00:00",
+      "serviceStateChanged": false
+    },
+    "beforeVerify": {
+      "status": "completed",
+      "backupId": "daily-20260909T164421Z-f7129f330018",
+      "manifestSha256": "6e20b23b7b4f12e03370a2b988dd7bf2a4b4320bbe9e46ab675f18e22afb1649",
+      "dumpSha256": "3f3ade6ed6f5aba7cb1651590ed33874ef8ab61abd5b377d137b7417d8a4d69e",
+      "contentSha256": "df0edd6504f52be48f5912306e211bbb6f074d394828f4d5561c7580cba184ef",
+      "serviceStateChanged": false
+    },
+    "after": {
+      "status": "completed",
+      "backupId": "daily-20260909T165836Z-ffbcfa0d7108",
+      "backupDirectory": "D:\\teruisi-runtime\\django-sales\\backups\\postgres-daily\\daily-20260909T165836Z-ffbcfa0d7108",
+      "manifestSha256": "a890518806e3efbf4a588b8a003136ffac5a510c38f3d03752ad633f5ab5d645",
+      "dumpSha256": "bd72521e257cc7b3db457ca1e29d008e53ee61e6c93518c2602c5b6910be4ae7",
+      "contentSha256": "9f7fd5f56a02cd6cc52b9e4c708b7ed2fc015af6ad4ebbcb7dcad9a164ec7690",
+      "completedAt": "2026-09-09T17:00:02.1203495+00:00",
+      "serviceStateChanged": false
+    },
+    "afterVerify": {
+      "status": "completed",
+      "backupId": "daily-20260909T165836Z-ffbcfa0d7108",
+      "manifestSha256": "a890518806e3efbf4a588b8a003136ffac5a510c38f3d03752ad633f5ab5d645",
+      "dumpSha256": "bd72521e257cc7b3db457ca1e29d008e53ee61e6c93518c2602c5b6910be4ae7",
+      "contentSha256": "9f7fd5f56a02cd6cc52b9e4c708b7ed2fc015af6ad4ebbcb7dcad9a164ec7690",
+      "serviceStateChanged": false
+    },
+    "controls": {
+      "checkedAt": "2026-09-09T17:00:54.145Z",
+      "unchangedControlKeys": [
+        "accessControl",
+        "customerServiceRevisions",
+        "customerServiceWriteAuthority",
+        "erpReferenceWriteAuthority",
+        "inventoryRevisions",
+        "inventoryWriteAuthority",
+        "marketRevisions",
+        "marketWriteAuthority",
+        "migrations",
+        "netshopRevisions",
+        "netshopWriteAuthority",
+        "productsRevisions",
+        "productsWriteAuthority",
+        "revisions",
+        "workflowOperationsWriteAuthority",
+        "workflowRevisions",
+        "workflowWriteAuthority",
+        "writeAuthority"
+      ],
+      "migrationsUnchanged": true,
+      "beforeManifest": "daily-20260909T164421Z-f7129f330018",
+      "afterManifest": "daily-20260909T165836Z-ffbcfa0d7108",
+      "note": "Compare migration/revision/authority metadata only; not a claim of row-by-row equality."
+    },
+    "newRestoreRehearsalPerformed": false,
+    "restoreCompatibility": "Successful 2026-09-09 46-table isolated restore d093ce61b8a4; no schema, role or backup-helper changes."
+  },
+  "limitations": [
+    "The two live replies passed without exercising empty-response finalization; that branch and its content-filter/timeout/quota/audit gates are covered by isolated regression tests.",
+    "Validation targets reply completion and restoration, not every generated business inference or a guarantee against all future provider outages."
+  ]
+}

@@ -5,7 +5,7 @@ import { JackyunBrowserStateMachine, isSafePreExportBlockedResume } from "../lib
 import {
   assertJackyunHistoricalSnapshotEvidence,
   isValidJackyunSourceRowCountCorrection,
-  type JackyunHistoricalSnapshotEvidence,
+  type JackyunSnapshotEvidence,
   type JackyunSourceRowCountCorrection,
 } from "../lib/jackyun/run-contract";
 import { jackyunModuleOrder, type JackyunModule } from "../lib/jackyun/post-download";
@@ -49,7 +49,7 @@ export type BrowserHandoff = {
   exportConfirmation?: BrowserExportConfirmation;
   downloadEventAt: string;
   expectedSourceRows: number;
-  snapshotEvidence?: JackyunHistoricalSnapshotEvidence;
+  snapshotEvidence?: JackyunSnapshotEvidence;
   downloadProvenance?: JackyunDownloadProvenance;
   sourceRowCountCorrection?: JackyunSourceRowCountCorrection;
   fieldChecks?: Array<{ field: string; value: string; verifiedAt: string }>;

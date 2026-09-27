@@ -1,9 +1,13 @@
+import type { AppPrincipal } from "@/lib/auth/authorization";
+import { aiConsumer } from "@/lib/django/ai-service";
 import { decryptSecret } from "@/lib/ai/crypto";
-import { resolveAiModelEndpointUrl } from "@/lib/ai/endpoint-security";
+import {
+  loadAiEndpointSecurityContext,
+  resolveAiModelEndpointUrl,
+} from "@/lib/ai/endpoint-security";
 import { completeText, type AiTextModelRuntimeConfig } from "@/lib/ai/model-gateway";
 import { AI_MODEL_TOOL_BUDGET_LIMITS } from "@/lib/ai/model-tool-budget";
 import { fetchAnnotationImage } from "@/lib/market/annotation-image";
-import type { MarketDatabase } from "@/lib/market/database";
 import { digest, parseVisionAnnotation, type VisionAnnotation } from "@/lib/market/annotation-types";
 
 export type AnnotationModelConfig = {
@@ -16,24 +20,19 @@ type ModelRow = AnnotationModelConfig;
 const DEFAULT_MODEL_TIMEOUT_MS = 60_000;
 const VISION_ANNOTATION_TIMEOUT_MAX_MS = 90_000;
 const MODEL_RESPONSE_MAX_BYTES = 2 * 1024 * 1024;
+const VISION_ANNOTATION_OUTPUT_TOKEN_MAX = 600;
+const VISION_PRICE_ONLY_OUTPUT_TOKEN_MAX = 320;
 const VISION_PROBE_IMAGE_BASE64 = "iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAvSURBVFhH7c6hAQAACMOw/f/08BwAJqKmKmnSz7LHdQAAAAAAAAAAAAAAAAAAAANUDfhqnpuFxwAAAABJRU5ErkJggg==";
 
-export async function listAnnotationModels(db: MarketDatabase) {
-  const rows = await db.prepare("SELECT * FROM ai_models WHERE status = 'enabled' AND model_type IN ('vision','image') ORDER BY updated_at DESC").all<ModelRow>();
-  return (rows.results ?? []).map(({ id, name, protocol, model_name }) => ({ id, name, protocol, modelName: model_name }));
+type PublicModel = { id: string; name: string; protocol: string; modelName: string };
+export async function listAnnotationModels(principal?: AppPrincipal) {
+  return (await aiConsumer<{ items: PublicModel[] }>(principal ?? (await (await import("@/lib/auth/authorization")).requireAppPrincipal()), { operation: "model-list", modelType: "vision" })).items.map(({ id, name, protocol, modelName }) => ({ id, name, protocol, modelName }));
 }
-
-export async function listPromptTextModels(db: MarketDatabase) {
-  const rows = await db.prepare("SELECT * FROM ai_models WHERE status = 'enabled' AND model_type = 'text' ORDER BY is_default_text_model DESC, updated_at DESC").all<ModelRow>();
-  return (rows.results ?? []).map(({ id, name, protocol, model_name }) => ({ id, name, protocol, modelName: model_name }));
+export async function listPromptTextModels(principal?: AppPrincipal) {
+  return (await aiConsumer<{ items: PublicModel[] }>(principal ?? (await (await import("@/lib/auth/authorization")).requireAppPrincipal()), { operation: "model-list", modelType: "text" })).items.map(({ id, name, protocol, modelName }) => ({ id, name, protocol, modelName }));
 }
-
-async function getModel(db: MarketDatabase, id: string, type: "vision" | "text") {
-  const row = type === "vision"
-    ? await db.prepare("SELECT * FROM ai_models WHERE id = ? AND status = 'enabled' AND model_type IN ('vision','image') LIMIT 1").bind(id).first<ModelRow>()
-    : await db.prepare("SELECT * FROM ai_models WHERE id = ? AND status = 'enabled' AND model_type = ? LIMIT 1").bind(id, type).first<ModelRow>();
-  if (!row) throw new Error(`所选 ${type === "vision" ? "视觉" : "文本"} 模型不存在或未启用`);
-  return row;
+async function getModel(id: string, type: "vision" | "text", principal?: AppPrincipal, signal?: AbortSignal) {
+  return (await aiConsumer<{ model: ModelRow }>(principal ?? (await (await import("@/lib/auth/authorization")).requireAppPrincipal()), { operation: "model-runtime", id, modelType: type, allowFallback: false }, { signal })).model;
 }
 
 export async function probeVisionModelConnection(model: AnnotationModelConfig): Promise<string> {
@@ -56,41 +55,85 @@ export async function probeVisionModelConnection(model: AnnotationModelConfig): 
 }
 
 export async function runVisionAnnotation(input: {
-  db: MarketDatabase; modelId: string; promptBody: string; segments: readonly string[];
+  principal?: AppPrincipal; modelId: string; promptBody: string; segments: readonly string[];
   skuCode: string; productName: string; brand: string; imageUrl: string; fixedSegment?: string;
-}): Promise<VisionAnnotation & { imageSource: "imgzone" | "n5" | "none"; resolvedImageUrl: string; rawDigest: string }> {
-  const model = await getModel(input.db, input.modelId, "vision");
-  const cachedImage = input.imageUrl ? await loadCachedAnnotationImage(input.db, input.imageUrl) : null;
-  const sourceImage = cachedImage ?? (input.imageUrl ? await fetchAnnotationImage(input.imageUrl) : { kind: "no-image" as const, reason: "invalid_url" as const, message: "没有图片地址" });
-  if (sourceImage.kind !== "image") throw new Error(`主图获取失败：${sourceImage.message}`);
-  const image = await prepareAnnotationModelImage(sourceImage);
-  const fixedSegment = input.fixedSegment?.trim() ?? "";
-  if (fixedSegment && !input.segments.includes(fixedSegment)) throw new Error("历史细分品类已失效，不能执行价格专用识别");
-  const outputSegments = fixedSegment ? [fixedSegment] : input.segments;
-  const text = `${fixedSegment ? priceOnlyAnnotationPrompt(fixedSegment) : `${input.promptBody}\n\n允许的细分品类：${input.segments.join("、")}`}\nSKU：${input.skuCode}\n商品名称：${input.productName}\n品牌：${input.brand || "未知"}\n必须返回主图中清晰可见且可作为完整商品售价的价格（人民币元，可带两位小数；没有则 null）、价格类型、价格区间最低/最高值（同样使用人民币元）、0到1置信度和简短证据。忽略销量、优惠券面额、补贴金额、划线原价及赠品价格；分期每期金额、定金、起售价和最低规格价必须如实标记，不能冒充完整商品售价。价格类型只能是：标准售价、到手价、券后价、起售价、价格区间、定金、分期金额、最低规格价格、无法判断。`;
-  const raw = model.protocol === "anthropic"
-    ? await callAnthropicVision(model, text, outputSegments, image, fixedSegment ? 400 : undefined)
-    : await callOpenAiVision(model, text, outputSegments, image, fixedSegment ? 400 : undefined);
-  const parsed = parseVisionAnnotation(raw, outputSegments);
-  return {
-    ...parsed,
-    imageSource: image.source,
-    resolvedImageUrl: image.url,
-    rawDigest: digest(parsed.rawText),
+  deadlineAt?: number;
+}): Promise<VisionAnnotation & { imageSource: "imgzone" | "n5" | "none"; resolvedImageUrl: string; rawDigest: string; timing: VisionAnnotationTiming }> {
+  const startedAt = Date.now();
+  const timing: VisionAnnotationTiming = { imageLoadMs: 0, imagePrepareMs: 0, modelCallMs: 0, totalMs: 0, inputBytes: 0 };
+  const deadlineAt = Math.min(input.deadlineAt ?? startedAt + 140_000, startedAt + 140_000);
+  const remaining = () => {
+    const ms = Math.floor(deadlineAt - Date.now());
+    if (ms <= 0) throw new Error("视觉任务处理超时");
+    return ms;
   };
+  try {
+    const model = await getModel(input.modelId, "vision", input.principal, AbortSignal.timeout(Math.min(15_000, remaining())));
+    const imageLoadStartedAt = Date.now();
+    const sourceImage = (input.imageUrl ? await fetchAnnotationImage(input.imageUrl) : { kind: "no-image" as const, reason: "invalid_url" as const, message: "没有图片地址" });
+    timing.imageLoadMs = Date.now() - imageLoadStartedAt;
+    if (sourceImage.kind !== "image") throw new Error(`主图获取失败：${sourceImage.message}`);
+    const imagePrepareStartedAt = Date.now();
+    const image = await prepareAnnotationModelImage(sourceImage);
+    timing.imagePrepareMs = Date.now() - imagePrepareStartedAt;
+    timing.inputBytes = image.bytes.byteLength;
+    const fixedSegment = input.fixedSegment?.trim() ?? "";
+    if (fixedSegment && !input.segments.includes(fixedSegment)) throw new Error("历史细分品类已失效，不能执行价格专用识别");
+    const outputSegments = fixedSegment ? [fixedSegment] : input.segments;
+    const text = `${fixedSegment ? priceOnlyAnnotationPrompt(fixedSegment) : `${input.promptBody}\n\n允许的细分品类：${input.segments.join("、")}`}\nSKU：${input.skuCode}\n商品名称：${input.productName}\n品牌：${input.brand || "未知"}\n必须返回主图中清晰可见且可作为完整商品售价的价格（人民币元，可带两位小数；没有则 null）、价格类型、价格区间最低/最高值（同样使用人民币元）、0到1置信度和简短证据。忽略销量、优惠券面额、补贴金额、划线原价及赠品价格；分期每期金额、定金、起售价和最低规格价必须如实标记，不能冒充完整商品售价。价格类型只能是：标准售价、到手价、券后价、起售价、价格区间、定金、分期金额、最低规格价格、无法判断。`;
+    const modelCallStartedAt = Date.now();
+    let raw: unknown;
+    try {
+      raw = model.protocol === "anthropic"
+        ? await callAnthropicVision(model, text, outputSegments, image, fixedSegment ? VISION_PRICE_ONLY_OUTPUT_TOKEN_MAX : VISION_ANNOTATION_OUTPUT_TOKEN_MAX, deadlineAt)
+        : await callOpenAiVision(model, text, outputSegments, image, fixedSegment ? VISION_PRICE_ONLY_OUTPUT_TOKEN_MAX : VISION_ANNOTATION_OUTPUT_TOKEN_MAX, deadlineAt);
+    } finally {
+      timing.modelCallMs = Date.now() - modelCallStartedAt;
+    }
+    const parsed = parseVisionAnnotation(raw, outputSegments);
+    timing.totalMs = Date.now() - startedAt;
+    return {
+      ...parsed,
+      imageSource: image.source,
+      resolvedImageUrl: image.url,
+      rawDigest: digest(parsed.rawText),
+      timing,
+    };
+  } catch (error) {
+    timing.totalMs = Date.now() - startedAt;
+    throw new VisionAnnotationExecutionError(error instanceof Error ? error.message : "视觉识别失败", timing, error);
+  }
+}
+
+export type VisionAnnotationTiming = {
+  imageLoadMs: number;
+  imagePrepareMs: number;
+  modelCallMs: number;
+  totalMs: number;
+  inputBytes: number;
+};
+
+export class VisionAnnotationExecutionError extends Error {
+  readonly status?: number;
+  readonly retryAfterMs?: number;
+  constructor(message: string, readonly timing: VisionAnnotationTiming, cause?: unknown) {
+    super(message);
+    this.name = "VisionAnnotationExecutionError";
+    if (cause && typeof cause === "object") {
+      if ("status" in cause) this.status = Number(cause.status);
+      if ("retryAfterMs" in cause) this.retryAfterMs = Number(cause.retryAfterMs);
+    }
+  }
+}
+
+export function visionAnnotationTiming(error: unknown): VisionAnnotationTiming {
+  return error instanceof VisionAnnotationExecutionError
+    ? error.timing
+    : { imageLoadMs: 0, imagePrepareMs: 0, modelCallMs: 0, totalMs: 0, inputBytes: 0 };
 }
 
 export function priceOnlyAnnotationPrompt(segment: string) {
   return `该 SKU 的细分品类已经人工复核并正式入库，固定为“${segment}”。不要重新分类，只识别当前新主图价格；segment 必须原样返回“${segment}”。`;
-}
-
-async function loadCachedAnnotationImage(db: MarketDatabase, sourceUrl: string) {
-  try {
-    const { getCachedMarketImageForAnnotation } = await import("@/lib/market/image-cache");
-    return await getCachedMarketImageForAnnotation(sourceUrl, db);
-  } catch {
-    return null;
-  }
 }
 
 async function prepareAnnotationModelImage<T extends LoadedImage>(image: T): Promise<T> {
@@ -103,8 +146,8 @@ async function prepareAnnotationModelImage<T extends LoadedImage>(image: T): Pro
   }
 }
 
-export async function runPromptTextCompletion(db: MarketDatabase, modelId: string, instruction: string) {
-  const model = await getModel(db, modelId, "text");
+export async function runPromptTextCompletion(modelId: string, instruction: string, principal?: AppPrincipal) {
+  const model = await getModel(modelId, "text", principal);
   return completeText({
     model: textRuntimeModel(model),
     messages: [{ role: "user", content: instruction }],
@@ -149,53 +192,73 @@ function modelErrorDetail(data: unknown) {
     .slice(0, 180);
 }
 
-function modelCallError(kind: "文本" | "视觉", status: number, data: unknown) {
+function modelCallError(kind: "文本" | "视觉", status: number, data: unknown, retryAfter: string | null = null) {
   const detail = modelErrorDetail(data);
   const hint = status === 429
     ? "模型供应商限流或额度不足，请稍后重试并检查额度"
     : status === 400
       ? "请求被接口拒绝，请核对模型标识、图片输入及结构化输出兼容性"
       : "请检查模型服务状态和接口配置";
-  return new Error(`${kind}模型调用失败（状态码 ${status}：${detail || hint}）`);
+  const parsed = retryAfter && /^\d+(?:\.\d+)?$/.test(retryAfter) ? Number(retryAfter) * 1_000 : Date.parse(retryAfter ?? "") - Date.now();
+  return Object.assign(new Error(`${kind}模型调用失败（状态码 ${status}：${detail || hint}）`), {
+    status, retryAfterMs: Number.isFinite(parsed) ? Math.min(300_000, Math.max(0, parsed)) : 0,
+  });
 }
 
-async function callOpenAiVision(model: ModelRow, text: string, segments: readonly string[], image: LoadedImage | null, outputTokenCap?: number) {
+async function callOpenAiVision(model: ModelRow, text: string, segments: readonly string[], image: LoadedImage | null, outputTokenCap?: number, deadlineAt?: number) {
+  const endpointSecurityContext = await loadAiEndpointSecurityContext();
+  const endpointUrl = resolveAiModelEndpointUrl(model.base_url, "openai_compatible", endpointSecurityContext);
   const key = await decryptSecret(model.api_key_encrypted);
   if (!key) throw new Error("视觉模型 API Key 未配置");
   const content: Array<Record<string, unknown>> = [{ type: "text", text }];
   if (image) content.push({ type: "image_url", image_url: { url: `data:${image.mimeType};base64,${image.base64}`, detail: "high" } });
-  const { response, data } = await fetchJsonLimited<{ choices?: Array<{ message?: { content?: string | Array<{ text?: string }> } }> }>(resolveAiModelEndpointUrl(model.base_url, "openai_compatible"), {
+  const { response, data } = await fetchJsonLimited<{ choices?: Array<{ message?: { content?: string | Array<{ text?: string }> } }> }>(endpointUrl, {
     method: "POST", headers: { "content-type": "application/json", authorization: `Bearer ${key}` },
     body: JSON.stringify({
       model: model.model_name, temperature: 0,
-      max_tokens: Math.min(boundedModelSetting(model.max_tokens, 800, 128, 1_600), outputTokenCap ?? 1_600),
+      max_tokens: Math.min(boundedModelSetting(model.max_tokens, VISION_ANNOTATION_OUTPUT_TOKEN_MAX, 128, 1_600), outputTokenCap ?? VISION_ANNOTATION_OUTPUT_TOKEN_MAX),
+      ...(disableVisionThinking(model) ? { thinking: { type: "disabled" } } : {}),
       messages: [{ role: "user", content }],
       response_format: { type: "json_schema", json_schema: { name: "market_sku_annotation", strict: true, schema: annotationJsonSchema(segments) } },
     }),
-  }, Math.min(boundedModelSetting(model.timeout_ms, DEFAULT_MODEL_TIMEOUT_MS, 3_000, 120_000), VISION_ANNOTATION_TIMEOUT_MAX_MS));
-  if (!response.ok) throw modelCallError("视觉", response.status, data);
+  }, visionRequestTimeout(model, deadlineAt));
+  if (!response.ok) throw modelCallError("视觉", response.status, data, response.headers.get("retry-after"));
   const contentValue = data?.choices?.[0]?.message?.content;
   return typeof contentValue === "string" ? contentValue : contentValue?.map((part) => part.text ?? "").join("") || "";
 }
 
-async function callAnthropicVision(model: ModelRow, text: string, segments: readonly string[], image: LoadedImage | null, outputTokenCap?: number) {
+async function callAnthropicVision(model: ModelRow, text: string, segments: readonly string[], image: LoadedImage | null, outputTokenCap?: number, deadlineAt?: number) {
+  const endpointSecurityContext = await loadAiEndpointSecurityContext();
+  const endpointUrl = resolveAiModelEndpointUrl(model.base_url, "anthropic", endpointSecurityContext);
   const key = await decryptSecret(model.api_key_encrypted);
   if (!key) throw new Error("视觉模型 API Key 未配置");
   const content: Array<Record<string, unknown>> = [];
   if (image) content.push({ type: "image", source: { type: "base64", media_type: image.mimeType, data: image.base64 } });
   content.push({ type: "text", text });
-  const { response, data } = await fetchJsonLimited<{ content?: Array<{ type?: string; name?: string; input?: unknown }> }>(resolveAiModelEndpointUrl(model.base_url, "anthropic"), {
+  const { response, data } = await fetchJsonLimited<{ content?: Array<{ type?: string; name?: string; input?: unknown }> }>(endpointUrl, {
     method: "POST", headers: { "content-type": "application/json", "x-api-key": key, "anthropic-version": "2023-06-01" },
     body: JSON.stringify({
-      model: model.model_name, max_tokens: Math.min(boundedModelSetting(model.max_tokens, 800, 128, 1_600), outputTokenCap ?? 1_600), messages: [{ role: "user", content }],
+      model: model.model_name, max_tokens: Math.min(boundedModelSetting(model.max_tokens, VISION_ANNOTATION_OUTPUT_TOKEN_MAX, 128, 1_600), outputTokenCap ?? VISION_ANNOTATION_OUTPUT_TOKEN_MAX), messages: [{ role: "user", content }],
       tools: [{ name: "submit_market_sku_annotation", description: "提交结构化识别结果", input_schema: annotationJsonSchema(segments) }],
       tool_choice: { type: "tool", name: "submit_market_sku_annotation" },
     }),
-  }, Math.min(boundedModelSetting(model.timeout_ms, DEFAULT_MODEL_TIMEOUT_MS, 3_000, 120_000), VISION_ANNOTATION_TIMEOUT_MAX_MS));
-  if (!response.ok) throw modelCallError("视觉", response.status, data);
+  }, visionRequestTimeout(model, deadlineAt));
+  if (!response.ok) throw modelCallError("视觉", response.status, data, response.headers.get("retry-after"));
   const tool = data?.content?.find((part) => part.type === "tool_use" && part.name === "submit_market_sku_annotation");
   if (!tool?.input) throw new Error("Anthropic 视觉模型没有返回结构化工具结果");
   return tool.input;
+}
+
+function visionRequestTimeout(model: ModelRow, deadlineAt?: number) {
+  const remaining = deadlineAt === undefined ? VISION_ANNOTATION_TIMEOUT_MAX_MS : Math.floor(deadlineAt - Date.now());
+  if (remaining <= 0) throw new Error("视觉任务处理超时");
+  return Math.min(remaining, boundedModelSetting(model.timeout_ms, DEFAULT_MODEL_TIMEOUT_MS, 3_000, 120_000), VISION_ANNOTATION_TIMEOUT_MAX_MS);
+}
+
+function disableVisionThinking(model: ModelRow) {
+  // 标注是严格 JSON 的分类/抽取任务。豆包 Seed 的默认思考会明显增加首 token
+  // 与完整响应时间，但不会改变可用枚举；显式关闭后仍由 schema 和人工复核兜底。
+  return model.reasoning_mode === "disabled" || /^doubao-seed-/i.test(model.model_name.trim());
 }
 
 function annotationJsonSchema(segments: readonly string[]) {

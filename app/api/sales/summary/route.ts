@@ -1,62 +1,64 @@
 import {
-  ensureSalesSchema,
-  getSalesDatabase,
-} from "@/lib/sales/database";
+  authorizationErrorResponse,
+  requireAppPrincipal,
+  requireUnrestrictedDataScope,
+} from "@/lib/auth/authorization";
+import { routeDjangoSalesReadRequest } from "@/lib/django/sales-gateway";
+import { safeApiErrorResponse } from "@/lib/http/api-error";
 import {
-  getSalesSummary,
   isSalesRange,
+  parseProductQueriesStrict,
   salesRanges,
-  SalesSummaryRequestError,
-} from "@/lib/sales/summary";
+  SalesReadRequestError,
+} from "@/lib/sales/read-contract";
 import { parseShopFilterKey } from "@/lib/sales/shop-identity";
-import { parseProductQueries } from "@/lib/sales/product-query";
+
+function selections(params: URLSearchParams, ...keys: string[]) {
+  const values = [...new Set(keys.flatMap((key) => params.getAll(key))
+    .flatMap((value) => value.split(/[，,;；]+/))
+    .map((value) => value.trim())
+    .filter(Boolean))];
+  if (values.length > 50 || values.some((value) => value.length > 100)) {
+    throw new SalesReadRequestError(`${keys[0]} 筛选最多 50 项，且每项不能超过 100 字。`);
+  }
+  return values;
+}
 
 export async function GET(request: Request) {
   try {
-    const searchParams = new URL(request.url).searchParams;
-    const requested = searchParams.get("range") ?? "month";
+    const principal = await requireAppPrincipal(["viewer", "analyst", "operator", "admin"]);
+    requireUnrestrictedDataScope(principal, "销售汇总");
+    const url = new URL(request.url);
+    const params = url.searchParams;
+    const requested = params.get("range") ?? "month";
     if (!isSalesRange(requested)) {
+      throw new SalesReadRequestError(`range 必须是 ${salesRanges.join(", ")} 之一`);
+    }
+    const productQueries = parseProductQueriesStrict([
+      ...params.getAll("productQuery"),
+      params.get("productCodes") ?? "",
+    ]);
+    selections(params, "categories", "category");
+    selections(params, "platforms", "platform");
+    const outlets = selections(params, "outlet", "outlets").map(parseShopFilterKey);
+    if (outlets.some((value) => value === null)) {
+      throw new SalesReadRequestError("outlet 必须使用有效的平台与店铺复合键。");
+    }
+    // Keep repeated client values within Django's total query-field limit.
+    params.delete("productQuery");
+    params.delete("productCodes");
+    if (productQueries.length > 0) params.set("productQuery", productQueries.join(","));
+    request = new Request(url, request);
+    return routeDjangoSalesReadRequest({ request, principal });
+  } catch (error) {
+    const authResponse = authorizationErrorResponse(error);
+    if (authResponse) return authResponse;
+    if (error instanceof SalesReadRequestError) {
       return Response.json(
-        { error: `range 必须是 ${salesRanges.join(", ")} 之一` },
-        { status: 400 },
+        { error: error.message, code: "invalid_request" },
+        { status: 400, headers: { "cache-control": "no-store" } },
       );
     }
-
-    const db = getSalesDatabase();
-    await ensureSalesSchema(db);
-    const productQueries = parseProductQueries([
-      ...searchParams.getAll("productQuery"),
-      searchParams.get("productCodes") ?? "",
-    ]);
-    const categories = [...searchParams.getAll("categories"), ...searchParams.getAll("category")]
-      .flatMap((value) => value.split(/[，,;；]+/))
-      .map((value) => value.trim())
-      .filter(Boolean)
-      .filter((value, index, values) => values.indexOf(value) === index)
-      .slice(0, 50);
-    const outlets = [...searchParams.getAll("outlet"), ...searchParams.getAll("outlets")]
-      .flatMap((value) => value.split(/[，,;；]+/))
-      .map((value) => parseShopFilterKey(value.trim()))
-      .filter((value): value is NonNullable<typeof value> => value !== null)
-      .filter((value, index, values) => values.findIndex((item) => item.platform === value.platform && item.shopName === value.shopName) === index)
-      .slice(0, 50)
-      .map((value) => ({ platform: value.platform, shop: value.shopName }));
-    const payload = await getSalesSummary(db, {
-      range: requested,
-      startDate: searchParams.get("startDate") ?? undefined,
-      endDate: searchParams.get("endDate") ?? undefined,
-      productQueries,
-      platform: searchParams.get("platform") ?? undefined,
-      shop: searchParams.get("shop") ?? undefined,
-      outlets,
-      categories,
-    });
-    return Response.json(payload, { headers: { "cache-control": "no-store" } });
-  } catch (error) {
-    const message = error instanceof Error ? error.message : "读取销售汇总失败";
-    return Response.json(
-      { error: message },
-      { status: error instanceof SalesSummaryRequestError ? 400 : 500 },
-    );
+    return safeApiErrorResponse(error, "读取销售汇总失败。", { headers: { "cache-control": "no-store" } });
   }
 }

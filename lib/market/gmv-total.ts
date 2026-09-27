@@ -40,15 +40,19 @@ function buildGmvTotalsSelectSql(sourceFilter = "") {
   FROM month_picks WHERE month_pick_rank=1 GROUP BY sku_code`;
 }
 
-export function marketSkuGmvRefreshStatements(db: MarketSchemaDatabase, batchId?: string) {
-  if (batchId) {
-    const stagedSkuSql = `SELECT DISTINCT json_extract(row_json, '$.skuCode') sku_code
-      FROM market_import_staging_rows WHERE batch_id=?`;
+export function marketSkuGmvRefreshStatements(
+  db: MarketSchemaDatabase,
+  batch?: { batchId: string; ownerToken: string },
+) {
+  if (batch) {
+    const affectedSkuSql = `SELECT DISTINCT sku_code
+      FROM market_import_identity_refresh_keys_v2 WHERE batch_id=? AND owner_token=?`;
     return [
-      db.prepare(`DELETE FROM market_sku_gmv_totals WHERE sku_code IN (${stagedSkuSql})`).bind(batchId),
+      db.prepare(`DELETE FROM market_sku_gmv_totals WHERE sku_code IN (${affectedSkuSql})`)
+        .bind(batch.batchId, batch.ownerToken),
       db.prepare(`INSERT INTO market_sku_gmv_totals (sku_code, gmv_total_cents, updated_at)
-        SELECT sku_code, gmv_total_cents, CURRENT_TIMESTAMP FROM (${buildGmvTotalsSelectSql(`WHERE source.sku_code IN (${stagedSkuSql})`)})`)
-        .bind(batchId),
+        SELECT sku_code, gmv_total_cents, CURRENT_TIMESTAMP FROM (${buildGmvTotalsSelectSql(`WHERE source.sku_code IN (${affectedSkuSql})`)})`)
+        .bind(batch.batchId, batch.ownerToken),
     ];
   }
   return [

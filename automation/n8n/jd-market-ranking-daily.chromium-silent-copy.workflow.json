@@ -1,0 +1,402 @@
+{
+  "id": "JdMarketSilentCopy2026",
+  "name": "京东市场商品榜单缺失日下载与导入（Profile 3 Chromium静默下载副本）",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "a96a27f9-b3a7-414a-a667-200000000001",
+      "name": "手动运行",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -700,
+        -80
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "30 10 * * *"
+            }
+          ]
+        }
+      },
+      "id": "a96a27f9-b3a7-414a-a667-200000000002",
+      "name": "每天 10:30 补缺",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -700,
+        100
+      ]
+    },
+    {
+      "parameters": {
+        "resume": "timeInterval",
+        "amount": 1,
+        "unit": "minutes"
+      },
+      "id": "a96a27f9-b3a7-414a-a667-200000000008",
+      "name": "定时分支先让四店领取 helper",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -510,
+        100
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:5791/coordination/claim",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-TERUISI-N8N-EXECUTION-ID",
+              "value": "={{ $execution.id }}"
+            },
+            {
+              "name": "X-TERUISI-COORDINATION-ATTEMPT",
+              "value": "={{ $runIndex }}"
+            },
+            {
+              "name": "X-TERUISI-WORKFLOW-KEY",
+              "value": "jd-market"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 10000
+        }
+      },
+      "id": "a96a27f9-b3a7-414a-a667-200000000009",
+      "name": "领取共享 helper",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -310,
+        100
+      ],
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "a96a27f9-b3a7-414a-a667-200000000011",
+              "leftValue": "={{ $json.coordinationStatus }}",
+              "rightValue": "granted",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "a96a27f9-b3a7-414a-a667-200000000010",
+      "name": "helper 领取成功？",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -110,
+        100
+      ]
+    },
+    {
+      "parameters": {
+        "resume": "timeInterval",
+        "amount": 5,
+        "unit": "minutes"
+      },
+      "id": "a96a27f9-b3a7-414a-a667-200000000012",
+      "name": "等待前序流程释放 helper",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -110,
+        260
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:5791/jd-market/plan",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-TERUISI-N8N-EXECUTION-ID",
+              "value": "={{ $execution.id }}"
+            },
+            {
+              "name": "X-TERUISI-JD-SILENT-NO-WINDOW",
+              "value": "1"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 900000
+        }
+      },
+      "id": "a96a27f9-b3a7-414a-a667-200000000003",
+      "name": "A·计算运营系统缺失日期",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -330,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:5791/jd-market/run",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-TERUISI-N8N-EXECUTION-ID",
+              "value": "={{ $execution.id }}"
+            },
+            {
+              "name": "X-TERUISI-JD-SILENT-NO-WINDOW",
+              "value": "1"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 21600000
+        }
+      },
+      "id": "a96a27f9-b3a7-414a-a667-200000000004",
+      "name": "B·按日静默导出签收并导入",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        70,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:5791/jd-market/verify",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-TERUISI-N8N-EXECUTION-ID",
+              "value": "={{ $execution.id }}"
+            },
+            {
+              "name": "X-TERUISI-JD-SILENT-NO-WINDOW",
+              "value": "1"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 900000
+        }
+      },
+      "id": "a96a27f9-b3a7-414a-a667-200000000005",
+      "name": "C·回查全部目标日覆盖",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        470,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Profile 3 Chromium 静默下载副本\nstoreKey=jd-cuizhiwang-dengweizhang 从注册表唯一解析为志高商用洗碗机旗舰店、Profile 3、端口 9227。普通有头 Chromium 离屏启动，窗口在后台隐藏并最小化，同时持续隐藏顶层窗口；执行器打开新版行业榜单入口并直接签收京东原生 XLSX，不弹系统保存窗口。登录、验证码、安全验证或店铺身份异常时只失败关闭并保留审计，不打开可见窗口、不自动重放业务点击。",
+        "height": 200,
+        "width": 610,
+        "color": 5
+      },
+      "id": "a96a27f9-b3a7-414a-a667-200000000006",
+      "name": "Chromium静默下载说明",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -700,
+        -350
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## 7 类目串行、严格导入与恢复\n新版固定入口：https://jdsz.jd.com/szweb/view/industry/industry-top.html；市场 → 行业榜单 → 商品榜 → 类目 → SKU → 自定义单日 → 下载数据；依次处理商用净水设备、商用开水器/蒸气奶泡机、商用炒菜机、商用绞肉机/切肉机/切片机、商用切菜机、商用洗碗机、商用磨粉机/粉碎机。10:00 定时 execution 先让四店流程领取 helper，再通过原子协调接口领取；未获授权时每 5 分钟等待，手动恢复也必须经过同一门禁。A 分别只读计算缺失日；B 每个缺失自然日独立选择和下载一个原生 XLSX，严格核验页面回显、下载请求、文件大小、SHA-256、身份、日期和行数后才导入，并要求 completed proof。旧 v3 计划和旧页面/接口不能接管。响应丢失时，新 n8n execution 只能从 A 接管唯一未闭环 v4 计划并精确重投；running、歧义计划或身份漂移失败关闭。C 回查原计划全部目标日。主模板与静默副本不得同时启用。",
+        "height": 230,
+        "width": 860,
+        "color": 3
+      },
+      "id": "a96a27f9-b3a7-414a-a667-200000000007",
+      "name": "安全闭环说明",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -30,
+        -350
+      ]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "teruisi-hourly-retry-433789cd0a25c6daf93a4dfcc83d1ef227236957",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "c15fac8c-d439-4948-b6c2-e37888631794",
+      "name": "失败后每小时安全重试入口",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -550,
+        420
+      ],
+      "webhookId": "398bee1f-0b23-4c46-93fd-f888a354ec87"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "手动运行": {
+      "main": [
+        [
+          {
+            "node": "领取共享 helper",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "每天 10:30 补缺": {
+      "main": [
+        [
+          {
+            "node": "定时分支先让四店领取 helper",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "定时分支先让四店领取 helper": {
+      "main": [
+        [
+          {
+            "node": "领取共享 helper",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "领取共享 helper": {
+      "main": [
+        [
+          {
+            "node": "helper 领取成功？",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "helper 领取成功？": {
+      "main": [
+        [
+          {
+            "node": "A·计算运营系统缺失日期",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "等待前序流程释放 helper",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "等待前序流程释放 helper": {
+      "main": [
+        [
+          {
+            "node": "领取共享 helper",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "A·计算运营系统缺失日期": {
+      "main": [
+        [
+          {
+            "node": "B·按日静默导出签收并导入",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "B·按日静默导出签收并导入": {
+      "main": [
+        [
+          {
+            "node": "C·回查全部目标日覆盖",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "失败后每小时安全重试入口": {
+      "main": [
+        [
+          {
+            "node": "领取共享 helper",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Asia/Shanghai",
+    "errorWorkflow": "TeruisiHourlyRetry2026"
+  },
+  "versionId": "e233135b-12d0-424f-839f-34d779d89187",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "hourlyRetryPolicy": {
+      "version": "2026-09-10.safe-hourly-retry.1",
+      "delayMinutes": 60,
+      "errorWorkflowId": "TeruisiHourlyRetry2026",
+      "webhookPath": "teruisi-hourly-retry-433789cd0a25c6daf93a4dfcc83d1ef227236957"
+    }
+  },
+  "tags": []
+}

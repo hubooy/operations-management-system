@@ -1,0 +1,80 @@
+{
+  "schemaVersion": "candidate-evidence-v1",
+  "date": "2026-09-17",
+  "branch": "codex/ai-business-analysis-stages",
+  "baseCommit": "99fd9eeb",
+  "batch": 16,
+  "status": "candidate_not_production_adopted",
+  "changes": [
+    "Bounded canonical 48-source catalog with small evidence header and workflow reference",
+    "Migration 0019 adds immutable source identities and parent-version-bound checkpoints, enforcing actual chunk counts, UTF-8 bytes and contiguous sequences",
+    "Pure complete-table volume planner and single-pass paired HTML/XLSX renderer, with final whole-file verification",
+    "61-table permission, health, maintenance and independent backup/restore compatibility"
+  ],
+  "verification": {
+    "fullAiAndBusinessPostgres": {"tests": 399, "passed": 397, "skipped": 2, "log": ".runtime/ai-pg-3fcffb732e22/tests.log"},
+    "directoryAndBusinessPostgres": {"tests": 107, "passed": 107, "log": ".runtime/ai-pg-38da72b7420b/tests.log"},
+    "maintenanceAndBackup": {"tests": 12, "passed": 12, "embeddedPythonTests": 8, "log": ".runtime/batch16-maintenance-node-final.log"},
+    "upgradeAndRestore": {
+      "passed": true,
+      "log": ".runtime/batch16-upgrade-final.log",
+      "old56TablesPreservedDigest": "b35473e673e22f7ffc1944e809b2a1aa4ad044ab4cf2d3703650c823399a387b",
+      "previous60TablesPreservedDigest": "ce5c381405c24d49f6a5b6fdec65635bc2dd73e95f315bcd845949d0ec4e007a",
+      "dumpRestoreDigest": "b0c7f5e3e1f11c3e9784f651c2718c3f7f689bfcf79c0f3f0d20ca2bbf68fcd4",
+      "binaryBytes": 524288,
+      "binaryRestoreSha256": "33bc8aab40703678c3ebe94d2dd8f2afff285dd901f9234e841e4679f8204fd5",
+      "aiTables": 61,
+      "v2SourcesRestored": 2,
+      "legacyRenderersRestored": [1, 2, 3],
+      "reverseWithV2Denied": true,
+      "note": "Migration/role/restore checks passed; following 305-test run exposed one Windows equal-clock test fixture. Fixture now changes created_at by one second; final combined 399-test run passed. No migration implementation changed after this upgrade proof."
+    },
+    "catalogContract": {
+      "log": ".runtime/batch16-directory-contract.json",
+      "sourceCounts": [16, 19, 35, 48],
+      "headerBytes": 3499,
+      "workflowReferenceBytes": 3398,
+      "wideDirectoryBytes": 132296,
+      "wideQueryBytes": 122560,
+      "pageItems": [13, 13, 13, 9],
+      "maximumPageBytes": 36293,
+      "proofDigest": "74de32ac1fd763f7748f13b1d535e874391e4a9fe27d600e7da51c8b7e95ad67"
+    },
+    "volumeRehearsal": {
+      "log": ".runtime/business-volume-files-review-20260917/rehearsal-evidence.json",
+      "syntheticOnly": true,
+      "sourceTables": 156,
+      "volumes": 21,
+      "files": 42,
+      "fragments": 161,
+      "rows": 26157,
+      "testMaxTablesPerVolume": 8,
+      "testMaxRowsPerVolume": 5000,
+      "allFileHashesAndZipMembersVerified": true,
+      "singlePassVerified": true,
+      "pythonPeakTracedBytes": 1991196,
+      "manifestDigest": "97e2a2b46073c08701dd5ad4dbcb78e3e71cfaf813724404ce3622b24482bc4d"
+    },
+    "fullNode": {"tests": 2234, "passed": 2211, "failed": 1, "cancelled": 2, "skipped": 20, "log": ".runtime/batch16-full-node.log", "note": "Three unchanged Windows process/Chrome tests reached their 30-second limits; separate sequential recheck recorded below, not claimed fixed."},
+    "nodeTimingRecheck": {"tests": 50, "passed": 50, "failed": 0, "cancelled": 0, "skipped": 0, "log": ".runtime/batch16-node-timing-recheck.log", "files": ["tests/django-local-service.test.ts", "tests/jackyun-combo-recovery.test.ts", "tests/jackyun-dpapi-login.test.ts"], "note": "Same unchanged files run sequentially; does not establish a timing-race fix."},
+    "lint": {"errors": 0, "existingWarnings": 11, "log": ".runtime/batch16-lint.log"},
+    "typecheck": {"existingDiagnostics": 153, "changedPathDiagnostics": 0, "log": ".runtime/batch16-typecheck.log"},
+    "backendBoundary": {"passed": true, "log": ".runtime/batch16-boundary.log"},
+    "independentReview": {
+      "remainingBlockers": 0,
+      "fixed": ["Mutable output list or earlier file overwrite could invalidate volume manifest", "Mutable budget could diverge between HTML and XLSX", "Unvalidated offline budget enabled malformed payload", "Source counters lacked actual chunk reconciliation", "Header integer fields accepted decimal/exponent lexical forms"],
+      "realConcurrentDatabaseTests": "Same-source and different-source stale parent CAS: exactly one transaction commits, other rolls back"
+    },
+    "earlierHarnessCorrections": ["Direct pure unittest discovery included two Django cases without DATABASES; validated with isolated PostgreSQL instead", "Old backup fixture table counts corrected for newly added table"]
+  },
+  "limits": [
+    "Foundation only: existing public 12-source and 120-table gates remain",
+    "48-source directory does not increase 64 MiB/2000-page fact capacity",
+    "No actual 64 MiB payload load test; counter boundary tests and small real pages only",
+    "Multivolume rendering has no persistent task/download integration yet",
+    "Byte overflow fails the whole delivery; dynamic byte splitting and budget-only volumes are unsupported",
+    "Python traced allocation is not process RSS",
+    "No full phase or production acceptance declared"
+  ],
+  "operations": {"productionReads": false, "productionWrites": false, "isolatedMigration": true, "productionMigration": false, "deployment": false, "serviceRestart": false, "paidModelCalls": false, "externalMessages": false}
+}

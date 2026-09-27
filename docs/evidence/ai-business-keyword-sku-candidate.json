@@ -1,0 +1,47 @@
+{
+  "schemaVersion": "business-keyword-sku-candidate-evidence-v1",
+  "date": "2026-09-18",
+  "status": "candidate_pure_only_not_registered",
+  "implementation": "backend/business_analysis/promotion_keyword_sku.py",
+  "tests": [
+    {
+      "command": "cd backend; ..\\.runtime\\test-venv\\Scripts\\python.exe -m unittest business_analysis.test_promotion_keyword_sku business_analysis.test_promotion_views -v",
+      "passed": 35,
+      "new": 15,
+      "legacy": 20,
+      "log": ".runtime/batch55-keyword-sku-python.log"
+    },
+    {
+      "command": "node --import tsx --test tests/promotion-keyword-sku-import.test.ts",
+      "passed": 3,
+      "syntheticCsvCases": 6,
+      "log": ".runtime/batch55-keyword-sku-node.log"
+    }
+  ],
+  "checks": {
+    "diffCheck": "passed_with_unrelated_CRLF_warnings",
+    "targetedEslint": "passed"
+  },
+  "boundaries": {
+    "productionTouched": false,
+    "toolsRegistered": false,
+    "modelCalled": false,
+    "owningServiceImplemented": false,
+    "pureAuthorityVerified": false,
+    "reportFilesIntegrated": false,
+    "databaseRun": false
+  },
+  "importerProof": "Actual TS normalize function; actual Python import numeric and read projection function bodies isolated by AST; synthetic complete fact-page proof; no claimed database import or seal",
+  "knownLimits": [
+    "Existing generic skuId can select trigger/attributed SKU by first header match; new module uses only dimensions.promotedSkuId",
+    "Conflicting multiple aliases of the same promoted role cannot be detected after the existing projection",
+    "Missing identity buckets conserve totals but cannot support concrete product actions",
+    "256MiB bounds SQLite main grouping file, not all temporary sort files or total RSS"
+  ],
+  "fileSha256": {
+    "backend/business_analysis/test_promotion_keyword_sku.py": "9c368e339cd077899d87e028cf32607ceefd7c2621abe9cc23bccc7c28e1d784",
+    "backend/business_analysis/promotion_keyword_sku.py": "cd7c704391dedf34f31d8dcefbb1bfe33787e85e15baff37c0f7d2b4dce284bd",
+    "tests/promotion-keyword-sku-import.test.ts": "109c536d6c9117180d22c1b508f73c6b6eb3a0ec3f6eb8192aeb325940a9841a",
+    "docs/AI_BUSINESS_KEYWORD_SKU_DESIGN.md": "567cb49bab7b5761a49990f7b2d254c48823f3f130faadad79f71f05b5c7ef27"
+  }
+}

@@ -6,14 +6,33 @@ import path from "node:path";
 import test from "node:test";
 
 import {
+  buildTmallSpuCoverageUrl,
   datesInRange,
   parseRunnerArgs,
+  postTmallImportWithNetworkRetry,
   requestedDatesToPlan,
   selectReceiptForDate,
   shanghaiYesterday,
   validateImportPayload,
   verifiedReceipts,
 } from "../tools/tmall-multi-store-import-runner";
+
+test("天猫 SPU 覆盖回查使用平台与店铺复合 outlet，不再发送旧 shop 参数", () => {
+  const url = new URL(buildTmallSpuCoverageUrl(
+    "http://localhost:3000",
+    { shopName: "天猫-志高亿玖专卖店" },
+    "2026-08-20",
+    "2026-08-20",
+  ));
+
+  assert.equal(url.pathname, "/api/netshop/product-performance");
+  assert.equal(url.searchParams.get("dimension"), "spu");
+  assert.deepEqual(url.searchParams.getAll("platform"), ["天猫"]);
+  assert.equal(url.searchParams.get("outlet"), "天猫\u001f天猫-志高亿玖专卖店");
+  assert.equal(url.searchParams.has("shop"), false);
+  assert.equal(url.searchParams.get("startDate"), "2026-08-20");
+  assert.equal(url.searchParams.get("endDate"), "2026-08-20");
+});
 
 test("天猫导入日期按上海时区截止昨天并直接采用请求范围，不查询缺口", () => {
   const now = new Date("2026-08-02T04:00:00Z");
@@ -121,6 +140,24 @@ test("天猫导入结果必须精确匹配店铺、日期、数据集与 HTTP �
   const store = { shopName: "天猫-志高亿玖专卖店" };
   assert.equal(validateImportPayload(payload, 201, store, "2026-07-31", 10).batchId, "batch-1");
   assert.equal(validateImportPayload({ ...payload, status: "duplicate" }, 200, store, "2026-07-31", 10).batchId, "batch-1");
+  const djangoPayload = {
+    ...payload,
+    verification: {
+      verified: true,
+      rowCount: 10,
+      dataset: "spu_daily",
+      platform: "天猫",
+      shopName: "天猫-志高亿玖专卖店",
+      dateMin: "2026-07-31",
+      dateMax: "2026-07-31",
+    },
+  };
+  assert.equal(validateImportPayload(djangoPayload, 201, store, "2026-07-31", 10).batchId, "batch-1");
+  assert.equal(validateImportPayload({
+    ...djangoPayload,
+    status: "duplicate",
+    verification: { verified: true, rowCount: 10 },
+  }, 200, store, "2026-07-31", 10).batchId, "batch-1");
   assert.throws(() => validateImportPayload({ ...payload, batch: { ...payload.batch, shopName: "B店" } }, 201, store, "2026-07-31", 10), /回查不一致/);
   assert.throws(() => validateImportPayload(payload, 200, store, "2026-07-31", 10), /回查不一致/);
   assert.throws(() => validateImportPayload({ ...payload, status: "duplicate" }, 201, store, "2026-07-31", 10), /回查不一致/);
@@ -131,6 +168,9 @@ test("天猫导入结果必须精确匹配店铺、日期、数据集与 HTTP �
     { label: "批次行数少于预检", payload: { ...payload, batch: { ...payload.batch, rowCount: 9 } } },
     { label: "解析行数不一致", payload: { ...payload, verification: { ...payload.verification, parsedRowCount: 9 } } },
     { label: "回查行数不一致", payload: { ...payload, verification: { ...payload.verification, readbackRowCount: 9 } } },
+    { label: "Django 回查行数不一致", payload: { ...djangoPayload, verification: { ...djangoPayload.verification, rowCount: 9 } } },
+    { label: "两种行数证明相互矛盾", payload: { ...djangoPayload, verification: { ...payload.verification, rowCount: 9 } } },
+    { label: "Django 新导入不得省略验证身份", payload: { ...djangoPayload, verification: { verified: true, rowCount: 10 } } },
     { label: "回查店铺不一致", payload: { ...payload, verification: { ...payload.verification, shopName: "B店" } } },
     { label: "回查日期不一致", payload: { ...payload, verification: { ...payload.verification, dateMax: "2026-07-30" } } },
   ];
@@ -141,4 +181,52 @@ test("天猫导入结果必须精确匹配店铺、日期、数据集与 HTTP �
       failure.label,
     );
   }
+  assert.throws(() => validateImportPayload({
+    ...djangoPayload,
+    status: "duplicate",
+    verification: { verified: true, rowCount: 10, shopName: "B店" },
+  }, 200, store, "2026-07-31", 10), /回查不一致/);
+});
+
+test("天猫导入只对无 HTTP 响应的网络错误重建表单并有限重试", async () => {
+  let requests = 0;
+  let forms = 0;
+  const waits: number[] = [];
+  const response = await postTmallImportWithNetworkRetry({
+    url: "http://localhost:3000/api/netshop/import",
+    buildForm: () => {
+      forms += 1;
+      return new FormData();
+    },
+    request: async () => {
+      requests += 1;
+      if (requests === 1) throw new TypeError("fetch failed");
+      return Response.json({ ok: true }, { status: 200 });
+    },
+    wait: async (delayMs) => { waits.push(delayMs); },
+  });
+  assert.equal(response.status, 200);
+  assert.equal(requests, 2);
+  assert.equal(forms, 2);
+  assert.deepEqual(waits, [500]);
+
+  requests = 0;
+  const rejectedResponse = await postTmallImportWithNetworkRetry({
+    url: "http://localhost:3000/api/netshop/import",
+    buildForm: () => new FormData(),
+    request: async () => {
+      requests += 1;
+      return Response.json({ ok: false }, { status: 500 });
+    },
+    wait: async () => { throw new Error("HTTP 响应不得重试"); },
+  });
+  assert.equal(rejectedResponse.status, 500);
+  assert.equal(requests, 1);
+
+  await assert.rejects(postTmallImportWithNetworkRetry({
+    url: "http://localhost:3000/api/netshop/import",
+    buildForm: () => new FormData(),
+    request: async () => { throw new DOMException("timed out", "TimeoutError"); },
+    wait: async () => { throw new Error("超时不得重试"); },
+  }), (error: unknown) => error instanceof DOMException && error.name === "TimeoutError");
 });

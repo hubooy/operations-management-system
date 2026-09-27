@@ -1,0 +1,127 @@
+{
+  "task": "Resume Lili's existing completed export without resubmitting",
+  "status": "production_adopted_acknowledgement_recovered_download_record_unmatched",
+  "fullManualExecutionId": "1038",
+  "recordedAt": "2026-09-11T23:29:00+08:00",
+  "logsDirectory": "D:\\teruisi-runtime\\tmall-lili-export-repair-20260911",
+  "n8nRestarted": false,
+  "djangoOrPostgresRestarted": false,
+  "databaseMigration": false,
+  "sourceCommit": "a6b1f9e7c0dec67307e5bdc2fe9b2f92b357c240",
+  "storeKey": "tmall-lili",
+  "workflowId": "TmallLiliDaily2026",
+  "originalAudit": {
+    "runId": "f48b8cc7-9120-4f5a-b3bd-14b3de09eec9",
+    "snapshotDate": "2026-09-11",
+    "exportSubmittedAt": "2026-09-11T14:44:54.797Z",
+    "stageBefore": "export_submitted",
+    "originalExecutionId": "1029",
+    "abandonmentAuthorized": false,
+    "resubmissionAuthorized": false
+  },
+  "diagnosis": {
+    "screenshotShowsCompleted109ProductCard": true,
+    "screenshotProvesCompletionWithinOriginal90Seconds": false,
+    "screenshotProvesExactFileOwnership": false,
+    "existingTextMatchersRecognizeScreenshotLabels": true,
+    "confirmedCodeDefect": "Submitted recovery first awaited input-overlay acknowledgement, preventing the later same-page completed-card fallback from being reached when a card existed outside that overlay.",
+    "change": "Add read-only completed-card lookup inside the export_submitted acknowledgement probe, scoped first and then on the same seller page. Preserve the original export-record timestamp and unique-record/file/import verification gates."
+  },
+  "authorization": {
+    "explicitUserApproval": true,
+    "workerHelperRelease": true,
+    "oneFullN8nExecution": true,
+    "nextMissingDailyDataMayBeImported": true,
+    "n8nOrDatabaseRestart": false
+  },
+  "verification": {
+    "productMasterTestsPassed": 32,
+    "tmallTestsPassed": 221,
+    "unit": { "tests": 2121, "passed": 2101, "failed": 0, "skipped": 20, "concurrency": 4 },
+    "lint": { "errors": 0, "existingWarnings": 11, "modifiedFileWarnings": 0 },
+    "diffCheck": "passed",
+    "isolatedFrontendBuild": "passed",
+    "isolatedHelperBuildAndSyntax": "passed",
+    "isolatedHelperSha256": "1f9101d000ee549698cbc04224eba056554eb3007b9a7a756f9a74428ba3836d"
+  },
+  "worker": {
+    "predecessorReleaseId": "20260911T143402Z-fc575f36864bbb8d",
+    "releaseId": "20260911T151219Z-9d2563d0433704b8",
+    "manifestSha256": "8345b984f6c1a7ed9ab60bf917b57ad99ac28f12f613d291b834c4375b6c9e33",
+    "planSha256": "cfcd0d3b7b0d1a0202e024b5357c0301d91896fa31f9a4deb7edf9fed5675687",
+    "successorSha256": "17ece6a43b94c9e70b9dac5770550de0644cd37e0d6048dcb4623c120ddd6f7b",
+    "consumptionSha256": "566cdbb138e4272dfe30465a2fedbf6fd3ceffb068aa55aaa538408e70e56646",
+    "startupBindingSha256": "017d213985708e8f61493b0d18f9382b454da644cf1bf8e78a67561762fa2c9b",
+    "startupVerified": true,
+    "successorCount": 133,
+    "systemState": "Running",
+    "backendState": "Ready",
+    "workerState": "exact_release",
+    "homeStatus": 200,
+    "n8nHealthStatus": 200
+  },
+  "executionResult": {
+    "executionId": "1038",
+    "status": "error",
+    "startedAt": "2026-09-11T15:20:49.604Z",
+    "stoppedAt": "2026-09-11T15:25:08.346Z",
+    "dataSource": "Authorized local read-only n8n persisted results, import audit and exact file hashes; teruisi_operations MCP unavailable.",
+    "coverageRange": { "startDate": "2026-08-01", "endDate": "2026-09-10", "selectedDate": "2026-09-06" },
+    "A": { "authenticatedStore": "tmall-lili", "status": "success" },
+    "B": { "downloadedFiles": 1, "rowCount": 78, "fileSha256": "86e1855602e979425b915d17ee3de8e4e469dba9f6dfaf9353de72d5f1260a60", "fileHashIndependentlyVerified": true },
+    "C": { "status": "imported", "date": "2026-09-06", "rowCount": 78, "warningCount": 0, "coverageConfirmed": true, "missingAfterImport": [], "batchId": "tmall_product_daily:%E5%A4%A9%E7%8C%AB:%E5%A4%A9%E7%8C%AB-%E5%BF%97%E9%AB%98%E4%B8%BD%E5%8A%9B%E4%B8%93%E5%8D%96%E5%BA%97:5a519ff49f1b6c8d0fd7d406e051842763c2ad1dfdcc6ab412a78757703306bb" },
+    "P": { "status": "imported", "date": "2026-09-06", "rowCount": 49, "warningCount": 0, "coverageConfirmed": true, "fileSha256": "b10dae2dccc3ca3f8fd3fa8aff90280de39b5cc7129af9d2f8d8db7d570e78e5", "fileHashIndependentlyVerified": true, "batchId": "tmall_promotion:%E5%A4%A9%E7%8C%AB:%E5%A4%A9%E7%8C%AB-%E5%BF%97%E9%AB%98%E4%B8%BD%E5%8A%9B%E4%B8%93%E5%8D%96%E5%BA%97:1d46e898a9f4472ad06bcde73648c3e3279115a69eb7f797e5bf262c0df2947e" },
+    "M": {
+      "status": "failed",
+      "stageAfter": "export_confirmed",
+      "confirmedAt": "2026-09-11T15:22:06.794Z",
+      "originalRunIdAndSubmittedTimePreserved": true,
+      "promptResubmitted": false,
+      "auditAbandoned": false,
+      "activeAuditPreserved": true,
+      "error": "导出记录页刷新等待三分钟后仍无法安全下载：未出现创建时间属于本轮的任务",
+      "downloadOrImportVerified": false,
+      "rootCauseOfUnmatchedRecordsProven": false,
+      "nextStep": "Inspect the latest export-record list opened by the original card. Include filename, creation time, status and download action. Distinguish an absent matching platform task from incomplete automation record scanning; do not resubmit or substitute older 109-product tasks."
+    },
+    "remainingUnprocessedDates": ["2026-09-07", "2026-09-08", "2026-09-09", "2026-09-10"],
+    "helperIdleAfterFailure": true,
+    "controlledBrowserPort9325Closed": true,
+    "controlledBrowserProcessAbsent": true,
+    "businessRepairAccepted": false
+  },
+  "backups": {
+    "after": {
+      "backupId": "daily-20260911T152615Z-d024368dd6cc",
+      "manifestSha256": "3f31dadd3c3e5cbbfd1dd7b442e5ac382861d8cf6d3f4da91ae76e6cb1f91f70",
+      "dumpSha256": "80d94788b555a218ddfcbb5258a9c46e77a8e5293eb07a42f3072172a823495c",
+      "contentSha256": "8cdd5129563ae055e625342d93c460853658b9c5aeffefde19c283a957bdcb50",
+      "verified": true,
+      "restoreRepeated": false,
+      "serviceStateChanged": false
+    },
+    "before": {
+      "backupId": "daily-20260911T150446Z-b47d9d28ec2a",
+      "manifestSha256": "5c0be54bfc49e8abcc6a0acc3e18452a247241b0d131dd37cb162ef464054afd",
+      "dumpSha256": "49d3e1d352edaee9867f215cdbed3a59a123e4d072073229265bf7ec00c7ca7d",
+      "contentSha256": "13e60e866e9f44cff52b7f4e617ade96392a1d4011047e4e06311a0c66c95a71",
+      "verified": true
+    },
+    "beforeRestore": {
+      "status": "completed",
+      "rehearsalId": "4f32b79e0a61",
+      "isolatedPort": 55450,
+      "expectedContentSha256": "13e60e866e9f44cff52b7f4e617ade96392a1d4011047e4e06311a0c66c95a71",
+      "restoredContentSha256": "13e60e866e9f44cff52b7f4e617ade96392a1d4011047e4e06311a0c66c95a71",
+      "productionDatabaseTouched": false,
+      "serviceStateChanged": false,
+      "cleanupStatus": "isolated_data_removed"
+    }
+  },
+  "n8nDefinitionAudit": {
+    "unchangedAfterPublication": true,
+    "beforeDefinitionsSha256": "813b2d3d100f4b44ef1095f0d3c5d37d3c082cf506d1f31e23dab63b2ef90ef7",
+    "beforeOwnersSha256": "f77a5c10c439ade56e13d2f6e3530bfabe2ae058d09bf09fe4b17cba16771935",
+    "beforeWebhooksSha256": "9973a9bde77b1843c454a42e2212f59c67180ba8014cdfb4f80e39424343cdf7"
+  }
+}

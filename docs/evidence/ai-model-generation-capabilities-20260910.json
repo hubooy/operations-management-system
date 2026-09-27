@@ -1,0 +1,34 @@
+{
+  "date": "2026-09-10",
+  "status": "isolated_candidate_not_production_adopted",
+  "branch": "codex/ai-chat-workbench",
+  "scope": "Model generation settings, provider parameter mapping, bounded context, long web replies and persisted execution metadata",
+  "validation": {
+    "postgresql": {"tests": 148, "passed": 148, "failed": 0, "skipped": 0, "isolatedPort": 55982, "clusterStoppedAfterRun": true},
+    "upgrade": {"from": "AI 0008", "to": "AI 0009", "syntheticLegacyModelAndMessageFieldsPreserved": true, "newFieldsDefaultEmptyObjects": true, "secondApplyNoop": true},
+    "unit": {"tests": 2087, "passed": 2067, "failed": 0, "skipped": 20},
+    "renderedWorker": {"tests": 20, "passed": 20, "failed": 0},
+    "build": "passed",
+    "lint": {"errors": 0, "existingWarnings": 9},
+    "typescript": {"baselineCommit": "65d35cfa", "baselineDiagnostics": 142, "candidateDiagnostics": 142, "addedDiagnostics": 0, "method": "Same compiler and dependencies; baseline overlays tracked HEAD sources and excludes new root files"},
+    "djangoBoundary": {"checkedModules": 416, "violations": 0},
+    "preview": {"url": "http://127.0.0.1:3101/?module=ai&view=management", "httpStatus": 200, "syntheticReadOnlyData": true, "browserVisualQaPerformed": false}
+  },
+  "limits": {"maxOutputTokens": 131072, "maxContextWindowTokens": 2000000, "maxSingleRequestMs": 600000, "maxWebChatTaskMs": 900000, "maxWebReplyCharacters": 524288},
+  "productionWrites": false,
+  "productionDeployment": false,
+  "productionMigration": false,
+  "productionServiceRestart": false,
+  "paidProviderCalls": 0,
+  "externalMessagesSent": 0,
+  "remainingAdoptionChecks": [
+    "Controlled adoption of AI 0009, Django reader/writer and Worker together, with permissions and recovery verification",
+    "Endpoint-specific acceptance of configured output/context limits, reasoning parameters, SSE, usage and long-answer persistence using the actual provider"
+  ],
+  "limitations": [
+    "Context tokens are estimated from UTF-8 bytes and are not provider tokenization or billing",
+    "Existing model configurations retain their saved output, temperature and reasoning values",
+    "Agent, analysis and messaging channels retain their own execution and result bounds",
+    "Whole-repository TypeScript check has 142 baseline diagnostics; this change adds none"
+  ]
+}

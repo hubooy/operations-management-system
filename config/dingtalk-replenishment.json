@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "enabled": true,
+  "profile": "dingaa169a8a127cf206f2c783f7214b6d69:17067581360097279",
+  "base": {
+    "id": "3NwLYZXWynn4yrllcZkMYDwwVkyEqBQm",
+    "name": "备货计划进销存表"
+  },
+  "table": {
+    "id": "zEekPIb",
+    "name": "备货管理"
+  },
+  "fields": {
+    "productCode": { "id": "SlMGFVy", "name": "货品编号", "type": "text" },
+    "supplier": { "id": "hY6hxeX", "name": "供应商", "type": "text" },
+    "productName": { "id": "qrLN746", "name": "货品名称", "type": "text" },
+    "orderDate": { "id": "u7zcxY0", "name": "下单日期", "type": "date" },
+    "plannedQuantity": { "id": "7LQ141k", "name": "备货数量", "type": "number" },
+    "buyer": { "id": "8DCqo4q", "name": "对应采购", "type": "user" },
+    "notes": { "id": "GyZszbd", "name": "备注", "type": "text" },
+    "expectedArrivalDate": { "id": "AGRO0rR", "name": "预计交期", "type": "date" },
+    "brand": { "id": "BlNojGH", "name": "品牌", "type": "singleSelect" },
+    "planType": { "id": "lrOFauB", "name": "备货类型", "type": "text" },
+    "operatorName": { "id": "JWSrX9V", "name": "对应运营", "type": "user" },
+    "currentStockQuantity": { "id": "h4wip5m", "name": "现有库存", "type": "number" },
+    "sales30dQuantity": { "id": "mYIzDV8", "name": "近30天销量", "type": "number" },
+    "coverageDays": { "id": "aljfJP0", "name": "预计消耗周期（天）", "type": "number" },
+    "warehouse": { "id": "Ai998Ib", "name": "入库仓库", "type": "singleSelect" },
+    "department": { "id": "eIi7pMz", "name": "部门", "type": "department" },
+    "requiresInspection": { "id": "PTUCVgS", "name": "是否验货", "type": "singleSelect" }
+  }
+}

@@ -1,0 +1,97 @@
+{
+  "date": "2026-09-09",
+  "status": "development_candidate_not_deployed",
+  "baseCommit": "60fdf5b02735ac16d37a127eda21d48693186ffc",
+  "branch": "codex/dingtalk-readonly-chat-20260909",
+  "scope": {
+    "robot": "志高助手",
+    "group": "测试群聊",
+    "domains": [
+      "sales",
+      "inventory",
+      "netshop"
+    ],
+    "replyMode": "direct_to_bound_sender",
+    "firstBinding": "current_operator_only",
+    "enabled": false
+  },
+  "platformReadOnlyVerification": {
+    "uniqueApplication": true,
+    "mode": "STREAM",
+    "robotStatus": "ONLINE",
+    "uniqueGroup": true,
+    "installedRobotMatches": true,
+    "appKeyMatchesRobotCode": true,
+    "secretPresentInMemoryOnly": true
+  },
+  "checks": {
+    "django": {
+      "total": 129,
+      "passed": 128,
+      "skipped": 1,
+      "failed": 0
+    },
+    "postgresRelevantTests": 59,
+    "postgresRehearsal": {
+      "status": "passed",
+      "port": 55457,
+      "aiTables": 48,
+      "oldConversationRetained": true,
+      "readerWriterReadiness": true,
+      "negativePermissions": true,
+      "immutableIdentities": true,
+      "dumpRestoreDigest": "faf48181541f28a6cd05da2a40616cf4944191c359acaf051543bc831c21a887",
+      "productionTouched": false,
+      "externalMessages": 0
+    },
+    "nodeUnit": {
+      "total": 2063,
+      "passed": 2043,
+      "skipped": 20,
+      "failed": 0
+    },
+    "followupReceiverAndBackupTests": {
+      "passed": 16,
+      "failed": 0
+    },
+    "build": "passed",
+    "builtWorkerTests": {
+      "passed": 20,
+      "failed": 0
+    },
+    "lint": {
+      "errors": 0,
+      "existingWarnings": 9
+    },
+    "backendBoundary": {
+      "modules": 402,
+      "violations": 0
+    },
+    "migrationModelDrift": "none",
+    "diffWhitespace": "passed"
+  },
+  "review": {
+    "authorityAndLeastPrivilege": "verified_in_isolated_postgresql",
+    "scopeRevocationAndDedup": "negative_tests_passed",
+    "deliveryAmbiguity": "no_automatic_resend",
+    "oldBackupCompatibility": "45_46_48_table_contracts_passed",
+    "genericDatasetCoverage": "six_existing_inventory_overrides_explicitly_excluded",
+    "latestMainIntegration": "rebased_without_conflicts; upstream_change_is_documentation_only"
+  },
+  "productionActions": {
+    "migration": false,
+    "deploy": false,
+    "serviceRestart": false,
+    "streamConnection": false,
+    "outboundMessages": 0
+  },
+  "pending": [
+    "explicit production release authorization",
+    "production backup/recovery, controlled Django/Worker adoption and 0007 role provisioning",
+    "real personal chat and group mention round trip acceptance"
+  ],
+  "limitations": [
+    "manual receiver restart after reboot or five consecutive connection failures",
+    "PostgreSQL run uses selected relevant tests; simplified legacy dataset fixtures are exercised on SQLite"
+  ]
+}

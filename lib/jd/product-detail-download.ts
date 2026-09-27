@@ -1,6 +1,7 @@
 import { readFile, readdir, rename, stat } from "node:fs/promises";
 import path from "node:path";
 import { parseXlsxFirstSheet } from "../imports/xlsx";
+import { assertJdNaturalDateRange, isJdNaturalDate, jdNaturalDatesInRange } from "./date-range";
 
 export const JD_PRODUCT_DETAIL_REUSE_WINDOW_MS = 60 * 60 * 1000;
 export type JdProductDetailDimension = "SKU" | "SPU";
@@ -25,27 +26,27 @@ function asDate(value: unknown, date1904: boolean) {
   const matched = /^(\d{4})[-/.](\d{1,2})[-/.](\d{1,2})/.exec(text);
   if (!matched) return null;
   const result = `${matched[1]}-${matched[2].padStart(2, "0")}-${matched[3].padStart(2, "0")}`;
-  return Number.isNaN(Date.parse(`${result}T00:00:00Z`)) ? null : result;
+  return isJdNaturalDate(result) ? result : null;
 }
 
-function expectedDates(startDate: string, endDate: string) {
-  const dates: string[] = [];
-  for (let current = startDate; current <= endDate;) {
-    dates.push(current);
-    const date = new Date(`${current}T00:00:00Z`);
-    date.setUTCDate(date.getUTCDate() + 1);
-    current = date.toISOString().slice(0, 10);
-  }
-  return dates;
-}
-
-export function validateJdProductDetailWorkbook(bytes: Uint8Array, dimension: JdProductDetailDimension, range: Required<DateRange>): JdProductDetailWorkbookSummary {
-  const sheet = parseXlsxFirstSheet(bytes);
+function assertDimensionHeaders(allHeaders: string[], dimension: JdProductDetailDimension) {
   const expectedHeader = ["时间", dimension, `${dimension}名称`];
-  const header = sheet.rows[0]?.cells.slice(0, 3).map((value) => String(value ?? "").trim()) ?? [];
+  const header = allHeaders.slice(0, 3);
   if (header.length !== 3 || header.some((value, index) => value !== expectedHeader[index])) {
     throw new Error(`JD workbook header mismatch: expected ${expectedHeader.join("/")}, got ${header.join("/") || "empty"}.`);
   }
+  const identifierHeaders = new Set(allHeaders.map((value) => value.replace(/[\s_-]+/g, "").toUpperCase()));
+  const hasSkuIdentifier = identifierHeaders.has("SKU") || identifierHeaders.has("SKUID");
+  const hasSpuIdentifier = identifierHeaders.has("SPU") || identifierHeaders.has("SPUID");
+  if (hasSkuIdentifier && hasSpuIdentifier) {
+    throw new Error("JD workbook contains both SKU and SPU identifier columns; refusing ambiguous dimension.");
+  }
+}
+
+export function validateJdProductDetailWorkbook(bytes: Uint8Array, dimension: JdProductDetailDimension, range: Required<DateRange>): JdProductDetailWorkbookSummary {
+  assertJdNaturalDateRange(range.startDate, range.endDate);
+  const sheet = parseXlsxFirstSheet(bytes);
+  assertDimensionHeaders(sheet.rows[0]?.cells.map((value) => String(value ?? "").trim()) ?? [], dimension);
   const dates = new Set<string>();
   for (const row of sheet.rows.slice(1)) {
     if (String(row.cells[1] ?? "").trim() === "合计") continue;
@@ -55,7 +56,7 @@ export function validateJdProductDetailWorkbook(bytes: Uint8Array, dimension: Jd
     if (date < range.startDate || date > range.endDate) throw new Error(`JD workbook date ${date} is outside ${range.startDate}..${range.endDate}.`);
     dates.add(date);
   }
-  const wanted = expectedDates(range.startDate, range.endDate);
+  const wanted = jdNaturalDatesInRange(range.startDate, range.endDate);
   const missing = wanted.filter((date) => !dates.has(date));
   if (missing.length) throw new Error(`JD workbook is missing required daily dates: ${missing.join(", ")}.`);
   const sorted = [...dates].sort();
@@ -66,8 +67,7 @@ export async function assertJdProductDetailWorkbookDimension(filePath: string, d
   const bytes = await readFile(filePath);
   if (range) return validateJdProductDetailWorkbook(bytes, dimension, range);
   const sheet = parseXlsxFirstSheet(bytes);
-  const header = String(sheet.rows[0]?.cells[1] ?? "").trim().toUpperCase();
-  if (header !== dimension) throw new Error(`JD workbook dimension mismatch: expected ${dimension}, second column is ${header || "empty"}.`);
+  assertDimensionHeaders(sheet.rows[0]?.cells.map((value) => String(value ?? "").trim()) ?? [], dimension);
 }
 async function fileMatchesDimension(filePath: string, dimension: JdProductDetailDimension, range?: Required<DateRange>) { try { await assertJdProductDetailWorkbookDimension(filePath, dimension, range); return true; } catch { return false; } }
 

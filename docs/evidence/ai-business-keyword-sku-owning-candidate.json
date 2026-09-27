@@ -1,0 +1,31 @@
+{
+  "schemaVersion": "business-keyword-sku-owning-candidate-v1",
+  "date": "2026-09-18",
+  "status": "internal_owning_candidate",
+  "purePredecessor": "dcff291",
+  "postgres": {
+    "failed": 0,
+    "executor": "root_isolated_harness",
+    "passed": 9,
+    "log": ".runtime/ai-pg-bb40b6c35b23/tests.log",
+    "label": "ai_assistant.test_business_promotion_keyword_sku"
+  },
+  "checks": {
+    "pythonCompile": "passed",
+    "diffCheck": "passed"
+  },
+  "boundaries": {
+    "pureTableAuthority": false,
+    "publicRoute": false,
+    "fileExport": false,
+    "productionTouched": false,
+    "agentTool": false,
+    "runtimeProfile": false,
+    "paidModel": false
+  },
+  "fileSha256": {
+    "backend/ai_assistant/business_promotion_keyword_sku.py": "62446e1aa6d716a37a286b90425289abc4d7d62a74dac43f7789969d7f6991f7",
+    "docs/AI_BUSINESS_KEYWORD_SKU_OWNING.md": "a06c63d0589f13d1d4a6ce60a62470b8ab9bde65e59f9e44e2ce9eec23612a8e",
+    "backend/ai_assistant/test_business_promotion_keyword_sku.py": "dd0df649b0d7686c93bb3e0a0b47c2a15db75cee7dd561ceee427dbe66d98a38"
+  }
+}

@@ -709,9 +709,9 @@ test("configured model budgets can continue beyond the former six-round ceiling"
     defaultTotalCalls: 12,
     increaseBy: 50,
     maximumRounds: 62,
-    maximumTotalCalls: 74,
+    maximumTotalCalls: 300,
   });
-  assert.equal(AI_TOOL_RUNTIME_LIMITS.maxTotalCalls.maximum, 74);
+  assert.equal(AI_TOOL_RUNTIME_LIMITS.maxTotalCalls.maximum, 300);
   let rounds = 0;
   const reply = await runOpenAiCompatibleToolLoop({
     messages: [{ role: "user", content: "需要多步检索" }],
@@ -733,7 +733,7 @@ test("production registry keeps all existing operations tools plus knowledge and
   const [registry, apiRoute, assistant, operations, searchHandler, mcp, marketAiRoute] = await Promise.all([
     readFile(new URL("../lib/ai/tool-registry.ts", import.meta.url), "utf8"),
     readFile(new URL("../app/api/ai/tools/route.ts", import.meta.url), "utf8"),
-    readFile(new URL("../lib/ai/assistant-service.ts", import.meta.url), "utf8"),
+    readFile(new URL("./legacy/ai/assistant-service.ts", import.meta.url), "utf8"),
     readFile(new URL("../lib/ai/operations-tools.ts", import.meta.url), "utf8"),
     readFile(new URL("../lib/search/ai-tool.ts", import.meta.url), "utf8"),
     readFile(new URL("../app/mcp/route.ts", import.meta.url), "utf8"),

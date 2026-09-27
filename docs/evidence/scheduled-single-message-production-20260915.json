@@ -1,0 +1,162 @@
+{
+  "version": "teruisi-scheduled-single-message-production-v1",
+  "date": "2026-09-15",
+  "sourceCommit": "4d0757cdc1850e66ab27e40e19c0c2c0ae22dc44",
+  "databaseMigration": false,
+  "scope": "One bot-authored sampleMarkdown message containing literal caption and full internal-media image",
+  "officialReference": "https://opensource.dingtalk.com/developerpedia/docs/learn/bot/overview/",
+  "validation": {
+    "postgres": {
+      "tests": 232,
+      "passed": 230,
+      "skipped": 2
+    },
+    "renderedHtml": 20,
+    "lintErrors": 0,
+    "lintExistingWarnings": 11,
+    "backendBoundaryModules": 444,
+    "node": {
+      "passed": 2167,
+      "failed": 0,
+      "skipped": 20,
+      "cancelled": 0
+    }
+  },
+  "preBackup": {
+    "id": "daily-20260915T024446Z-dce4329838ad",
+    "manifestSha256": "33ae7c7209b44fce20aaf42a5d33355ce63defd52862c443dfe773675f94e2be",
+    "contentSha256": "71046b8b91fdf59525095eed1a1b392ef0116a8b76b7539abb79990f7e58529d",
+    "rehearsalId": "ab150926c002",
+    "port": 55470,
+    "restoredContentMatched": true,
+    "productionDatabaseTouched": false
+  },
+  "task": {
+    "checkedAt": "2026-09-15T11:17:15.4372392+08:00",
+    "allSchedulesUnchanged": true,
+    "runHistoryUnchanged": true,
+    "version": 3,
+    "prompt": "新品周销量趋势数据",
+    "cadence": "daily",
+    "hour": 9,
+    "minute": 0,
+    "nextRunAt": "2026-09-16T09:00:00+08:00",
+    "contentType": "screenshot",
+    "sourceRef": "workflow:launch-followup",
+    "recipientPreserved": true,
+    "runTriggered": false
+  },
+  "liveSendTriggered": false,
+  "maintenance": {
+    "activeCloudRuns": 0,
+    "completedCloudRuns": 38,
+    "activeScheduleRuns": 0,
+    "helperBusy": false,
+    "checkedAt": "2026-09-15T11:01:53.9411341+08:00",
+    "concurrentStartup": "JD monitoring task started old Worker during maintenance; coordinated pause and stopped that instance. First DeployApp directory move was partial; restored 662 original files with per-file SHA verification before repeating controlled DeployApp successfully."
+  },
+  "status": "adopted_without_live_single_message_delivery",
+  "authorization": "User explicitly authorized brief production stop/restart and this version deployment on 2026-09-15.",
+  "django": {
+    "manifestSha256": "d1305a381c2dd259fe3c04bd880d14100773d3ee36c21c55777950cbccdad138",
+    "appFingerprint": "4dc7cd3d01eccaed960783d802dc531724b00ccc02cfeef7cea0be78d86266a0",
+    "deployedAt": "2026-09-15T11:08:45.1267595+08:00",
+    "files": [
+      {
+        "file": "backend/ai_assistant/dingtalk_transport.py",
+        "sha256": "6a94bd5c844a7a3b1aed443f4a9bac4a74fc3a657acbc0fbd59656417b5e5b14",
+        "matched": true
+      },
+      {
+        "file": "backend/ai_assistant/dingtalk_schedules.py",
+        "sha256": "6476b5b5bf70c7b7269c9e8d5b8588850c4a537e7cbdbd545199b36d88149a4d",
+        "matched": true
+      },
+      {
+        "file": "backend/ai_assistant/management/commands/dingtalk_ask.py",
+        "sha256": "76449f1c8afd46db7c1899b4e97e0ea7be1dfc7d5d841ee4efec77ff7aa2ce73",
+        "matched": true
+      }
+    ]
+  },
+  "worker": {
+    "status": "activated",
+    "version": "teruisi-local-worker-release-successor-v1",
+    "planSha256": "9e08826bd8b077cfba74619661227d6824a7bc941dfae0f0ea0dc5c64c5f923d",
+    "predecessorReleaseId": "20260915T022221Z-62869892e2c72ed9",
+    "releaseId": "20260915T031124Z-50915712d427032f",
+    "manifestPath": "D:\\teruisi-runtime\\teruisi-worker-sales\\releases\\20260915T031124Z-50915712d427032f\\deployment-manifest.json",
+    "manifestSha256": "6b5a86de7e2d57b7bc73819890af62fa12cf474f2cb46edcd97863e332971b78",
+    "successorSha256": "dcc12c984d22dc176ed9b19086f3f8160d6f8823d3f6e5c743fab27c168b7e68",
+    "consumptionSha256": "2e1b7d90adbddb04dabf8bbcde79d80a79e1feab9fa9ecbe1af50e18bf74a268",
+    "startupBindingSha256": "a07100f33c004d86e5e3871d9c21284f8f53350207c6f0a88aae381426d95f12"
+  },
+  "system": {
+    "version": "teruisi-operations-system-control-v2",
+    "state": "Running",
+    "backendState": "Ready",
+    "workerState": "exact_release",
+    "releaseId": "20260915T031124Z-50915712d427032f",
+    "supervisorProcessId": 28084,
+    "portProcessId": 5556,
+    "url": "http://localhost:3000/",
+    "reason": null,
+    "components": {
+      "core": true,
+      "finance": true,
+      "netshop": true,
+      "market": true,
+      "products": true,
+      "workflow": true,
+      "inventory": true,
+      "customerService": true,
+      "accessControl": true,
+      "erpReference": true,
+      "bi": true,
+      "ai": true
+    },
+    "checkedAt": "2026-09-15T11:19:32.0907787+08:00"
+  },
+  "supervisor": {
+    "status": "completed",
+    "desiredState": "running",
+    "supervisorProcess": "running",
+    "health": "healthy",
+    "code": "all_components_ready",
+    "lastHealthyAt": "09/15/2026 11:18:14",
+    "restartAttemptsInWindow": 1,
+    "pendingAlertCount": 29,
+    "serviceStateChanged": false
+  },
+  "ui": {
+    "checkedAt": "2026-09-15T03:18:10.399Z",
+    "captionMatched": true,
+    "singleMessageHelpVisible": true,
+    "editorCancelled": true,
+    "taskSaved": false,
+    "messageSent": false
+  },
+  "receiver": {
+    "status": "connected",
+    "log": "django-ai-dingtalk.20260915-111638-52b7d430.stdout.log"
+  },
+  "postBackup": {
+    "status": "completed",
+    "backupId": "daily-20260915T031839Z-9fad3b1a21bf",
+    "backupDirectory": "D:\\teruisi-runtime\\django-sales\\backups\\postgres-daily\\daily-20260915T031839Z-9fad3b1a21bf",
+    "manifestSha256": "0be25fa44a54b21d132948eded42a19cb4dcaa30d02f87e3bc44071e4a6805a7",
+    "dumpSha256": "d51574d4d60ebe3e2ab0a9fd7a7ea4cf0f384aec883ca908556b58b2f86a361a",
+    "contentSha256": "25add5c4146c3c7ac836a4fb655709f31b3ae21be95bd9fbc02d8c9c63a1613f",
+    "completedAt": "09/15/2026 11:20:22",
+    "serviceStateChanged": false,
+    "verified": true,
+    "archive": {
+      "archive": "E:/运营管理系统业务数据/daily-20260915T031839Z-9fad3b1a21bf",
+      "fileCount": 3,
+      "allSizesAndHashesMatch": true
+    }
+  },
+  "schemaOrRoleChanged": false,
+  "n8nRestarted": false,
+  "liveClientAppearanceVerified": false
+}

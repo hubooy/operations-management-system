@@ -1,0 +1,424 @@
+{
+  "status": "production_verified",
+  "date": "2026-09-15",
+  "checkedAt": "2026-09-15T07:22:28.966300+00:00",
+  "workerSourceCommit": "e1dc0f97bef84b4fb784d25fc0f3f231826b0ccd",
+  "djangoSourceCommit": "2c8d105954fac6e361dbae62bd7ac0f3cd8febfd",
+  "authorization": "User explicitly requested merge, publish, and go live; controlled service downtime included.",
+  "databaseMigrationRequired": false,
+  "readerStatementTimeoutMs": 6000,
+  "worker": {
+    "status": "activated",
+    "version": "teruisi-local-worker-release-successor-v1",
+    "planSha256": "f56d9a70afd03f57caaec71060367d1e9b3cb88d6a619d310463200e7ab07c99",
+    "predecessorReleaseId": "20260915T031124Z-50915712d427032f",
+    "releaseId": "20260915T054303Z-5704048d5158895c",
+    "manifestPath": "D:\\teruisi-runtime\\teruisi-worker-sales\\releases\\20260915T054303Z-5704048d5158895c\\deployment-manifest.json",
+    "manifestSha256": "821d7d88314910fda858abf8ce90ace40121c8d370f42ce1646f4a9465054de0",
+    "successorSha256": "35677f113f65df8db00b3aaabf5c28a3215d82c9567212359f25e857ec086031",
+    "consumptionSha256": "11ca84a41bbd0cd928064e34230b0a6adf0dc29ddc5e6852c182596adfa56b88",
+    "startupBindingSha256": "c768bdf0cbdc7714b7e8792592f8e319dd07d17999f774b4dd97bcba402e0cc7"
+  },
+  "django": {
+    "version": 2,
+    "deployedAt": "2026-09-15T15:10:15.312546+08:00",
+    "sourceRoot": "D:\\运营管理系统-sales-django-release",
+    "fingerprintAlgorithm": "relative-path-file-sha256-ordinal-v2",
+    "fileCount": 2041,
+    "appFingerprint": "07f6bf669cd555ff6c8db695e2a85bf1fc8ca8136820c6f70849a662dbcad3e5",
+    "manifestSha256": "f0d4dc882cdc6bbf235d8107bdb92100b87ed89018ea9a90e2ab31bfa8233def",
+    "verifiedSourceFiles": [
+      {
+        "sha256": "0d2cfde8b82fe35839e7690c254ce8c90f3f2c23af79d31e59715d01cf55a3b7",
+        "path": "backend/market/ranking_query.py",
+        "matches": true
+      },
+      {
+        "sha256": "3d5cdd940c53c557d3006492edcb51ed12cdcef57dfac3a0a2e574d054df3c92",
+        "path": "backend/market/query.py",
+        "matches": true
+      }
+    ],
+    "integrationCommit": "f0b29a56"
+  },
+  "validation": {
+    "candidateEvidence": "market-query-recovery-candidate-20260915.json",
+    "finalPostgres": {
+      "port": 55447,
+      "productionTouched": false,
+      "externalModelCalls": 0,
+      "tests": {
+        "count": 66,
+        "log": "D:\\运营管理系统-market-query-recovery-20260915\\.runtime\\market-annotation-pg-0bbdbd1fe38e\\tests.log"
+      },
+      "roles": [
+        {
+          "role": "teruisi_market_reader",
+          "readQueries": true,
+          "rankingPagination": true,
+          "independentFilters": true,
+          "claimComplete": false,
+          "commitExistingAnnotation": false,
+          "externalModelCalls": 0,
+          "negativePermissionsRejected": 5
+        },
+        {
+          "role": "teruisi_market_writer",
+          "readQueries": true,
+          "rankingPagination": true,
+          "independentFilters": true,
+          "claimComplete": true,
+          "commitExistingAnnotation": true,
+          "externalModelCalls": 0,
+          "negativePermissionsRejected": 4
+        }
+      ],
+      "status": "passed",
+      "isolatedClusterStopped": true
+    },
+    "sqlite": {
+      "passed": 3,
+      "skippedProductionScaleTest": 1
+    },
+    "firstProductionProbe": {
+      "status": 413,
+      "code": "payload_too_large"
+    },
+    "firstDeploymentProbe": {
+      "checkedAt": "2026-09-15T05:50:43.212Z",
+      "api": [
+        {
+          "path": "/api/market/filters",
+          "status": 200,
+          "milliseconds": 5612,
+          "revision": "990:3ca61cbd2596",
+          "filterGroups": 7
+        },
+        {
+          "path": "/api/market/overview?view=ranking&page=1&pageSize=20",
+          "status": 503,
+          "milliseconds": 7136,
+          "revision": null
+        }
+      ],
+      "pageErrors": []
+    },
+    "finalProductionSmoke": {
+      "checkedAt": "2026-09-15T07:15:55.933Z",
+      "api": [
+        {
+          "path": "/api/market/filters",
+          "status": 200,
+          "milliseconds": 5183,
+          "revision": "990:3ca61cbd2596",
+          "filterGroups": 7
+        },
+        {
+          "path": "/api/market/overview?view=ranking&page=1&pageSize=20",
+          "status": 200,
+          "milliseconds": 12684,
+          "revision": "990:3ca61cbd2596",
+          "rows": 20,
+          "pagination": {
+            "page": 1,
+            "pageSize": 20,
+            "total": 318302,
+            "pageCount": 15916
+          },
+          "dataRange": {
+            "startDate": "2026-01-01",
+            "endDate": "2026-09-13"
+          },
+          "filterGroups": 7
+        },
+        {
+          "path": "/api/market/overview?view=ranking&page=2&pageSize=20",
+          "status": 200,
+          "milliseconds": 12255,
+          "revision": "990:3ca61cbd2596",
+          "rows": 20,
+          "pagination": {
+            "page": 2,
+            "pageSize": 20,
+            "total": 318302,
+            "pageCount": 15916
+          },
+          "dataRange": {
+            "startDate": "2026-01-01",
+            "endDate": "2026-09-13"
+          },
+          "filterGroups": 7
+        },
+        {
+          "path": "/api/market/overview?view=ranking&page=1&pageSize=20&priceBand=%E6%9C%AA%E7%A1%AE%E8%AE%A4%E4%BB%B7%E6%A0%BC",
+          "status": 200,
+          "milliseconds": 13102,
+          "revision": "990:3ca61cbd2596",
+          "rows": 20,
+          "pagination": {
+            "page": 1,
+            "pageSize": 20,
+            "total": 238123,
+            "pageCount": 11907
+          },
+          "dataRange": {
+            "startDate": "2026-01-01",
+            "endDate": "2026-09-13"
+          },
+          "filterGroups": 7
+        }
+      ],
+      "pageErrors": [],
+      "initialRows": 20,
+      "secondPageRows": 20,
+      "status": "passed"
+    },
+    "finalStatus": {
+      "version": "teruisi-operations-system-control-v2",
+      "state": "Running",
+      "backendState": "Ready",
+      "workerState": "exact_release",
+      "releaseId": "20260915T054303Z-5704048d5158895c",
+      "supervisorProcessId": 26336,
+      "portProcessId": 37028,
+      "url": "http://localhost:3000/",
+      "reason": null,
+      "components": {
+        "core": true,
+        "finance": true,
+        "netshop": true,
+        "market": true,
+        "products": true,
+        "workflow": true,
+        "inventory": true,
+        "customerService": true,
+        "accessControl": true,
+        "erpReference": true,
+        "bi": true,
+        "ai": true
+      },
+      "checkedAt": "2026-09-15T15:17:16.0406472+08:00"
+    },
+    "supervisor": {
+      "status": "completed",
+      "desiredState": "running",
+      "supervisorProcess": "running",
+      "health": "healthy",
+      "code": "all_components_ready",
+      "lastHealthyAt": "2026-09-15T07:18:38.2054030+00:00",
+      "restartAttemptsInWindow": 1,
+      "pendingAlertCount": 29,
+      "serviceStateChanged": false
+    },
+    "aiServices": {
+      "AiReader": "running",
+      "AiWriter": "running",
+      "ReaderReadiness": "ready",
+      "WriterReadiness": "ready",
+      "CheckedAt": "2026-09-15T07:21:59.2960977+00:00",
+      "PandasReadiness": "ready",
+      "DingTalkStartup": "enabled",
+      "DingTalkReceiver": "running"
+    },
+    "dingTalkReceiverConnected": true,
+    "startupBinding": {
+      "status": "verified",
+      "version": "teruisi-local-worker-status-v1",
+      "releaseId": "20260915T054303Z-5704048d5158895c",
+      "manifestSha256": "821d7d88314910fda858abf8ce90ace40121c8d370f42ce1646f4a9465054de0",
+      "startupVerified": true
+    },
+    "assetVerification": [
+      {
+        "name": "market-view-VeJYqG-q.js",
+        "bytes": 65843,
+        "sha256": "ee8e261d8049fac0f96a3b44dd2393b721e3aa2ec4f584514801b4c86ce0bb92",
+        "matched": true
+      },
+      {
+        "name": "page-D_hDbJj4.js",
+        "bytes": 59312,
+        "sha256": "fe6c6794dce237d0e9134b669fa471d1a954efd16171060523cedab0ed49dbb3",
+        "matched": true
+      },
+      {
+        "name": "index-BD5o_FfB.css",
+        "bytes": 403120,
+        "sha256": "bfc5cc6002a08d4a170c666222a634d180b972d5bff829a2bfe651f3c95dd4a6",
+        "matched": true
+      }
+    ]
+  },
+  "maintenance": {
+    "firstDrain": {
+      "checkedAt": "2026-09-15T13:39:14.3994065+08:00",
+      "market": {
+        "activeCloudRuns": 0,
+        "cloudLeases": 0,
+        "itemLeases": 0,
+        "imageClaims": 0,
+        "runningImages": 0,
+        "completedCloudRuns": 38
+      },
+      "ai": {
+        "activeScheduleRuns": 0,
+        "nextSchedule": "2026-09-16T09:00:00+08:00",
+        "runningAgents": 0,
+        "runningWorkflows": 0
+      },
+      "helperBusy": false
+    },
+    "secondDrainBeforeStop": {
+      "checkedAt": "2026-09-15T15:06:54.5290492+08:00",
+      "market": {
+        "activeCloudRuns": 0,
+        "cloudLeases": 0,
+        "itemLeases": 0,
+        "imageClaims": 0,
+        "runningImages": 0,
+        "completedCloudRuns": 38
+      },
+      "ai": {
+        "activeScheduleRuns": 0,
+        "nextSchedule": "2026-09-16T09:00:00+08:00",
+        "runningAgents": 0,
+        "runningWorkflows": 0
+      },
+      "helperBusy": false
+    },
+    "firstStop": {
+      "version": "teruisi-operations-system-service-v1",
+      "action": "Stop",
+      "status": "stopped",
+      "workerStatus": "stopped",
+      "backendStopped": true,
+      "message": "运营管理系统已完整停止：Worker（stopped）、各域 Django 服务与 PostgreSQL。",
+      "checkedAt": "2026-09-15T13:41:37.7212314+08:00"
+    },
+    "firstStart": {
+      "version": "teruisi-operations-system-service-v1",
+      "action": "Start",
+      "status": "started",
+      "state": "Running",
+      "url": "http://localhost:3000/",
+      "message": "运营管理系统已通过唯一总控完成启动与回查：http://localhost:3000/",
+      "checkedAt": "2026-09-15T13:51:07.4940860+08:00"
+    },
+    "secondStop": {
+      "version": "teruisi-operations-system-service-v1",
+      "action": "Stop",
+      "status": "stopped",
+      "workerStatus": "stopped",
+      "backendStopped": true,
+      "message": "运营管理系统已完整停止：Worker（stopped）、各域 Django 服务与 PostgreSQL。",
+      "checkedAt": "2026-09-15T15:09:02.4607057+08:00"
+    },
+    "secondStart": {
+      "version": "teruisi-operations-system-service-v1",
+      "action": "Start",
+      "status": "started",
+      "state": "Running",
+      "url": "http://localhost:3000/",
+      "message": "运营管理系统已通过唯一总控完成启动与回查：http://localhost:3000/",
+      "checkedAt": "2026-09-15T15:15:15.0631491+08:00"
+    },
+    "resumeAuthorization": "User resumed the paused deployment with 继续工作; current Tmall window was checked again, with next retry at 15:23:18 Shanghai.",
+    "receiverRecovery": "First post-start receiver exited with stream_unavailable. Idempotent system Start retained running services; installed AutoStartDingTalk then restored the configured receiver and connected was observed. No message replay or test delivery.",
+    "supervisorRecovery": "First hidden launcher failed to autoload Windows PowerShell Security under inherited module paths; launched the same installed controller with Windows module path and runtime working directory, then verified healthy.",
+    "n8nRestarted": false,
+    "manualBusinessExecutionCreated": false,
+    "coordination": "Other monitoring tasks held shared-service lifecycle operations; second window waited for scheduled Tmall runs and existing hourly retries to finish.",
+    "firstWindowImpact": "Tmall monitoring reported execution 2146 failed with helper ECONNREFUSED during the first window; recovery remained with the existing n8n retry workflow, no manual replay by this task."
+  },
+  "backups": {
+    "preSecond": {
+      "status": "completed",
+      "backupId": "daily-20260915T060333Z-46dbd23bae95",
+      "backupDirectory": "D:\\teruisi-runtime\\django-sales\\backups\\postgres-daily\\daily-20260915T060333Z-46dbd23bae95",
+      "manifestSha256": "4d8ab427e456b6b4310f72b8a631631e4efa3dbb0fdb3b6ace9683db5d394c90",
+      "dumpSha256": "34cd91357dc86b722b97870adb4d12c1904fef040285c909e82612cd372db19f",
+      "contentSha256": "bb589ccc845dc46c8b071a031b856bb8ab19409639f004b713fc7a1d4ff63db6",
+      "completedAt": "2026-09-15T06:05:21.6994003+00:00",
+      "serviceStateChanged": false
+    },
+    "independentRestore": {
+      "version": "teruisi-postgres-restore-rehearsal-v1",
+      "status": "completed",
+      "rehearsalId": "a71d59091502",
+      "startedAt": "2026-09-15T06:05:55.2600406+00:00",
+      "completedAt": "2026-09-15T06:10:44.0290251+00:00",
+      "backupId": "daily-20260915T060333Z-46dbd23bae95",
+      "backupManifestSha256": "4d8ab427e456b6b4310f72b8a631631e4efa3dbb0fdb3b6ace9683db5d394c90",
+      "dumpSha256": "34cd91357dc86b722b97870adb4d12c1904fef040285c909e82612cd372db19f",
+      "expectedContentSha256": "bb589ccc845dc46c8b071a031b856bb8ab19409639f004b713fc7a1d4ff63db6",
+      "restoredContentSha256": "bb589ccc845dc46c8b071a031b856bb8ab19409639f004b713fc7a1d4ff63db6",
+      "isolatedPort": 55473,
+      "productionDatabaseTouched": false,
+      "serviceStateChanged": false,
+      "cleanupStatus": "isolated_data_removed"
+    },
+    "preSecondEDrive": [
+      {
+        "name": "backup-manifest.json",
+        "sha256": "4d8ab427e456b6b4310f72b8a631631e4efa3dbb0fdb3b6ace9683db5d394c90",
+        "matched": true
+      },
+      {
+        "name": "backup-manifest.json.sha256",
+        "sha256": "db625f1ed72a94e639216a17394e928c96b7e2d065ea6120c82ad1e0a6960923",
+        "matched": true
+      },
+      {
+        "name": "teruisi-sales.dump",
+        "sha256": "34cd91357dc86b722b97870adb4d12c1904fef040285c909e82612cd372db19f",
+        "matched": true
+      }
+    ],
+    "post": {
+      "status": "completed",
+      "backupId": "daily-20260915T071737Z-bc7531777dc2",
+      "backupDirectory": "D:\\teruisi-runtime\\django-sales\\backups\\postgres-daily\\daily-20260915T071737Z-bc7531777dc2",
+      "manifestSha256": "d30d6f8fb991f82a341e94947d8c3f263a4271a21be981299cefd9cad641c77e",
+      "dumpSha256": "fd00876dce08152bb1b37d6c3e1591e212170e37e681f37030ad3d6e9259346d",
+      "contentSha256": "835c4aae988340464f97e2f09e4ea28b540cf589bd088842f56f5379b498c8e0",
+      "completedAt": "2026-09-15T07:19:27.3158505+00:00",
+      "serviceStateChanged": false
+    },
+    "postVerify": {
+      "status": "completed",
+      "backupId": "daily-20260915T071737Z-bc7531777dc2",
+      "manifestSha256": "d30d6f8fb991f82a341e94947d8c3f263a4271a21be981299cefd9cad641c77e",
+      "dumpSha256": "fd00876dce08152bb1b37d6c3e1591e212170e37e681f37030ad3d6e9259346d",
+      "contentSha256": "835c4aae988340464f97e2f09e4ea28b540cf589bd088842f56f5379b498c8e0",
+      "serviceStateChanged": false
+    },
+    "postEDrive": {
+      "backupId": "daily-20260915T071737Z-bc7531777dc2",
+      "originalRetained": true,
+      "checkedAt": "2026-09-15T15:20:24.6553114+08:00",
+      "files": [
+        {
+          "sha256": "d30d6f8fb991f82a341e94947d8c3f263a4271a21be981299cefd9cad641c77e",
+          "name": "backup-manifest.json",
+          "verified": true
+        },
+        {
+          "sha256": "e0ce5f038a56cb3fb64325e88078a1448217ebed1199237aa306bcac744a97de",
+          "name": "backup-manifest.json.sha256",
+          "verified": true
+        },
+        {
+          "sha256": "fd00876dce08152bb1b37d6c3e1591e212170e37e681f37030ad3d6e9259346d",
+          "name": "teruisi-sales.dump",
+          "verified": true
+        }
+      ],
+      "directory": "E:\\运营管理系统业务数据\\daily-20260915T071737Z-bc7531777dc2"
+    }
+  },
+  "limits": [
+    "Industry report retains its original bounded calculation path and can still require narrower filters.",
+    "Main-data list timeout and general long-running workerd memory growth are outside this change.",
+    "Read-only SQL performance evidence describes the tested data and load; it is not an unlimited-range latency guarantee."
+  ]
+}

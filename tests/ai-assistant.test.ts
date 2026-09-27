@@ -4,8 +4,11 @@ import { readFile } from "node:fs/promises";
 import { DatabaseSync } from "node:sqlite";
 
 import {
+  isSensitiveAiModelQueryKey,
   maskWebhookUrl,
   normalizeAiEndpointUrl,
+  normalizeAiModelEndpointForStorage,
+  redactAiModelEndpointUrl,
   resolveAiModelEndpointUrl,
 } from "../lib/ai/endpoint-security";
 import {
@@ -14,20 +17,127 @@ import {
   verifyDingTalkSignature,
   verifyWeComSignature,
 } from "../lib/ai/channel-callbacks";
-import { buildOpenAiChatRequestBody, resolveModelToolLoopLimits } from "../lib/ai/model-gateway";
+import { buildOpenAiChatRequestBody, completeText, resolveModelToolLoopLimits } from "../lib/ai/model-gateway";
+import { probeVisionModelConnection } from "../lib/market/annotation-model";
 
 test("AI endpoint validation rejects insecure and private targets", () => {
   assert.equal(normalizeAiEndpointUrl("https://api.example.com/v1/", "model"), "https://api.example.com/v1");
   assert.equal(normalizeAiEndpointUrl("https://oapi.dingtalk.com/robot/send?access_token=secret", "channel"), "https://oapi.dingtalk.com/robot/send?access_token=secret");
   assert.throws(() => normalizeAiEndpointUrl("http://api.example.com/v1", "model"), /HTTPS/);
   assert.throws(() => normalizeAiEndpointUrl("https://127.0.0.1/private", "channel"), /内网|localhost/);
+  assert.throws(() => normalizeAiEndpointUrl("https://localhost./private", "model"), /内网|localhost/);
+  assert.throws(() => normalizeAiEndpointUrl("https://foo.localhost./private", "model"), /内网|localhost/);
+  assert.throws(() => normalizeAiEndpointUrl("https://[fe90::1]/private", "model"), /内网|localhost/);
+  assert.throws(() => normalizeAiEndpointUrl("https://[::ffff:127.0.0.1]/private", "model"), /内网|localhost/);
   assert.throws(() => normalizeAiEndpointUrl("https://user:pass@example.com/v1", "model"), /用户名/);
+});
+
+test("production AI model endpoints require an exact hostname allowlist", () => {
+  const mutableEnvironment = process.env as Record<string, string | undefined>;
+  const previousNodeEnvironment = mutableEnvironment.NODE_ENV;
+  const previousAllowlist = mutableEnvironment.AI_MODEL_ENDPOINT_ORIGIN_ALLOWLIST;
+  try {
+    mutableEnvironment.NODE_ENV = "production";
+    mutableEnvironment.AI_MODEL_ENDPOINT_ORIGIN_ALLOWLIST = "models.example.com";
+    assert.equal(normalizeAiEndpointUrl("https://models.example.com/v1/", "model"), "https://models.example.com/v1");
+    assert.equal(normalizeAiEndpointUrl("https://api.openai.com/v1", "model"), "https://api.openai.com/v1");
+    assert.throws(() => normalizeAiEndpointUrl("https://api.example.com/v1", "model"), /白名单/);
+    assert.throws(() => normalizeAiEndpointUrl("https://api.openai.com:8443/v1", "model"), /白名单/);
+    assert.equal(normalizeAiEndpointUrl("https://models.example.com./v1", "model"), "https://models.example.com/v1");
+  } finally {
+    if (previousNodeEnvironment === undefined) delete mutableEnvironment.NODE_ENV;
+    else mutableEnvironment.NODE_ENV = previousNodeEnvironment;
+    if (previousAllowlist === undefined) delete mutableEnvironment.AI_MODEL_ENDPOINT_ORIGIN_ALLOWLIST;
+    else mutableEnvironment.AI_MODEL_ENDPOINT_ORIGIN_ALLOWLIST = previousAllowlist;
+  }
 });
 
 test("AI model endpoint accepts either a provider root or a complete request URL", () => {
   assert.equal(resolveAiModelEndpointUrl("https://api.example.com/v1", "openai_compatible"), "https://api.example.com/v1/chat/completions");
   assert.equal(resolveAiModelEndpointUrl("https://api.example.com/v1/chat/completions", "openai_compatible"), "https://api.example.com/v1/chat/completions");
   assert.equal(resolveAiModelEndpointUrl("https://api.example.com/v1", "anthropic"), "https://api.example.com/v1/messages");
+});
+
+test("text and vision dispatch validate the runtime origin before touching model credentials", async () => {
+  const mutableEnvironment = process.env as Record<string, string | undefined>;
+  const previousNodeEnvironment = mutableEnvironment.NODE_ENV;
+  const previousAllowlist = mutableEnvironment.AI_MODEL_ENDPOINT_ORIGIN_ALLOWLIST;
+  try {
+    mutableEnvironment.NODE_ENV = "production";
+    mutableEnvironment.AI_MODEL_ENDPOINT_ORIGIN_ALLOWLIST = "models.example.com";
+    await assert.rejects(() => completeText({
+      model: {
+        id: "blocked-text",
+        name: "blocked text",
+        protocol: "openai_compatible",
+        modelName: "test-model",
+        baseUrl: "https://blocked.example/v1",
+        apiKeyEncrypted: "",
+        timeoutMs: 3_000,
+        maxTokens: 128,
+        reasoningMode: "auto",
+        temperature: 0,
+        maxToolRounds: 1,
+        maxTotalToolCalls: 1,
+      },
+      messages: [{ role: "user", content: "test" }],
+    }), /白名单/);
+    await assert.rejects(() => probeVisionModelConnection({
+      id: "blocked-vision",
+      name: "blocked vision",
+      protocol: "anthropic",
+      model_type: "vision",
+      model_name: "test-model",
+      base_url: "https://blocked.example/v1",
+      api_key_encrypted: "",
+      status: "enabled",
+    }), /白名单/);
+  } finally {
+    if (previousNodeEnvironment === undefined) delete mutableEnvironment.NODE_ENV;
+    else mutableEnvironment.NODE_ENV = previousNodeEnvironment;
+    if (previousAllowlist === undefined) delete mutableEnvironment.AI_MODEL_ENDPOINT_ORIGIN_ALLOWLIST;
+    else mutableEnvironment.AI_MODEL_ENDPOINT_ORIGIN_ALLOWLIST = previousAllowlist;
+  }
+});
+
+test("AI model endpoints reject sensitive query keys and redact legacy values without changing runtime resolution", () => {
+  for (const key of [
+    "api_key",
+    "API-Key",
+    "api.Key",
+    "access_token",
+    "x-amz-signature",
+    "credential",
+    "Authorization",
+    "subscription-key",
+    "subscriptionKey",
+    "Ocp-Apim-Subscription-Key",
+    "x-functions-key",
+    "code",
+    "密钥",
+  ]) {
+    assert.equal(isSensitiveAiModelQueryKey(key), true, key);
+    assert.throws(
+      () => normalizeAiModelEndpointForStorage(`https://api.example.com/v1?${encodeURIComponent(key)}=DO_NOT_EXPOSE`),
+      /敏感查询参数/,
+      key,
+    );
+  }
+  for (const key of ["api-version", "monkey", "hockey", "postal-code", "tenant", "deployment"]) {
+    assert.equal(isSensitiveAiModelQueryKey(key), false, key);
+  }
+  const legacy = "https://api.example.com/v1?api-version=2026-08-01&API_KEY=TOP_SECRET&tenant=tenant-a&x-amz-signature=AWS_SECRET";
+  const redacted = redactAiModelEndpointUrl(legacy);
+  assert.equal(redacted, "https://api.example.com/v1?api-version=2026-08-01&tenant=tenant-a");
+  assert.doesNotMatch(redacted, /TOP_SECRET|AWS_SECRET|API_KEY|signature/i);
+  assert.equal(
+    resolveAiModelEndpointUrl(legacy, "openai_compatible"),
+    "https://api.example.com/v1/chat/completions?api-version=2026-08-01&API_KEY=TOP_SECRET&tenant=tenant-a&x-amz-signature=AWS_SECRET",
+  );
+  assert.equal(
+    normalizeAiModelEndpointForStorage("https://api.example.com/v1?api-version=2026-08-01&tenant=tenant-a"),
+    "https://api.example.com/v1?api-version=2026-08-01&tenant=tenant-a",
+  );
 });
 
 test("OpenAI-compatible reasoning mode is explicit and fail-closed", () => {
@@ -101,23 +211,24 @@ test("legacy image model type is migrated to the canonical vision capability", a
 });
 
 test("AI assistant routes, callbacks, knowledge, artifacts, UI, and migrations are wired", async () => {
-  const [page, chatRoute, conversationsRoute, modelsRoute, channelsRoute, webhookRoute, artifactRoute, service, entryContext, workflow, knowledge, artifacts, gateway, toolBudget, toolRuntime, toolAudit, authorization, visionModel, callbackMigration, visionMigration, pipelineMigration, reasoningMigration, executionMigration, knowledgeArtifactMigration, budgetMigration, guide, rolloutGuide] = await Promise.all([
-    readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
+  const [page, chatRoute, conversationsRoute, modelsRoute, channelsRoute, webhookRoute, artifactRoute, service, boundedFetch, entryContext, workflow, knowledge, artifacts, gateway, toolBudget, toolRuntime, toolAudit, authorization, visionModel, callbackMigration, visionMigration, pipelineMigration, reasoningMigration, executionMigration, knowledgeArtifactMigration, budgetMigration, guide, rolloutGuide] = await Promise.all([
+    readFile(new URL("../app/ai-assistant-view.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/api/ai/chat/route.ts", import.meta.url), "utf8"),
     readFile(new URL("../app/api/ai/conversations/route.ts", import.meta.url), "utf8"),
     readFile(new URL("../app/api/ai/models/route.ts", import.meta.url), "utf8"),
     readFile(new URL("../app/api/ai/channels/route.ts", import.meta.url), "utf8"),
     readFile(new URL("../app/api/ai/webhooks/[channelId]/route.ts", import.meta.url), "utf8"),
     readFile(new URL("../app/api/ai/artifacts/[artifactId]/route.ts", import.meta.url), "utf8"),
-    readFile(new URL("../lib/ai/assistant-service.ts", import.meta.url), "utf8"),
+    readFile(new URL("./legacy/ai/assistant-service.ts", import.meta.url), "utf8"),
+    readFile(new URL("../lib/ai/bounded-fetch.ts", import.meta.url), "utf8"),
     readFile(new URL("../lib/ai/entry-context.ts", import.meta.url), "utf8"),
-    readFile(new URL("../lib/ai/question-workflow.ts", import.meta.url), "utf8"),
-    readFile(new URL("../lib/ai/data-knowledge.ts", import.meta.url), "utf8"),
-    readFile(new URL("../lib/ai/artifacts.ts", import.meta.url), "utf8"),
+    readFile(new URL("./legacy/ai/question-workflow.ts", import.meta.url), "utf8"),
+    readFile(new URL("./legacy/ai/data-knowledge.ts", import.meta.url), "utf8"),
+    readFile(new URL("./legacy/ai/artifacts.ts", import.meta.url), "utf8"),
     readFile(new URL("../lib/ai/model-gateway.ts", import.meta.url), "utf8"),
     readFile(new URL("../lib/ai/model-tool-budget.ts", import.meta.url), "utf8"),
     readFile(new URL("../lib/ai/tool-execution-runtime.ts", import.meta.url), "utf8"),
-    readFile(new URL("../lib/ai/tool-audit.ts", import.meta.url), "utf8"),
+    readFile(new URL("./legacy/ai/tool-audit.ts", import.meta.url), "utf8"),
     readFile(new URL("../lib/auth/authorization.ts", import.meta.url), "utf8"),
     readFile(new URL("../lib/market/annotation-model.ts", import.meta.url), "utf8"),
     readFile(new URL("../drizzle/0014_ai_channel_callbacks.sql", import.meta.url), "utf8"),
@@ -137,33 +248,30 @@ test("AI assistant routes, callbacks, knowledge, artifacts, UI, and migrations a
   assert.doesNotMatch(page, /\{ value: "image"/);
   assert.match(page, /新增聊天渠道/);
   assert.match(page, /停止生成/);
-  assert.match(page, /本对话模型/);
-  assert.match(page, /文本和视觉模型均可用于对话/);
+  const workbench = await readFile(new URL("../app/ai-chat-workbench.tsx", import.meta.url), "utf8");
+  assert.match(workbench, /本对话模型/);
+  assert.match(workbench, /model\.modelType === "vision"/);
+  assert.match(page, /onModel=\{id => void changeConversationModel\(id\)\}/);
   assert.match(page, /deleteConversation/);
   assert.match(page, /AiMessageArtifacts/);
   assert.match(page, /下载 CSV/);
   assert.match(page, /maxToolRounds/);
   assert.match(page, /AI_MODEL_TOOL_BUDGET_LIMITS\.maximumRounds/);
   assert.match(page, /reasoningMode/);
-  assert.match(page, /关闭推理（运营问答推荐）/);
+  assert.match(page, /关闭推理（端点须支持）/);
+  assert.match(page, /modelBaseUrlDirty/);
+  assert.match(page, /modelDraft\.id && !modelBaseUrlDirty/);
   assert.match(page, /webhookUrlMasked/);
-  assert.match(chatRoute, /createWebChatEntryContext/);
-  assert.match(chatRoute, /answerAiQuestion/);
-  assert.match(chatRoute, /signal: request\.signal/);
-  assert.match(conversationsRoute, /listAvailableChatModels/);
-  assert.match(conversationsRoute, /export async function PATCH/);
-  assert.match(conversationsRoute, /selectConversationModel/);
-  assert.match(conversationsRoute, /export async function DELETE/);
-  assert.match(conversationsRoute, /deleteAiConversation/);
-  assert.match(modelsRoute, /requireAppPrincipal\(\["admin"\]\)/);
-  assert.match(channelsRoute, /deleteAiChannel/);
-  assert.match(webhookRoute, /verifyWeComSignature/);
-  assert.match(webhookRoute, /recordAiChannelCallbackEvent/);
-  assert.match(artifactRoute, /getAiArtifactDownload/);
-  assert.match(artifactRoute, /recordAiArtifactDelivery/);
-  assert.match(artifactRoute, /private, no-store/);
-  assert.match(service, /redirect: "manual"/);
-  assert.match(service, /response\.status >= 300 && response\.status < 400/);
+  for (const route of [chatRoute, conversationsRoute, modelsRoute, channelsRoute, artifactRoute]) assert.match(route, /forwardAiRequest/);
+  assert.match(webhookRoute, /requestDjangoAi/);
+  const edgeGate = await readFile(new URL("../lib/ai/django-route.ts", import.meta.url), "utf8");
+  assert.match(edgeGate, /requireAppPrincipal/);
+  assert.match(edgeGate, /requireAiSameOriginWrite/);
+  assert.match(edgeGate, /private, no-store/);
+  assert.match(edgeGate, /request.signal/);
+  assert.match(boundedFetch, /redirect: "manual"/);
+  assert.match(boundedFetch, /response\.status >= 300 && response\.status < 400/);
+  assert.match(boundedFetch, /readBoundedBody\(response, maxBytes\)/);
   assert.match(service, /callback_token_encrypted/);
   assert.match(service, /addMissingColumns\(db, "ai_channels"/);
   assert.match(service, /applyAiModelToolBudgetIncrease\(db\)/);
@@ -183,11 +291,16 @@ test("AI assistant routes, callbacks, knowledge, artifacts, UI, and migrations a
   assert.doesNotMatch(workflow, /已有对话已固定模型/);
   assert.match(workflow, /selectConversationModel/);
   assert.match(gateway, /completeTextWithTools/);
+  assert.match(gateway, /loadAiEndpointSecurityContext\(\)/);
+  assert.ok(gateway.indexOf("resolveRuntimeModelEndpoint(input.model)") < gateway.indexOf("requireModelApiKey(input.model)"));
+  assert.match(service, /normalizeAiModelInput\(input, endpointSecurityContext\)/);
+  assert.match(visionModel, /resolveAiModelEndpointUrl\(model\.base_url, "openai_compatible", endpointSecurityContext\)/);
+  assert.match(visionModel, /resolveAiModelEndpointUrl\(model\.base_url, "anthropic", endpointSecurityContext\)/);
   assert.match(gateway, /max_tokens: model\.maxTokens/);
   assert.match(gateway, /thinking: \{ type: "disabled" \}/);
   assert.match(gateway, /signal/);
   assert.match(toolBudget, /maximumRounds: 62/);
-  assert.match(toolBudget, /maximumTotalCalls: 74/);
+  assert.match(toolBudget, /maximumTotalCalls: 300/);
   assert.match(service, /DEFAULT_MODEL_TIMEOUT_MS = 60_000/);
   assert.match(service, /createRegisteredToolExecutionRuntime/);
   assert.match(service, /listAiArtifactsForConversation/);
@@ -202,11 +315,12 @@ test("AI assistant routes, callbacks, knowledge, artifacts, UI, and migrations a
   assert.match(toolRuntime, /maxCumulativeDurationMs/);
   assert.match(toolRuntime, /tool_timeout/);
   assert.match(toolRuntime, /crypto\.randomUUID/);
-  assert.match(authorization, /ensureAiToolAuditExecutionIndex/);
+  assert.doesNotMatch(authorization, /ensureAiToolAuditExecutionIndex/);
   assert.doesNotMatch(authorization, /ALTER TABLE ai_tool_audit_logs ADD COLUMN/);
   assert.match(toolAudit, /supportsInvocationCorrelation/);
   assert.match(toolAudit, /request_id, actor_email, actor_role, surface, tool_name/);
-  assert.match(page, /timeoutMs: 60000/);
+  assert.doesNotMatch(page, /单轮请求超时|modelDraft\.timeoutMs/);
+  assert.match(page, /maxTokens: 65536/);
   assert.match(pipelineMigration, /message_kind/);
   assert.match(pipelineMigration, /max_total_tool_calls/);
   assert.match(reasoningMigration, /reasoning_mode/);
@@ -222,10 +336,38 @@ test("AI assistant routes, callbacks, knowledge, artifacts, UI, and migrations a
   assert.match(toolBudget, /ai-model-tool-budget-increase-2026-07-30/);
   assert.match(budgetMigration, /ai-model-tool-budget-increase-2026-07-30/);
   assert.match(guide, /AI_SECRET_ENCRYPTION_KEY/);
-  assert.match(guide, /reasoning_tokens/);
+  assert.match(guide, /不应盲目继承上一模型的思考参数/);
+  assert.match(guide, /模型派发审计记录失败类型及单轮耗时/);
   assert.match(guide, /仅文本请求成功不能证明模型支持主图识别/);
   assert.match(rolloutGuide, /数据与知识层/);
   assert.match(rolloutGuide, /产物与投递层/);
+});
+
+test("AI chat POST and UI carry a stable client request idempotency key", async () => {
+  const [page, route, workflow, service, migration] = await Promise.all([
+    readFile(new URL("../app/ai-assistant-view.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/api/ai/chat/route.ts", import.meta.url), "utf8"),
+    readFile(new URL("./legacy/ai/question-workflow.ts", import.meta.url), "utf8"),
+    readFile(new URL("./legacy/ai/assistant-service.ts", import.meta.url), "utf8"),
+    readFile(new URL("../drizzle/0083_ai_chat_idempotency.sql", import.meta.url), "utf8"),
+  ]);
+  assert.match(page, /pendingChatRequestRef/);
+  assert.match(page, /resolvePendingAiChatRequest\(pendingChatRequestRef\.current, requestPayload\)/);
+  assert.match(page, /JSON\.stringify\(\{ \.\.\.pendingRequest\.requestPayload, clientRequestId \}\)/);
+  assert.match(page, /attachPendingAiChatResponse\(pendingRequest/);
+  assert.match(page, /markPendingAiChatSynchronized/);
+  assert.match(page, /服务端同步尚未完整确认；原请求号已保留/);
+  assert.match(route, /forwardAiRequest/);
+  const domain = await readFile(new URL("../backend/ai_assistant/chat.py", import.meta.url), "utf8");
+  assert.match(domain, /identifier\(body\["clientRequestId"\], "clientRequestId"\)/);
+  assert.match(domain, /existing.request_digest != request_digest/);
+  assert.match(domain, /ai_chat_result_unknown/);
+  assert.match(workflow, /claimAiChatRequest/);
+  assert.match(workflow, /markAiChatRequestDispatched/);
+  assert.match(workflow, /markAiChatRequestUnknown/);
+  assert.match(service, /status IN \('processing', 'dispatched', 'succeeded', 'failed', 'unknown'\)/);
+  assert.match(service, /同一个 clientRequestId 已用于不同的聊天请求/);
+  assert.match(migration, /ai_chat_request_receipts_owner_client_uq/);
 });
 
 test("AI tool execution migration preserves audit rows and adds invocation correlation", async () => {

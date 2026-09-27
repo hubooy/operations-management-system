@@ -1,0 +1,63 @@
+{
+  "version": 4,
+  "enabled": true,
+  "storeKey": "jd-cuizhiwang-dengweizhang",
+  "silentNoWindow": true,
+  "dimension": "SKU",
+  "categories": [
+    {
+      "key": "commercial-water-purifier",
+      "categoryPath": ["商用净饮水设备", "商用净水设备"],
+      "systemCategory": "商用净水设备",
+      "secondIndId": "44742",
+      "thirdIndId": "44756"
+    },
+    {
+      "key": "commercial-water-boiler-milk-foamer",
+      "categoryPath": ["商用净饮水设备", "商用开水器/蒸气奶泡机"],
+      "systemCategory": "商用开水器蒸气奶泡机",
+      "secondIndId": "44742",
+      "thirdIndId": "44790"
+    },
+    {
+      "key": "commercial-cooking-machine",
+      "categoryPath": ["商用加热类设备", "商用炒菜机"],
+      "systemCategory": "商用炒菜机",
+      "secondIndId": "44739",
+      "thirdIndId": "44771"
+    },
+    {
+      "key": "commercial-meat-cutter",
+      "categoryPath": ["商用食品机械设备", "商用绞肉机/切肉机/切片机"],
+      "systemCategory": "商用绞肉机切肉机切片机",
+      "secondIndId": "44744",
+      "thirdIndId": "44799"
+    },
+    {
+      "key": "commercial-vegetable-cutter",
+      "categoryPath": ["商用食品机械设备", "商用切菜机"],
+      "systemCategory": "商用切菜机",
+      "secondIndId": "44744",
+      "thirdIndId": "44757"
+    },
+    {
+      "key": "commercial-dishwasher",
+      "categoryPath": ["商用消毒/清洗/清洁类设备", "商用洗碗机"],
+      "systemCategory": "商用洗碗机",
+      "secondIndId": "44740",
+      "thirdIndId": "44759"
+    },
+    {
+      "key": "commercial-grinder-pulverizer",
+      "categoryPath": ["商用食品机械设备", "商用磨粉机/粉碎机"],
+      "systemCategory": "商用磨粉机粉碎机",
+      "secondIndId": "44744",
+      "thirdIndId": "44811"
+    }
+  ],
+  "scope": "pop",
+  "priceBandFilter": "全部",
+  "earliestDate": "2026-01-01",
+  "requestDelayMs": 500,
+  "maxDaysPerFile": 1
+}

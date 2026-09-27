@@ -24,6 +24,8 @@ import {
   saveInventoryImport,
   type InventoryImportIssue,
 } from "@/lib/inventory/database";
+import { validateInventoryImportRows } from "@/lib/inventory/data-quality";
+import { readOperatingSettings } from "@/lib/settings/service";
 
 function toHex(buffer: ArrayBuffer) {
   return Array.from(new Uint8Array(buffer), (byte) => byte.toString(16).padStart(2, "0")).join("");
@@ -140,8 +142,8 @@ export async function importInventoryStockBytes(input: {
   let parsed: ReturnType<typeof parseInventoryStockXlsx>;
   try {
     parsed = parseInventoryStockXlsx(input.bytes);
-  } catch (error) {
-    const message = error instanceof Error ? error.message : "库存 Excel 文件解析失败";
+  } catch {
+    const message = "库存 Excel 文件解析失败，请确认文件格式和模板";
     return reject({
       ok: false,
       status: "rejected",
@@ -168,18 +170,36 @@ export async function importInventoryStockBytes(input: {
   }
 
   let excludedBrushWarehouseRows = 0;
-  let excludedZeroCostRows = 0;
+  let retainedZeroCostRows = 0;
   const importRows: InventoryStockRow[] = [];
+  const qualityCandidateRows: InventoryStockRow[] = [];
   for (const row of parsed.rows) {
     if (row.warehouse.trim() === "刷刷仓") excludedBrushWarehouseRows += 1;
-    else if (row.unitCostCents <= 0) excludedZeroCostRows += 1;
-    else importRows.push(row);
+    else {
+      qualityCandidateRows.push(row);
+      if (row.unitCostCents === 0) retainedZeroCostRows += 1;
+      importRows.push(row);
+    }
+  }
+  const operatingSettings = await readOperatingSettings(db);
+  const qualityErrors = validateInventoryImportRows(qualityCandidateRows, {
+    allowNegativeInventory: operatingSettings.allowNegativeInventory,
+  });
+  if (qualityErrors.length > 0) {
+    return reject({
+      ok: false,
+      status: "rejected",
+      message: "库存数据质量门禁未通过，未写入任何库存数据",
+      warnings: [],
+      errors: qualityErrors.slice(0, 200),
+      errorCount: qualityErrors.length,
+    });
   }
   if (importRows.length === 0) {
     return reject({
       ok: false,
       status: "rejected",
-      message: "剔除刷刷仓和成本价为 0 的明细后没有可导入的库存数据",
+      message: "剔除刷刷仓后没有可导入的库存数据",
       warnings: excludedBrushWarehouseRows > 0
         ? [{ code: "EXCLUDED_BRUSH_WAREHOUSE", message: `已识别刷刷仓 ${excludedBrushWarehouseRows} 行` }]
         : [],
@@ -242,8 +262,8 @@ export async function importInventoryStockBytes(input: {
 
   const missingNameRows = importRows.filter((row) => !row.productName).length;
   const warnings: InventoryImportIssue[] = [
-    ...(excludedZeroCostRows > 0
-      ? [{ code: "EXCLUDED_ZERO_UNIT_COST", message: `${excludedZeroCostRows} 行成本价为 0，已自动剔除` }]
+    ...(retainedZeroCostRows > 0
+      ? [{ code: "RETAINED_ZERO_UNIT_COST", message: `${retainedZeroCostRows} 行明确零成本库存已保留，库存金额按 0 计并参与补货计算` }]
       : []),
     ...(missingNameRows > 0
       ? [{ code: "MISSING_PRODUCT_NAME", message: `${missingNameRows} 行缺少货品名称，页面将使用销售明细中的名称补全` }]
@@ -340,7 +360,8 @@ export async function importInventoryStockBytes(input: {
       rawFileHash,
       contentHash: fingerprint.contentHash,
       excludedBrushWarehouseRows,
-      excludedZeroCostRows,
+      excludedZeroCostRows: 0,
+      retainedZeroCostRows,
     },
   });
 

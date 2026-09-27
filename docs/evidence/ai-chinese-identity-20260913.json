@@ -1,0 +1,49 @@
+{
+  "date": "2026-09-13",
+  "status": "online_model_configuration_applied_source_defaults_pending_deployment",
+  "authorization": "User requested removal of the TERUISI English prefix from AI self-identification after confirming the private-chat reply by screenshot.",
+  "cause": "Default AI system prompts explicitly supplied the English brand prefix.",
+  "onlineConfiguration": {
+    "endpoint": "/api/ai/models",
+    "method": "POST",
+    "concurrencyGuard": "expectedVersion",
+    "changedField": "generationOptions.systemPrompt",
+    "previousPrompts": "empty for all five existing models",
+    "newPrompt": "对外自我介绍和系统称呼统一使用“运营管理系统 AI 助理”，不使用 TERUISI 英文品牌前缀。历史对话中的旧品牌称呼不作为当前身份。仅调整自称，不改写业务数据、商品品牌、字段名、单位或查询结论。",
+    "versions": [
+      {"name": "DeepSeek-V4-Flash", "before": 7, "after": 8},
+      {"name": "plan/glm-5.2", "before": 3, "after": 4},
+      {"name": "plan/doubao-seed-2.1-turbo", "before": 1, "after": 2},
+      {"name": "doubao-seed-2.0-lite", "before": 1, "after": 2},
+      {"name": "特能志", "before": 1, "after": 2}
+    ],
+    "allReadbacksVerified": true,
+    "otherScalarAndGenerationSettingsPreserved": true,
+    "apiKeysReplaced": false,
+    "credentialsIncludedInEvidence": false,
+    "runtimeReadiness": "ready"
+  },
+  "sourceCleanup": {
+    "scope": "AI chat, read-only tool loop, customer-service analysis, market analysis, channel connection-test text, MCP display title and instructions",
+    "internalIdentifiersUnchanged": true,
+    "productionSourceDeploymentPerformed": false
+  },
+  "validation": {
+    "djangoAi": {"tests": 185, "passed": 182, "skipped": 3, "failures": 0},
+    "djangoInitialAttempt": "Initial SQLite run reported two errors including a duplicate scheduled_at slot in an unchanged schedule test. With no source changes, the complete rerun passed; timing-sensitive test behavior remains outside this text-only change.",
+    "build": "passed",
+    "renderedHtml": {"passed": 20, "failures": 0},
+    "backendBoundary": {"checkedModules": 430, "violations": 0},
+    "lint": {"errors": 0, "existingWarnings": 11},
+    "unitTests": {"tests": 2158, "passed": 2135, "failures": 0, "skipped": 23},
+    "diffCheck": "passed"
+  },
+  "limits": {
+    "historicalMessagesRewritten": false,
+    "paidModelCallTriggeredForNamingVerification": false,
+    "newExternalMessageSentByOperator": false,
+    "serviceRestartedForNamingChange": false,
+    "newGeneratedReplyVisuallyVerified": false,
+    "groupChatVerification": "pending"
+  }
+}

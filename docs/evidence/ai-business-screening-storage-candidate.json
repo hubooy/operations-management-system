@@ -1,0 +1,27 @@
+{
+  "date": "2026-09-17",
+  "branch": "codex/ai-business-analysis-stages",
+  "baseCommit": "2049f915",
+  "batch": 35,
+  "status": "candidate_internal_immutable_screening_storage",
+  "migration": {"name": "0023_business_screening_storage", "previousAiTables": 63, "currentAiTables": 65, "productionApplied": false},
+  "verification": {
+    "pure": {"passed": 75, "seconds": 1.824, "suites": ["business_analysis.test_screening_storage", "business_analysis.test_screening_plan", "business_analysis.test_diagnostic_screening", "business_analysis.test_promotion_views", "business_analysis.test_results"], "storageTests": 12},
+    "postgresFinal": {"storageAndSourceRegressionPassed": 36, "port": 55485, "log": ".runtime/ai-pg-825136860e8e/failure.log", "combinedSuites": 44, "combinedPassed": 43, "combinedSeconds": 154.325, "otherFailure": "Batch 36 new reader SQL assertion rejected Django DECLARE ... CURSOR FOR SELECT; read results themselves matched. Its assertion was corrected and its suite rerun separately."},
+    "quota": {"passed": 3, "ownerBytes": 67108864, "globalBytes": 268435456, "globalRuns": 200, "realConcurrentQuotaLock": true, "uncommittedParentInvisibleToOtherConnection": true, "syntheticPaddingIsNotBusinessEvidence": true},
+    "upgradeRestore": {"passed": true, "mode": "upgrade-only", "log": ".runtime/ai-pg-440d382e22f6/business-evidence-upgrade.json", "path": "0013->0014->0015->0016->0017->0018->0019->0020->0021->0022->0023", "all65TablesDigest": "295295f93bde0379c7c0534baa9e28c61994350a42027864880aa4de46e2b998", "old63TablesDigestPreserved": true, "screeningPagesRestored": 11, "restoreWithoutFactRescan": true, "restrictedWriterPublishAndReplay": true, "restrictedReaderPages": true, "readerReadonlyAndGrantDenials": true, "writerMissingEpochDenied": true, "rollbackWithDataDenied": true, "oldIntegratedBudgetMappingAndRenderersRestored": true, "subprocessTimeoutSeconds": 300, "unitTestsNotImpliedByUpgradeOnly": true},
+    "maintenance": {"nodePassed": 12, "pythonPassed": 8, "oldBackupInventoriesPreserved": true},
+    "boundary": {"checkedModules": 491, "violations": 0},
+    "independentReview": "Separate Agent reviewed strict storage schema, grants, quota concurrency and upgrade-only arguments; root ran all PostgreSQL processes serially",
+    "diffCheck": true
+  },
+  "failuresCorrected": [
+    {"log": ".runtime/ai-pg-d7b80cd7f413/failure.log", "cause": "Unquoted reserved offset in SQL CHECK", "fix": "Quoted exact SQL column references"},
+    {"log": ".runtime/ai-pg-836ca98a7d61/failure.log", "cause": "Shared trigger CASE/AND resolved child-only NEW fields on parent", "fix": "Procedural IF branches only inspect fields belonging to actual trigger table"},
+    {"log": ".runtime/ai-pg-98f388b43c86/screening-role-error.log", "cause": "Append-only parent SELECT FOR UPDATE required forbidden UPDATE privilege", "fix": "Removed unnecessary parent lock, kept revision quota lock and immutable complete parent transaction invariant; no privilege expansion"},
+    {"log": ".runtime/ai-pg-8cf64081524b/failure.log", "cause": "Negative reader probe expected grants before login default readonly gate", "fix": "Probed readonly first, then disabled only isolated connection readonly setting to independently verify denied table grants"}
+  ],
+  "behavior": ["Trusted completed object only, never public JSON authority", "Atomic full pages and audit or zero publication", "Exact same-key replay and conflicting content rejection", "Bounded UTF-8 pages with complete records and terminal empty groups", "Per-read live account, report, directory and seal revalidation without fact scan", "Reader SELECT, writer SELECT/INSERT only", "Independent immutable storage quota; no automatic retention deletion"],
+  "remaining": ["Versioned role package and model admission", "New runtime profile and tools", "Independent Agent reading receipts", "Report and HTML/XLSX integration", "Real data, model quality and representative scale acceptance"],
+  "operations": {"productionBusinessReads": false, "productionWrites": false, "deployment": false, "serviceRestart": false, "paidModelCalls": false, "externalMessages": false}
+}

@@ -1,0 +1,259 @@
+{
+  "version": "teruisi-ai-workbench-production-v1",
+  "date": "2026-09-10",
+  "status": "completed",
+  "source": {
+    "mainCommit": "5a1a7d4cade7bfc6efa7847cbf44c13dead4c038",
+    "releaseWorktree": "D:/运营管理系统-sales-django-release",
+    "releaseWorktreeCleanAtDeployment": true
+  },
+  "scope": [
+    "AI chat workbench, smaller user text and rendered Markdown",
+    "provider-to-browser SSE with cancellation",
+    "model generation/context/reasoning budgets and persisted usage diagnostics",
+    "remove text/vision per-call timeout; new models default to 65536 output tokens and 1000000 seconds total; merge custom temperature control"
+  ],
+  "defaults": {
+    "maxOutputTokens": 65536,
+    "taskTimeoutSeconds": 1000000,
+    "temperature": "provider_default",
+    "existingSavedModelsChanged": false
+  },
+  "validation": {
+    "fullNode": {
+      "tests": 2089,
+      "passed": 2069,
+      "skipped": 20,
+      "failed": 0
+    },
+    "postgres": {
+      "tests": 151,
+      "failed": 0,
+      "generationUpgradePreservedLegacyData": true
+    },
+    "rendered": {
+      "tests": 20,
+      "failed": 0
+    },
+    "workerdAndFocusedSse": {
+      "tests": 8,
+      "failed": 0
+    },
+    "build": "passed",
+    "migrationDrift": "none",
+    "focusedLint": "passed",
+    "typecheck": {
+      "baseline": 142,
+      "candidate": 142,
+      "added": 0
+    }
+  },
+  "preReleaseRecovery": {
+    "backupId": "daily-20260910T132112Z-811f0d8c4e0f",
+    "backupDirectory": "D:\\teruisi-runtime\\django-sales\\backups\\postgres-daily\\daily-20260910T132112Z-811f0d8c4e0f",
+    "manifestSha256": "da805a89dfcb2bea6df49ae50f1d855d9392750c8a57d96d78489082a0919046",
+    "dumpSha256": "0aea4efe555873c540130534833020255e9926e00a2ed465649de6730bf0e350",
+    "contentSha256": "32d6ff9de08d754e423141ce3fc5c4294ebe2d412077b9564f830e51dc9386bd",
+    "rehearsalId": "635eefc85605",
+    "rehearsalReceipt": "D:\\teruisi-runtime\\django-sales\\rehearsals\\postgres-restore\\restore-635eefc85605\\rehearsal-result.json",
+    "isolatedPort": 55467,
+    "restoredContentSha256": "32d6ff9de08d754e423141ce3fc5c4294ebe2d412077b9564f830e51dc9386bd",
+    "productionDatabaseTouched": false,
+    "serviceStateChanged": false,
+    "cleanupStatus": "isolated_data_removed"
+  },
+  "deployment": {
+    "djangoManifestSha256": "29b3280d535f41ef3659f3abffc11ab26d34e0f3af09b6dc9b0a876485b274fa",
+    "djangoAppFingerprint": "8b0296144da0350a740ab655dde6153335156b7452545761036df31d38eb0aa8",
+    "djangoFileCount": 2002,
+    "migration": "ai_assistant.0009: generation_options_json and execution_json, both default {}",
+    "initialActivation": {
+      "status": "activated",
+      "version": "teruisi-local-worker-release-successor-v1",
+      "planSha256": "075443be0c9452ee614007657e10d87503f2aa3b31e38d24fae89406349e6439",
+      "predecessorReleaseId": "20260910T131216Z-674af827668202c9",
+      "releaseId": "20260910T134347Z-d8b910e88d62ff0a",
+      "manifestPath": "D:\\teruisi-runtime\\teruisi-worker-sales\\releases\\20260910T134347Z-d8b910e88d62ff0a\\deployment-manifest.json",
+      "manifestSha256": "25ea69764ad01894f2554e147ce8fb9bc171e774457e2dc520f14f6a6969c31c",
+      "successorSha256": "9c1e1056c9c962f279484e36a002527501c4f5c264e8bdde147db7ad1ca57223",
+      "consumptionSha256": "47fa10062fa48a91b4978fefe0556f1190e455e5c0370dc6b137235fc54005fd",
+      "startupBindingSha256": "3d4d0fffb3234a65a5b08d474bf631637fbf378d342b4960b9447177bc8989d8"
+    },
+    "finalActivation": {
+      "status": "activated",
+      "version": "teruisi-local-worker-release-successor-v1",
+      "planSha256": "7bdbf28f2a6f010dda4764545f8ee1d2f0042e7aa08d9193d823b6e32b0cb430",
+      "predecessorReleaseId": "20260910T134347Z-d8b910e88d62ff0a",
+      "releaseId": "20260910T140701Z-0194554bc4bcead5",
+      "manifestPath": "D:\\teruisi-runtime\\teruisi-worker-sales\\releases\\20260910T140701Z-0194554bc4bcead5\\deployment-manifest.json",
+      "manifestSha256": "6b4f56b358c893ec2f648c5ad83edc50a8bc0d315b975a6ffe53a27748461140",
+      "successorSha256": "d652d7ee266a28456eb52591bbc6376dc65bd76155ab9cf7ee1c821db23ae8eb",
+      "consumptionSha256": "a67e134436abc971a33f3fc92f6fb0be93e2f681513075c5c8d684518d603e47",
+      "startupBindingSha256": "3b5f8f1dc5e57048bf06489e37dd76d4c62874d8f9de28230293eb1fa6fd006c"
+    },
+    "successorCount": 128
+  },
+  "productionReadback": {
+    "state": {
+      "version": "teruisi-operations-system-control-v2",
+      "state": "Running",
+      "backendState": "Ready",
+      "workerState": "exact_release",
+      "releaseId": "20260910T140701Z-0194554bc4bcead5",
+      "supervisorProcessId": 46300,
+      "portProcessId": 41124,
+      "url": "http://localhost:3000/",
+      "reason": null,
+      "components": {
+        "core": true,
+        "finance": true,
+        "netshop": true,
+        "market": true,
+        "products": true,
+        "workflow": true,
+        "inventory": true,
+        "customerService": true,
+        "accessControl": true,
+        "erpReference": true,
+        "bi": true,
+        "ai": true
+      },
+      "checkedAt": "2026-09-10T22:14:14.4641554+08:00"
+    },
+    "http": {
+      "http://127.0.0.1:8111/api/ai/models": {
+        "unsignedRequestStatus": 401
+      },
+      "http://127.0.0.1:8112/api/ai/chat": {
+        "unsignedRequestStatus": 401
+      },
+      "/?module=ai&view=management": {
+        "status": 200,
+        "contentType": "text/html; charset=utf-8"
+      },
+      "/api/ai/models": {
+        "status": 200,
+        "contentType": "application/json",
+        "models": 5,
+        "generationOptionsPresent": true
+      },
+      "/api/ai/conversations?workspaceModule=ai": {
+        "status": 200,
+        "contentType": "application/json"
+      },
+      "sse": {
+        "status": 200,
+        "contentType": "text/event-stream; charset=utf-8",
+        "invalidInputRejectedOverLiveStream": true,
+        "paidProviderCalls": 0
+      }
+    },
+    "health": {
+      "http://127.0.0.1:3000/_teruisi/local/health/live": {
+        "status": 200,
+        "state": "live"
+      },
+      "http://127.0.0.1:3000/_teruisi/local/health/ready": {
+        "status": 200,
+        "state": "ready"
+      },
+      "http://127.0.0.1:5791/health": {
+        "status": 200
+      }
+    },
+    "before": {
+      "ai_models": {
+        "count": 5,
+        "legacyFieldsSha256": "4fc1483f73afe33f47c77b1c25734e7ae6be9b1a50d9596481d704a9812f7275"
+      },
+      "ai_conversation_messages": {
+        "count": 69,
+        "legacyFieldsSha256": "c68a65471bce39d40b0d7f9bb38b4305dcb5b01ae57353e0cae3259eaf4cc14d"
+      },
+      "ai_chat_request_receipts": {
+        "succeeded": 23,
+        "unknown": 21
+      },
+      "ai_agent_jobs": {},
+      "ai_workflow_runs": {},
+      "ai_space_jobs": {},
+      "recentActiveChats": 0
+    },
+    "after": {
+      "ai_models": {
+        "count": 5,
+        "legacyFieldsSha256": "4fc1483f73afe33f47c77b1c25734e7ae6be9b1a50d9596481d704a9812f7275"
+      },
+      "ai_conversation_messages": {
+        "count": 69,
+        "legacyFieldsSha256": "c68a65471bce39d40b0d7f9bb38b4305dcb5b01ae57353e0cae3259eaf4cc14d"
+      },
+      "ai_chat_request_receipts": {
+        "succeeded": 23,
+        "unknown": 21
+      },
+      "ai_agent_jobs": {},
+      "ai_workflow_runs": {},
+      "ai_space_jobs": {},
+      "recentActiveChats": 0,
+      "generation_options_jsonNonDefault": 0,
+      "execution_jsonNonDefault": 0
+    },
+    "legacyModelAndMessageHashesMatch": true
+  },
+  "deploymentCorrections": [
+    {
+      "issue": "Root package.json changed before controlled Worker stop and failed predecessor guard",
+      "resolution": "Restored exact immutable predecessor package via atomicInstallFile, verified SHA and retained candidate; controlled stop then plan/apply succeeded",
+      "audit": {
+        "action": "restore-current-release-entrypoint-before-controlled-stop",
+        "target": "D:/运营管理系统/package.json",
+        "beforeSha256": "f16231397a349df55ee45c23afb92ebc7ba6001d736b520e5dc7cc7cc5914675",
+        "restoredSha256": "12c00c8f012358b5b476b68374c314ab708bd78f9f05c1a23a1a265a45e7ed77",
+        "candidateRetained": true
+      }
+    },
+    {
+      "issue": "Initial production SSE probe failed before dispatch because workerd rejects redirect:error",
+      "resolution": "Changed to manual, reject every redirect response without following; added real isolated workerd SSE/redirect regression; final production SSE probe passed",
+      "commit": "5a1a7d4c",
+      "databaseMutationsFromInvalidProbe": 0,
+      "paidProviderCallsFromInvalidProbe": 0
+    }
+  ],
+  "postMigrationRecovery": {
+    "backup": {
+      "status": "completed",
+      "backupId": "daily-20260910T135935Z-48917728c833",
+      "backupDirectory": "D:\\teruisi-runtime\\django-sales\\backups\\postgres-daily\\daily-20260910T135935Z-48917728c833",
+      "manifestSha256": "7c3427b90f344e23ec30e364a41ab9c411de15353d24f3689f237a7121467cb9",
+      "dumpSha256": "93a42b7ae7823b8bfa63af3f70314dbc38e5431ae2e6fa239d4e975f8c49094f",
+      "contentSha256": "a24b102ac1e632143661decdac993589bd55a3711162cec1b0c0abcf47143d1f",
+      "completedAt": "2026-09-10T14:01:06.3667889+00:00",
+      "serviceStateChanged": false
+    },
+    "restore": {
+      "version": "teruisi-postgres-restore-rehearsal-v1",
+      "status": "completed",
+      "rehearsalId": "a049cee25e4b",
+      "startedAt": "2026-09-10T14:02:21.0573482+00:00",
+      "completedAt": "2026-09-10T14:06:54.0767261+00:00",
+      "backupId": "daily-20260910T135935Z-48917728c833",
+      "backupManifestSha256": "7c3427b90f344e23ec30e364a41ab9c411de15353d24f3689f237a7121467cb9",
+      "dumpSha256": "93a42b7ae7823b8bfa63af3f70314dbc38e5431ae2e6fa239d4e975f8c49094f",
+      "expectedContentSha256": "a24b102ac1e632143661decdac993589bd55a3711162cec1b0c0abcf47143d1f",
+      "restoredContentSha256": "a24b102ac1e632143661decdac993589bd55a3711162cec1b0c0abcf47143d1f",
+      "isolatedPort": 55468,
+      "productionDatabaseTouched": false,
+      "serviceStateChanged": false,
+      "cleanupStatus": "isolated_data_removed"
+    },
+    "note": "Backup/restore followed Django adoption; final follow-up changed only the Worker transport, with no further database migration."
+  },
+  "limitations": [
+    "No paid provider calls or real DingTalk messages were used for release acceptance.",
+    "Live SSE acceptance uses invalid input rejected before dispatch; provider protocols and cancellation are covered by isolated tests.",
+    "Existing saved model settings are retained; provider-specific limits still apply.",
+    "The bounded successor chain now contains 128 records; any later release requires a reviewed capacity/rotation decision before another plan."
+  ]
+}

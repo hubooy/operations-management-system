@@ -1,0 +1,154 @@
+{
+  "date": "2026-09-12",
+  "scope": "Reset a manual healthy override and close an active Guangdong replenishment-health hold when the current exact Guangdong warehouse on-hand quantity changes, so automatic risk evaluation resumes.",
+  "source": {
+    "branch": "codex/guangdong-health-auto-reset",
+    "sourceCodeCommit": "39f6ada4d32988ee94a20836611965e98816352c",
+    "releaseWorktree": "D:\\运营管理系统-sales-django-release",
+    "changedRuntimeFiles": [
+      "backend/inventory/guangdong_risk_reset.py",
+      "backend/inventory/import_service.py"
+    ]
+  },
+  "behavior": {
+    "trigger": "A successfully published current inventory snapshot changes on_hand_quantity for the same product in the exact 广东仓 warehouse.",
+    "actions": [
+      "Clear the paired manual healthy risk override and reason.",
+      "Deactivate the product's active Guangdong replenishment-health hold.",
+      "Append before-and-after audit evidence in the same inventory publication transaction."
+    ],
+    "nonTriggers": [
+      "Missing rows, which are not interpreted as zero stock.",
+      "Historical backfills or non-current snapshots.",
+      "Other warehouses or products.",
+      "Availability-only or in-transit-only changes.",
+      "Repeated imports with unchanged on-hand quantity."
+    ],
+    "transactionBoundary": "The reset, stock publication, inventory revision and audit are atomic; failure rolls back the entire transaction.",
+    "schemaMigration": false,
+    "permissionExpansion": false,
+    "publicApiContractChange": false
+  },
+  "verification": {
+    "postgresMirror": {
+      "command": "D:\\teruisi-runtime\\django-sales\\venv\\Scripts\\python.exe tools\\verify-guangdong-monitor.py",
+      "result": "passed",
+      "checks": [
+        "isolated PostgreSQL init/start",
+        "migration plan/apply/drift",
+        "inventory PostgreSQL tests",
+        "minimum reader/writer roles",
+        "minimum-writer stock risk reset",
+        "backup/restore/readback",
+        "isolated PostgreSQL stop"
+      ],
+      "postgresTests": 87
+    },
+    "backendBoundary": {
+      "modulesChecked": 424,
+      "violations": 0
+    },
+    "lint": {
+      "errors": 0,
+      "warnings": 11,
+      "note": "Warnings were pre-existing and were not introduced by this change."
+    },
+    "fullUnitRun": {
+      "total": 2131,
+      "passed": 2106,
+      "skipped": 23,
+      "failed": 2,
+      "failures": [
+        "A Windows managed-process round-trip test exceeded its 30-second timeout under the concurrent full-suite load.",
+        "A local-worker test encountered a Node test-runner cloned-data deserialization error under the concurrent full-suite load."
+      ]
+    },
+    "isolatedReruns": [
+      {
+        "testFile": "tests/local-worker-start.test.ts",
+        "passed": 23,
+        "failed": 0
+      },
+      {
+        "testFile": "tests/django-local-service.test.ts",
+        "passed": 37,
+        "failed": 0,
+        "note": "Includes the Windows managed-process round-trip case."
+      }
+    ],
+    "diffCheck": "passed"
+  },
+  "production": {
+    "deployment": {
+      "result": "completed",
+      "deployedAt": "2026-09-12T09:25:22.8457726+08:00",
+      "djangoManifestSha256": "68c16a99ef2a973c3f1ddc8369bf716c7020714bbc5619fc7e64755a5b795b6b",
+      "djangoAppFingerprint": "c1cb0627b3397370c7b8e1705286d14506c867d023444e9b036e376be367fc04",
+      "djangoManifestFileCount": 2019,
+      "workerEffectiveRelease": "20260911T165424Z-941a792a6c05e33e",
+      "workerChanged": false,
+      "databaseMigrationApplied": false
+    },
+    "sourceRuntimeHashes": {
+      "backend/inventory/guangdong_risk_reset.py": "e98b18067d162b60810e3710364d5660440c7c7370101e431c4e09304f8c6d65",
+      "backend/inventory/import_service.py": "492b32526ebc13aa7ced56fdf1caa2297477f757c98ebe50d858b04a06344fe1"
+    },
+    "preDeploymentBackup": {
+      "backupId": "daily-20260912T011431Z-3640d67638ac",
+      "directory": "D:\\teruisi-runtime\\django-sales\\backups\\postgres-daily\\daily-20260912T011431Z-3640d67638ac",
+      "manifestSha256": "25b52fb2dd229299cd8a6967176c1b1a81d5da2e96e28ca4fb30e44dfcbed595",
+      "dumpSha256": "622bf26443651a200a1a17f1d8155cf97e401a23efe9bf936b050c23faf6a411",
+      "contentSha256": "84bba34423266320bee7c70d323a88fd1ffda945665d7a452a2a0bfc4b987394",
+      "verified": true
+    },
+    "restoreRehearsal": {
+      "id": "a12c09f39e01",
+      "port": 55439,
+      "result": "completed",
+      "restoredContentSha256": "84bba34423266320bee7c70d323a88fd1ffda945665d7a452a2a0bfc4b987394",
+      "expectedContentSha256": "84bba34423266320bee7c70d323a88fd1ffda945665d7a452a2a0bfc4b987394",
+      "productionDatabaseTouched": false,
+      "serviceStateChanged": false,
+      "cleanup": "isolated_data_removed"
+    },
+    "postDeploymentBackup": {
+      "backupId": "daily-20260912T013028Z-c550110df6de",
+      "directory": "D:\\teruisi-runtime\\django-sales\\backups\\postgres-daily\\daily-20260912T013028Z-c550110df6de",
+      "manifestSha256": "faf0c7e8d0c0575d64781229594a076deae54d7fba108bd4668f1bf426a86e31",
+      "dumpSha256": "a7d9528e685ce8f5435dd5b7ff1ee31e60ad0ed94003e0c007fb10365d6a8635",
+      "contentSha256": "9ab5c4110ac5c6ee2accdcc8c104e51353be8589c25b16ea36e412ff9ac1979b",
+      "verified": true,
+      "restoreRepeated": false
+    },
+    "status": {
+      "system": "Running / Ready / exact_release",
+      "allComponentsReady": true,
+      "inventoryReader8051Ready": true,
+      "inventoryWriter8052Ready": true
+    },
+    "readOnlyReadback": [
+      {
+        "endpoint": "/api/inventory/guangdong-monitor?page=1&pageSize=1",
+        "status": 200,
+        "total": 42
+      },
+      {
+        "endpoint": "/api/inventory/overview",
+        "status": 200,
+        "total": 14931
+      },
+      {
+        "endpoint": "/api/imports/inventory?page=1&pageSize=1",
+        "status": 200,
+        "revision": "231:8a73f54d74d6",
+        "total": 68,
+        "latestStockImportSnapshotDate": "2026-09-12",
+        "latestStockImportStatus": "completed"
+      }
+    ],
+    "businessImportTriggeredForAcceptance": false,
+    "manualRiskRecordChangedForAcceptance": false,
+    "dataSource": "Local production read-only APIs; MCP was unavailable.",
+    "dataCutoff": "2026-09-12"
+  }
+}

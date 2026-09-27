@@ -1,0 +1,17 @@
+{
+  "date": "2026-09-17",
+  "branch": "codex/ai-business-analysis-stages",
+  "batch": 39,
+  "status": "candidate_internal_exact_candidate_claims",
+  "verification": {
+    "postgres": {"passed": 8, "seconds": 67.837, "port": 55485, "log": ".runtime/ai-pg-69609cc48aaf/tests.log", "suite": "ai_assistant.test_business_screening_claims", "migrationAtTest": "0023_business_screening_storage"},
+    "independentReview": {"remainingBlockers": 0, "reviewer": "workbench_gap_review"},
+    "exactSyntheticNumbers": {"currentRefund": 200, "baselineRefund": 50, "difference": 150},
+    "negativeCoverage": ["Caller-supplied value", "Other role or fixed result candidate", "Missing baseline or metric", "Mutated raw package or complete index", "Cross-owner and late authorization loss"],
+    "noFactScanOrWritesDuringResolution": true,
+    "repeatedResolutionRebuildsFivePackages": false
+  },
+  "limits": {"indexBytes": 16777216, "responseBytes": 38000},
+  "remaining": ["Actual job independent reading receipts", "Diagnosis and file integration", "Runtime registration", "Real model quality acceptance"],
+  "operations": {"productionBusinessReads": false, "productionWrites": false, "migration": false, "deployment": false, "serviceRestart": false, "paidModelCalls": false, "externalMessages": false}
+}

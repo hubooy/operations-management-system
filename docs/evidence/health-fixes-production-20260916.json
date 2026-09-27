@@ -1,0 +1,1324 @@
+{
+  "version": "teruisi-health-fixes-production-v1",
+  "status": "adopted-and-verified",
+  "checkedAt": "2026-09-16T02:36:58.179124+00:00",
+  "authorization": "User requested merge to main and production release in this conversation.",
+  "source": {
+    "workerCommit": "dd0f4271befdb3c035a6d2e163dcf9416be2095b",
+    "djangoCommit": "c84bb034154bc8327f252fe34fd0fbd6ea7e55c8",
+    "batch1Commit": "b9374841",
+    "deployedFiles": {
+      "backend/market/master_query.py": {
+        "sourceSha256": "00fd022d4c78b5803b9d393bf6df26900d8790e960907f107496d4c1b083cedd",
+        "deployedSha256": "00fd022d4c78b5803b9d393bf6df26900d8790e960907f107496d4c1b083cedd"
+      },
+      "backend/market/ranking_query.py": {
+        "sourceSha256": "3a552430c44e24da6f2deb7adf009ae2cb027beb5d40a3327dee1f5aa7182a42",
+        "deployedSha256": "3a552430c44e24da6f2deb7adf009ae2cb027beb5d40a3327dee1f5aa7182a42"
+      },
+      "backend/market/system_kpis.py": {
+        "sourceSha256": "1423e59ba415c58ed1199e235dc7771463d1dbdfae5d8c1c60cec7dcd1b9687d",
+        "deployedSha256": "1423e59ba415c58ed1199e235dc7771463d1dbdfae5d8c1c60cec7dcd1b9687d"
+      },
+      "backend/system_datasets/manifest.json": {
+        "sourceSha256": "77fb5348adc5ae99451137972bd3a13cee25e984304027517b021195310b5081",
+        "deployedSha256": "77fb5348adc5ae99451137972bd3a13cee25e984304027517b021195310b5081"
+      }
+    }
+  },
+  "worker": {
+    "status": "activated",
+    "version": "teruisi-local-worker-release-successor-v1",
+    "planSha256": "01d74900392428a0b7cb68250c2bf1e796c9004019cd7c6f22ea09844ec81584",
+    "predecessorReleaseId": "20260916T004429Z-914353db1e3250b3",
+    "releaseId": "20260916T020314Z-21945e0e18c57de1",
+    "manifestPath": "D:\\teruisi-runtime\\teruisi-worker-sales\\releases\\20260916T020314Z-21945e0e18c57de1\\deployment-manifest.json",
+    "manifestSha256": "8ac5442f1c561c5c2ee8f0c71b1ece8ded7f094b0145ab42b03704c36be94a43",
+    "successorSha256": "43ff3c2635fda511e13eeb24b03700a37432e08d801cd1665e503f36052af89c",
+    "consumptionSha256": "b6eb680fff48ac07ccde6d1f2e857221357d65a0a8a31020608437a819a488ac",
+    "startupBindingSha256": "c2fc4a29fc3cc5f8851c9b6c3b4591d3337ceb98e10b7048a88e43d8aeb7f8b4"
+  },
+  "django": {
+    "version": 2,
+    "deployedAt": "2026-09-16T10:26:29.9007337+08:00",
+    "sourceRoot": "D:\\运营管理系统-sales-django-release",
+    "fingerprintAlgorithm": "relative-path-file-sha256-ordinal-v2",
+    "fileCount": 2045,
+    "appFingerprint": "662e7a0ffbfc92c41cff153f10720e414addc3d9476ef12627edab1d9d979cc3",
+    "manifestSha256": "23274b9c1d44b69c1327179240a11b56e35f6a92b2ff9be549b2d5145d5d639f"
+  },
+  "maintenance": {
+    "firstId": "860a9a91ec564a0a8e85b089fe0bc480",
+    "secondId": "8da788c0dfc3442ebffbc0075f15056a",
+    "firstDrain": {
+      "checkedAt": "2026-09-16T01:55:02.446837+00:00",
+      "market": {
+        "market_annotation_cloud_runs": {
+          "states": {
+            "completed": 38
+          },
+          "unreleasedLeases": 0
+        },
+        "market_annotation_jobs": {
+          "states": {
+            "deleted": 54
+          }
+        },
+        "market_annotation_items": {
+          "states": {
+            "approved": 183,
+            "committed": 117997,
+            "failed": 214,
+            "review_pending": 23,
+            "superseded": 3560
+          },
+          "unreleasedLeases": 0
+        },
+        "market_image_cache_jobs": {
+          "states": {
+            "completed": 133
+          },
+          "unreleasedLeases": 0
+        },
+        "market_image_cache_claims": {
+          "unreleasedLeases": 0
+        }
+      },
+      "ai": {
+        "ai_agent_jobs": {
+          "states": {},
+          "unreleasedLeases": 0
+        },
+        "ai_workflow_runs": {
+          "states": {},
+          "unreleasedLeases": 0
+        },
+        "ai_space_jobs": {
+          "states": {}
+        },
+        "ai_dingtalk_receipts": {
+          "states": {
+            "sent": 8,
+            "unknown": 2
+          }
+        },
+        "ai_dingtalk_schedule_runs": {
+          "states": {
+            "sent": 11,
+            "denied": 1,
+            "failed": 1
+          }
+        },
+        "ai_chat_request_receipts": {
+          "states": {
+            "succeeded": 53,
+            "unknown": 30
+          }
+        }
+      },
+      "n8nNonterminal": [
+        [
+          2451,
+          "running"
+        ]
+      ]
+    },
+    "firstFinalDrain": {
+      "checkedAt": "2026-09-16T01:58:30.901057+00:00",
+      "market": {
+        "market_annotation_cloud_runs": {
+          "states": {
+            "completed": 38
+          },
+          "unreleasedLeases": 0
+        },
+        "market_annotation_jobs": {
+          "states": {
+            "deleted": 54
+          }
+        },
+        "market_annotation_items": {
+          "states": {
+            "approved": 183,
+            "committed": 117997,
+            "failed": 214,
+            "review_pending": 23,
+            "superseded": 3560
+          },
+          "unreleasedLeases": 0
+        },
+        "market_image_cache_jobs": {
+          "states": {
+            "completed": 133
+          },
+          "unreleasedLeases": 0
+        },
+        "market_image_cache_claims": {
+          "unreleasedLeases": 0
+        }
+      },
+      "ai": {
+        "ai_agent_jobs": {
+          "states": {},
+          "unreleasedLeases": 0
+        },
+        "ai_workflow_runs": {
+          "states": {},
+          "unreleasedLeases": 0
+        },
+        "ai_space_jobs": {
+          "states": {}
+        },
+        "ai_dingtalk_receipts": {
+          "states": {
+            "sent": 8,
+            "unknown": 2
+          }
+        },
+        "ai_dingtalk_schedule_runs": {
+          "states": {
+            "sent": 11,
+            "denied": 1,
+            "failed": 1
+          }
+        },
+        "ai_chat_request_receipts": {
+          "states": {
+            "succeeded": 53,
+            "unknown": 30
+          }
+        }
+      },
+      "n8nNonterminal": []
+    },
+    "secondDrain": {
+      "checkedAt": "2026-09-16T02:21:11.737273+00:00",
+      "market": {
+        "market_annotation_cloud_runs": {
+          "states": {
+            "completed": 38
+          },
+          "unreleasedLeases": 0
+        },
+        "market_annotation_jobs": {
+          "states": {
+            "deleted": 54
+          }
+        },
+        "market_annotation_items": {
+          "states": {
+            "approved": 183,
+            "committed": 117997,
+            "failed": 214,
+            "review_pending": 23,
+            "superseded": 3560
+          },
+          "unreleasedLeases": 0
+        },
+        "market_image_cache_jobs": {
+          "states": {
+            "completed": 133
+          },
+          "unreleasedLeases": 0
+        },
+        "market_image_cache_claims": {
+          "unreleasedLeases": 0
+        }
+      },
+      "ai": {
+        "ai_agent_jobs": {
+          "states": {},
+          "unreleasedLeases": 0
+        },
+        "ai_workflow_runs": {
+          "states": {},
+          "unreleasedLeases": 0
+        },
+        "ai_space_jobs": {
+          "states": {}
+        },
+        "ai_dingtalk_receipts": {
+          "states": {
+            "sent": 8,
+            "unknown": 2
+          }
+        },
+        "ai_dingtalk_schedule_runs": {
+          "states": {
+            "sent": 11,
+            "denied": 1,
+            "failed": 1
+          }
+        },
+        "ai_chat_request_receipts": {
+          "states": {
+            "succeeded": 53,
+            "unknown": 30
+          }
+        }
+      },
+      "n8nNonterminal": [
+        [
+          2454,
+          "waiting"
+        ]
+      ]
+    },
+    "secondFinalDrain": {
+      "checkedAt": "2026-09-16T02:22:14.495318+00:00",
+      "market": {
+        "market_annotation_cloud_runs": {
+          "states": {
+            "completed": 38
+          },
+          "unreleasedLeases": 0
+        },
+        "market_annotation_jobs": {
+          "states": {
+            "deleted": 54
+          }
+        },
+        "market_annotation_items": {
+          "states": {
+            "approved": 183,
+            "committed": 117997,
+            "failed": 214,
+            "review_pending": 23,
+            "superseded": 3560
+          },
+          "unreleasedLeases": 0
+        },
+        "market_image_cache_jobs": {
+          "states": {
+            "completed": 133
+          },
+          "unreleasedLeases": 0
+        },
+        "market_image_cache_claims": {
+          "unreleasedLeases": 0
+        }
+      },
+      "ai": {
+        "ai_agent_jobs": {
+          "states": {},
+          "unreleasedLeases": 0
+        },
+        "ai_workflow_runs": {
+          "states": {},
+          "unreleasedLeases": 0
+        },
+        "ai_space_jobs": {
+          "states": {}
+        },
+        "ai_dingtalk_receipts": {
+          "states": {
+            "sent": 8,
+            "unknown": 2
+          }
+        },
+        "ai_dingtalk_schedule_runs": {
+          "states": {
+            "sent": 11,
+            "denied": 1,
+            "failed": 1
+          }
+        },
+        "ai_chat_request_receipts": {
+          "states": {
+            "succeeded": 53,
+            "unknown": 30
+          }
+        }
+      },
+      "n8nNonterminal": [
+        [
+          2454,
+          "waiting"
+        ]
+      ]
+    },
+    "firstEntry": {
+      "status": "maintenance",
+      "maintenanceId": "860a9a91ec564a0a8e85b089fe0bc480",
+      "backendStopped": true
+    },
+    "firstExit": {
+      "status": "maintenance_ended",
+      "maintenanceId": "860a9a91ec564a0a8e85b089fe0bc480"
+    },
+    "secondEntry": {
+      "status": "maintenance",
+      "maintenanceId": "8da788c0dfc3442ebffbc0075f15056a",
+      "backendStopped": true
+    },
+    "secondExit": {
+      "status": "maintenance_ended",
+      "maintenanceId": "8da788c0dfc3442ebffbc0075f15056a"
+    }
+  },
+  "validation": {
+    "priorCandidateEvidence": "health-fixes-batch2-20260916/summary.json",
+    "latestMainScheduleTests": 44,
+    "integratedBuild": "passed",
+    "renderedHtml": 20,
+    "supplementalPostgresql": {
+      "passed": 29,
+      "port": 55454,
+      "correlatedRows": 100000,
+      "originalStatementTimeoutMs": 6000
+    },
+    "supplementalSqlite": {
+      "passed": 7,
+      "skipped": 2
+    },
+    "migrations": "No changes detected",
+    "newIndexes": 0,
+    "productionScope": "bounded read-only API; no business saves, paid model calls, sends, or manual workflow reruns",
+    "oldImplementationSyntheticCheck": "The supplemental 100k correlated-state case also passed with the old scope; it does not reliably reproduce the production planner regression."
+  },
+  "initialProductionFailure": {
+    "type": "statement_timeout",
+    "responses": {
+      "phase": "after",
+      "at": "2026-09-16T02:13:45.831Z",
+      "source": "authorized local read-only API",
+      "samples": [
+        {
+          "route": "/api/sales/data-health",
+          "status": 200,
+          "elapsedMs": 128,
+          "bytes": 620,
+          "sha256": "c4c768fb174bcfa8077635283cab4fb3e67281796941b4c7e1ab958fedae2833",
+          "cacheControl": "no-store",
+          "revision": null,
+          "pagination": null,
+          "keys": [
+            "status",
+            "source",
+            "authority",
+            "revision",
+            "timeZone",
+            "currentBusinessDate",
+            "expectedThroughDate",
+            "checkedAt",
+            "coverage",
+            "latestBatch"
+          ],
+          "code": null,
+          "freshness": {
+            "source": "django_postgresql",
+            "coverage": {
+              "startDate": "2025-01-01",
+              "cutoffDate": "2026-09-15",
+              "coveredDayCount": 623,
+              "lagDaysToCurrentBusinessDate": 1,
+              "throughYesterday": true
+            }
+          }
+        },
+        {
+          "route": "/",
+          "status": 200,
+          "elapsedMs": 23,
+          "bytes": 16855,
+          "sha256": "fe447250c573991280e92bd44418c0f5c338cf2e1f67caf996ff801c5eefa05b",
+          "cacheControl": "no-store, must-revalidate",
+          "revision": null
+        },
+        {
+          "route": "/api/market/master?view=master&page=1&pageSize=30",
+          "status": 200,
+          "elapsedMs": 1917,
+          "bytes": 41864,
+          "sha256": "9b2bfbef930dbfb31ff9a67f66f991b20dce1a1c9e9716a20dd3bf875e9f4052",
+          "cacheControl": "no-store",
+          "revision": "1006:401937025c73",
+          "pagination": {
+            "page": 1,
+            "pageSize": 30,
+            "total": 48205,
+            "pageCount": 1607
+          },
+          "keys": [
+            "items",
+            "pagination"
+          ],
+          "code": null
+        },
+        {
+          "route": "/api/market/master?view=master&page=2&pageSize=30",
+          "status": 200,
+          "elapsedMs": 526,
+          "bytes": 40784,
+          "sha256": "dec7b87559e905782893486f7399458fb0a842eda03c7c35ce1e9946fa923b4d",
+          "cacheControl": "no-store",
+          "revision": "1006:401937025c73",
+          "pagination": {
+            "page": 2,
+            "pageSize": 30,
+            "total": 48205,
+            "pageCount": 1607
+          },
+          "keys": [
+            "items",
+            "pagination"
+          ],
+          "code": null
+        },
+        {
+          "route": "/api/market/master?view=master&q=health-no-match-7e09226d",
+          "status": 200,
+          "elapsedMs": 363,
+          "bytes": 74,
+          "sha256": "620f77e1524b89294290384ef70b5f19bbd1d825febc8703a8a4f0feee8ca4a4",
+          "cacheControl": "no-store",
+          "revision": "1006:401937025c73",
+          "pagination": {
+            "page": 1,
+            "pageSize": 30,
+            "total": 0,
+            "pageCount": 1
+          },
+          "keys": [
+            "items",
+            "pagination"
+          ],
+          "code": null
+        },
+        {
+          "route": "/api/market/master?view=system_kpis",
+          "status": 200,
+          "elapsedMs": 1971,
+          "bytes": 220,
+          "sha256": "18771d9b07691e45edfdda4df8d7bbb0b7fb06a2d354dc395ff24cf2e10a5efe",
+          "cacheControl": "no-store",
+          "revision": "1006:401937025c73",
+          "pagination": null,
+          "keys": [
+            "marketIdentityTotal",
+            "pendingPriceCount",
+            "pendingAiCount",
+            "completedAiCount",
+            "sameImageReuseCount",
+            "priceOnlyRecognitionCount",
+            "fullRecognitionCount",
+            "blockedRecognitionCount"
+          ],
+          "code": null
+        },
+        {
+          "route": "/api/market/overview?view=ranking&page=1&pageSize=20",
+          "status": 503,
+          "elapsedMs": 10208,
+          "bytes": 96,
+          "sha256": "41d801360891df6c56b0f9f6cdec8df67c913ee2d33bbad7b5543e1209a04407",
+          "cacheControl": "no-store",
+          "revision": null,
+          "pagination": null,
+          "keys": [
+            "error",
+            "code"
+          ],
+          "code": "service_unavailable"
+        },
+        {
+          "route": "/api/market/overview?view=ranking&page=2&pageSize=20",
+          "status": 503,
+          "elapsedMs": 7751,
+          "bytes": 96,
+          "sha256": "41d801360891df6c56b0f9f6cdec8df67c913ee2d33bbad7b5543e1209a04407",
+          "cacheControl": "no-store",
+          "revision": null,
+          "pagination": null,
+          "keys": [
+            "error",
+            "code"
+          ],
+          "code": "service_unavailable"
+        },
+        {
+          "route": "/api/market/overview?view=ranking&priceBand=%E6%9C%AA%E7%A1%AE%E8%AE%A4%E4%BB%B7%E6%A0%BC&page=1&pageSize=20",
+          "status": 503,
+          "elapsedMs": 7685,
+          "bytes": 96,
+          "sha256": "41d801360891df6c56b0f9f6cdec8df67c913ee2d33bbad7b5543e1209a04407",
+          "cacheControl": "no-store",
+          "revision": null,
+          "pagination": null,
+          "keys": [
+            "error",
+            "code"
+          ],
+          "code": "service_unavailable"
+        },
+        {
+          "route": "/api/customer-service/conversations?pageSize=1",
+          "status": 200,
+          "elapsedMs": 1983,
+          "bytes": 12413,
+          "sha256": "81ea62a83c84d9c0b5e7413a408151c3235c78e1f11b324be1c22b6ff0b39085",
+          "cacheControl": "no-store",
+          "revision": null,
+          "pagination": {
+            "page": 1,
+            "pageSize": 1,
+            "total": 29018,
+            "returned": 1,
+            "truncated": true
+          },
+          "keys": [
+            "items",
+            "agents",
+            "shops",
+            "productSkus",
+            "summary",
+            "pagination",
+            "categories"
+          ],
+          "code": null
+        },
+        {
+          "route": "/api/market/master?view=invalid",
+          "status": 400,
+          "elapsedMs": 23,
+          "bytes": 69,
+          "sha256": "2b2fcd8b4484aa67b3337ef232fd20a9e70e744e56a2d38dcf6fcfc009739e9b",
+          "cacheControl": "no-store",
+          "revision": null,
+          "pagination": null,
+          "keys": [
+            "error",
+            "code"
+          ],
+          "code": "invalid_request"
+        }
+      ]
+    },
+    "oldPlan": {
+      "Node Type": "Nested Loop",
+      "Join Type": "Left",
+      "Total Cost": 205551.0,
+      "Plan Rows": 31759,
+      "Subplan Name": "CTE priced",
+      "Plans": [
+        {
+          "Node Type": "Unique",
+          "Total Cost": 184835.83,
+          "Plan Rows": 31759,
+          "Plans": [
+            {
+              "Node Type": "Sort",
+              "Total Cost": 180071.98,
+              "Plan Rows": 317590,
+              "Plans": [
+                {
+                  "Node Type": "Seq Scan",
+                  "Total Cost": 130714.85,
+                  "Plan Rows": 317590,
+                  "Relation Name": "market_ranking_entries"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "Node Type": "Materialize",
+          "Total Cost": 19524.21,
+          "Plan Rows": 1,
+          "Plans": [
+            {
+              "Node Type": "Bitmap Heap Scan",
+              "Total Cost": 19524.2,
+              "Plan Rows": 1,
+              "Relation Name": "market_price_snapshots",
+              "Plans": [
+                {
+                  "Node Type": "Bitmap Index Scan",
+                  "Total Cost": 933.86,
+                  "Plan Rows": 32726
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "fixedPlan": {
+      "Node Type": "Hash Join",
+      "Join Type": "Left",
+      "Total Cost": 204836.64,
+      "Plan Rows": 31759,
+      "Subplan Name": "CTE priced",
+      "Plans": [
+        {
+          "Node Type": "Unique",
+          "Total Cost": 184835.83,
+          "Plan Rows": 31759,
+          "Plans": [
+            {
+              "Node Type": "Sort",
+              "Total Cost": 180071.98,
+              "Plan Rows": 317590,
+              "Plans": [
+                {
+                  "Node Type": "Seq Scan",
+                  "Total Cost": 130714.85,
+                  "Plan Rows": 317590,
+                  "Relation Name": "market_ranking_entries"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "Node Type": "Hash",
+          "Total Cost": 19217.43,
+          "Plan Rows": 1999,
+          "Plans": [
+            {
+              "Node Type": "Bitmap Heap Scan",
+              "Total Cost": 19217.43,
+              "Plan Rows": 1999,
+              "Relation Name": "market_price_snapshots",
+              "Plans": [
+                {
+                  "Node Type": "Bitmap Index Scan",
+                  "Total Cost": 933.86,
+                  "Plan Rows": 32726
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "cause": "Hash expressions combined as filters reduced price cardinality estimate to one row, selecting materialized nested-loop comparison. Hash validity now computes nullable official price; native filters retain useful estimates.",
+    "preReadyProbe": "A separate probe before the second Worker became ready had connection failures; it was excluded from final latency samples."
+  },
+  "productionBefore": {
+    "phase": "before",
+    "at": "2026-09-16T01:56:31.994Z",
+    "source": "authorized local read-only API",
+    "samples": [
+      {
+        "route": "/api/sales/data-health",
+        "status": 200,
+        "elapsedMs": 182,
+        "bytes": 620,
+        "sha256": "7dc068ec64a839f1bb9be43e7190286ec36f7279fb71c4b1aa5567bc2fdfd5bd",
+        "cacheControl": "no-store",
+        "revision": null,
+        "pagination": null,
+        "keys": [
+          "status",
+          "source",
+          "authority",
+          "revision",
+          "timeZone",
+          "currentBusinessDate",
+          "expectedThroughDate",
+          "checkedAt",
+          "coverage",
+          "latestBatch"
+        ],
+        "code": null,
+        "freshness": {
+          "source": "django_postgresql",
+          "coverage": {
+            "startDate": "2025-01-01",
+            "cutoffDate": "2026-09-15",
+            "coveredDayCount": 623,
+            "lagDaysToCurrentBusinessDate": 1,
+            "throughYesterday": true
+          }
+        }
+      },
+      {
+        "route": "/api/market/master?view=master&page=1&pageSize=30",
+        "status": 503,
+        "elapsedMs": 30017,
+        "bytes": 96,
+        "sha256": "41d801360891df6c56b0f9f6cdec8df67c913ee2d33bbad7b5543e1209a04407",
+        "cacheControl": "no-store",
+        "revision": null,
+        "pagination": null,
+        "keys": [
+          "error",
+          "code"
+        ],
+        "code": "service_unavailable"
+      },
+      {
+        "route": "/api/market/overview?view=ranking&page=1&pageSize=20",
+        "status": 200,
+        "elapsedMs": 16137,
+        "bytes": 62607,
+        "sha256": "41b5b3183cef8dba1cbcbacae57d0a0de998696d3e43986f3b4abc8b159bd0fb",
+        "cacheControl": "no-store",
+        "revision": "1006:401937025c73",
+        "pagination": {
+          "page": 1,
+          "pageSize": 20,
+          "total": 321102,
+          "pageCount": 16056
+        },
+        "keys": [
+          "view",
+          "salesRevision",
+          "summary",
+          "items",
+          "pagination",
+          "trend",
+          "trendTotal",
+          "trendTruncated",
+          "priceBands",
+          "priceBandSummary",
+          "priceBandTrend",
+          "brandAnalysis",
+          "subcategorySummary",
+          "industryReport",
+          "filters",
+          "dataRange",
+          "batches",
+          "imageCache"
+        ],
+        "code": null
+      }
+    ]
+  },
+  "productionFinal": {
+    "phase": "final",
+    "at": "2026-09-16T02:31:59.893Z",
+    "source": "authorized local read-only API",
+    "samples": [
+      {
+        "route": "/api/sales/data-health",
+        "status": 200,
+        "elapsedMs": 107,
+        "bytes": 620,
+        "sha256": "513ad1bb214034d84a22582fbaca3bd9cfeb6c51d460e157169999ea80e3f51f",
+        "cacheControl": "no-store",
+        "revision": null,
+        "pagination": null,
+        "keys": [
+          "status",
+          "source",
+          "authority",
+          "revision",
+          "timeZone",
+          "currentBusinessDate",
+          "expectedThroughDate",
+          "checkedAt",
+          "coverage",
+          "latestBatch"
+        ],
+        "code": null,
+        "freshness": {
+          "source": "django_postgresql",
+          "coverage": {
+            "startDate": "2025-01-01",
+            "cutoffDate": "2026-09-15",
+            "coveredDayCount": 623,
+            "lagDaysToCurrentBusinessDate": 1,
+            "throughYesterday": true
+          }
+        }
+      },
+      {
+        "route": "/",
+        "status": 200,
+        "elapsedMs": 17,
+        "bytes": 16855,
+        "sha256": "fe447250c573991280e92bd44418c0f5c338cf2e1f67caf996ff801c5eefa05b",
+        "cacheControl": "no-store, must-revalidate",
+        "revision": null
+      },
+      {
+        "route": "/api/market/master?view=master&page=1&pageSize=30",
+        "status": 200,
+        "elapsedMs": 1371,
+        "bytes": 41864,
+        "sha256": "9b2bfbef930dbfb31ff9a67f66f991b20dce1a1c9e9716a20dd3bf875e9f4052",
+        "cacheControl": "no-store",
+        "revision": "1006:401937025c73",
+        "pagination": {
+          "page": 1,
+          "pageSize": 30,
+          "total": 48205,
+          "pageCount": 1607
+        },
+        "keys": [
+          "items",
+          "pagination"
+        ],
+        "code": null
+      },
+      {
+        "route": "/api/market/master?view=master&page=2&pageSize=30",
+        "status": 200,
+        "elapsedMs": 432,
+        "bytes": 40784,
+        "sha256": "dec7b87559e905782893486f7399458fb0a842eda03c7c35ce1e9946fa923b4d",
+        "cacheControl": "no-store",
+        "revision": "1006:401937025c73",
+        "pagination": {
+          "page": 2,
+          "pageSize": 30,
+          "total": 48205,
+          "pageCount": 1607
+        },
+        "keys": [
+          "items",
+          "pagination"
+        ],
+        "code": null
+      },
+      {
+        "route": "/api/market/master?view=master&q=health-no-match-7e09226d",
+        "status": 200,
+        "elapsedMs": 211,
+        "bytes": 74,
+        "sha256": "620f77e1524b89294290384ef70b5f19bbd1d825febc8703a8a4f0feee8ca4a4",
+        "cacheControl": "no-store",
+        "revision": "1006:401937025c73",
+        "pagination": {
+          "page": 1,
+          "pageSize": 30,
+          "total": 0,
+          "pageCount": 1
+        },
+        "keys": [
+          "items",
+          "pagination"
+        ],
+        "code": null
+      },
+      {
+        "route": "/api/market/master?view=system_kpis",
+        "status": 200,
+        "elapsedMs": 2093,
+        "bytes": 220,
+        "sha256": "18771d9b07691e45edfdda4df8d7bbb0b7fb06a2d354dc395ff24cf2e10a5efe",
+        "cacheControl": "no-store",
+        "revision": "1006:401937025c73",
+        "pagination": null,
+        "keys": [
+          "marketIdentityTotal",
+          "pendingPriceCount",
+          "pendingAiCount",
+          "completedAiCount",
+          "sameImageReuseCount",
+          "priceOnlyRecognitionCount",
+          "fullRecognitionCount",
+          "blockedRecognitionCount"
+        ],
+        "code": null
+      },
+      {
+        "route": "/api/market/overview?view=ranking&page=1&pageSize=20",
+        "status": 200,
+        "elapsedMs": 7996,
+        "bytes": 62607,
+        "sha256": "41b5b3183cef8dba1cbcbacae57d0a0de998696d3e43986f3b4abc8b159bd0fb",
+        "cacheControl": "no-store",
+        "revision": "1006:401937025c73",
+        "pagination": {
+          "page": 1,
+          "pageSize": 20,
+          "total": 321102,
+          "pageCount": 16056
+        },
+        "keys": [
+          "view",
+          "salesRevision",
+          "summary",
+          "items",
+          "pagination",
+          "trend",
+          "trendTotal",
+          "trendTruncated",
+          "priceBands",
+          "priceBandSummary",
+          "priceBandTrend",
+          "brandAnalysis",
+          "subcategorySummary",
+          "industryReport",
+          "filters",
+          "dataRange",
+          "batches",
+          "imageCache"
+        ],
+        "code": null
+      },
+      {
+        "route": "/api/market/overview?view=ranking&page=2&pageSize=20",
+        "status": 200,
+        "elapsedMs": 4980,
+        "bytes": 63199,
+        "sha256": "4e032f4c547b05088e45591bbd1d066a203ec94f43b76458cf9f3eac523ab1a6",
+        "cacheControl": "no-store",
+        "revision": "1006:401937025c73",
+        "pagination": {
+          "page": 2,
+          "pageSize": 20,
+          "total": 321102,
+          "pageCount": 16056
+        },
+        "keys": [
+          "view",
+          "salesRevision",
+          "summary",
+          "items",
+          "pagination",
+          "trend",
+          "trendTotal",
+          "trendTruncated",
+          "priceBands",
+          "priceBandSummary",
+          "priceBandTrend",
+          "brandAnalysis",
+          "subcategorySummary",
+          "industryReport",
+          "filters",
+          "dataRange",
+          "batches",
+          "imageCache"
+        ],
+        "code": null
+      },
+      {
+        "route": "/api/market/overview?view=ranking&priceBand=%E6%9C%AA%E7%A1%AE%E8%AE%A4%E4%BB%B7%E6%A0%BC&page=1&pageSize=20",
+        "status": 200,
+        "elapsedMs": 5182,
+        "bytes": 61959,
+        "sha256": "f508803655669fb1f62f593867abd65c4a2a24138a6ee5a9bc9c1360d479b084",
+        "cacheControl": "no-store",
+        "revision": "1006:401937025c73",
+        "pagination": {
+          "page": 1,
+          "pageSize": 20,
+          "total": 240678,
+          "pageCount": 12034
+        },
+        "keys": [
+          "view",
+          "salesRevision",
+          "summary",
+          "items",
+          "pagination",
+          "trend",
+          "trendTotal",
+          "trendTruncated",
+          "priceBands",
+          "priceBandSummary",
+          "priceBandTrend",
+          "brandAnalysis",
+          "subcategorySummary",
+          "industryReport",
+          "filters",
+          "dataRange",
+          "batches",
+          "imageCache"
+        ],
+        "code": null
+      },
+      {
+        "route": "/api/customer-service/conversations?pageSize=1",
+        "status": 200,
+        "elapsedMs": 2015,
+        "bytes": 12413,
+        "sha256": "81ea62a83c84d9c0b5e7413a408151c3235c78e1f11b324be1c22b6ff0b39085",
+        "cacheControl": "no-store",
+        "revision": null,
+        "pagination": {
+          "page": 1,
+          "pageSize": 1,
+          "total": 29018,
+          "returned": 1,
+          "truncated": true
+        },
+        "keys": [
+          "items",
+          "agents",
+          "shops",
+          "productSkus",
+          "summary",
+          "pagination",
+          "categories"
+        ],
+        "code": null
+      },
+      {
+        "route": "/api/market/master?view=invalid",
+        "status": 400,
+        "elapsedMs": 16,
+        "bytes": 69,
+        "sha256": "2b2fcd8b4484aa67b3337ef232fd20a9e70e744e56a2d38dcf6fcfc009739e9b",
+        "cacheControl": "no-store",
+        "revision": null,
+        "pagination": null,
+        "keys": [
+          "error",
+          "code"
+        ],
+        "code": "invalid_request"
+      }
+    ]
+  },
+  "productionRepeat": [
+    {
+      "route": "/api/market/master?view=master&page=1&pageSize=30",
+      "status": 200,
+      "elapsedMs": 560,
+      "bytes": 41864,
+      "sha256": "9b2bfbef930dbfb31ff9a67f66f991b20dce1a1c9e9716a20dd3bf875e9f4052",
+      "revision": "1006:401937025c73"
+    },
+    {
+      "route": "/api/market/overview?view=ranking&page=1&pageSize=20",
+      "status": 200,
+      "elapsedMs": 5447,
+      "bytes": 62607,
+      "sha256": "41b5b3183cef8dba1cbcbacae57d0a0de998696d3e43986f3b4abc8b159bd0fb",
+      "revision": "1006:401937025c73"
+    }
+  ],
+  "rankingDefaultFullResponseHashEqual": true,
+  "latencyLimits": "Sparse production observations, not production P95. Old 16.137s sample overlapped restore rehearsal. Suggested 3s ranking P95 is not achieved.",
+  "assets": {
+    "release": "20260916T020314Z-21945e0e18c57de1",
+    "results": [
+      {
+        "file": "customer-service-view-Bb7e1gPX.js",
+        "status": 200,
+        "bytes": 22355,
+        "matched": true,
+        "sha256": "d3f03f0de41cffc312a828c1bc99b98ebddda632aaa6db5fbc702d8fc90a4ee9"
+      },
+      {
+        "file": "market-master-admin-panel-Dk2bTd1-.js",
+        "status": 200,
+        "bytes": 62022,
+        "matched": true,
+        "sha256": "c7588d6e3935364dca9e1ee3106a747ba29bc080aa38e5140cb029c059086c0d"
+      },
+      {
+        "file": "market-view-DCGrzh67.js",
+        "status": 200,
+        "bytes": 65843,
+        "matched": true,
+        "sha256": "6ae3444f72a52774e2d96dcc3fb23b7bf4957f632b2da390942169a8ab29593a"
+      },
+      {
+        "file": "n8n-workflow-view-BT1Lpn3P.js",
+        "status": 200,
+        "bytes": 67648,
+        "matched": true,
+        "sha256": "22de8f4ec2d50ac6582628327300a6ba66664bb7f302b19cf6ae8ec3917522f9"
+      }
+    ]
+  },
+  "finalRuntime": {
+    "version": "teruisi-operations-system-control-v2",
+    "state": "Running",
+    "backendState": "Ready",
+    "workerState": "exact_release",
+    "releaseId": "20260916T020314Z-21945e0e18c57de1",
+    "supervisorProcessId": 6972,
+    "portProcessId": 36732,
+    "url": "http://localhost:3000/",
+    "reason": null,
+    "components": {
+      "core": true,
+      "finance": true,
+      "netshop": true,
+      "market": true,
+      "products": true,
+      "workflow": true,
+      "inventory": true,
+      "customerService": true,
+      "accessControl": true,
+      "erpReference": true,
+      "bi": true,
+      "ai": true
+    },
+    "checkedAt": "2026-09-16T10:32:48.2072975+08:00"
+  },
+  "startup": {
+    "status": "verified",
+    "version": "teruisi-local-worker-status-v1",
+    "releaseId": "20260916T020314Z-21945e0e18c57de1",
+    "manifestSha256": "8ac5442f1c561c5c2ee8f0c71b1ece8ded7f094b0145ab42b03704c36be94a43",
+    "startupVerified": true
+  },
+  "supervisor": {
+    "status": "completed",
+    "desiredState": "running",
+    "supervisorProcess": "running",
+    "health": "healthy",
+    "code": "all_components_ready",
+    "lastHealthyAt": "2026-09-16T02:33:45.8317872+00:00",
+    "restartAttemptsInWindow": 1,
+    "pendingAlertCount": 32,
+    "serviceStateChanged": false
+  },
+  "receiver": {
+    "receiverConnected": true,
+    "checkedAt": "2026-09-16T10:35:30.2684599+08:00"
+  },
+  "backups": {
+    "before": {
+      "status": "completed",
+      "backupId": "daily-20260916T015058Z-c3339d8dd7d9",
+      "backupDirectory": "D:\\teruisi-runtime\\django-sales\\backups\\postgres-daily\\daily-20260916T015058Z-c3339d8dd7d9",
+      "manifestSha256": "48efbcaf61b11067397b4f4c14eac05840e3b69995f69a7f09608f4177e73476",
+      "dumpSha256": "f062adb0315c8373cabcbcf0d10d15b003dc1fc8f17b35d7ad249120610f7481",
+      "contentSha256": "919de0ea9a994ef56c82a229ec0694179b95dce6dd60f562e68704201e1965bf",
+      "completedAt": "2026-09-16T01:52:45.9158439+00:00",
+      "serviceStateChanged": false
+    },
+    "independentRestore": {
+      "version": "teruisi-postgres-restore-rehearsal-v1",
+      "status": "completed",
+      "rehearsalId": "dd0f42711616",
+      "startedAt": "2026-09-16T01:53:24.1934178+00:00",
+      "completedAt": "2026-09-16T01:58:19.6824166+00:00",
+      "backupId": "daily-20260916T015058Z-c3339d8dd7d9",
+      "backupManifestSha256": "48efbcaf61b11067397b4f4c14eac05840e3b69995f69a7f09608f4177e73476",
+      "dumpSha256": "f062adb0315c8373cabcbcf0d10d15b003dc1fc8f17b35d7ad249120610f7481",
+      "expectedContentSha256": "919de0ea9a994ef56c82a229ec0694179b95dce6dd60f562e68704201e1965bf",
+      "restoredContentSha256": "919de0ea9a994ef56c82a229ec0694179b95dce6dd60f562e68704201e1965bf",
+      "isolatedPort": 55453,
+      "productionDatabaseTouched": false,
+      "serviceStateChanged": false,
+      "cleanupStatus": "isolated_data_removed"
+    },
+    "beforeArchive": [
+      {
+        "file": "teruisi-sales.dump",
+        "sha256": "f062adb0315c8373cabcbcf0d10d15b003dc1fc8f17b35d7ad249120610f7481"
+      },
+      {
+        "file": "backup-manifest.json",
+        "sha256": "48efbcaf61b11067397b4f4c14eac05840e3b69995f69a7f09608f4177e73476"
+      },
+      {
+        "file": "backup-manifest.json.sha256",
+        "sha256": "89502fa188e82ea2f2cd025372ef8c08a48f1ef215e7e1443fd5aef61e1e9d9a"
+      }
+    ],
+    "after": {
+      "status": "completed",
+      "backupId": "daily-20260916T023330Z-9f55b03a3db0",
+      "backupDirectory": "D:\\teruisi-runtime\\django-sales\\backups\\postgres-daily\\daily-20260916T023330Z-9f55b03a3db0",
+      "manifestSha256": "8a70e843b5919991e9e9b3ce266775f6f8a9e6a58584a6d7354e5c4ac0cd36c6",
+      "dumpSha256": "3b37d54858652a1465791a1598aa64db55cacb790540d09d6915c3875c966863",
+      "contentSha256": "0ab40ccbc7a0072d29f01535b1642ca4f4edbf51c902e0815af46c6fc40a88c3",
+      "completedAt": "2026-09-16T02:35:22.5000291+00:00",
+      "serviceStateChanged": false
+    },
+    "afterVerify": {
+      "status": "completed",
+      "backupId": "daily-20260916T023330Z-9f55b03a3db0",
+      "manifestSha256": "8a70e843b5919991e9e9b3ce266775f6f8a9e6a58584a6d7354e5c4ac0cd36c6",
+      "dumpSha256": "3b37d54858652a1465791a1598aa64db55cacb790540d09d6915c3875c966863",
+      "contentSha256": "0ab40ccbc7a0072d29f01535b1642ca4f4edbf51c902e0815af46c6fc40a88c3",
+      "serviceStateChanged": false
+    },
+    "afterArchive": [
+      {
+        "file": "teruisi-sales.dump",
+        "sha256": "3b37d54858652a1465791a1598aa64db55cacb790540d09d6915c3875c966863"
+      },
+      {
+        "file": "backup-manifest.json",
+        "sha256": "8a70e843b5919991e9e9b3ce266775f6f8a9e6a58584a6d7354e5c4ac0cd36c6"
+      },
+      {
+        "file": "backup-manifest.json.sha256",
+        "sha256": "1509ad16ff7d83fd19e38beb6ef2b22d977c776035ed6002d4ba0dd653cc2ad8"
+      }
+    ],
+    "archiveRoot": "E:/运营管理系统业务数据",
+    "originalDBackupsRetained": true
+  },
+  "n8n": {
+    "restarted": false,
+    "manualReruns": false,
+    "executions": [
+      {
+        "id": 2452,
+        "status": "error",
+        "startedAt": "2026-09-16 02:00:00.422",
+        "stoppedAt": "2026-09-16 02:00:31.174"
+      },
+      {
+        "id": 2453,
+        "status": "error",
+        "startedAt": "2026-09-16 02:00:00.435",
+        "stoppedAt": "2026-09-16 02:00:21.078"
+      },
+      {
+        "id": 2454,
+        "status": "waiting",
+        "startedAt": "2026-09-16 02:00:21.164",
+        "stoppedAt": "2026-09-16 02:00:21.481"
+      },
+      {
+        "id": 2455,
+        "status": "error",
+        "startedAt": "2026-09-16 02:05:00.022",
+        "stoppedAt": "2026-09-16 02:05:13.387"
+      },
+      {
+        "id": 2456,
+        "status": "error",
+        "startedAt": "2026-09-16 02:10:00.014",
+        "stoppedAt": "2026-09-16 02:10:12.358"
+      },
+      {
+        "id": 2457,
+        "status": "success",
+        "startedAt": "2026-09-16 02:15:00.127",
+        "stoppedAt": "2026-09-16 02:15:24.328"
+      },
+      {
+        "id": 2458,
+        "status": "success",
+        "startedAt": "2026-09-16 02:20:00.899",
+        "stoppedAt": "2026-09-16 02:20:26.901"
+      },
+      {
+        "id": 2459,
+        "status": "error",
+        "startedAt": "2026-09-16 02:25:00.022",
+        "stoppedAt": "2026-09-16 02:25:23.746"
+      },
+      {
+        "id": 2460,
+        "status": "success",
+        "startedAt": "2026-09-16 02:30:00.919",
+        "stoppedAt": "2026-09-16 02:30:18.311"
+      },
+      {
+        "id": 2461,
+        "status": "success",
+        "startedAt": "2026-09-16 02:30:00.932",
+        "stoppedAt": "2026-09-16 02:31:09.697"
+      }
+    ],
+    "pendingExistingRetry": 2454,
+    "note": "10:00 JD execution 2453 failed during maintenance; its existing safe retry was still waiting. Later weekly checks and 10:30 market execution succeeded naturally."
+  },
+  "remaining": [
+    "Ranking P95 target 3s not met",
+    "Long-term memory growth not resolved by this release",
+    "Existing JD retry business completion not covered by deployment acceptance"
+  ],
+  "supplementalLogSha256": {
+    "tests.log": "a389508c6c4b1ff8dc1bfd77ef36c22ee172c29e0d8c8d087984ba5f58832d3f",
+    "sqlite.log": "f4ab52506fa08a7e873fe40720fca4f58c890d67dc824f4cefd52ad8207aad16",
+    "migrations.log": "93e6e2d5be3c054add80c0f19101608803f7ca8a7df1fa41f76bbb9a1f570f4a",
+    "old-regression.log": "5356cdb022ae426eeec360ebefd0f8ad1d2fcc47d6aff6ccc053c153482d99a8"
+  }
+}

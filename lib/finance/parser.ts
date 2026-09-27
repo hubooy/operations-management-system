@@ -7,6 +7,7 @@ import type {
   ParsedFinanceMonth,
   ParsedFinanceWorkbook,
 } from "./types";
+import type { FinanceCellOrigin, FinanceColumnEvidenceInput, FinanceHeaderCell } from "./column-evidence-v2";
 
 type CellValue = string | number | boolean | Date | null | undefined;
 type Dimension = {
@@ -206,7 +207,11 @@ function reconciliationWarnings(month: ParsedFinanceMonth): FinanceImportIssue[]
   return warnings;
 }
 
-function parseMonthSheet(sheetName: string, sheet: XLSX.WorkSheet): { month: ParsedFinanceMonth | null; warnings: FinanceImportIssue[] } {
+function parseMonthSheet(sheetName: string, sheet: XLSX.WorkSheet, captureOrigins = false): {
+  month: ParsedFinanceMonth | null;
+  warnings: FinanceImportIssue[];
+  evidenceInput?: FinanceColumnEvidenceInput;
+} {
   const rows = XLSX.utils.sheet_to_json<CellValue[]>(sheet, {
     header: 1,
     raw: true,
@@ -232,6 +237,7 @@ function parseMonthSheet(sheetName: string, sheet: XLSX.WorkSheet): { month: Par
   }
   const businessName = dimensions.find((item) => item.scopeType === "business")?.scopeName ?? "事业部汇总";
   const rawLines: FinanceLineInput[] = [];
+  const origins: FinanceCellOrigin[] | null = captureOrigins ? [] : null;
 
   for (let rowIndex = 1; rowIndex < kingdeeHeaderIndex; rowIndex += 1) {
     const subjectName = canonicalSubject(rows[rowIndex]?.[0]);
@@ -247,13 +253,17 @@ function parseMonthSheet(sheetName: string, sheet: XLSX.WorkSheet): { month: Par
         section: "summary",
         metricKey,
         subjectName,
-        ...dimension,
+        scopeKey: dimension.scopeKey,
+        scopeType: dimension.scopeType,
+        scopeName: dimension.scopeName,
+        groupName: dimension.groupName,
         valueType,
         ...stored,
         sourceRowCount: 1,
         sortOrder: rowIndex + 1,
         isTotal: /合计/.test(subjectName),
       });
+      origins?.push({ rowIndex, columnIndex: dimension.columnIndex });
     }
   }
 
@@ -269,13 +279,17 @@ function parseMonthSheet(sheetName: string, sheet: XLSX.WorkSheet): { month: Par
         section: "kingdee",
         metricKey: subjectName === "销售费用" ? "selling_expense_total" : `subject:${subjectName}`,
         subjectName,
-        ...dimension,
+        scopeKey: dimension.scopeKey,
+        scopeType: dimension.scopeType,
+        scopeName: dimension.scopeName,
+        groupName: dimension.groupName,
         valueType: "amount",
         ...toStoredValue(numeric, "amount"),
         sourceRowCount: 1,
         sortOrder: rowIndex + 1,
         isTotal: subjectName === "销售费用",
       });
+      origins?.push({ rowIndex, columnIndex: dimension.columnIndex });
     }
   }
 
@@ -292,10 +306,22 @@ function parseMonthSheet(sheetName: string, sheet: XLSX.WorkSheet): { month: Par
   // “销售费用” is the parent total. Once duplicate detail subjects have been
   // merged, calculate the parent from those children so it always reconciles.
   recalculateKingdeeTotals(lines);
-  return { month: parsed, warnings };
+  if (origins === null) return { month: parsed, warnings };
+  const lastColumn = Math.max(...dimensions.map(item => item.columnIndex));
+  const rawHeader = (value: CellValue): string | null => value === null || value === undefined ? null : String(value);
+  const headerCells: FinanceHeaderCell[] = Array.from({ length: lastColumn }, (_, offset) => {
+    const columnIndex = offset + 1;
+    return { columnIndex, rawGroupCell: rawHeader(rows[1]?.[columnIndex]),
+      rawShopCell: rawHeader(rows[2]?.[columnIndex]) };
+  });
+  return { month: parsed, warnings,
+    evidenceInput: { month, sheetName, dimensions, rawLines, origins, headerCells } };
 }
 
-export function parseFinanceWorkbook(input: ArrayBuffer | Uint8Array): ParsedFinanceWorkbook {
+function parseWorkbook(input: ArrayBuffer | Uint8Array, captureOrigins: boolean): {
+  parsed: ParsedFinanceWorkbook;
+  evidenceInputs: FinanceColumnEvidenceInput[];
+} {
   const bytes = input instanceof Uint8Array ? input : new Uint8Array(input);
   let workbook: XLSX.WorkBook;
   try {
@@ -313,10 +339,11 @@ export function parseFinanceWorkbook(input: ArrayBuffer | Uint8Array): ParsedFin
 
   const warnings: FinanceImportIssue[] = [];
   const months = new Map<string, ParsedFinanceMonth>();
+  const evidenceInputs = new Map<string, FinanceColumnEvidenceInput>();
   for (const sheetName of workbook.SheetNames) {
     const sheet = workbook.Sheets[sheetName];
     if (!sheet) continue;
-    const parsed = parseMonthSheet(sheetName, sheet);
+    const parsed = parseMonthSheet(sheetName, sheet, captureOrigins);
     warnings.push(...parsed.warnings);
     if (!parsed.month) continue;
     if (months.has(parsed.month.month)) {
@@ -329,14 +356,26 @@ export function parseFinanceWorkbook(input: ArrayBuffer | Uint8Array): ParsedFin
       continue;
     }
     months.set(parsed.month.month, parsed.month);
+    if (captureOrigins) {
+      if (!parsed.evidenceInput) throw new Error("财报聚合前来源格缺少完整原始坐标");
+      evidenceInputs.set(parsed.month.month, parsed.evidenceInput);
+    }
   }
 
   if (months.size === 0) {
     throw new Error("未识别到有效月度财报；工作表名称应类似“26.1”，且需要包含经营汇总和金蝶科目明细区");
   }
-  return {
-    months: [...months.values()].sort((left, right) => left.month.localeCompare(right.month)),
-    warnings,
-    sourceSheetCount: workbook.SheetNames.length,
-  };
+  const sorted = [...months.keys()].sort((left, right) => left.localeCompare(right));
+  return { parsed: { months: sorted.map(key => months.get(key)!), warnings,
+    sourceSheetCount: workbook.SheetNames.length },
+    evidenceInputs: captureOrigins ? sorted.map(key => evidenceInputs.get(key)!) : [] };
+}
+
+export function parseFinanceWorkbook(input: ArrayBuffer | Uint8Array): ParsedFinanceWorkbook {
+  return parseWorkbook(input, false).parsed;
+}
+
+/** Explicit opt-in raw coordinate material for the unregistered v2 candidate. */
+export function parseFinanceWorkbookWithColumnEvidence(input: ArrayBuffer | Uint8Array) {
+  return parseWorkbook(input, true);
 }

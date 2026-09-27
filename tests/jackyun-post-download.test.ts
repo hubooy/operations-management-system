@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
 import test from "node:test";
 import {
   assertComboRelationBaseline,
@@ -7,6 +8,7 @@ import {
 } from "../lib/jackyun/post-download";
 import { parseXlsxFirstSheet, type XlsxCellValue } from "../lib/imports/xlsx";
 import { parseInventoryStockXlsx } from "../lib/imports/inventory-stock";
+import { parseErpReferenceXlsx } from "../lib/imports/erp-reference";
 import { createXlsxWorkbookBytes } from "../lib/imports/xlsx-write";
 
 test("products validation keeps the original workbook and reports true data rows", () => {
@@ -40,7 +42,7 @@ test("products validation uses unique product codes as the expected batch row co
   assert.equal(prepared.validation.duplicateKeyRows, 1);
 });
 
-test("inventory processing removes the exact brush warehouse and non-positive costs", () => {
+test("inventory processing keeps explicit zero costs and removes invalid costs", () => {
   const workbook = createXlsxWorkbookBytes([{
     name: "sheetTitle",
     rows: [
@@ -55,18 +57,55 @@ test("inventory processing removes the exact brush warehouse and non-positive co
 
   const prepared = prepareJackyunWorkbook("inventory", workbook, { minimumRows: 1, snapshotDate: "2026-07-15" });
   assert.equal(prepared.validation.sourceRowCount, 5);
-  assert.equal(prepared.validation.importRowCount, 2);
+  assert.equal(prepared.validation.importRowCount, 3);
   assert.equal(prepared.preprocessing.excludedBrushWarehouseRows, 1);
-  assert.equal(prepared.preprocessing.excludedZeroCostRows, 2);
+  assert.equal(prepared.preprocessing.retainedZeroCostRows, 1);
+  assert.equal(prepared.preprocessing.excludedInvalidCostRows, 1);
+  assert.equal(prepared.preprocessing.excludedZeroCostRows, 0);
   assert.deepEqual(prepared.preprocessing.similarWarehouseNames, ["刷刷仓备用"]);
 
   const parsed = parseXlsxFirstSheet(prepared.importBytes);
-  assert.equal(parsed.rows.length, 3);
-  assert.deepEqual(parsed.rows.map((row) => row.cells[4]), ["仓库", "正常仓", "刷刷仓备用"]);
-  assert.deepEqual(parsed.rows.map((row) => row.cells[5]), ["固定成本价", 10, 12]);
+  assert.equal(parsed.rows.length, 4);
+  assert.deepEqual(parsed.rows.map((row) => row.cells[4]), ["仓库", "正常仓", "刷刷仓备用", "正常仓"]);
+  assert.deepEqual(parsed.rows.map((row) => row.cells[5]), ["固定成本价", 10, 12, 0]);
   const inventoryRows = parseInventoryStockXlsx(prepared.importBytes).rows;
   assert.equal(inventoryRows.length, prepared.expectedBatchRowCount);
-  assert.ok(inventoryRows.every((row) => row.unitCostCents > 0));
+  assert.ok(inventoryRows.every((row) => row.unitCostCents >= 0));
+  assert.equal(inventoryRows.find((row) => row.productCode === "SKU-4")?.unitCostCents, 0);
+});
+
+test("inventory parser accepts explicit zero cost but rejects a missing cost value", () => {
+  const workbook = createXlsxWorkbookBytes([{
+    name: "库存",
+    rows: [
+      ["货品编号", "货品名称", "仓库", "固定成本价", "库存数量"],
+      ["ZERO", "零成本货品", "主仓", 0, 2],
+      ["MISSING", "缺成本货品", "主仓", "", 3],
+    ],
+  }]);
+
+  const parsed = parseInventoryStockXlsx(workbook);
+  assert.deepEqual(parsed.rows.map((row) => [row.productCode, row.unitCostCents]), [["ZERO", 0]]);
+  assert.equal(parsed.errors[0]?.field, "unitCost");
+  assert.match(parsed.errors[0]?.message ?? "", /明确填写 0/);
+});
+
+test("inventory processing removes negative on-hand or available quantity and implausible value rows", () => {
+  const workbook = createXlsxWorkbookBytes([{
+    name: "sheetTitle",
+    rows: [
+      ["货品编号", "货品名称", "规格", "单位", "仓库", "固定成本价", "库存数量", "可用库存"],
+      ["SKU-1", "正常", "标准", "台", "主仓", 10, 3, 2],
+      ["SKU-2", "负实盘库存", "标准", "台", "主仓", 10, -1, 0],
+      ["SKU-3", "负可用库存", "标准", "台", "主仓", 10, 1, -1],
+      ["SKU-4", "异常占位", "标准", "台", "供应商仓", 20_000, 100_000, 100_000],
+    ],
+  }]);
+  const prepared = prepareJackyunWorkbook("inventory", workbook, { minimumRows: 1, snapshotDate: "2026-08-26" });
+  assert.equal(prepared.preprocessing.excludedNegativeQuantityRows, 2);
+  assert.equal(prepared.preprocessing.excludedImplausibleValueRows, 1);
+  assert.equal(prepared.preprocessing.retainedRows, 1);
+  assert.equal(prepared.expectedBatchRowCount, 1);
 });
 
 test("inventory row identity is stable when workbook rows are reordered", () => {
@@ -90,9 +129,47 @@ test("inventory row identity is stable when workbook rows are reordered", () => 
     Object.fromEntries(reordered.map((row) => [row.productCode, row.rowKey])),
   );
   assert.deepEqual(first.map((row) => row.rowKey).sort(), [
-    JSON.stringify(["正常仓", "P1"]),
-    JSON.stringify(["正常仓", "P2"]),
+    "正常仓\u001fP1",
+    "正常仓\u001fP2",
   ]);
+});
+
+test("inventory parser reads the Jikexyun specification supplier and controlled warehouse mapping", () => {
+  const workbook = createXlsxWorkbookBytes([{
+    name: "分仓库存查询",
+    rows: [
+      ["货品编号", "货品名称", "规格", "仓库", "规格默认供应商", "固定成本价", "库存数量"],
+      ["P1", "货品一", "标准", "一个小太阳仓", "供应商甲", 10, 5],
+      ["P2", "货品二", "标准", "ZA菜鸟华中武汉黄陂标准03仓", "供应商乙", 20, 6],
+    ],
+  }]);
+
+  const result = parseInventoryStockXlsx(workbook);
+  assert.equal(result.coverage.hasSupplier, true);
+  assert.equal(result.rows[0]?.supplier, "供应商甲");
+  assert.equal(result.rows[0]?.warehouseCategory, "dropship");
+  assert.equal(result.rows[0]?.includeInInventory, false);
+  assert.equal(result.rows[1]?.supplier, "供应商乙");
+  assert.equal(result.rows[1]?.warehouseCategory, "cainiao");
+  assert.equal(result.rows[1]?.includeInInventory, true);
+  assert.equal(result.totals.includedInventoryRowCount, 1);
+  assert.equal(result.totals.excludedInventoryRowCount, 1);
+});
+
+test("controlled warehouse mapping preserves the verified workbook coverage", async () => {
+  const mapping = JSON.parse(await readFile(new URL("../config/inventory-warehouse-mapping.json", import.meta.url), "utf8")) as {
+    sourceSha256: string;
+    warehouses: Record<string, { category: string; includeInInventory: boolean }>;
+  };
+  const entries = Object.values(mapping.warehouses);
+  const count = (category: string) => entries.filter((entry) => entry.category === category).length;
+
+  assert.equal(mapping.sourceSha256, "bb1cee9899e2a7c4f1d4c2aaa6a92fa3f1fc9253c9134c1be8ca62d617fdb923");
+  assert.equal(entries.length, 284);
+  assert.equal(count("dropship"), 220);
+  assert.equal(count("jd"), 45);
+  assert.equal(count("cainiao"), 3);
+  assert.equal(entries.filter((entry) => entry.includeInInventory).length, 66);
 });
 
 test("inventory age uses the same exact warehouse filter and required schema", () => {
@@ -110,7 +187,26 @@ test("inventory age uses the same exact warehouse filter and required schema", (
   assert.equal(prepared.expectedBatchRowCount, 1);
 });
 
-test("inventory validation applies the minimum row gate after warehouse and cost filtering", () => {
+test("inventory age removes implausible supplier placeholder stock values", () => {
+  const workbook = createXlsxWorkbookBytes([{
+    name: "sheetTitle",
+    rows: [
+      ["仓库", "货品编号", "货品名称", "库存数量", "固定成本价", "库龄(天)"],
+      ["主仓", "SKU-1", "正常库存", 3, 10, 20],
+      ["主仓", "SKU-0", "零成本库存", 2, 0, 20],
+      ["供应商仓", "SKU-2", "异常占位库存", 1_000_000, 20_000, 20],
+    ],
+  }]);
+
+  const prepared = prepareJackyunWorkbook("inventory_age", workbook, { minimumRows: 1, snapshotDate: "2026-07-15" });
+  assert.equal(prepared.preprocessing.excludedImplausibleValueRows, 1);
+  assert.equal(prepared.preprocessing.excludedZeroCostRows, 0);
+  assert.equal(prepared.preprocessing.retainedRows, 2);
+  assert.equal(prepared.expectedBatchRowCount, 2);
+  assert.equal(parseErpReferenceXlsx("inventory_age", prepared.importBytes).rows.length, 2);
+});
+
+test("inventory validation applies the minimum row gate after warehouse filtering", () => {
   const workbook = createXlsxWorkbookBytes([{
     name: "sheetTitle",
     rows: [

@@ -1,0 +1,51 @@
+{
+  "date": "2026-09-14",
+  "status": "validated_before_production",
+  "policy": {
+    "totalProcessMemoryCap": false,
+    "runtime": "workerd",
+    "oldSpaceMiB": 3072,
+    "parameter": "--max-old-space-size=3072"
+  },
+  "versions": {
+    "wrangler": "4.92.0",
+    "miniflare": "4.20260515.0",
+    "workerd": "1.20260515.1"
+  },
+  "adapterSha256": "2b2a89fb96a270e678b4aa87e65aa1282049b18d28a1e30ff7fe7f2736b648c7",
+  "tests": {
+    "diffCheck": "passed",
+    "unit": {
+      "total": 2183,
+      "skipped": 20,
+      "passed": 2163,
+      "failed": 0
+    },
+    "changedFilesEslint": "passed",
+    "focused": {
+      "passed": 8,
+      "failed": 0
+    },
+    "build": "passed",
+    "realIsolatedWorkerdConfig": "binary stdin contained exact 3072 flag; synthetic response succeeded",
+    "renderedHtml": {
+      "passed": 20,
+      "failed": 0
+    }
+  },
+  "initialRun": "One fixture missing adapter and one browser timeout; fixture updated, focused 8/8 and full unit rerun passed",
+  "preReleaseBackup": {
+    "backupId": "daily-20260914T095432Z-1ebee0e98715",
+    "manifestSha256": "1ca512f5d9422c3a12c01f3760008e9ea0035ca9071f49b6c70d2b863f751f61",
+    "restorePort": 55583,
+    "contentSha256": "a1e5ab3406ea05af1fe25fc3e5ad22a7f1a9892164a4422e5aea699ca2ce28d3",
+    "restore": "matched",
+    "restoreId": "e14a3b307214",
+    "productionDatabaseTouched": false
+  },
+  "limitations": [
+    "Does not resolve retained objects or recovery gap",
+    "No 3 GiB allocation pressure test; no production heap dump/debugger",
+    "V8 old-space cap is not RSS or shared budget"
+  ]
+}

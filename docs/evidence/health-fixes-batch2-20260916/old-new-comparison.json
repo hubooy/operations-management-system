@@ -1,0 +1,93 @@
+{
+  "rankingFullPayloadEqual": true,
+  "master1000FullPayloadEqual": true,
+  "records": [
+    {
+      "label": "ranking-old-{'page': 1, 'filters': None}",
+      "ms": 12171.617899999546,
+      "sqlCount": 24,
+      "sqlMs": 12151.837299999897,
+      "traceEnabled": false
+    },
+    {
+      "label": "ranking-new-{'page': 1, 'filters': None}",
+      "ms": 4547.670399995695,
+      "sqlCount": 17,
+      "sqlMs": 4535.089599994535,
+      "traceEnabled": false
+    },
+    {
+      "label": "ranking-old-{'page': 2, 'filters': None}",
+      "ms": 11978.728000001865,
+      "sqlCount": 24,
+      "sqlMs": 11963.129900010244,
+      "traceEnabled": false
+    },
+    {
+      "label": "ranking-new-{'page': 2, 'filters': None}",
+      "ms": 4487.231999999494,
+      "sqlCount": 17,
+      "sqlMs": 4476.026499985892,
+      "traceEnabled": false
+    },
+    {
+      "label": "ranking-old-{'page': 1, 'filters': {'priceBands': ['未确认价格']}}",
+      "ms": 13702.910200001497,
+      "sqlCount": 24,
+      "sqlMs": 13687.668100028532,
+      "traceEnabled": false
+    },
+    {
+      "label": "ranking-new-{'page': 1, 'filters': {'priceBands': ['未确认价格']}}",
+      "ms": 4203.116000004229,
+      "sqlCount": 17,
+      "sqlMs": 4191.694599991024,
+      "traceEnabled": false
+    },
+    {
+      "label": "ranking-old-{'page': 1, 'filters': {'startDate': '2026-08-01', 'endDate': '2026-08-31'}}",
+      "ms": 2728.44630000327,
+      "sqlCount": 24,
+      "sqlMs": 2711.214699971606,
+      "traceEnabled": false
+    },
+    {
+      "label": "ranking-new-{'page': 1, 'filters': {'startDate': '2026-08-01', 'endDate': '2026-08-31'}}",
+      "ms": 1266.2863000005018,
+      "sqlCount": 17,
+      "sqlMs": 1253.7317999886,
+      "traceEnabled": false
+    },
+    {
+      "label": "master-old-1000",
+      "ms": 4490.688300000329,
+      "sqlCount": 7001,
+      "sqlMs": 1932.0249996962957,
+      "traceEnabled": false
+    },
+    {
+      "label": "master-old-1000-traced",
+      "ms": 11636.063999998441,
+      "sqlCount": 7001,
+      "sqlMs": 2509.588500157406,
+      "traceEnabled": true,
+      "pythonPeakBytes": 3064475
+    },
+    {
+      "label": "master-new-1000",
+      "ms": 142.10230000026058,
+      "sqlCount": 10,
+      "sqlMs": 124.87159999000141,
+      "traceEnabled": false
+    },
+    {
+      "label": "master-new-1000-traced",
+      "ms": 160.74590000062017,
+      "sqlCount": 10,
+      "sqlMs": 78.22909999231342,
+      "traceEnabled": true,
+      "pythonPeakBytes": 401176
+    }
+  ],
+  "pairedSameDatabaseAndOriginalIndexes": true
+}

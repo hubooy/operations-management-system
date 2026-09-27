@@ -1,0 +1,81 @@
+{
+  "recordedAt": "2026-09-07T16:50:45.781Z",
+  "sourceCommit": "237427e409bbe68c96d601cf2af9ef4bd2801474",
+  "activation": {
+    "status": "activated",
+    "version": "teruisi-local-worker-release-successor-v1",
+    "planSha256": "d28687bcdc359cfdd8dce95706dcd4edcf9cbff5a81a27e9b910a7a4dfa9d419",
+    "predecessorReleaseId": "20260907T155257Z-d245b900df532959",
+    "releaseId": "20260907T164126Z-c0bafded45a318c6",
+    "manifestPath": "D:\\teruisi-runtime\\teruisi-worker-sales\\releases\\20260907T164126Z-c0bafded45a318c6\\deployment-manifest.json",
+    "manifestSha256": "efab585c7498fd18e1f586fe0255e9aa4108d175d15863a24b396864f7fcaf11",
+    "successorSha256": "8e3c3c2a370f2192202607183f7d2427bb67df0a44f93b9cb058eb8634c1d5af",
+    "consumptionSha256": "95f0845ca9fe80a253129c306d58b22f00e0821a83e51015f7973785c0950a38",
+    "startupBindingSha256": "00c33a62f73cb4c0fca6df2c8872d3c48a1c5af8beeae0a9c7076ded9f6ef997"
+  },
+  "status": {
+    "version": "teruisi-local-worker-status-v1",
+    "state": "exact_release",
+    "releaseId": "20260907T164126Z-c0bafded45a318c6",
+    "manifestSha256": "efab585c7498fd18e1f586fe0255e9aa4108d175d15863a24b396864f7fcaf11",
+    "supervisorProcessId": 36376,
+    "portProcessId": 38484,
+    "reason": null
+  },
+  "startup": {
+    "status": "verified",
+    "version": "teruisi-local-worker-status-v1",
+    "releaseId": "20260907T164126Z-c0bafded45a318c6",
+    "manifestSha256": "efab585c7498fd18e1f586fe0255e9aa4108d175d15863a24b396864f7fcaf11",
+    "startupVerified": true
+  },
+  "workflow": {
+    "verifiedAt": "2026-09-07T16:47:30.678Z",
+    "workflowId": "J8kY2mQ5vR7sT4pN",
+    "versionId": "bfc65dde-b3c5-41c8-8fd9-592bc678ffb8",
+    "nodeCount": 11,
+    "active": false,
+    "definitionVerified": true,
+    "ownerPreserved": true,
+    "candidateSha256": "012cb0423002a0b0f11a6e316de8cd6f57a5d9c77efcf7fe0d312ae225d9947f"
+  },
+  "service": {
+    "verifiedAt": "2026-09-07T16:48:19.811Z",
+    "readiness": "ready",
+    "unavailableServices": [],
+    "helper": {
+      "stage": "ready",
+      "busy": false,
+      "activeWorkflow": null,
+      "jackyunProfile": "ready"
+    },
+    "httpPlanGuard": {
+      "status": 409,
+      "error": "missing_or_invalid_execution_id"
+    },
+    "djangoListenersUnchanged": 24
+  },
+  "validation": {
+    "unit": {
+      "passed": 1979,
+      "skipped": 20,
+      "failed": 0
+    },
+    "renderedPassed": 20,
+    "jackyunFocusedPassed": 184,
+    "latestSharedChecksPassed": 36,
+    "workflowUiChecksPassed": 8,
+    "lintErrors": 0,
+    "existingLintWarnings": 9,
+    "existingTypeDiagnostics": 142,
+    "typeBaselineDifference": 0,
+    "backendModulesChecked": 383,
+    "backendViolations": 0,
+    "acceptanceRunId": "http-acceptance-1788793857188",
+    "fiveHttpDownloadsAndLocalDryRunPassed": true
+  },
+  "productionBusinessExecutionStarted": false,
+  "productionBusinessDataImported": false,
+  "databaseMigrationsApplied": false,
+  "evidenceRoot": "D:/codex-artifacts/jackyun-http-release-20260907/"
+}

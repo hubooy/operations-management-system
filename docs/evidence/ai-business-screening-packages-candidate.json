@@ -1,0 +1,17 @@
+{
+  "date": "2026-09-17",
+  "branch": "codex/ai-business-analysis-stages",
+  "baseCommit": "a5d1dd5a",
+  "batch": 37,
+  "status": "candidate_internal_lossless_role_packages",
+  "verification": {
+    "pure": {"passed": 63, "seconds": 12.460, "newPackageTests": 15, "suites": ["business_analysis.test_screening_package", "business_analysis.test_screening_storage", "business_analysis.test_screening_plan", "business_analysis.test_diagnostic_screening"]},
+    "postgres": {"passed": 8, "seconds": 32.839, "port": 55485, "log": ".runtime/ai-pg-014c034a2f3f/tests.log", "suite": "ai_assistant.test_business_screening_packages", "actualSealedScreenedPublishedReadPath": true, "factRescanDuringPackageReads": false},
+    "independentReview": {"packageTestsPassed": 15, "rejectedTamperProbes": 6, "remainingBlockers": 0, "fixedBeforeAcceptance": ["Internal raw mutation with cached package digest", "Boolean and decimal values accepted as counts by Python equality"]},
+    "transportProbe": {"log": ".runtime/screening-package-transport-evidence.json", "actualProviderToolFrames": true, "protocols": ["openai_compatible", "anthropic"], "callIdCharacters": 160, "partitions": 55, "small": {"retainedCandidates": 90, "rolePages": {"commerce": 4, "promotion": 3, "market_b2b": 3, "independent_review": 4, "report": 4}, "reportPageBytes": 127895, "reportToolFrameBytes": 148109}, "large": {"retainedCandidates": 720, "reportPages": 12, "reportToolFrameBytes": 486004, "mustRejectUnderCurrentLimits": true}, "notIncluded": ["system and node instructions", "workflow reference", "dependency outputs", "budget pages", "model token estimate", "optional drill-down"], "runtimeAdmissionGranted": false},
+    "diffCheck": true
+  },
+  "behavior": ["Every role retains all source metadata and global coverage, counts and gaps", "Role candidate selection derives from exact verified source and table binding", "Fixed column and constant dictionaries reconstruct original required records exactly", "100 records and 38000 UTF-8 bytes with deterministic full-prefix pagination", "Exact page chain and full digest with strict counts and indices", "Owner and scope checked before and after reads", "No original fact scan, business query, new persistence or model call during package reading"],
+  "remaining": ["Complete graph and model capacity admission", "Versioned runtime profile and tool registration", "Actual job-role binding and separate Agent receipts", "Candidate diagnosis and same-evidence HTML/XLSX integration", "Real model quality and representative scale acceptance"],
+  "operations": {"productionBusinessReads": false, "productionWrites": false, "migration": false, "deployment": false, "serviceRestart": false, "paidModelCalls": false, "externalMessages": false}
+}

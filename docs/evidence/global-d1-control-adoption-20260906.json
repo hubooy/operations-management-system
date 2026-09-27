@@ -1,0 +1,505 @@
+{
+  "version": "teruisi-global-d1-control-adoption-evidence-v1",
+  "verifiedAt": "2026-09-06T04:23:18.094Z",
+  "scope": "current Windows host only",
+  "status": "adopted",
+  "sourceCommit": "175c2687328bef491aeca2c32188ae387932ed1b",
+  "pullRequests": [
+    10,
+    11
+  ],
+  "worker": {
+    "status": "activated",
+    "version": "teruisi-local-worker-release-successor-v1",
+    "planSha256": "fb69313b8ebb86de684d3340e464b69e6bd84c032660e4a7b44415fc9fbc5745",
+    "predecessorReleaseId": "20260905T180043Z-7364a22437c52ae1",
+    "releaseId": "20260906T035823Z-fceee410b71f79b0",
+    "manifestPath": "D:\\teruisi-runtime\\teruisi-worker-sales\\releases\\20260906T035823Z-fceee410b71f79b0\\deployment-manifest.json",
+    "manifestSha256": "ab44b00f096534c97651108c4bb75ea6d9343eb1d6d66f3f96a3b043dd3ea492",
+    "successorSha256": "93cf0f2ddeaba1fb63da5783d0c218f241808360a04fb3e0e66d5cb0c3c8f0a4",
+    "consumptionSha256": "aaaf136cefefe065a73d58025aa7446a294a7c28b6a69cf89355750af6977b17",
+    "startupBindingSha256": "d74f8df56644e627fcca1db904c6e2ad4e5f0734424fbdc167d1d23a7deb9068",
+    "sourceFingerprint": "699d528ffbefd22e272fd60be6d1a434b0474010cd437a80828f27aabd73fe8d",
+    "buildFingerprint": "d2e7f926e6416b7cc30d8e4d09a5acd4a35a7841e0bba0922c88da2a1a63fb8e",
+    "retirementProofSha256": "24503a096bb6649b4d4f0988ccfaab9924100232129daa13f70edf78e1f22c52",
+    "retirementReceiptSha256": "5ba0a27c31e629ca1c1642c6d6543fff1ba11f904d549b444cea4d9ff4b2f1a8",
+    "sourceSchemaSha256": "7b6a241ad508a86b630aa6f82b01b2f43339b92b2f9e7c529685531da47e8de5",
+    "postgresEvidenceSha256": "c7904a18e2f95e1440eb22512e1c573f072c3a9b2c5f8ffc2eb885ab80bb64cb",
+    "retiredUnits": 12,
+    "d1Bindings": 0,
+    "r2Bindings": [
+      "SALES_IMPORT_FILES"
+    ]
+  },
+  "django": {
+    "deploymentManifestSha256": "28587a32ef44290b974f3dc4af5cec01d4583c8da2cb3b02d91943e1bdab4114",
+    "aggregate": {
+      "Version": "teruisi-django-aggregate-status-v1",
+      "Core": {
+        "PostgreSQL": "running",
+        "DjangoReader": "running",
+        "DjangoWriter": "running",
+        "ReaderReadiness": "ready",
+        "WriterReadiness": "ready",
+        "RuntimeAcl": "not_hardened",
+        "RuntimeAclVerification": "root_only_status",
+        "Startup": "installed",
+        "CheckedAt": "2026-09-06T04:23:05.4962390+00:00"
+      },
+      "Finance": {
+        "FinanceReader": "running",
+        "FinanceWriter": "running",
+        "ReaderReadiness": "ready",
+        "WriterReadiness": "ready",
+        "PostgreSQLAuthority": "unknown",
+        "CheckedAt": "2026-09-06T04:23:06.3053792+00:00"
+      },
+      "Netshop": {
+        "NetshopReader": "running",
+        "NetshopWriter": "running",
+        "ReaderReadiness": "ready",
+        "WriterReadiness": "ready",
+        "CheckedAt": "2026-09-06T04:23:07.0946274+00:00"
+      },
+      "Market": {
+        "MarketReader": "running",
+        "MarketWriter": "running",
+        "ReaderReadiness": "ready",
+        "WriterReadiness": "ready",
+        "CheckedAt": "2026-09-06T04:23:07.6958859+00:00"
+      },
+      "Products": {
+        "ProductsReader": "running",
+        "ProductsWriter": "running",
+        "ReaderReadiness": "ready",
+        "WriterReadiness": "ready",
+        "CheckedAt": "2026-09-06T04:23:08.6892984+00:00"
+      },
+      "Inventory": {
+        "InventoryReader": "running",
+        "InventoryWriter": "running",
+        "ReaderReadiness": "ready",
+        "WriterReadiness": "ready",
+        "CheckedAt": "2026-09-06T04:23:10.2101017+00:00"
+      },
+      "Workflow": {
+        "WorkflowReader": "running",
+        "WorkflowWriter": "running",
+        "ReaderReadiness": "ready",
+        "WriterReadiness": "ready",
+        "CheckedAt": "2026-09-06T04:23:10.9964257+00:00"
+      },
+      "CustomerService": {
+        "CustomerServiceReader": "running",
+        "CustomerServiceWriter": "running",
+        "ReaderReadiness": "ready",
+        "WriterReadiness": "ready",
+        "CheckedAt": "2026-09-06T04:23:11.5685229+00:00"
+      },
+      "AccessControl": {
+        "AccessControlReader": "running",
+        "AccessControlWriter": "running",
+        "ReaderReadiness": "ready",
+        "WriterReadiness": "ready",
+        "CheckedAt": "2026-09-06T04:23:12.2314712+00:00"
+      },
+      "Ai": {
+        "AiReader": "running",
+        "AiWriter": "running",
+        "ReaderReadiness": "ready",
+        "WriterReadiness": "ready",
+        "CheckedAt": "2026-09-06T04:23:14.1816240+00:00"
+      },
+      "ErpReference": {
+        "ErpReferenceReader": "running",
+        "ErpReferenceWriter": "running",
+        "ReaderReadiness": "ready",
+        "WriterReadiness": "ready",
+        "CheckedAt": "2026-09-06T04:23:13.7261571+00:00"
+      },
+      "Bi": {
+        "BiReader": "running",
+        "ReaderReadiness": "ready",
+        "CheckedAt": "2026-09-06T04:23:14.9815350+00:00"
+      },
+      "ElapsedMilliseconds": 13233,
+      "CheckedAt": "2026-09-06T04:23:14.9865371+00:00"
+    },
+    "readyServices": 23,
+    "supervisor": {
+      "status": "completed",
+      "desiredState": "running",
+      "supervisorProcess": "running",
+      "health": "healthy",
+      "code": "all_components_ready",
+      "lastHealthyAt": "2026-09-06T04:22:08.1651807+00:00",
+      "restartAttemptsInWindow": 0,
+      "pendingAlertCount": 14,
+      "serviceStateChanged": false
+    },
+    "startup": {
+      "checkedAt": "2026-09-06T04:24:52.1843769+00:00",
+      "workingDirectoryExact": true,
+      "status": "verified",
+      "supervisorStartup": true,
+      "target": "Windows PowerShell 5",
+      "argumentsExact": true
+    }
+  },
+  "system": {
+    "version": "teruisi-operations-system-control-v2",
+    "state": "Running",
+    "backendState": "Ready",
+    "workerState": "exact_release",
+    "releaseId": "20260906T035823Z-fceee410b71f79b0",
+    "supervisorProcessId": 25936,
+    "portProcessId": 3340,
+    "url": "http://localhost:3000/",
+    "reason": null,
+    "components": {
+      "core": true,
+      "finance": true,
+      "netshop": true,
+      "market": true,
+      "products": true,
+      "workflow": true,
+      "inventory": true,
+      "customerService": true,
+      "accessControl": true,
+      "erpReference": true,
+      "bi": true,
+      "ai": true
+    },
+    "checkedAt": "2026-09-06T12:23:01.3182256+08:00"
+  },
+  "startup": {
+    "status": "verified",
+    "version": "teruisi-local-worker-status-v1",
+    "releaseId": "20260906T035823Z-fceee410b71f79b0",
+    "manifestSha256": "ab44b00f096534c97651108c4bb75ea6d9343eb1d6d66f3f96a3b043dd3ea492",
+    "startupVerified": true
+  },
+  "helper": {
+    "ok": true,
+    "busy": false,
+    "stage": "ready"
+  },
+  "predecessorRejection": {
+    "releaseId": "20260905T180043Z-7364a22437c52ae1",
+    "operation": "read-only Verify",
+    "exitCode": 1,
+    "message": "ManifestPath is not the authorized effective head release"
+  },
+  "http": {
+    "version": "teruisi-global-d1-production-http-acceptance-v1",
+    "startedAt": "2026-09-06T04:15:11.709Z",
+    "source": "authorized_local_read_only_api_fallback_mcp_unavailable",
+    "businessWrites": false,
+    "checks": [
+      {
+        "route": "/api/auth/me",
+        "base": "http://127.0.0.1:3000",
+        "status": 200,
+        "expectedStatus": 200,
+        "elapsedMs": 22,
+        "responseBytes": 141,
+        "responseSha256": "9a3aa2c50e6b02cafcec26041ab40e68830fa971ec289867af408da6a02120d2"
+      },
+      {
+        "route": "/api/sales/data-health",
+        "base": "http://127.0.0.1:3000",
+        "status": 200,
+        "expectedStatus": 200,
+        "elapsedMs": 62,
+        "responseBytes": 620,
+        "responseSha256": "37835c2a08d1b5e9aa02ab6974c9d1db1cd50525d66ab9af7dfd3141f1879fd8"
+      },
+      {
+        "route": "/_teruisi/local/health/live",
+        "base": "http://127.0.0.1:3000",
+        "status": 200,
+        "expectedStatus": 200,
+        "elapsedMs": 9,
+        "responseBytes": 27,
+        "responseSha256": "6191c1f860b8a0225c697e46ebce756193dfb18c189218cfe742037501da05eb"
+      },
+      {
+        "route": "/_teruisi/local/health/ready",
+        "base": "http://127.0.0.1:3000",
+        "status": 200,
+        "expectedStatus": 200,
+        "elapsedMs": 1917,
+        "responseBytes": 83,
+        "responseSha256": "fcf5dce03d916e101db4a3c420027b93d65df5f2bf6e9b136ef13088693eee21"
+      },
+      {
+        "route": "/",
+        "base": "http://127.0.0.1:3000",
+        "status": 200,
+        "expectedStatus": 200,
+        "elapsedMs": 17,
+        "responseBytes": 16335,
+        "responseSha256": "0cffdb019519a2c0626d02df6d6bb7602bab0c005e46e3b01fcbf51bdc9913c9"
+      },
+      {
+        "route": "/api/finance/targets?view=items&pageSize=1",
+        "base": "http://127.0.0.1:3000",
+        "status": 200,
+        "expectedStatus": 200,
+        "elapsedMs": 58,
+        "responseBytes": 90,
+        "responseSha256": "3bd027447ab4da0ccb511181b12f036d076deef55a768a736d3aae76629d8225"
+      },
+      {
+        "route": "/api/finance/targets?view=options",
+        "base": "http://127.0.0.1:3000",
+        "status": 200,
+        "expectedStatus": 200,
+        "elapsedMs": 116,
+        "responseBytes": 6782,
+        "responseSha256": "06fa7ae9c931ce22bbde9c51ca9c2fc78d95df43169e0a070206402f0936a1a3"
+      },
+      {
+        "route": "/api/imports/finance?pageSize=1",
+        "base": "http://127.0.0.1:3000",
+        "status": 200,
+        "expectedStatus": 200,
+        "elapsedMs": 81,
+        "responseBytes": 5100,
+        "responseSha256": "ac8308ab66149a6fc82a859c0b5570e9c5697c196f6bdeb4513a7e8945ff4523"
+      },
+      {
+        "route": "/api/market/annotations?view=workspace_fast",
+        "base": "http://127.0.0.1:3000",
+        "status": 200,
+        "expectedStatus": 200,
+        "elapsedMs": 578,
+        "responseBytes": 41889,
+        "responseSha256": "df22fc4411942887b7521acc769b4b396532407bf7e26397f0140f9c6810e0d7"
+      },
+      {
+        "route": "/api/ai/models",
+        "base": "http://127.0.0.1:3000",
+        "status": 200,
+        "expectedStatus": 200,
+        "elapsedMs": 23,
+        "responseBytes": 2450,
+        "responseSha256": "669186331cac1278f79dd3a967197c357f4ad0d803f4a92377f90eaef3f12b80"
+      },
+      {
+        "route": "/api/netshop/products?pageSize=1",
+        "base": "http://127.0.0.1:3000",
+        "status": 200,
+        "expectedStatus": 200,
+        "elapsedMs": 519,
+        "responseBytes": 3759,
+        "responseSha256": "c517a379207472930117c22f3037359724bc631be8d6b04f4934a80817e71e18"
+      },
+      {
+        "route": "/api/products/summary?pageSize=1",
+        "base": "http://127.0.0.1:3000",
+        "status": 200,
+        "expectedStatus": 200,
+        "elapsedMs": 1262,
+        "responseBytes": 5961,
+        "responseSha256": "d132ecb2f6d69942c4ab3c9e30c63926a7e97eb9a4fb587a2762e11ee57a995e"
+      },
+      {
+        "route": "/api/inventory/overview?pageSize=1",
+        "base": "http://127.0.0.1:3000",
+        "status": 200,
+        "expectedStatus": 200,
+        "elapsedMs": 1348,
+        "responseBytes": 138967,
+        "responseSha256": "622e856ac48f55dad9c54c2e3a279034cba388330ded6b0fa9faf5f8af7798cc"
+      },
+      {
+        "route": "/api/customer-service/conversations?pageSize=1",
+        "base": "http://127.0.0.1:3000",
+        "status": 200,
+        "expectedStatus": 200,
+        "elapsedMs": 321,
+        "responseBytes": 12405,
+        "responseSha256": "61afd2c41385307913e7fc9169c4288d9597721bf0ee8753529311bb7f6c131b"
+      },
+      {
+        "route": "/api/search?q=d1-retirement-verification&group=products&pageSize=1",
+        "base": "http://127.0.0.1:3000",
+        "status": 200,
+        "expectedStatus": 200,
+        "elapsedMs": 197,
+        "responseBytes": 1003,
+        "responseSha256": "c1e95b509e92efec6f55b564f4d7a2eb4f2f92f6111aef9221c5ee058c6df568"
+      },
+      {
+        "route": "/api/finance/targets?view=invalid",
+        "base": "http://127.0.0.1:3000",
+        "status": 400,
+        "expectedStatus": 400,
+        "elapsedMs": 10,
+        "responseBytes": 85,
+        "responseSha256": "a16fba39a5ed85b36315d1e6d5e7171ed528d7c9d3342dd406d83ca323c41269"
+      },
+      {
+        "route": "/api/search?q=test&group=invalid",
+        "base": "http://127.0.0.1:3000",
+        "status": 400,
+        "expectedStatus": 400,
+        "elapsedMs": 15,
+        "responseBytes": 73,
+        "responseSha256": "39a381406385359d72b476e3f52c6f19f74219b7e2e5117e2968930767cf411c"
+      },
+      {
+        "route": "/api/finance/targets?view=items",
+        "base": "http://127.0.0.1:8011",
+        "status": 401,
+        "expectedStatus": 401,
+        "elapsedMs": 3,
+        "responseBytes": 72,
+        "responseSha256": "09c50a596d7b47a823265cffcfd788c88370d46109e2d71a7b99a2a6956e4ac2"
+      },
+      {
+        "route": "unknown-host",
+        "base": "http://127.0.0.1:3000",
+        "status": 404,
+        "expectedStatus": 404,
+        "elapsedMs": 12,
+        "responseBytes": 0,
+        "responseSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    ],
+    "principal": {
+      "role": "admin",
+      "scopeRestricted": false
+    },
+    "freshness": {
+      "source": "django_postgresql",
+      "authority": "sales_single_write",
+      "revision": "14:10",
+      "currentBusinessDate": "2026-09-06",
+      "cutoffDate": "2026-09-03"
+    },
+    "readiness": {
+      "ok": true,
+      "backend": "django-postgresql",
+      "unavailableServices": [],
+      "status": "ready"
+    },
+    "harnessNote": "Unknown Host uses node:http to send the literal Host header; Node fetch normalizes it.",
+    "status": "passed",
+    "completedAt": "2026-09-06T04:15:18.284Z"
+  },
+  "mirrorEvidence": "global-d1-control-mirror-20260906.json",
+  "additionalEncodingRegression": {
+    "passed": 1,
+    "failed": 0,
+    "parser": "Windows PowerShell 5",
+    "scope": "all tools/*.ps1 parse without execution"
+  },
+  "preReleaseRestore": {
+    "version": "teruisi-postgres-restore-rehearsal-v1",
+    "status": "completed",
+    "rehearsalId": "386a2f901c57",
+    "startedAt": "2026-09-06T03:41:41.6295997+00:00",
+    "completedAt": "2026-09-06T03:45:36.4152496+00:00",
+    "backupId": "daily-20260906T033825Z-b37cade931d1",
+    "backupManifestSha256": "158ec9f328064166a6a0b57aae0476e253c18cfd612ed0a2e77144ab24e67cfc",
+    "dumpSha256": "b7725639726102d9842b378056cc1ffb956c85ab2ac5562bbd12ba447f68564a",
+    "expectedContentSha256": "8aa537624ba17b1b2d5a2ad2f10dcffbfcfe570ad8a34faf82aa14efbb83dd30",
+    "restoredContentSha256": "8aa537624ba17b1b2d5a2ad2f10dcffbfcfe570ad8a34faf82aa14efbb83dd30",
+    "isolatedPort": 55432,
+    "productionDatabaseTouched": false,
+    "serviceStateChanged": false,
+    "cleanupStatus": "isolated_data_removed"
+  },
+  "postReleaseBackup": {
+    "backupId": "daily-20260906T041413Z-b507264145c7",
+    "manifestSha256": "4d594ab01480efb2c7f3d4c9e9a179fd09a5a6ee08f204b50594dc5e2d5d67ac",
+    "dumpSha256": "4a3264ab2e7126cf8b1ad72ea914d0b6907b82e58d984a516aefd00c042b3e64",
+    "contentSha256": "39b96e002df005e072684276529ffad085e5a1f8e6bf885377e5c6a778647af4",
+    "completedAt": "2026-09-06T04:15:36.3100759+00:00",
+    "backupStatus": "completed",
+    "verifyStatus": "completed",
+    "serviceStateChanged": false
+  },
+  "postReleaseRestore": {
+    "version": "teruisi-postgres-restore-rehearsal-v1",
+    "status": "completed",
+    "rehearsalId": "260906d1a001",
+    "startedAt": "2026-09-06T04:18:00.2162733+00:00",
+    "completedAt": "2026-09-06T04:21:55.0843933+00:00",
+    "backupId": "daily-20260906T041413Z-b507264145c7",
+    "backupManifestSha256": "4d594ab01480efb2c7f3d4c9e9a179fd09a5a6ee08f204b50594dc5e2d5d67ac",
+    "dumpSha256": "4a3264ab2e7126cf8b1ad72ea914d0b6907b82e58d984a516aefd00c042b3e64",
+    "expectedContentSha256": "39b96e002df005e072684276529ffad085e5a1f8e6bf885377e5c6a778647af4",
+    "restoredContentSha256": "39b96e002df005e072684276529ffad085e5a1f8e6bf885377e5c6a778647af4",
+    "isolatedPort": 55432,
+    "productionDatabaseTouched": false,
+    "serviceStateChanged": false,
+    "cleanupStatus": "isolated_data_removed"
+  },
+  "backupComparison": {
+    "authorityAndRevisionEvidenceUnchanged": true,
+    "changedFields": [
+      "canonicalSha256",
+      "contentSha256",
+      "tables"
+    ],
+    "tableCountChanges": [
+      {
+        "table": "market_image_cache",
+        "before": 43856,
+        "after": 43867
+      },
+      {
+        "table": "market_write_request_receipts",
+        "before": 17344,
+        "after": 17415
+      }
+    ],
+    "explanation": "Existing online market cache and request receipts advanced; each restore matches its own exported-snapshot backup."
+  },
+  "limitations": {
+    "fullTypescriptCheckPassed": false,
+    "existingTypeScriptDiagnostics": 141,
+    "introducedDiagnostics": 0,
+    "productionFailureInjection": false,
+    "productionD1MovedOrDeleted": false,
+    "remoteDeploymentOrD1Deletion": false,
+    "r2PicturesAndAttachmentsRetained": true
+  },
+  "privateMirrorCleanup": {
+    "version": "teruisi-private-mirror-data-cleanup-v1",
+    "completedAt": "2026-09-06T04:24:18.2635415+00:00",
+    "status": "completed",
+    "productionTouched": false,
+    "formalBackupsTouched": false,
+    "evidenceAndLogsRetained": true,
+    "targets": [
+      {
+        "runId": "9a70ef473b21",
+        "path": "D:\\operations-global-d1-retirement\\.runtime\\global-d1-mirror-9a70ef473b21\\data",
+        "fileCount": 3004,
+        "bytes": 9372444560
+      },
+      {
+        "runId": "92b630acf715",
+        "path": "D:\\operations-global-d1-retirement\\.runtime\\global-d1-mirror-92b630acf715\\data",
+        "fileCount": 3004,
+        "bytes": 9372444560
+      },
+      {
+        "runId": "97eab62843f0",
+        "path": "D:\\operations-global-d1-retirement\\.runtime\\global-d1-mirror-97eab62843f0\\data",
+        "fileCount": 3230,
+        "bytes": 12594402292
+      },
+      {
+        "runId": "b83d740e16fa",
+        "path": "D:\\operations-global-d1-retirement\\.runtime\\global-d1-mirror-b83d740e16fa\\data",
+        "fileCount": 3202,
+        "bytes": 12594517327
+      }
+    ]
+  }
+}

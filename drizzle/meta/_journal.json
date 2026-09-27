@@ -400,6 +400,244 @@
       "when": 1786003200000,
       "tag": "0056_import_content_fingerprints",
       "breakpoints": true
+    },
+    {
+      "idx": 57,
+      "version": "6",
+      "when": 1786176000000,
+      "tag": "0057_market_annotation_cloud_runner",
+      "breakpoints": true
+    },
+    {
+      "idx": 58,
+      "version": "6",
+      "when": 1787184000000,
+      "tag": "0058_workflow_collaboration",
+      "breakpoints": true
+    },
+    {
+      "idx": 59,
+      "version": "6",
+      "when": 1787187600000,
+      "tag": "0059_workflow_operations_records",
+      "breakpoints": true
+    },
+    {
+      "idx": 60,
+      "version": "6",
+      "when": 1787194055631,
+      "tag": "0060_market_netshop_query_safety",
+      "breakpoints": true
+    },
+    {
+      "idx": 61,
+      "version": "6",
+      "when": 1787198400000,
+      "tag": "0061_customer_finance_optimistic_concurrency",
+      "breakpoints": true
+    },
+    {
+      "idx": 62,
+      "version": "6",
+      "when": 1787202000000,
+      "tag": "0062_ai_conversation_deletion_audit",
+      "breakpoints": true
+    },
+    {
+      "idx": 63,
+      "version": "6",
+      "when": 1787205600000,
+      "tag": "0063_ai_conversation_scope_snapshots",
+      "breakpoints": true
+    },
+    {
+      "idx": 64,
+      "version": "6",
+      "when": 1787329800000,
+      "tag": "0064_sales_overview_response_cache",
+      "breakpoints": true
+    },
+    {
+      "idx": 65,
+      "version": "6",
+      "when": 1787418000000,
+      "tag": "0066_market_annotation_runnable_work",
+      "breakpoints": true
+    },
+    {
+      "idx": 66,
+      "version": "6",
+      "when": 1787421600000,
+      "tag": "0067_netshop_promotion_daily_aggregates",
+      "breakpoints": true
+    },
+    {
+      "idx": 67,
+      "version": "6",
+      "when": 1787500800000,
+      "tag": "0068_netshop_product_assets",
+      "breakpoints": true
+    },
+    {
+      "idx": 68,
+      "version": "6",
+      "when": 1787587200000,
+      "tag": "0069_market_image_cache_background_jobs",
+      "breakpoints": true
+    },
+    {
+      "idx": 69,
+      "version": "6",
+      "when": 1787590800000,
+      "tag": "0070_netshop_promotion_aggregate_manifest",
+      "breakpoints": true
+    },
+    {
+      "idx": 70,
+      "version": "6",
+      "when": 1787594400000,
+      "tag": "0071_netshop_promotion_snapshot_fence",
+      "breakpoints": true
+    },
+    {
+      "idx": 71,
+      "version": "6",
+      "when": 1787598000000,
+      "tag": "0072_market_image_cache_propagation_indexes",
+      "breakpoints": true
+    },
+    {
+      "idx": 72,
+      "version": "6",
+      "when": 1787601600000,
+      "tag": "0073_netshop_product_daily_revision",
+      "breakpoints": true
+    },
+    {
+      "idx": 73,
+      "version": "6",
+      "when": 1787605200000,
+      "tag": "0074_netshop_promotion_maintenance_fence",
+      "breakpoints": true
+    },
+    {
+      "idx": 74,
+      "version": "6",
+      "when": 1787608800000,
+      "tag": "0075_market_system_kpi_cache",
+      "breakpoints": true
+    },
+    {
+      "idx": 75,
+      "version": "6",
+      "when": 1787612400000,
+      "tag": "0076_netshop_product_query_projections",
+      "breakpoints": true
+    },
+    {
+      "idx": 76,
+      "version": "6",
+      "when": 1787616000000,
+      "tag": "0077_market_import_identity_refresh_keys",
+      "breakpoints": true
+    },
+    {
+      "idx": 77,
+      "version": "6",
+      "when": 1787619600000,
+      "tag": "0078_customer_service_online_spec_index",
+      "breakpoints": true
+    },
+    {
+      "idx": 78,
+      "version": "6",
+      "when": 1787623200000,
+      "tag": "0079_market_overview_exact_revision",
+      "breakpoints": true
+    },
+    {
+      "idx": 79,
+      "version": "6",
+      "when": 1787626800000,
+      "tag": "0080_market_effective_metrics_exact_netshop_scope",
+      "breakpoints": true
+    },
+    {
+      "idx": 80,
+      "version": "6",
+      "when": 1787630400000,
+      "tag": "0081_market_master_database_filters_cache",
+      "breakpoints": true
+    },
+    {
+      "idx": 81,
+      "version": "6",
+      "when": 1787634000000,
+      "tag": "0082_ai_space",
+      "breakpoints": true
+    },
+    {
+      "idx": 82,
+      "version": "6",
+      "when": 1787637600000,
+      "tag": "0083_ai_chat_idempotency",
+      "breakpoints": true
+    },
+    {
+      "idx": 83,
+      "version": "6",
+      "when": 1787641200000,
+      "tag": "0084_ai_memory",
+      "breakpoints": true
+    },
+    {
+      "idx": 84,
+      "version": "6",
+      "when": 1787644800000,
+      "tag": "0085_ai_analysis_sandbox",
+      "breakpoints": true
+    },
+    {
+      "idx": 85,
+      "version": "6",
+      "when": 1787648400000,
+      "tag": "0086_ai_agent_workflows",
+      "breakpoints": true
+    },
+    {
+      "idx": 86,
+      "version": "6",
+      "when": 1787652000000,
+      "tag": "0087_ai_agent_executor",
+      "breakpoints": true
+    },
+    {
+      "idx": 87,
+      "version": "6",
+      "when": 1787655600000,
+      "tag": "0088_product_shipping_rates",
+      "breakpoints": true
+    },
+    {
+      "idx": 88,
+      "version": "6",
+      "when": 1787932800000,
+      "tag": "0089_sales_projection_outbox",
+      "breakpoints": true
+    },
+    {
+      "idx": 89,
+      "version": "6",
+      "when": 1787943600000,
+      "tag": "0090_sales_write_authority",
+      "breakpoints": true
+    },
+    {
+      "idx": 90,
+      "version": "6",
+      "when": 1787947200000,
+      "tag": "0091_erp_reference_projection",
+      "breakpoints": true
     }
   ]
 }

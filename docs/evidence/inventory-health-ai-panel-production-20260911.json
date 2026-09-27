@@ -1,0 +1,138 @@
+{
+  "task": "Publish inventory health and Guangdong editor fixes together with the module AI chat drawer layout",
+  "recordedAt": "2026-09-11T12:10:48.3199359+08:00",
+  "source": {
+    "inventoryCommit": "8c0a706a2ad9bd1e6e2f7d19d2c1fcace61aa67d",
+    "aiPanelCommit": "206153632a17c34f065523233b7acc2964eb1149",
+    "branch": "main",
+    "remote": "origin/main",
+    "releaseSourceRoot": "D:\\运营管理系统-sales-django-release",
+    "releaseSourceClean": true
+  },
+  "scope": {
+    "inventoryHealth": "The overview counts only JD, Tmall fulfillment, exact Guangdong and self-operated warehouses; the six fixed statuses and the strictly-greater-than-180-day low-turnover boundary are shared with Guangdong monitoring.",
+    "guangdongEditor": "Model edits use the inventory writer PATCH endpoint with version fencing and write-after-readback; the editor exposes cycle, owner, risk and reason fields plus inheritance and system-judgement guidance.",
+    "moduleAiDrawer": "The compact workbench fills the drawer, keeps the composer at the bottom and gives the remaining height to conversation history with a smaller composer footprint."
+  },
+  "verification": {
+    "preRelease": {
+      "fullUnitSuite": {
+        "total": 2105,
+        "passed": 2085,
+        "skipped": 20,
+        "failed": 0
+      },
+      "targetedNodeTests": {
+        "passed": 15,
+        "failed": 0
+      },
+      "targetedDjangoTests": {
+        "run": 34,
+        "skipped": 1,
+        "failed": 0
+      },
+      "backendBoundary": {
+        "modulesChecked": 423,
+        "violations": 0
+      },
+      "buildPassed": true,
+      "isolatedPreviewSmokePassed": true,
+      "djangoMigrationDryRun": "No changes detected"
+    },
+    "production": {
+      "systemState": "Running",
+      "backendState": "Ready",
+      "workerState": "exact_release",
+      "homeStatus": 200,
+      "workerFullVerificationPassed": true,
+      "browser": {
+        "inventoryOverviewLoaded": true,
+        "sixHealthStatusesVisible": true,
+        "healthScopeGuidanceVisible": true,
+        "guangdongMonitorLoaded": true,
+        "modelEditButtonsVisible": 42,
+        "editorOpened": true,
+        "editorFieldsVisible": [
+          "生产周期（天）",
+          "安全天数",
+          "运营负责人",
+          "采购负责人",
+          "风险判定",
+          "原因说明"
+        ],
+        "saveAndCancelVisible": true,
+        "editorCancelledWithoutSave": true,
+        "aiDrawerMetrics": {
+          "viewportHeight": 720,
+          "drawerBottom": 708,
+          "workbenchBottom": 697,
+          "messageViewportHeight": 268,
+          "messageViewportBottom": 545,
+          "composerAreaTop": 545,
+          "composerAreaBottom": 697,
+          "composerHeight": 93
+        }
+      }
+    }
+  },
+  "django": {
+    "deployedAt": "2026-09-11T11:54:52.9272646+08:00",
+    "deploymentManifestSha256": "da378980df03116093a14e03b4f4c1a599a5ea0365223d9d2d53437d63afba5d",
+    "appFingerprint": "9be969e1f9f2c68407e6df512cb57280c3a7475c1569d5b165e0d7fd84329f8b",
+    "fileCount": 2007,
+    "componentsReady": 12,
+    "newSchemaMigration": false
+  },
+  "worker": {
+    "predecessorReleaseId": "20260910T161236Z-c0ab8ed9ff663df9",
+    "releaseId": "20260911T035534Z-683ed76137b93190",
+    "manifestSha256": "7160fc50304bd888282a09d9bf1c1eed1ab862e2994fd1e25a7d181deb965ede",
+    "sourceFingerprint": "c525c1f8eade835773299cf5a24f1c73780a0d3b7db6d4257cb540773365eb29",
+    "buildFingerprint": "f0c8d0fb6a66b255b5108213ae881aab303e6c9b0bb1b08e933021173e0f1794",
+    "planSha256": "7ded2050b584d724a8496d31fe127a510bd5a70396f4ccf914952fccfa5e0114",
+    "guardReceiptSha256": "6eb36f159069d14856358812fdec17256e3c6822e7ce704ffcdd7f53e6330fb7",
+    "successorSha256": "3628581ee28b7e43466cc8bb4186c3e1856dc51a7afcaa495115756c17d4a0b3",
+    "consumptionSha256": "be9bfebc9551cd262756f64642ab473212aa777c258d9d373a5749eb79e97b90",
+    "startupBindingSha256": "f84c1f43a0a206d5442b9a556febc6760cd8cdb1d1a2e0e34826dcf484c50664",
+    "successorCount": 130,
+    "startupVerified": true
+  },
+  "backups": {
+    "before": {
+      "backupId": "daily-20260911T034313Z-ab0bfb964f00",
+      "manifestSha256": "21e8d8290a304ef11d0877cc8683c33e9b33b8347e8d87aabb1e098e448efce1",
+      "dumpSha256": "bb28da34b042856990abc8e7ee9ecbdee9b582b2057140c7b741090923bd287c",
+      "contentSha256": "dc5f470aef3405c424bbaa05c36cb75cf90cb495e3fcebc1d8296d6372bfc32b",
+      "verified": true
+    },
+    "beforeRestore": {
+      "status": "completed",
+      "rehearsalId": "c15637e9300b",
+      "isolatedPort": 55432,
+      "expectedContentSha256": "dc5f470aef3405c424bbaa05c36cb75cf90cb495e3fcebc1d8296d6372bfc32b",
+      "restoredContentSha256": "dc5f470aef3405c424bbaa05c36cb75cf90cb495e3fcebc1d8296d6372bfc32b",
+      "productionDatabaseTouched": false,
+      "serviceStateChanged": false,
+      "cleanupStatus": "isolated_data_removed"
+    },
+    "after": {
+      "backupId": "daily-20260911T040807Z-4c1dfb357f0d",
+      "manifestSha256": "6e5f2d5459e0b007782bca0b886e175ce65ef81eb311abe8468302df496da1bd",
+      "dumpSha256": "a1c9193b8501da90315cf41b9662077d41f011e08f11a9e4940198c726251142",
+      "contentSha256": "2ed8bc5c2e48f1804a0c037119062d2f4091326515c7b9070f2e6e1183aab1f4",
+      "verified": true
+    },
+    "afterRestore": {
+      "performed": false,
+      "basis": "No migration or maintenance change; the release uses the successful pre-release isolated restore and separately verifies the post-release backup."
+    }
+  },
+  "boundaries": {
+    "productionBusinessVerificationReadOnly": true,
+    "noEditorSaveDuringVerification": true,
+    "noPaidModelCallsDuringVerification": true,
+    "noRealMessagesSentDuringVerification": true,
+    "noDatabaseMigration": true,
+    "noAuthorityOrRetirementEvidenceRemoved": true
+  }
+}

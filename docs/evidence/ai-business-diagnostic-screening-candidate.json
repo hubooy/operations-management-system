@@ -1,0 +1,17 @@
+{
+  "date": "2026-09-17",
+  "branch": "codex/ai-business-analysis-stages",
+  "baseCommit": "99abd657",
+  "batch": 31,
+  "status": "candidate_pure_unpublished_full_table_screening",
+  "verification": {
+    "pureTests": {"passed": 36, "seconds": 0.206, "newTests": 18, "legacyTests": 18, "log": ".runtime/batch31-pure.log"},
+    "actualEngineCompatibility": ["Native results.build_table including actual netshop filter shape", "mapped_results.mapped_table and complete scan including SKU refund totals"],
+    "negativeAndCoverageCases": ["Late row ranks above early candidates", "Noncandidate tail changes full row digest", "Iterator tail and context exit exceptions refuse success", "Context swallowing iterator error refused", "Second table late failure closes contexts and returns no partial result", "Cross-shop/channel/date/master/source binding refused", "Missing metrics, dates, baseline and identity counted explicitly", "Exact safe integers, refund absolute sign and delta overflow", "All fixed capacities reject whole scan", "Stable descriptor and tie ranking", "Market unsupported and empty counts explicit", "Partial single-period and leap-year unequal days disclosed"],
+    "independentReview": "Separate Agent verified real metric names, source filters and coverage boundaries; root reviewed final full-stream/context completion, candidate ranking and explicit unpublished authority boundary"
+  },
+  "rules": ["promotion_spend_up_gmv_down", "promotion_spend_without_reported_gmv", "erp_refund_present", "erp_refund_up_sales_not_up", "erp_gross_profit_negative", "erp_fee_up_net_sales_down", "product_traffic_up_payment_down"],
+  "limits": {"tableRows": 250000, "rowVisits": 2000000, "tables": 256, "partitions": 64, "candidatesPerPartition": 16, "candidateBytes": 8388608, "descriptorBytes": 1048576, "coverageBytes": 1048576, "rowIdChargedBytes": 16777216, "notProcessRss": true},
+  "remaining": ["Owning service authorization and fixed complete plan", "Actual sealed evidence streaming adapter", "Bounded published candidate/coverage pages", "New Agent tool/profile and per-Agent independent receipt validation", "Report and HTML/XLSX screening disclosure", "Real diagnostic quality acceptance"],
+  "operations": {"productionBusinessReads": false, "productionWrites": false, "newMigration": false, "deployment": false, "serviceRestart": false, "paidModelCalls": false, "externalMessages": false}
+}

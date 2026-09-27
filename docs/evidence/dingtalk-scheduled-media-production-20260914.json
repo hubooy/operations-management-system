@@ -1,0 +1,56 @@
+{
+  "version": "teruisi-dingtalk-scheduled-media-production-v1",
+  "date": "2026-09-14",
+  "status": "adopted_without_live_media_delivery",
+  "sourceCommit": "997f307e10c5e88d84f3edae26e83b53be52fab3",
+  "scope": "AI scheduled tasks: fixed operations-system page screenshots and reviewed XLSX reports sent under enterprise robot identity",
+  "deployment": {
+    "workerReleaseId": "20260914T143237Z-3aaaa72257429512",
+    "workerManifestSha256": "d473be7a6bddad5642b713117888df7a3998cd78667aba5c2e4f683a1a706960",
+    "djangoManifestSha256": "1c3463cc851571da8fbaf8e4592ba8329f41d47a1512ce03add27ad74974c33a",
+    "djangoAppFingerprint": "184485daff9e02deed5573179738481e534ee1f14085fa47a703a95d1bfbab76",
+    "aiMigration": "0013_dingtalk_schedule_media",
+    "profilePath": "D:/teruisi-runtime/django-sales-screenshot-profile/Chrome",
+    "profileAcl": "protected sibling root: SYSTEM, Administrators, current account; Chrome root inherits these three"
+  },
+  "validation": {
+    "isolatedPostgresMigrationAndPermissions": "passed",
+    "djangoMediaTests": "56 passed, 1 skipped",
+    "nodeSuite": "2164 passed, 0 failed, 21 skipped",
+    "renderedHtmlTests": "20 passed",
+    "productionBIScreenshot": {
+      "status": "passed",
+      "bytes": 32482,
+      "sha256": "d967f72535563af3d9f95819276511e60b57d545f51e29804bcbe568b5f70eb0",
+      "persistedOrSent": false
+    },
+    "receiver": "running; current startup log recorded connected",
+    "systemAtFinalCheck": "Running / Ready / exact_release",
+    "existingTextSchedules": 2,
+    "existingRuns": 5,
+    "newMediaSchedules": 0,
+    "liveRobotImageOrFileDelivery": "not_performed"
+  },
+  "preReleaseBackup": {
+    "backupId": "daily-20260914T140617Z-a387141d29ae",
+    "manifestSha256": "fba5d0536770ecaa600f860bcf8160ce09f5abf5cf084b11dd0c8f33a39217f8",
+    "isolatedRestoreId": "a9c4267d0e12",
+    "isolatedRestorePort": 55466,
+    "contentDigestMatched": true,
+    "productionDatabaseTouchedByRestore": false
+  },
+  "postReleaseBackup": {
+    "backupId": "daily-20260914T152937Z-7f4371149145",
+    "manifestSha256": "2b2241c587ca2a0664a5bae0679b8c0b0e94cb83e53e1be7f333571a14887d01",
+    "dumpSha256": "c5f2e96047a943ad3534dba58ead92090280a8dcdc5111e8cbfd4e3de57a5cda",
+    "contentSha256": "51a2ee74c93b0cab83bf8bab1b9fb752d884f20dd78c8285cb65e084ee9b3a26",
+    "verify": "passed",
+    "eDriveArchive": "E:/运营管理系统业务数据/daily-20260914T152937Z-7f4371149145",
+    "eDriveFileCount": 3,
+    "eDriveHashesMatchSource": true
+  },
+  "limitations": [
+    "No real bot-authored image or file delivery was attempted; platform acceptance and DingTalk client rendering remain unverified.",
+    "The production probe used BI overview and does not validate all allowed screenshot pages or every report artifact."
+  ]
+}

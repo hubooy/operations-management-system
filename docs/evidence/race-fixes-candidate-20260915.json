@@ -1,0 +1,104 @@
+{
+  "status": "verified_candidate_not_deployed",
+  "checkedAt": "2026-09-15T07:51:41.215070+00:00",
+  "baseCommit": "8a1def0cb89b9522e976dee34f5d2d986c4c48a5",
+  "files": {
+    "app/new-product-sales-followup-view.tsx": "322482ad0892b958821ecb5ab3781a8bfc03bae232dbd43048b464724b59bc66",
+    "backend/market/annotations.py": "ee306098de91fe4e0c988ba3b5b0dc632a2abc76dcb72a51d330c05f23ca48e2",
+    "tools/worker-local-service.ps1": "df5e92ad4fa9eb3169b59229c541633a1c713d4379175c0802d222331b9e5d24",
+    "tools/django-local-service.ps1": "46edb097f131dad28de833be611526b88ffbf1a970224b925c60f6c47d863067",
+    "tools/operations-system-service.ps1": "aff5a37974251422281e75d150292115b014f9265b5895747bdae05d9b028b6d"
+  },
+  "fixes": [
+    "persistent_maintenance_and_continuous_lifecycle_mutex",
+    "weekly_followup_late_response_isolation",
+    "category_prompt_version_transaction_lock"
+  ],
+  "nodeFullRun": {
+    "tests": 2196,
+    "passed": 2170,
+    "failed": 4,
+    "skipped": 22,
+    "cancelled": 0,
+    "failureCause": "Four source-position assertions still inspected the old inline Start block after extraction; all were updated to inspect the shared function with original ordering checks retained.",
+    "followupRuns": [
+      {
+        "suite": "affected lifecycle/DingTalk/readiness/stale receipt/frontend/Django checks",
+        "passed": 62,
+        "failed": 0
+      },
+      {
+        "suite": "Worker release and prelaunch checks",
+        "passed": 42,
+        "failed": 0
+      },
+      {
+        "suite": "final maintenance admission/library scope tests, Windows PowerShell 5.1 and 7",
+        "passed": 2,
+        "failed": 0
+      }
+    ]
+  },
+  "postgres": {
+    "version": "17.11",
+    "port": 55447,
+    "tests": 69,
+    "roles": [
+      {
+        "role": "teruisi_market_reader",
+        "readQueries": true,
+        "rankingPagination": true,
+        "independentFilters": true,
+        "promptVersionAllocation": false,
+        "claimComplete": false,
+        "commitExistingAnnotation": false,
+        "externalModelCalls": 0,
+        "negativePermissionsRejected": 5
+      },
+      {
+        "role": "teruisi_market_writer",
+        "readQueries": true,
+        "rankingPagination": true,
+        "independentFilters": true,
+        "promptVersionAllocation": true,
+        "claimComplete": true,
+        "commitExistingAnnotation": true,
+        "externalModelCalls": 0,
+        "negativePermissionsRejected": 4
+      }
+    ],
+    "status": "passed",
+    "isolatedClusterStopped": true
+  },
+  "build": "passed",
+  "renderedHtml": {
+    "passed": 20,
+    "failed": 0
+  },
+  "lint": {
+    "errors": 0,
+    "existingWarnings": 11
+  },
+  "backendBoundary": {
+    "checkedModules": 446,
+    "violations": 0
+  },
+  "productionChanges": false,
+  "productionMessages": 0,
+  "productionModelCalls": 0,
+  "migrationRequired": false,
+  "rollout": "Requires explicitly authorized coordinated first adoption of Worker and Django; existing production has not adopted these changes.",
+  "sourceCommits": {
+    "lifecycle": "128829dc45576ee7d3d4db19b2899e3230d06119",
+    "weeklyFollowup": "b5b578b1623d42fe6fc9377fe36689ccae9db981",
+    "promptVersion": "2303b0432f822b4dfee4a039f56fed55e76eb818"
+  },
+  "gitBlobSha256": {
+    "app/new-product-sales-followup-view.tsx": "86684d8427ce172dab40307d05ab0ca2daf8adbe57214fa2a4f9320add23a0e3",
+    "backend/market/annotations.py": "ee306098de91fe4e0c988ba3b5b0dc632a2abc76dcb72a51d330c05f23ca48e2",
+    "tools/worker-local-service.ps1": "d81febd1d6074b1b5be0bc2025ca2c73eb386853b8efaa92c2292ec52fc139e3",
+    "tools/django-local-service.ps1": "46edb097f131dad28de833be611526b88ffbf1a970224b925c60f6c47d863067",
+    "tools/operations-system-service.ps1": "aff5a37974251422281e75d150292115b014f9265b5895747bdae05d9b028b6d"
+  },
+  "filesHashScope": "Validated worktree bytes; gitBlobSha256 records committed bytes separately to make line-ending conversion explicit."
+}

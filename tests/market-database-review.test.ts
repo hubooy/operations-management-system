@@ -8,11 +8,18 @@ import { DatabaseSync, type SQLInputValue } from "node:sqlite";
 
 import { saveMarketImportCore, type MarketEntryForImport } from "../lib/market/import-core";
 import { marketNaturalKey } from "../lib/market/import-identity";
-import { claimMarketImageCache, completeMarketImageCacheClaim, failMarketImageCacheClaim } from "../lib/market/image-cache-state";
-import { buildMarketAdminComparisonSql, buildMarketAdminItemTrendLiteSql, buildMarketCachedOverviewAnalyticsSql, buildMarketItemTrendSql, buildMarketMonthlySummaryRefreshSql, buildMarketOverviewAnalyticsSql, marketEffectiveFactsCtes, marketMonthlyCoverageCtes, marketOverviewFilterOptionsSql } from "../lib/market/overview-sql";
-import { ensureMarketSchemaCore, officialPriceBandSql, type MarketSchemaDatabase } from "../lib/market/schema-core";
+import { ensureAnnotationSchema } from "../lib/market/annotation-schema";
+import { ensureMarketSystemKpiCacheSchema } from "../lib/market/overview-response-cache";
+import { acquireMarketImageCacheJobLease, createOrResumeMarketImageCacheJob, discoverMarketImageCacheJobItems } from "../lib/market/image-cache-job";
+import { claimMarketImageCache, completeMarketImageCacheClaim, failMarketImageCacheClaim, propagateMarketImageCacheBatch } from "../lib/market/image-cache-state";
+import { buildMarketAdminComparisonSql, buildMarketAdminItemTrendLiteSql, buildMarketCachedOverviewAnalyticsSql, buildMarketItemTrendSql, buildMarketMonthlySummaryRefreshSql, buildMarketOverviewAnalyticsSql, buildMarketRankingCtes, marketEffectiveFactsCtes, marketMonthlyCoverageCtes, marketOverviewFilterOptionsSql } from "../lib/market/overview-sql";
+import { ensureMarketSchemaCore, marketImportIdentityRefreshKeysTableStatement, officialPriceBandSql, type MarketSchemaDatabase } from "../lib/market/schema-core";
 
-function sqliteAdapter(sqlite: DatabaseSync, hooks: { afterRun?: (sql: string) => Promise<void> } = {}): MarketSchemaDatabase {
+function sqliteAdapter(sqlite: DatabaseSync, hooks: {
+  afterRun?: (sql: string) => Promise<void>;
+  beforeBatch?: () => Promise<void>;
+  reportTriggerChanges?: boolean;
+} = {}): MarketSchemaDatabase {
   return {
     prepare(sql: string) {
       const statement = sqlite.prepare(sql);
@@ -22,13 +29,20 @@ function sqliteAdapter(sqlite: DatabaseSync, hooks: { afterRun?: (sql: string) =
         async first<T>() { return (statement.get(...values) ?? null) as T | null; },
         async all<T>() { return { results: statement.all(...values) as T[] }; },
         async run() {
+          const before = hooks.reportTriggerChanges
+            ? Number((sqlite.prepare("SELECT total_changes() changes").get() as { changes: number }).changes)
+            : 0;
           const result = statement.run(...values);
           await hooks.afterRun?.(sql);
-          return { meta: { changes: Number(result.changes) } };
+          const reportedChanges = hooks.reportTriggerChanges
+            ? Number((sqlite.prepare("SELECT total_changes() changes").get() as { changes: number }).changes) - before
+            : Number(result.changes);
+          return { meta: { changes: reportedChanges } };
         },
       };
     },
     async batch(statements: Array<{ run(): Promise<unknown> }>) {
+      await hooks.beforeBatch?.();
       sqlite.exec("BEGIN");
       try {
         const results = [];
@@ -42,6 +56,29 @@ function sqliteAdapter(sqlite: DatabaseSync, hooks: { afterRun?: (sql: string) =
     },
   };
 }
+
+test("market import accepts D1 change counts that include batch revision triggers", async () => {
+  const sqlite = new DatabaseSync(":memory:");
+  const db = sqliteAdapter(sqlite, { reportTriggerChanges: true });
+  await ensureMarketSchemaCore(db);
+  sqlite.exec(`CREATE TABLE trigger_revision (id INTEGER PRIMARY KEY, revision INTEGER NOT NULL);
+    INSERT INTO trigger_revision (id,revision) VALUES (1,0);
+    CREATE TRIGGER market_batch_insert_revision AFTER INSERT ON market_import_batches
+    BEGIN UPDATE trigger_revision SET revision=revision+1 WHERE id=1; END;
+    CREATE TRIGGER market_batch_update_revision AFTER UPDATE ON market_import_batches
+    BEGIN UPDATE trigger_revision SET revision=revision+1 WHERE id=1; END;`);
+
+  const result = await saveMarketImportCore({
+    db, batchId: "trigger-count-batch", sourceType: "jd", fileName: "trigger.csv",
+    fileSizeBytes: 10, fileHash: "trigger-count-hash", sheetName: "CSV",
+    rows: [entry({ category: "trigger-count-category" })], warnings: [],
+  });
+
+  assert.equal(result.status, "completed");
+  assert.equal((sqlite.prepare("SELECT revision FROM trigger_revision WHERE id=1").get() as { revision: number }).revision, 3);
+  assert.equal((sqlite.prepare("SELECT COUNT(*) count FROM market_ranking_entries WHERE category='trigger-count-category'").get() as { count: number }).count, 1);
+  sqlite.close();
+});
 
 type OverviewAggregateTestRow = {
   section: string; row_key: string; text_1: string | null; text_2: string | null;
@@ -224,6 +261,8 @@ test("image cache claims are fenced and first success backfills only empty snaps
   const sqlite = new DatabaseSync(":memory:");
   const db = sqliteAdapter(sqlite);
   await ensureMarketSchemaCore(db);
+  const hashA = "a".repeat(64);
+  const hashB = "b".repeat(64);
   sqlite.exec(`INSERT INTO market_ranking_entries
     (natural_key,source_row_number,period_start,period_end,category,scope,ranking_dimension,operation_mode,sku_code,product_name,image_url,raw_json,last_import_batch_id)
     VALUES
@@ -233,38 +272,54 @@ test("image cache claims are fenced and first success backfills only empty snaps
     VALUES
       ('cache-snapshot-url','缓存类目','POP','CACHE-A','SKU','2026-06','','https://img.example/a.jpg','',NULL,'missing'),
       ('cache-snapshot-legacy','缓存类目','POP','CACHE-B','SKU','2026-06','','','',NULL,'missing'),
-      ('cache-snapshot-existing','缓存类目','POP','CACHE-A','SKU','2026-05','historical-hash','https://img.example/a.jpg','',NULL,'missing'),
-      ('cache-snapshot-standard','缓存类目','POP','CACHE-A','SKU','2026-04','hash-a','https://img.example/a.jpg','标准售价',188800,'confirmed');`);
+      ('cache-snapshot-existing','缓存类目','POP','CACHE-A','SKU','2026-05','historical-hash','https://img.example/a.jpg','',NULL,'missing');`);
+  sqlite.prepare(`INSERT INTO market_price_snapshots
+      (id,category,scope,sku_code,ranking_dimension,month,image_content_sha256,image_url,ai_price_type,confirmed_market_price_cents,confirmation_status)
+    VALUES ('cache-snapshot-standard','缓存类目','POP','CACHE-A','SKU','2026-04',?,'https://img.example/a.jpg','标准售价',188800,'confirmed')`).run(hashA);
 
-  const claimA = await claimMarketImageCache(db, "https://img.example/a.jpg");
-  assert.equal(claimA, 1);
-  assert.equal(await claimMarketImageCache(db, "https://img.example/a.jpg"), null);
+  const job = await createOrResumeMarketImageCacheJob(db, { batchId: "batch", requestedBy: "test" });
+  const lease = await acquireMarketImageCacheJobLease(db, { jobId: job.id });
+  assert.ok(lease);
+  assert.equal((await discoverMarketImageCacheJobItems(db, lease)).discovered, 2);
+  const fence = { jobId: lease.id, leaseToken: lease.leaseToken, jobEpoch: lease.leaseEpoch };
+  const claimA = await claimMarketImageCache(db, { ...fence, sourceUrl: "https://img.example/a.jpg" });
+  assert.equal(claimA?.attemptCount, 1);
+  assert.equal(await claimMarketImageCache(db, { ...fence, sourceUrl: "https://img.example/a.jpg" }), null);
   const completedA = await completeMarketImageCacheClaim(db, {
-    sourceUrl: "https://img.example/a.jpg", attemptCount: claimA!, objectKey: "market/a.jpg",
-    contentHash: "hash-a", mimeType: "image/jpeg", sizeBytes: 10, imageSource: "test",
+    ...fence, ...claimA!, sourceUrl: "https://img.example/a.jpg", objectKey: "market/a.jpg",
+    contentHash: hashA, mimeType: "image/jpeg", sizeBytes: 10, imageSource: "test",
   });
-  assert.deepEqual(completedA, { completed: true, snapshotsUpdated: 1, pricesInherited: 1 });
-  assert.deepEqual({ ...(sqlite.prepare("SELECT image_content_sha256 hash,image_url imageUrl,confirmed_market_price_cents price,confirmation_status status FROM market_price_snapshots WHERE id='cache-snapshot-url'").get() as Record<string, unknown>) },
-    { hash: "hash-a", imageUrl: "https://img.example/a.jpg", price: 188800, status: "confirmed" });
+  assert.deepEqual(completedA, { completed: true });
+  assert.equal((sqlite.prepare("SELECT image_content_sha256 hash FROM market_price_snapshots WHERE id='cache-snapshot-url'").get() as { hash: string }).hash, "");
   assert.equal((sqlite.prepare("SELECT image_content_sha256 hash FROM market_price_snapshots WHERE id='cache-snapshot-existing'").get() as { hash: string }).hash, "historical-hash");
 
-  const staleClaim = await claimMarketImageCache(db, "https://img.example/b.jpg");
-  assert.equal(staleClaim, 1);
+  const staleClaim = await claimMarketImageCache(db, { ...fence, sourceUrl: "https://img.example/b.jpg" });
+  assert.equal(staleClaim?.attemptCount, 1);
   sqlite.prepare("UPDATE market_image_cache SET status='failed' WHERE source_url='https://img.example/b.jpg'").run();
-  const replacementClaim = await claimMarketImageCache(db, "https://img.example/b.jpg");
-  assert.equal(replacementClaim, 2);
+  sqlite.prepare("UPDATE market_image_cache_claims SET lease_expires_at=datetime('now','-1 second') WHERE source_url='https://img.example/b.jpg'").run();
+  const replacementClaim = await claimMarketImageCache(db, { ...fence, sourceUrl: "https://img.example/b.jpg" });
+  assert.equal(replacementClaim?.attemptCount, 2);
   const completedB = await completeMarketImageCacheClaim(db, {
-    sourceUrl: "https://img.example/b.jpg", attemptCount: replacementClaim!, objectKey: "market/b.jpg",
-    contentHash: "hash-b", mimeType: "image/jpeg", sizeBytes: 20, imageSource: "test",
+    ...fence, ...replacementClaim!, sourceUrl: "https://img.example/b.jpg", objectKey: "market/b.jpg",
+    contentHash: hashB, mimeType: "image/jpeg", sizeBytes: 20, imageSource: "test",
   });
-  assert.deepEqual(completedB, { completed: true, snapshotsUpdated: 1, pricesInherited: 0 });
+  assert.deepEqual(completedB, { completed: true });
   assert.equal(await failMarketImageCacheClaim(db, {
-    sourceUrl: "https://img.example/b.jpg", attemptCount: staleClaim!, errorCode: "late_failure", errorMessage: "late",
+    ...fence, ...staleClaim!, sourceUrl: "https://img.example/b.jpg", errorCode: "late_failure", errorMessage: "late",
   }), false);
+  assert.deepEqual(await propagateMarketImageCacheBatch(db, {
+    ...fence,
+    images: [
+      { sourceUrl: "https://img.example/a.jpg", contentHash: hashA },
+      { sourceUrl: "https://img.example/b.jpg", contentHash: hashB },
+    ],
+  }), { snapshotsUpdated: 2, pricesInherited: 1 });
+  assert.deepEqual({ ...(sqlite.prepare("SELECT image_content_sha256 hash,image_url imageUrl,confirmed_market_price_cents price,confirmation_status status FROM market_price_snapshots WHERE id='cache-snapshot-url'").get() as Record<string, unknown>) },
+    { hash: hashA, imageUrl: "https://img.example/a.jpg", price: 188800, status: "confirmed" });
   assert.deepEqual({ ...(sqlite.prepare("SELECT status,content_sha256 hash,attempt_count attempts FROM market_image_cache WHERE source_url='https://img.example/b.jpg'").get() as Record<string, unknown>) },
-    { status: "ready", hash: "hash-b", attempts: 2 });
+    { status: "ready", hash: hashB, attempts: 2 });
   assert.deepEqual({ ...(sqlite.prepare("SELECT image_content_sha256 hash,image_url imageUrl FROM market_price_snapshots WHERE id='cache-snapshot-legacy'").get() as Record<string, unknown>) },
-    { hash: "hash-b", imageUrl: "https://img.example/b.jpg" });
+    { hash: hashB, imageUrl: "https://img.example/b.jpg" });
   sqlite.close();
 });
 
@@ -395,6 +450,47 @@ test("0026 and 0044 forward migrations preserve scope and install import safety"
   sqlite.close();
 });
 
+test("0076 and runtime schema share the bounded import identity refresh-key contract", async () => {
+  const [migration, importCore, masterIdentity] = await Promise.all([
+    readFile(new URL("../drizzle/0077_market_import_identity_refresh_keys.sql", import.meta.url), "utf8"),
+    readFile(new URL("../lib/market/import-core.ts", import.meta.url), "utf8"),
+    readFile(new URL("../lib/market/master-identity.ts", import.meta.url), "utf8"),
+  ]);
+  for (const source of [migration, marketImportIdentityRefreshKeysTableStatement]) {
+    assert.match(source, /market_import_identity_refresh_keys_v2/);
+    for (const column of ["batch_id", "owner_token", "category", "scope", "ranking_dimension", "sku_code"]) {
+      assert.match(source, new RegExp(column));
+    }
+    assert.match(source, /PRIMARY KEY/);
+  }
+  const sqlite = new DatabaseSync(":memory:");
+  sqlite.exec(migration);
+  sqlite.exec(`INSERT INTO market_import_identity_refresh_keys_v2
+    (batch_id,owner_token,category,scope,ranking_dimension,sku_code)
+    VALUES ('batch','owner','category','scope','SKU','sku')`);
+  assert.throws(() => sqlite.exec(`INSERT INTO market_import_identity_refresh_keys_v2
+    (batch_id,owner_token,category,scope,ranking_dimension,sku_code)
+    VALUES ('batch','owner','category','scope','SKU','sku')`), /UNIQUE constraint failed/);
+  sqlite.exec(`CREATE TABLE market_master_identities (
+    category TEXT NOT NULL,scope TEXT NOT NULL,ranking_dimension TEXT NOT NULL,sku_code TEXT NOT NULL,
+    latest_entry_id INTEGER NOT NULL,PRIMARY KEY(category,scope,ranking_dimension,sku_code));`);
+  const plan = sqlite.prepare(`EXPLAIN QUERY PLAN DELETE FROM market_master_identities
+    WHERE (category,scope,ranking_dimension,sku_code) IN (
+      SELECT category,scope,ranking_dimension,sku_code FROM market_import_identity_refresh_keys_v2
+      WHERE batch_id=? AND owner_token=?
+    )`).all("batch", "owner").map((row) => String(row.detail));
+  assert.ok(plan.some((detail) => /SEARCH market_master_identities USING/.test(detail)), plan.join("\n"));
+  assert.ok(plan.some((detail) => /SEARCH market_import_identity_refresh_keys_v2 USING/.test(detail)), plan.join("\n"));
+  assert.match(importCore, /MAX_MARKET_IDENTITY_REFRESH_KEYS = 10_000/);
+  assert.equal((importCore.match(/LIMIT \$\{MAX_MARKET_IDENTITY_REFRESH_KEYS \+ 1\}/g) ?? []).length, 2);
+  assert.match(importCore, /SELECT COUNT\(\*\) FROM market_import_identity_refresh_keys_v2 WHERE batch_id=\? AND owner_token=\?/);
+  assert.match(masterIdentity, /WHERE \(category, scope, ranking_dimension, sku_code\) IN \(/);
+  assert.doesNotMatch(masterIdentity.slice(
+    masterIdentity.indexOf("const deleteScope"), masterIdentity.indexOf("const sourceFilter"),
+  ), /WHERE EXISTS/);
+  sqlite.close();
+});
+
 test("runtime upgrade does not rewrite valid dimensions and swaps the canonical index safely", async () => {
   const sqlite = new DatabaseSync(":memory:");
   const migrationFiles = [
@@ -495,6 +591,11 @@ test("market import replaces the complete claimed range and removes rows absent 
     ],
     warnings: [],
   });
+  assert.equal((sqlite.prepare("SELECT source_revision FROM market_system_kpi_cache_state WHERE id=1").get() as { source_revision: number }).source_revision, 2);
+  assert.deepEqual((sqlite.prepare("SELECT sku_code skuCode FROM market_master_identities ORDER BY sku_code").all() as Array<Record<string, unknown>>).map((row) => ({ ...row })), [
+    { skuCode: "SKU-1" },
+    { skuCode: "SKU-2" },
+  ]);
   await saveMarketImportCore({
     db,
     batchId: "market-content-b",
@@ -508,7 +609,210 @@ test("market import replaces the complete claimed range and removes rows absent 
   });
   const rows = sqlite.prepare("SELECT sku_code skuCode, product_name productName, last_import_batch_id batchId FROM market_ranking_entries ORDER BY sku_code").all();
   assert.deepEqual(rows.map((row) => ({ ...row })), [{ skuCode: "SKU-1", productName: "更新商品", batchId: "market-content-b" }]);
+  assert.deepEqual((sqlite.prepare("SELECT sku_code skuCode FROM market_master_identities ORDER BY sku_code").all() as Array<Record<string, unknown>>).map((row) => ({ ...row })), [
+    { skuCode: "SKU-1" },
+  ]);
+  assert.equal((sqlite.prepare("SELECT source_revision FROM market_system_kpi_cache_state WHERE id=1").get() as { source_revision: number }).source_revision, 3);
+  assert.equal((sqlite.prepare("SELECT COUNT(*) count FROM market_import_identity_refresh_keys_v2").get() as { count: number }).count, 0);
   sqlite.close();
+});
+
+test("market import identity refresh preserves the latest fact and every unrelated range", async () => {
+  const sqlite = new DatabaseSync(":memory:");
+  const db = sqliteAdapter(sqlite);
+  await ensureMarketSchemaCore(db);
+  await saveMarketImportCore({
+    db, batchId: "identity-june-old", sourceType: "jd", fileName: "june-old.csv", fileSizeBytes: 10,
+    fileHash: "identity-june-old-hash", sheetName: "CSV", warnings: [],
+    rows: [
+      entry({ sourceRowNumber: 1, skuCode: "SKU-KEEP" }),
+      entry({ sourceRowNumber: 2, skuCode: "SKU-LATEST-SURVIVES" }),
+      entry({ sourceRowNumber: 3, skuCode: "SKU-GONE" }),
+    ],
+  });
+  await saveMarketImportCore({
+    db, batchId: "identity-july", sourceType: "jd", fileName: "july.csv", fileSizeBytes: 10,
+    fileHash: "identity-july-hash", sheetName: "CSV", warnings: [],
+    rows: [entry({
+      sourceRowNumber: 1, periodStart: "2026-07-01", periodEnd: "2026-07-31",
+      skuCode: "SKU-LATEST-SURVIVES", productName: "July survivor",
+    })],
+  });
+  await saveMarketImportCore({
+    db, batchId: "identity-unrelated", sourceType: "jd", fileName: "unrelated.csv", fileSizeBytes: 10,
+    fileHash: "identity-unrelated-hash", sheetName: "CSV", warnings: [],
+    rows: [entry({ sourceRowNumber: 1, category: "unrelated-category", skuCode: "SKU-UNRELATED" })],
+  });
+  await saveMarketImportCore({
+    db, batchId: "identity-june-new", sourceType: "jd", fileName: "june-new.csv", fileSizeBytes: 10,
+    fileHash: "identity-june-new-hash", sheetName: "CSV", warnings: [],
+    rows: [entry({ sourceRowNumber: 1, skuCode: "SKU-KEEP", productName: "June replacement" })],
+  });
+
+  assert.deepEqual((sqlite.prepare(`SELECT identity.sku_code skuCode, fact.period_end periodEnd, fact.product_name productName
+      FROM market_master_identities identity
+      JOIN market_ranking_entries fact ON fact.id=identity.latest_entry_id
+      ORDER BY identity.sku_code`).all() as Array<Record<string, unknown>>).map((row) => ({ ...row })), [
+    { skuCode: "SKU-KEEP", periodEnd: "2026-06-30", productName: "June replacement" },
+    { skuCode: "SKU-LATEST-SURVIVES", periodEnd: "2026-07-31", productName: "July survivor" },
+    { skuCode: "SKU-UNRELATED", periodEnd: "2026-06-30", productName: "商品1" },
+  ]);
+  assert.equal((sqlite.prepare("SELECT COUNT(*) count FROM market_master_identities WHERE sku_code='SKU-GONE'").get() as { count: number }).count, 0);
+  assert.deepEqual((sqlite.prepare(`SELECT sku_code skuCode,gmv_total_cents gmv
+      FROM market_sku_gmv_totals WHERE sku_code IN ('SKU-GONE','SKU-LATEST-SURVIVES','SKU-UNRELATED')
+      ORDER BY sku_code`).all() as Array<Record<string, unknown>>).map((row) => ({ ...row })), [
+    { skuCode: "SKU-LATEST-SURVIVES", gmv: 1_000_000 },
+    { skuCode: "SKU-UNRELATED", gmv: 1_000_000 },
+  ]);
+  assert.equal((sqlite.prepare("SELECT COUNT(*) count FROM market_import_identity_refresh_keys_v2").get() as { count: number }).count, 0);
+  sqlite.close();
+});
+
+test("bulk market import publishes exact lifecycle revisions while direct writes remain observable", async () => {
+  const sqlite = new DatabaseSync(":memory:");
+  const db = sqliteAdapter(sqlite);
+  await ensureMarketSchemaCore(db);
+  await ensureAnnotationSchema(db as never);
+  await ensureMarketSystemKpiCacheSchema(db as never);
+  const revision = () => Number((sqlite.prepare("SELECT source_revision FROM market_system_kpi_cache_state WHERE id=1").get() as { source_revision: number }).source_revision);
+  const beforeImport = revision();
+  await saveMarketImportCore({
+    db, batchId: "bulk-revision", sourceType: "jd", fileName: "bulk.csv", fileSizeBytes: 10,
+    fileHash: "bulk-revision-hash", sheetName: "CSV", warnings: [],
+    rows: Array.from({ length: 1_000 }, (_, index) => entry({
+      sourceRowNumber: index + 1, category: "bulk-revision-category", skuCode: `SKU-BULK-${index}`,
+    })),
+  });
+  assert.equal(revision(), beforeImport + 3,
+    "batch reservation, atomic fact publication, and batch completion must each publish one observable revision");
+  assert.deepEqual({ ...(sqlite.prepare(`SELECT suppress_all_revision suppressAll,
+      suppress_identity_revision suppressIdentity,owner_token owner
+      FROM market_system_kpi_cache_control WHERE id=1`).get() as Record<string, unknown>) }, {
+    suppressAll: 0, suppressIdentity: 0, owner: "",
+  });
+
+  const beforeDirectWrite = revision();
+  sqlite.exec(`INSERT INTO market_ranking_entries
+    (natural_key,source_row_number,period_start,period_end,category,scope,ranking_dimension,operation_mode,sku_code,product_name,raw_json,last_import_batch_id)
+    VALUES ('direct-after-bulk',2000,'2026-07-01','2026-07-31','direct-category','POP','SKU','POP','DIRECT-AFTER-BULK','Direct','{}','direct')`);
+  assert.equal(revision(), beforeDirectWrite + 1);
+  sqlite.close();
+});
+
+test("market import refuses an unbounded identity refresh and rolls the owner fence back", async () => {
+  const sqlite = new DatabaseSync(":memory:");
+  const db = sqliteAdapter(sqlite);
+  await ensureMarketSchemaCore(db);
+  const insert = sqlite.prepare(`INSERT INTO market_ranking_entries
+    (natural_key,source_row_number,period_start,period_end,category,scope,price_band_filter,ranking_dimension,
+      operation_mode,sku_code,product_name,raw_json,last_import_batch_id)
+    VALUES (?,?,'2026-06-01','2026-06-30','overflow-category','pop','全部','SKU','POP',?,'Overflow','{}','old')`);
+  sqlite.exec("BEGIN");
+  for (let index = 0; index < 10_001; index += 1) insert.run(`overflow-${index}`, index + 1, `SKU-OVERFLOW-${index}`);
+  sqlite.exec("COMMIT");
+
+  await assert.rejects(() => saveMarketImportCore({
+    db, batchId: "overflow-refresh", sourceType: "jd", fileName: "overflow.csv", fileSizeBytes: 10,
+    fileHash: "overflow-refresh-hash", sheetName: "CSV", warnings: [],
+    rows: [entry({ sourceRowNumber: 1, category: "overflow-category", skuCode: "SKU-NEW" })],
+  }), /NOT NULL constraint failed/);
+  assert.equal((sqlite.prepare("SELECT COUNT(*) count FROM market_ranking_entries WHERE category='overflow-category'").get() as { count: number }).count, 10_001);
+  assert.equal((sqlite.prepare("SELECT COUNT(*) count FROM market_import_identity_refresh_keys_v2").get() as { count: number }).count, 0);
+  assert.deepEqual({ ...(sqlite.prepare(`SELECT suppress_all_revision suppressAll,
+      suppress_identity_revision suppressIdentity,owner_token owner
+      FROM market_system_kpi_cache_control WHERE id=1`).get() as Record<string, unknown>) }, {
+    suppressAll: 0, suppressIdentity: 0, owner: "",
+  });
+  sqlite.close();
+});
+
+test("market import refresh keys are isolated from a stale owner with the same batch id", async () => {
+  const sqlite = new DatabaseSync(":memory:");
+  const db = sqliteAdapter(sqlite);
+  await ensureMarketSchemaCore(db);
+  sqlite.exec(`INSERT INTO market_ranking_entries
+      (natural_key,source_row_number,period_start,period_end,category,scope,ranking_dimension,operation_mode,sku_code,product_name,raw_json,last_import_batch_id)
+    VALUES ('stale-owner-fact',1,'2026-05-01','2026-05-31','stale-owner-category','POP','SKU','POP','SKU-STALE-OWNER','Stale','{}','old');
+    INSERT INTO market_master_identities (category,scope,ranking_dimension,sku_code,latest_entry_id)
+    SELECT category,scope,ranking_dimension,sku_code,id FROM market_ranking_entries WHERE natural_key='stale-owner-fact';
+    INSERT INTO market_import_identity_refresh_keys_v2
+      (batch_id,owner_token,category,scope,ranking_dimension,sku_code)
+    VALUES ('same-batch-id','stale-owner','stale-owner-category','POP','SKU','SKU-STALE-OWNER');
+    CREATE TRIGGER reject_stale_owner_identity_delete BEFORE DELETE ON market_master_identities
+      WHEN OLD.sku_code='SKU-STALE-OWNER' BEGIN SELECT RAISE(ABORT,'stale owner key was consumed'); END;`);
+
+  await saveMarketImportCore({
+    db, batchId: "same-batch-id", sourceType: "jd", fileName: "new-owner.csv", fileSizeBytes: 10,
+    fileHash: "new-owner-hash", sheetName: "CSV", warnings: [],
+    rows: [entry({ sourceRowNumber: 1, category: "new-owner-category", skuCode: "SKU-NEW-OWNER" })],
+  });
+  assert.equal((sqlite.prepare("SELECT COUNT(*) count FROM market_master_identities WHERE sku_code='SKU-STALE-OWNER'").get() as { count: number }).count, 1);
+  assert.equal((sqlite.prepare("SELECT COUNT(*) count FROM market_import_identity_refresh_keys_v2 WHERE batch_id='same-batch-id' AND owner_token='stale-owner'").get() as { count: number }).count, 1);
+  sqlite.close();
+});
+
+test("market publish aborts inside SQL when its batch owner disappears before commit", async () => {
+  const sqlite = new DatabaseSync(":memory:");
+  let removeBatchBeforePublish = false;
+  const db = sqliteAdapter(sqlite, { beforeBatch: async () => {
+    if (!removeBatchBeforePublish) return;
+    removeBatchBeforePublish = false;
+    sqlite.exec("DELETE FROM market_import_batches WHERE id='missing-owner-batch'");
+  } });
+  await ensureMarketSchemaCore(db);
+  const beforeRevision = Number((sqlite.prepare("SELECT source_revision FROM market_system_kpi_cache_state WHERE id=1").get() as { source_revision: number }).source_revision);
+  removeBatchBeforePublish = true;
+
+  await assert.rejects(() => saveMarketImportCore({
+    db, batchId: "missing-owner-batch", sourceType: "jd", fileName: "missing-owner.csv", fileSizeBytes: 10,
+    fileHash: "missing-owner-hash", sheetName: "CSV", warnings: [],
+    rows: [entry({ sourceRowNumber: 1, category: "missing-owner-category", skuCode: "SKU-MISSING-OWNER" })],
+  }), /CHECK constraint failed/);
+  assert.equal((sqlite.prepare("SELECT COUNT(*) count FROM market_ranking_entries WHERE category='missing-owner-category'").get() as { count: number }).count, 0);
+  assert.equal((sqlite.prepare("SELECT COUNT(*) count FROM market_import_identity_refresh_keys_v2").get() as { count: number }).count, 0);
+  assert.equal((sqlite.prepare("SELECT COUNT(*) count FROM market_import_staging_rows").get() as { count: number }).count, 1,
+    "ownerless staging is deliberately retained when the batch row vanished, so cleanup cannot erase a replacement owner's rows");
+  assert.equal((sqlite.prepare("SELECT COUNT(*) count FROM market_import_range_claims").get() as { count: number }).count, 0);
+  assert.equal((sqlite.prepare("SELECT source_revision FROM market_system_kpi_cache_state WHERE id=1").get() as { source_revision: number }).source_revision, beforeRevision);
+  assert.deepEqual({ ...(sqlite.prepare(`SELECT suppress_all_revision suppressAll,
+      suppress_identity_revision suppressIdentity,owner_token owner
+      FROM market_system_kpi_cache_control WHERE id=1`).get() as Record<string, unknown>) }, {
+    suppressAll: 0, suppressIdentity: 0, owner: "",
+  });
+  sqlite.close();
+});
+
+test("daily market backfill replaces only its exact day and preserves other days in the same month", async () => {
+  const sqlite = new DatabaseSync(":memory:");
+  const db = sqliteAdapter(sqlite);
+  await ensureMarketSchemaCore(db);
+  await saveMarketImportCore({
+    db, batchId: "daily-a", sourceType: "jd", fileName: "daily-a.csv", fileSizeBytes: 10,
+    fileHash: "daily-a-hash", sheetName: "CSV", warnings: [],
+    rows: [
+      entry({ sourceRowNumber: 1, periodStart: "2026-07-01", periodEnd: "2026-07-01", skuCode: "SKU-A" }),
+      entry({ sourceRowNumber: 2, periodStart: "2026-07-02", periodEnd: "2026-07-02", skuCode: "SKU-B" }),
+    ],
+  });
+  await saveMarketImportCore({
+    db, batchId: "daily-b", sourceType: "jd", fileName: "daily-b.csv", fileSizeBytes: 10,
+    fileHash: "daily-b-hash", sheetName: "CSV", warnings: [],
+    rows: [entry({ sourceRowNumber: 1, periodStart: "2026-07-02", periodEnd: "2026-07-02", skuCode: "SKU-C" })],
+  });
+  assert.deepEqual(sqlite.prepare(`SELECT period_end day, sku_code sku, last_import_batch_id batchId
+    FROM market_ranking_entries ORDER BY period_end, sku_code`).all().map((row) => ({ ...row })), [
+    { day: "2026-07-01", sku: "SKU-A", batchId: "daily-a" },
+    { day: "2026-07-02", sku: "SKU-C", batchId: "daily-b" },
+  ]);
+  sqlite.close();
+});
+
+test("daily market replacement materializes distinct scopes before deleting facts", async () => {
+  const source = await readFile(new URL("../lib/market/import-core.ts", import.meta.url), "utf8");
+  const replacement = source.slice(source.indexOf("const replaceClaimedMarketFactsSql"), source.indexOf("const captureOldMarketIdentityRefreshKeysSql"));
+  assert.match(replacement, /SELECT DISTINCT/);
+  assert.match(replacement, /\) IN \(/);
+  assert.doesNotMatch(replacement, /WHERE EXISTS \(/);
 });
 
 test("monthly snapshot backfill selects one fact when a SKU has multiple date ranges in one month", async () => {
@@ -559,6 +863,53 @@ test("same market fact with different file hashes updates the canonical fact ins
   assert.equal((sqlite.prepare("SELECT COUNT(*) count FROM market_import_batches").get() as { count: number }).count, 2);
   assert.equal((sqlite.prepare("SELECT image_content_sha256 hash FROM market_price_snapshots WHERE sku_code='SKU-1'").get() as { hash: string }).hash, "hash-a");
   assert.equal((sqlite.prepare("SELECT COUNT(*) count FROM market_subcategory_taxonomy WHERE category='净水' AND subcategory='台式' AND status='active'").get() as { count: number }).count, 1);
+  sqlite.close();
+});
+
+test("changing a ranking image URL invalidates the old snapshot hash and image-derived confirmation", async () => {
+  const sqlite = new DatabaseSync(":memory:");
+  const db = sqliteAdapter(sqlite);
+  await ensureMarketSchemaCore(db);
+  sqlite.prepare("INSERT INTO market_image_cache (source_url,status,content_sha256) VALUES ('https://img10.360buyimg.com/imgzone/a.jpg','ready','old-hash')").run();
+  await saveMarketImportCore({
+    db, batchId: "image-change-old", sourceType: "jd", fileName: "old.csv", fileSizeBytes: 10,
+    fileHash: "image-change-old-file", sheetName: "CSV", rows: [entry()], warnings: [],
+  });
+  sqlite.prepare(`UPDATE market_price_snapshots SET ai_image_price_cents=188800,ai_price_type='标准售价',
+    ai_confidence_bps=9900,ai_reason='旧图识别',confirmed_market_price_cents=188800,
+    confirmation_status='confirmed',confirmed_by='admin@test',confirmed_at=CURRENT_TIMESTAMP,
+    source_job_item_id='old-item',prompt_version_id='old-prompt' WHERE sku_code='SKU-1'`).run();
+
+  await saveMarketImportCore({
+    db, batchId: "image-change-new", sourceType: "jd", fileName: "new.csv", fileSizeBytes: 11,
+    fileHash: "image-change-new-file", sheetName: "CSV",
+    rows: [entry({ imageUrl: "https://img10.360buyimg.com/imgzone/b.jpg" })], warnings: [],
+  });
+  assert.deepEqual({ ...(sqlite.prepare(`SELECT image_url imageUrl,image_content_sha256 hash,
+      ai_image_price_cents aiPrice,confirmed_market_price_cents confirmedPrice,confirmation_status status,
+      confirmed_by confirmedBy,source_job_item_id sourceItem,prompt_version_id promptId
+    FROM market_price_snapshots WHERE sku_code='SKU-1'`).get() as Record<string, unknown>) }, {
+    imageUrl: "https://img10.360buyimg.com/imgzone/b.jpg", hash: "", aiPrice: null,
+    confirmedPrice: null, status: "source_table", confirmedBy: "", sourceItem: "", promptId: "",
+  });
+
+  const newHash = "c".repeat(64);
+  const job = await createOrResumeMarketImageCacheJob(db, { requestedBy: "test" });
+  const lease = await acquireMarketImageCacheJobLease(db, { jobId: job.id });
+  assert.ok(lease);
+  assert.equal((await discoverMarketImageCacheJobItems(db, lease)).discovered, 1);
+  const fence = { jobId: lease.id, leaseToken: lease.leaseToken, jobEpoch: lease.leaseEpoch };
+  const claim = await claimMarketImageCache(db, { ...fence, sourceUrl: "https://img10.360buyimg.com/imgzone/b.jpg" });
+  assert.equal(claim?.attemptCount, 1);
+  await completeMarketImageCacheClaim(db, {
+    ...fence, ...claim!, sourceUrl: "https://img10.360buyimg.com/imgzone/b.jpg", objectKey: "market/new.jpg",
+    contentHash: newHash, mimeType: "image/jpeg", sizeBytes: 20, imageSource: "test",
+  });
+  await propagateMarketImageCacheBatch(db, {
+    ...fence,
+    images: [{ sourceUrl: "https://img10.360buyimg.com/imgzone/b.jpg", contentHash: newHash }],
+  });
+  assert.equal((sqlite.prepare("SELECT image_content_sha256 hash FROM market_price_snapshots WHERE sku_code='SKU-1'").get() as { hash: string }).hash, newHash);
   sqlite.close();
 });
 
@@ -647,7 +998,9 @@ test("failed market publish rolls back every fact, snapshot, and taxonomy row", 
   assert.equal((sqlite.prepare("SELECT COUNT(*) count FROM market_price_snapshots WHERE category='atomic-category'").get() as { count: number }).count, 0);
   assert.equal((sqlite.prepare("SELECT COUNT(*) count FROM market_subcategory_taxonomy WHERE category='atomic-category'").get() as { count: number }).count, 0);
   assert.equal((sqlite.prepare("SELECT COUNT(*) count FROM market_import_staging_rows").get() as { count: number }).count, 0);
+  assert.equal((sqlite.prepare("SELECT COUNT(*) count FROM market_import_identity_refresh_keys_v2").get() as { count: number }).count, 0);
   assert.equal((sqlite.prepare("SELECT COUNT(*) count FROM market_import_range_claims").get() as { count: number }).count, 0);
+  assert.equal((sqlite.prepare("SELECT suppress_identity_revision value FROM market_system_kpi_cache_control WHERE id=1").get() as { value: number }).value, 0);
   assert.equal((sqlite.prepare("SELECT status FROM market_import_batches WHERE id='atomic-failure'").get() as { status: string }).status, "failed");
   sqlite.close();
 });
@@ -668,6 +1021,10 @@ test("derived-cache failure rolls back the same market publish transaction", asy
 
   assert.equal((sqlite.prepare("SELECT COUNT(*) count FROM market_ranking_entries WHERE category='cache-failure-category'").get() as { count: number }).count, 0);
   assert.equal((sqlite.prepare("SELECT COUNT(*) count FROM market_sku_gmv_totals").get() as { count: number }).count, 0);
+  assert.equal((sqlite.prepare("SELECT COUNT(*) count FROM market_master_identities").get() as { count: number }).count, 0);
+  assert.equal((sqlite.prepare("SELECT COUNT(*) count FROM market_import_identity_refresh_keys_v2").get() as { count: number }).count, 0);
+  assert.equal((sqlite.prepare("SELECT suppress_identity_revision value FROM market_system_kpi_cache_control WHERE id=1").get() as { value: number }).value, 0);
+  assert.equal((sqlite.prepare("SELECT source_revision FROM market_system_kpi_cache_state WHERE id=1").get() as { source_revision: number }).source_revision, 1);
   assert.equal((sqlite.prepare("SELECT status FROM market_import_batches WHERE id='cache-failure'").get() as { status: string }).status, "failed");
   sqlite.close();
 });
@@ -981,9 +1338,13 @@ test("overview analytics applies rank bounds and geometric interpolation between
       ('r1',1,'2026-06-01','2026-06-30','净水','pop','全部','SKU','POP',1,'A','A','甲',1000000,100,1000,'{"成交金额":"￥9000~￥1.1万"}','b'),
       ('r2',2,'2026-06-01','2026-06-30','净水','pop','全部','SKU','POP',2,'B','B','乙',600000,60,1000,'{"成交金额":"￥1000~￥9000"}','b'),
       ('r3',3,'2026-06-01','2026-06-30','净水','pop','全部','SKU','POP',3,'C','C','丙',100000,10,1000,'{"成交金额":"￥900~￥1100"}','b');
-    INSERT INTO netshop_rows VALUES
-      ('jd_sku_daily','sku_daily','2026-06-15','A','','','{"成交金额":10000}'),
-      ('jd_sku_daily','sku_daily','2026-06-15','C','','','{"成交金额":1000}');
+    INSERT INTO market_netshop_projection
+      (projection_revision,projection_key,kind,source,dataset,business_date,sku_id,transaction_amount_cents)
+    VALUES
+      ('1:aaaaaaaaaaaa','metric:A','metric','jd_sku_daily','sku_daily','2026-06-15','A',1000000),
+      ('1:aaaaaaaaaaaa','metric:C','metric','jd_sku_daily','sku_daily','2026-06-15','C',100000);
+    UPDATE market_netshop_projection_control
+      SET active_revision='1:aaaaaaaaaaaa',active_total=2 WHERE id=1;
   `);
   const analytics = readOverviewAnalytics(sqlite);
   const summary = JSON.parse(analytics.summary_json) as { gmv_cents: number };
@@ -1017,15 +1378,45 @@ test("brand share denominator uses all brands and display limiting happens after
 });
 
 test("market ranking limits candidates before previous-rank lookup and pins the selective index", async () => {
-  const [database, overviewSql] = await Promise.all([
-    readFile(new URL("../lib/market/database.ts", import.meta.url), "utf8"),
-    readFile(new URL("../lib/market/overview-sql.ts", import.meta.url), "utf8"),
-  ]);
-  const topRanked = overviewSql.indexOf("top_ranked AS MATERIALIZED");
-  const boundedIds = overviewSql.lastIndexOf("LIMIT 200", topRanked);
+  const database = await readFile(new URL("../lib/market/database.ts", import.meta.url), "utf8");
+  const rankingSql = buildMarketRankingCtes();
+  const topRanked = rankingSql.indexOf("top_ranked AS MATERIALIZED");
+  const boundedIds = rankingSql.lastIndexOf("LIMIT 200", topRanked);
   assert.ok(boundedIds >= 0 && topRanked > boundedIds);
   assert.ok(database.indexOf("buildMarketRankingCtes") < database.indexOf("previous_rank"));
   assert.match(database, /market_ranking_entries p INDEXED BY market_entries_sku_idx/);
+});
+
+test("market ranking reuses only a ready image from the same exact product identity", async () => {
+  const sqlite = new DatabaseSync(":memory:");
+  await ensureMarketSchemaCore(sqliteAdapter(sqlite));
+  sqlite.exec(`
+    CREATE TABLE netshop_rows (sku_id TEXT, spu_id TEXT, product_code TEXT);
+    CREATE TABLE sales_order_lines (product_code TEXT);
+    INSERT INTO market_ranking_entries
+      (natural_key,source_row_number,period_start,period_end,category,scope,ranking_dimension,operation_mode,rank,sku_code,product_name,image_url,raw_json,last_import_batch_id)
+    VALUES
+      ('historical',1,'2026-07-01','2026-07-31','净水','POP','SKU','POP',1,'SKU-IMAGE','旧榜单','https://img10.360buyimg.com/n5/same.jpg','{}','old'),
+      ('foreign-scope',2,'2026-08-01','2026-08-11','净水','自营','SKU','自营',1,'SKU-IMAGE','其他范围','https://img10.360buyimg.com/n5/foreign.jpg','{}','foreign'),
+      ('current',3,'2026-08-12','2026-08-12','净水','POP','SKU','POP',1,'SKU-IMAGE','今日榜单','','{}','current');
+    INSERT INTO market_image_cache (source_url,status,content_sha256,object_key)
+    VALUES
+      ('https://img10.360buyimg.com/n5/same.jpg','ready','same-hash','market-images/same.jpg'),
+      ('https://img10.360buyimg.com/n5/foreign.jpg','ready','foreign-hash','market-images/foreign.jpg');
+    INSERT INTO market_effective_metrics_cache
+      (market_entry_id,effective_gmv_cents,real_gmv_cents,gmv_out_of_band,effective_quantity,effective_average_transaction_price_cents,effective_conversion_bps)
+    SELECT id,1000,NULL,0,1,1000,100 FROM market_ranking_entries WHERE natural_key='current';
+  `);
+  const sql = `${buildMarketRankingCtes({ factWhere: "WHERE m.natural_key='current'" })}
+    SELECT resolved_image_url imageUrl,image_cache_status_raw cacheStatus,image_content_sha256 hash FROM top_ranked`;
+  // D1 rejects outer-query references inside a scalar subquery's ORDER BY even though local SQLite accepts them.
+  assert.doesNotMatch(sql, /ORDER BY CASE WHEN historical\.id=m\.id/);
+  assert.deepEqual({ ...(sqlite.prepare(sql).get() as Record<string, unknown>) }, {
+    imageUrl: "https://img10.360buyimg.com/n5/same.jpg",
+    cacheStatus: "ready",
+    hash: "same-hash",
+  });
+  sqlite.close();
 });
 
 test("shared market month coverage prefers a full month, deduplicates daily rows, and excludes rolling windows", async () => {
@@ -1179,5 +1570,6 @@ test("market trend identity is exact in UI, API, service, and the central AI sch
   assert.match(trendTool, /scope: \{ type: "string", minLength: 1, maxLength: 120 \}/);
   assert.match(trendTool, /required: \["skuCode", "category", "scope", "rankingDimension"\]/);
   assert.match(aiTools, /scope = stringArg\(args\.scope, "scope", 120\)/);
-  assert.match(aiTools, /category,\s+scope,\s+rankingDimension: dimension/);
+  assert.match(aiTools, /path: MARKET_CONSUMER_QUERY_PATH/);
+  assert.match(aiTools, /operation: "sku_trend"[\s\S]*category,[\s\S]*scope,[\s\S]*rankingDimension/);
 });

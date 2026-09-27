@@ -1,0 +1,98 @@
+{
+  "schemaVersion": "candidate-development-evidence-v1",
+  "date": "2026-09-18",
+  "scope": "ERP exact source options candidate; no production access, migration, initialization or deployment",
+  "migration": "sales.0010_analysis_options",
+  "tables": [
+    "sales_analysis_options",
+    "sales_analysis_options_state"
+  ],
+  "checks": {
+    "pureContractAndBounds": {
+      "passed": 14,
+      "seconds": 0.635,
+      "databaseConnected": false
+    },
+    "backupNewConditionalFixtures": {
+      "passed": 3,
+      "databaseConnected": false
+    },
+    "backupExistingFixtures": {
+      "passed": 8,
+      "databaseConnected": false
+    },
+    "maintenanceNode": {
+      "passed": 12,
+      "failed": 0,
+      "databaseConnected": false
+    },
+    "migrationStateWithoutConnection": {
+      "salesChanges": {},
+      "databaseConnected": false
+    },
+    "compileAndDiffCheck": "passed",
+    "owningPostgresql": {
+      "status": "passed",
+      "tests": 13,
+      "seconds": 34.935,
+      "log": ".runtime/ai-pg-60cf69369874/tests.log",
+      "productionWrites": false
+    },
+    "upgradeAndIndependentRestore": {
+      "status": "passed",
+      "evidence": ".runtime/ai-pg-05e235baa8f4/sales-options-upgrade.json",
+      "oldSalesTables": 17,
+      "oldRowsDigestPreserved": true,
+      "emptyRollbackAndReapply": true,
+      "populatedRollbackDenied": true,
+      "oldBackupAccepted": true,
+      "restoredOwningPageEqual": true,
+      "productionWrites": false
+    },
+    "edgeRoutesAndExistingGateway": {
+      "status": "passed",
+      "passed": 16,
+      "newTests": 10,
+      "lint": "passed",
+      "sessionBoundaryStub": true,
+      "owningAuthorization": "covered_by_separate_postgresql_tests"
+    },
+    "existingSalesAndCursorRegression": {
+      "passed": 32,
+      "log": ".runtime/ai-pg-f0ca55f28ea1/tests.log"
+    },
+    "runtimeRoleOptionsHealth": {
+      "passed": 1,
+      "combinedWithFinanceTests": 11,
+      "log": ".runtime/ai-pg-faf9c2a5417d/tests.log"
+    },
+    "explicitRebuildCommand": {
+      "passed": 8,
+      "log": ".runtime/sales-options-command-unit.log"
+    },
+    "existingHealthSqliteUnit": {
+      "passed": 16,
+      "log": ".runtime/sales-health-sqlite-unit.log"
+    }
+  },
+  "capacityEvidence": {
+    "pureAcceptedIdentityCount": 10000,
+    "pureRejectedIdentityCount": 10001,
+    "canonicalDirectoryBytesLimit": 16777216,
+    "pureRejectedWide5000GroupsOverLimit": true,
+    "fullUtf8PageLimit": 38000,
+    "productionScaleVerified": false
+  },
+  "knownBoundaries": [
+    "GET uses published exact identity index; metadata never proves continuous business-date coverage.",
+    "Preparation is explicit and outside publication transaction; successful sales changes make directory stale until rebuilt.",
+    "Existing production sales reader fact privileges remain; only new GET independence is tested with a narrower synthetic role.",
+    "Initial pure backup fixture caught list/set intersection TypeError in the new legacy branch; corrected to set(tables), then all 3 new and 8 existing tests passed.",
+    "Actual roles and candidate migration/independent restore passed in isolated synthetic PostgreSQL; production use and scale remain unverified.",
+    "First two upgrade harness runs failed because its synthetic unrelated market revision was absent/zero; fixture corrected to revision 1, production backup collector unchanged. Logs .runtime/ai-pg-f0d7ec3448eb/failure.log and .runtime/ai-pg-e94f141db0d4/failure.log retained.",
+    "ERP workbench selection is in progress; an explicit writer-only rebuild CLI exists and has 8 entry tests, but no automatic production rebuild is enabled.",
+    "The existing health suite is a SQLite unit suite. Running all 40 sales API/analysis/health tests as PostgreSQL superuser produced 37 passes and 3 expected-role fixture failures (sales_writer_database_privilege_excessive); production health checks were not weakened. Original health 16 tests passed in SQLite; actual options roles and health delta passed separately. Failure log .runtime/ai-pg-c9670ee889bc/failure.log retained.",
+    "An intermediate combined test command misspelled the role-test label; 11 finance tests passed and one loader error occurred. Corrected exact label passed all 12. Log .runtime/ai-pg-8ed966db5319/failure.log retained.",
+    "Independent restore compares full row digests for 19 sales tables and all collector table evidence; it does not assert all non-sales row contents or restored runtime ACLs. Real restricted roles are tested separately."
+  ]
+}

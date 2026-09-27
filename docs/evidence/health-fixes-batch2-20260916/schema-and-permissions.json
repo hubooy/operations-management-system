@@ -1,0 +1,15 @@
+{
+  "candidateIndexCount": 0,
+  "marketMigrations": [
+    "0001_initial",
+    "0002_seed_control_rows",
+    "0003_remove_marketannotationvalidationsample_mkt_validation_sample_uq_and_more",
+    "0004_projection_sync_fencing"
+  ],
+  "rankingRowSignature": [
+    320000,
+    "0d650ebfe6c15edd77bbce951badeaf7"
+  ],
+  "negativeProbeTransactionReadOnly": "off",
+  "writeDeniedSqlState": "42501"
+}

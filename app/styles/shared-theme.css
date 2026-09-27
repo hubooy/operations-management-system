@@ -1,0 +1,143 @@
+/* Shared controls use the same forest/sage palette as the AI conversation. */
+.top-navigation-shell .sidebar-navigation-link { color: var(--color-brand-tint); }
+.top-navigation-shell .sidebar-navigation-link.active { color: #fff; background: #ffffff14; }
+.top-navigation-shell .sidebar-navigation-link.active::before { background: var(--color-brand-tint); }
+.top-navigation-shell .nav-icon { color: var(--color-brand-tint); }
+.top-navigation-shell .active .nav-icon { color: var(--color-brand-hover); background: var(--color-brand-tint); box-shadow: none; }
+.top-navigation-shell .ai-context-button,
+.top-navigation-shell .sidebar-collapse-button { color: var(--color-brand-tint); }
+.top-navigation-shell .sidebar-navigation-scroll { scrollbar-color: var(--color-brand-border) transparent; }
+.top-navigation-shell .shell-account-avatar { color: var(--color-brand-hover); background: var(--color-brand-tint); }
+
+.subnav button, .market-section-nav > button { color: var(--color-text-secondary); }
+.app-shell [role="tablist"] > button, .finance-target-period-tabs > button { color: var(--color-text-secondary); }
+.app-shell [role="tablist"] > button[aria-selected="true"], .finance-target-period-tabs > button.active {
+  color: var(--color-brand); background: var(--color-brand-soft); border-color: var(--color-brand-border);
+  box-shadow: inset 0 -2px var(--color-brand);
+}
+.subnav button:hover, .market-section-nav > button:hover { color: var(--color-brand); background: var(--color-brand-soft); }
+.subnav button.active, .workflow-subnav button.active, .market-section-nav > button.active {
+  color: var(--color-brand); background: var(--color-brand-soft); border-color: var(--color-brand-border);
+  box-shadow: inset 0 -2px var(--color-brand);
+}
+.market-section-nav > button > span { color: var(--color-text-secondary); background: var(--color-brand-soft); }
+.market-section-nav > button.active > span { color: var(--color-brand-tint); background: var(--color-brand-hover); }
+.market-section-nav > button small, .market-section-nav > button em { color: var(--color-text-muted); }
+.primary-button { background: var(--color-brand); border-color: var(--color-brand); box-shadow: none; }
+.primary-button:hover { background: var(--color-brand-hover); }
+.secondary-button, .filter-button { color: var(--color-text-secondary); border-color: var(--line); }
+
+.app-shell :is(.searchable-select-trigger, .multi-filter-trigger, .filter-select,
+  .sales-overview-filter-controls select, .inventory-shared-filter-controls input,
+  .workflow-toolbar-actions input, .workflow-filter-row input, .workflow-filter-row select, .customer-service-filters input,
+  .customer-service-filters select, .market-filter-controls > input, .market-filter > button,
+  .category-filter-menu > summary, .operations-multi-filter > summary, .workflow-date-filter) {
+  color: var(--color-text-secondary); border-color: var(--line); background: var(--surface);
+}
+.app-shell :is(.searchable-select-trigger:hover, .searchable-select.open .searchable-select-trigger,
+  .multi-filter-trigger:hover, .multi-filter-select.open .multi-filter-trigger,
+  .market-filter > button.active, .operations-multi-filter[open] > summary) {
+  color: var(--color-brand); border-color: var(--color-brand-border); background: var(--color-brand-soft);
+}
+:is(.searchable-select-menu, .multi-filter-menu, .column-filter-popover,
+  .market-filter-popover, .category-filter-popover, .operations-multi-filter-menu) {
+  color: var(--color-text-secondary); border-color: var(--line); background: var(--surface); box-shadow: var(--shadow-overlay);
+}
+:is(.searchable-select-search, .multi-filter-search, .column-filter-search, .category-filter-search) {
+  color: var(--color-text-muted); border-color: var(--line); background: var(--color-brand-soft);
+}
+:is(.searchable-select-search, .multi-filter-search, .column-filter-search, .category-filter-search):focus-within {
+  border-color: var(--color-brand-border); box-shadow: 0 0 0 2px var(--color-focus-ring);
+}
+:is(.searchable-select-search, .multi-filter-search, .column-filter-search, .category-filter-search) input {
+  color: var(--color-text-primary);
+}
+.searchable-select-options > button, .multi-filter-menu > button,
+.market-filter-popover button, .category-filter-options label, .operations-multi-filter-menu > div label {
+  color: var(--color-text-secondary);
+}
+.searchable-select-options > button:hover:not(:disabled), .searchable-select-options > button.selected,
+.multi-filter-menu > button:hover, .multi-filter-menu > button.selected,
+.column-filter-options label:hover, .market-filter-popover button:hover,
+.category-filter-options label:hover, .category-filter-options label.selected,
+.operations-multi-filter-menu > div label:hover, .inventory-age-bucket-filter-grid button.selected {
+  color: var(--color-brand); background: var(--color-brand-soft); border-color: var(--color-brand-border);
+}
+.searchable-select-options > button > i,
+.searchable-multi-select-options > button.selected > .searchable-multi-check,
+.multi-filter-menu > button.selected > i, .market-filter-popover button i.checked,
+.inventory-age-bucket-filter-grid button.selected i {
+  color: #fff; background: var(--color-brand); border-color: var(--color-brand);
+}
+.column-filter-options input, .category-filter-options input, .operations-multi-filter-menu > div input {
+  accent-color: var(--color-brand);
+}
+.column-filter-actions button, .searchable-select-menu-head button,
+.multi-filter-menu-head button, .category-filter-popover > button,
+.sales-overview-filter-reset, .inventory-shared-filter-reset, .finance-filter-reset,
+.operations-filter-clear, table th[data-column-filter-active="true"],
+table th[data-column-filter-active="true"]::after { color: var(--color-brand); }
+.sales-overview-filter-panel, .inventory-shared-filter-panel,
+.finance-expense-filter-bar, .finance-shop-filter-bar { border-color: var(--line); background: var(--color-brand-soft); }
+:is(.sales-overview-filter-heading, .inventory-shared-filter-heading, .category-filter-heading) h2 {
+  color: var(--color-text-primary);
+}
+.workflow-section-hero { border-color: var(--line); background: var(--surface); }
+.app-shell .eyebrow { color: var(--color-brand); }
+.workflow-section-hero h2, .inventory-workbench-heading h2 { color: var(--color-text-primary); }
+.workflow-section-hero p { color: var(--color-text-secondary); }
+.product-search-hero, .jd-sku-hero { background: var(--color-brand-hover); }
+.product-search-hero .eyebrow, .jd-sku-hero .eyebrow { color: var(--color-brand-tint); }
+.annotation-hero .eyebrow { color: var(--color-brand-tint); }
+.annotation-hero .annotation-progress span { color: var(--color-brand-tint); }
+.market-view-switch button.active { color: #fff; background: var(--color-brand); }
+.source-grid button.selected { border-color: var(--color-brand-border); background: var(--color-brand-soft); box-shadow: inset 0 0 0 1px var(--color-brand-border); }
+.source-grid button > span { color: var(--color-brand); background: var(--color-brand-soft); }
+.source-grid button > small, .import-panel > p { color: var(--color-text-secondary); }
+.store-column-picker-options label.selected, .annotation-job-entry.active,
+.ai-conversation-row.active, .product-margin-kpi.active {
+  color: var(--color-brand); border-color: var(--color-brand-border); background: var(--color-brand-soft);
+}
+.market-compare-check.active, .launch-stage-overview article > i .active { background: var(--color-brand); border-color: var(--color-brand); }
+.inventory-age-summary-table tr.selected td, .workflow-card-stage-line span.active { color: var(--color-brand); background: var(--color-brand-soft); }
+.ai-space-hero, .ai-management-summary { background: var(--color-brand-soft); }
+.product-search-hero p, .jd-sku-hero p { color: var(--color-brand-tint); }
+.product-search-hero .product-refresh {
+  color: #fff; border-color: var(--color-brand-border); background: #ffffff18;
+  font-size: 14px; font-weight: 600;
+}
+.product-search-hero .product-refresh:hover:not(:disabled) { color: var(--color-brand-hover); background: var(--color-brand-tint); }
+.product-search-hero .global-period-badge { color: var(--color-brand-tint); border-color: #ffffff30; background: #ffffff12; }
+.n8n-workflow-hero {
+  min-height: 0; gap: 18px; padding: 18px 24px; background: var(--color-brand-hover); box-shadow: var(--shadow);
+}
+.n8n-workflow-hero h2 { margin: 6px 0; font-size: 24px; }
+.n8n-workflow-hero p, .n8n-workflow-kicker, .n8n-workflow-tags span,
+.n8n-workflow-hero-status small { color: var(--color-brand-tint); }
+.n8n-workflow-kicker i { background: var(--color-brand-tint); box-shadow: 0 0 0 4px #cce8d918; }
+.n8n-workflow-tags { margin-top: 10px; gap: 6px; }
+.n8n-workflow-tags span { padding: 3px 8px; }
+.n8n-workflow-hero-status { gap: 6px; }
+.n8n-workflow-hero-status strong { font-size: 20px; letter-spacing: 2px; }
+.n8n-workflow-switcher > button.is-active > span { color: var(--color-brand-hover); background: var(--color-brand-tint); }
+.n8n-workflow-hero h2 { font-size: var(--font-size-display); line-height: var(--line-height-tight); }
+.n8n-workflow-hero-status strong { font-size: var(--font-size-page-title); line-height: var(--line-height-tight); }
+@media (max-width: 860px) {
+  .n8n-workflow-hero { padding: 16px 18px; gap: 12px; }
+  .n8n-workflow-hero h2 { font-size: var(--font-size-page-title); }
+}
+
+.stat-period-picker, .period-shortcuts, .period-picker-footer { border-color: var(--line); background: var(--surface); }
+.period-shortcuts button, .period-nav, .period-month h4, .period-days button { color: var(--color-text-secondary); }
+.period-shortcuts button.active, .period-days button:hover:not(:disabled), .period-days button.in-range {
+  color: var(--color-brand); background: var(--color-brand-soft); border-color: var(--color-brand-border);
+}
+.period-days button.selected, .period-picker-footer .primary-button {
+  color: #fff; background: var(--color-brand); border-color: var(--color-brand);
+}
+.period-days button.outside { color: var(--color-text-muted); }
+.period-days button:disabled { color: var(--color-border-strong); }
+.period-picker-footer > span { color: var(--color-text-secondary); border-color: var(--line); }
+
+/* Focus remains visible for native controls and popup menus. */
+.app-shell :is(input, select, textarea):focus-visible { outline-color: var(--color-focus-ring); border-color: var(--color-brand-border); }

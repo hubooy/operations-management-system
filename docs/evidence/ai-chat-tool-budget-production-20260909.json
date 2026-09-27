@@ -1,0 +1,432 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-09-09",
+  "status": "deployed-and-real-question-verified",
+  "scope": "Fix bounded AI chat completion and fixed Guangdong warehouse arguments; reduce per-module drawer typography.",
+  "authorization": "Existing user release request and subsequent explicit request to fix failed AI questions and reduce font size.",
+  "sourceCommit": "370127e857b3ee167d7b4e2181306f65c605242b",
+  "baseMainCommit": "7b08e0b419d4e53fb90170287a733adc6a36c1ce",
+  "sourceMergedAndPushedToMain": true,
+  "django": {
+    "manifestSha256": "bd5a38965e5efce60233d950409d49127505524d011f686538db4396e4a98e2d",
+    "chatSourceSha256": "9b34ab0dba121649648113f63d415f62dc5f7111f0dfb1d26b6907cfdd108566",
+    "installedChatMatches": true,
+    "newMigrations": false,
+    "rolesChanged": false,
+    "aiOwnedTables": 46
+  },
+  "frontendSourceMatches": [
+    {
+      "path": "app/globals.css",
+      "sha256": "28bc839ba1e6bb1099a0143f9b1dac0b52a34b3824f8ee5b0c8a7c7355577349",
+      "matches": true
+    },
+    {
+      "path": "lib/ai/page-data-tools.ts",
+      "sha256": "995c1c67abf30bb19e0c2b82bfd0874fb40586cc6f5e46385bff25683a0b93cf",
+      "matches": true
+    },
+    {
+      "path": "lib/ai/tool-registry.ts",
+      "sha256": "cc6a9b5240f02e1244992531f3bc82c753b96f22b80ed415d04a84c4ab0c146d",
+      "matches": true
+    }
+  ],
+  "workerPlan": {
+    "status": "planned",
+    "version": "teruisi-local-worker-release-rotation-plan-v1",
+    "planSha256": "3db88232ece9d49e665a5c6a04715f57fe232e0bb8979deec7466c29e11ec1a4",
+    "planPath": "D:\\teruisi-runtime\\teruisi-worker-sales\\state\\worker-release-rotation-plans\\3db88232ece9d49e665a5c6a04715f57fe232e0bb8979deec7466c29e11ec1a4.json",
+    "predecessorReleaseId": "20260909T112853Z-668b2a7c9f0f6fa3",
+    "candidateReleaseId": "20260909T144336Z-1b58b3fe3893624b",
+    "candidateManifestSha256": "f4a5960087ce8754746f4ea14bf57ad5810c9d967519e9ea134dd957156dfb34",
+    "candidateGuardReceiptSha256": "2a71971063bc33eb7445ef62c2bd16e9ae27163a16a6ff0f13db1bfdabd7e3fb",
+    "cutoverId": "sales-pg-20260829T204417Z-d9896e904d8092cb"
+  },
+  "workerActivation": {
+    "status": "activated",
+    "version": "teruisi-local-worker-release-successor-v1",
+    "planSha256": "3db88232ece9d49e665a5c6a04715f57fe232e0bb8979deec7466c29e11ec1a4",
+    "predecessorReleaseId": "20260909T112853Z-668b2a7c9f0f6fa3",
+    "releaseId": "20260909T144336Z-1b58b3fe3893624b",
+    "manifestPath": "D:\\teruisi-runtime\\teruisi-worker-sales\\releases\\20260909T144336Z-1b58b3fe3893624b\\deployment-manifest.json",
+    "manifestSha256": "f4a5960087ce8754746f4ea14bf57ad5810c9d967519e9ea134dd957156dfb34",
+    "successorSha256": "24fe5c166367b3ce6e9abc75498871c9d5b94090b1d304f9bc8476d4572c5aeb",
+    "consumptionSha256": "541726c7a4c2910ce3f775ef585f881990947ac4ddc7f8bae98c4af4cc9116d5",
+    "startupBindingSha256": "0786d85ae2bebfd5fc376a35f996c716b92efc6ba893218e346e57fdae912759"
+  },
+  "effectiveHead": {
+    "status": "resolved",
+    "version": "teruisi-local-worker-effective-release-v1",
+    "releaseId": "20260909T144336Z-1b58b3fe3893624b",
+    "manifestPath": "D:\\teruisi-runtime\\teruisi-worker-sales\\releases\\20260909T144336Z-1b58b3fe3893624b\\deployment-manifest.json",
+    "manifestSha256": "f4a5960087ce8754746f4ea14bf57ad5810c9d967519e9ea134dd957156dfb34",
+    "guardReceiptSha256": "2a71971063bc33eb7445ef62c2bd16e9ae27163a16a6ff0f13db1bfdabd7e3fb",
+    "successorCount": 117,
+    "chainStateSha256": "e0d51defe62f0e17f19726de330af359524038226f648d0620a872bd6ba2daf8"
+  },
+  "controlledStop": {
+    "version": "teruisi-operations-system-service-v1",
+    "action": "Stop",
+    "status": "stopped",
+    "workerStatus": "stopped",
+    "backendStopped": true,
+    "message": "��Ӫ����ϵͳ������ֹͣ��Worker��stopped�������� Django ������ PostgreSQL��",
+    "checkedAt": "2026-09-09T22:42:48.2209779+08:00"
+  },
+  "controlledStart": {
+    "version": "teruisi-operations-system-control-v2",
+    "status": "started",
+    "state": "Running",
+    "backendState": "Ready",
+    "workerState": "exact_release",
+    "releaseId": "20260909T144336Z-1b58b3fe3893624b",
+    "supervisorProcessId": 31340,
+    "portProcessId": 46136,
+    "url": "http://localhost:3000/",
+    "checkedAt": "2026-09-09T22:58:55.9054029+08:00"
+  },
+  "readiness": {
+    "ok": true,
+    "backend": "django-postgresql",
+    "unavailableServices": [],
+    "status": "ready"
+  },
+  "preStopWorkload": {
+    "status": "passed",
+    "checkedAt": "2026-09-09T14:40:58.397Z",
+    "helper": {
+      "ok": true,
+      "stage": "ready",
+      "busy": false,
+      "activeWorkflow": null
+    },
+    "n8nNonterminalCount": 0,
+    "aiScope": "current-authenticated-principal-only",
+    "ai": [
+      {
+        "dataset": "rows_ai_chat_request_receipts",
+        "count": 0,
+        "hasMore": false,
+        "queriedAt": "2026-09-09T14:40:57.206127+00:00"
+      },
+      {
+        "dataset": "rows_ai_agent_jobs",
+        "count": 0,
+        "hasMore": false,
+        "queriedAt": "2026-09-09T14:40:57.426847+00:00"
+      },
+      {
+        "dataset": "rows_ai_workflow_runs",
+        "count": 0,
+        "hasMore": false,
+        "queriedAt": "2026-09-09T14:40:57.605867+00:00"
+      },
+      {
+        "dataset": "rows_ai_space_jobs",
+        "count": 0,
+        "hasMore": false,
+        "queriedAt": "2026-09-09T14:40:57.800244+00:00"
+      },
+      {
+        "dataset": "rows_ai_space_job_items",
+        "count": 0,
+        "hasMore": false,
+        "queriedAt": "2026-09-09T14:40:58.006795+00:00"
+      },
+      {
+        "dataset": "rows_ai_agent_provider_dispatches",
+        "count": 0,
+        "hasMore": false,
+        "queriedAt": "2026-09-09T14:40:58.206391+00:00"
+      },
+      {
+        "dataset": "rows_ai_agent_tool_dispatches",
+        "count": 0,
+        "hasMore": false,
+        "queriedAt": "2026-09-09T14:40:58.400013+00:00"
+      }
+    ]
+  },
+  "validation": {
+    "django": {
+      "total": 60,
+      "passed": 59,
+      "skipped": 1
+    },
+    "node": {
+      "total": 2060,
+      "passed": 2040,
+      "skipped": 20,
+      "failed": 0
+    },
+    "renderedBuild": {
+      "passed": 20
+    },
+    "build": "passed",
+    "backendBoundary": {
+      "modules": 402,
+      "violations": 0
+    },
+    "lint": {
+      "errors": 0,
+      "existingWarnings": 9
+    },
+    "migrationDryRun": "No changes detected",
+    "diffCheck": "passed",
+    "fullTypeScriptCheck": "Not rerun; previously documented 142 baseline errors remain outside this fix."
+  },
+  "realQuestion": {
+    "question": "请结合当前页面的数据分析重点变化、异常及可能原因，并说明数据来源和统计范围。",
+    "module": "inventory",
+    "view": "overview",
+    "model": "glm-5.2",
+    "newConversation": true,
+    "status": "passed",
+    "checkedAt": "2026-09-09T15:03:08.273Z",
+    "receipt": {
+      "status": "succeeded",
+      "conversationId": "ai-conversation-f2414dc9-20b5-43ba-8e81-bff3587a5dbc",
+      "assistantMessageId": "ai-msg-44d0bd38-5793-4cb1-9933-b418c86e4b82"
+    },
+    "clientRequestId": "193802d2-3b76-4b58-bb63-8c4084a03746",
+    "assistant": {
+      "id": "ai-msg-44d0bd38-5793-4cb1-9933-b418c86e4b82",
+      "contentBytes": 3176,
+      "contentCharacters": 1457,
+      "sha256": "d1ed2ed3002f174f9eb423f82e87726a80c9ca041f4968a886189a9f6ecf1a03",
+      "contentTruncated": false,
+      "sourceAndScopeStated": true,
+      "artifacts": [
+        {
+          "id": "ai-artifact-d604a749-dd1e-4366-903a-b51914b547c2",
+          "rowCount": 14881,
+          "truncated": true
+        }
+      ]
+    },
+    "requestMethod": "GET-only",
+    "audit": {
+      "receipt": {
+        "id": "ai-chat-request-d63647d6-e276-4f14-b807-0eb305a124da",
+        "client_request_id": "193802d2-3b76-4b58-bb63-8c4084a03746",
+        "status": "succeeded",
+        "assistant_message_id": "ai-msg-44d0bd38-5793-4cb1-9933-b418c86e4b82",
+        "error_code": null,
+        "admitted_at": "2026-09-09T22:59:48.48977+08:00",
+        "completed_at": "2026-09-09T23:01:13.480866+08:00",
+        "elapsed_seconds": 84.991096
+      },
+      "audits": [
+        {
+          "tool_name": "ai_chat_provider",
+          "status": "started",
+          "duration_ms": 0,
+          "error_code": null,
+          "created_at": "2026-09-09T22:59:48.579543+08:00"
+        },
+        {
+          "tool_name": "ai_chat_provider",
+          "status": "succeeded",
+          "duration_ms": 14578,
+          "error_code": null,
+          "created_at": "2026-09-09T23:00:03.175315+08:00"
+        },
+        {
+          "tool_name": "get_data_freshness",
+          "status": "started",
+          "duration_ms": 0,
+          "error_code": null,
+          "created_at": "2026-09-09T23:00:03.247309+08:00"
+        },
+        {
+          "tool_name": "get_data_freshness",
+          "status": "succeeded",
+          "duration_ms": 158,
+          "error_code": null,
+          "created_at": "2026-09-09T23:00:03.399264+08:00"
+        },
+        {
+          "tool_name": "get_inventory_health",
+          "status": "started",
+          "duration_ms": 0,
+          "error_code": null,
+          "created_at": "2026-09-09T23:00:03.449969+08:00"
+        },
+        {
+          "tool_name": "get_inventory_health",
+          "status": "failed",
+          "duration_ms": 1286,
+          "error_code": "tool_result_too_large",
+          "created_at": "2026-09-09T23:00:04.735534+08:00"
+        },
+        {
+          "tool_name": "ai_chat_provider",
+          "status": "started",
+          "duration_ms": 0,
+          "error_code": null,
+          "created_at": "2026-09-09T23:00:04.758925+08:00"
+        },
+        {
+          "tool_name": "ai_chat_provider",
+          "status": "succeeded",
+          "duration_ms": 7375,
+          "error_code": null,
+          "created_at": "2026-09-09T23:00:12.136759+08:00"
+        },
+        {
+          "tool_name": "get_inventory_health",
+          "status": "started",
+          "duration_ms": 0,
+          "error_code": null,
+          "created_at": "2026-09-09T23:00:12.158276+08:00"
+        },
+        {
+          "tool_name": "get_inventory_health",
+          "status": "succeeded",
+          "duration_ms": 1379,
+          "error_code": null,
+          "created_at": "2026-09-09T23:00:13.537633+08:00"
+        },
+        {
+          "tool_name": "ai_chat_provider",
+          "status": "started",
+          "duration_ms": 0,
+          "error_code": null,
+          "created_at": "2026-09-09T23:00:13.55639+08:00"
+        },
+        {
+          "tool_name": "ai_chat_provider",
+          "status": "succeeded",
+          "duration_ms": 59905,
+          "error_code": null,
+          "created_at": "2026-09-09T23:01:13.466201+08:00"
+        },
+        {
+          "tool_name": "ai_question",
+          "status": "succeeded",
+          "duration_ms": 0,
+          "error_code": null,
+          "created_at": "2026-09-09T23:01:13.485728+08:00"
+        }
+      ],
+      "providerDispatchCount": 3
+    },
+    "browser": {
+      "questionSent": true,
+      "serverSyncSuccessVisible": true,
+      "reloadAndReopenRestoredSameReply": true,
+      "smallerFontVisuallyVerified": true,
+      "replyBodyPx": 14,
+      "inputPx": 14,
+      "headerPx": 14,
+      "controlsPx": 12
+    }
+  },
+  "realQuestionLimits": "First inventory result exceeded the existing size cap; model reduced the detail limit and succeeded. Reply states source, aggregate scope and truncated details. This does not verify every business inference or remove all query bounds.",
+  "backups": {
+    "before": {
+      "status": "completed",
+      "backupId": "daily-20260909T143835Z-af5174d4966f",
+      "backupDirectory": "D:\\teruisi-runtime\\django-sales\\backups\\postgres-daily\\daily-20260909T143835Z-af5174d4966f",
+      "manifestSha256": "fbeb58bffc1ff2633b090cd7917ea89f6ac2b2092b8bd738f6e644a1f70bae91",
+      "dumpSha256": "f69b017497ff6e0d391331850aec79fe6d8113ff1e356ddc6fbebb3cd6a7b4fe",
+      "contentSha256": "97fb7d5374a4ae4ffa31240c0abf880d27eca0d50a50630dfe2db79b885da715",
+      "completedAt": "09/09/2026 22:40:03",
+      "serviceStateChanged": false
+    },
+    "beforeVerify": {
+      "status": "completed",
+      "backupId": "daily-20260909T143835Z-af5174d4966f",
+      "manifestSha256": "fbeb58bffc1ff2633b090cd7917ea89f6ac2b2092b8bd738f6e644a1f70bae91",
+      "dumpSha256": "f69b017497ff6e0d391331850aec79fe6d8113ff1e356ddc6fbebb3cd6a7b4fe",
+      "contentSha256": "97fb7d5374a4ae4ffa31240c0abf880d27eca0d50a50630dfe2db79b885da715",
+      "serviceStateChanged": false
+    },
+    "after": {
+      "status": "completed",
+      "backupId": "daily-20260909T150205Z-776d5090d592",
+      "backupDirectory": "D:\\teruisi-runtime\\django-sales\\backups\\postgres-daily\\daily-20260909T150205Z-776d5090d592",
+      "manifestSha256": "74d9215b7c47a3d47a61da68b7bf96c6a43ba9c181c9e4711f24db91ed3fb2dc",
+      "dumpSha256": "d6299cf38803b36ca6d256949af8b66339be6859c519f9a81f7f8fb74cbeea52",
+      "contentSha256": "cd2cbad1845504254987b2a6260d32b533ea0df16ce5e519fcf102ea34ed4d15",
+      "completedAt": "09/09/2026 23:03:32",
+      "serviceStateChanged": false
+    },
+    "afterVerify": {
+      "status": "completed",
+      "backupId": "daily-20260909T150205Z-776d5090d592",
+      "manifestSha256": "74d9215b7c47a3d47a61da68b7bf96c6a43ba9c181c9e4711f24db91ed3fb2dc",
+      "dumpSha256": "d6299cf38803b36ca6d256949af8b66339be6859c519f9a81f7f8fb74cbeea52",
+      "contentSha256": "cd2cbad1845504254987b2a6260d32b533ea0df16ce5e519fcf102ea34ed4d15",
+      "serviceStateChanged": false
+    },
+    "compatibleRestoreProof": {
+      "version": "teruisi-postgres-restore-rehearsal-v1",
+      "status": "completed",
+      "rehearsalId": "d093ce61b8a4",
+      "startedAt": "2026-09-09T11:52:47.9902365+00:00",
+      "completedAt": "2026-09-09T11:56:51.6869163+00:00",
+      "backupId": "daily-20260909T114955Z-776ef4bd4148",
+      "backupManifestSha256": "732ed96ec17635e1ad8a4a4c71d845a79d9034f98f3403351b5780ef0a06fac7",
+      "dumpSha256": "7a6a75400eb41021a605dd66ce10879747d32fa802b15bb94d11c06bf6260b7d",
+      "expectedContentSha256": "9d41a132daa10eb6aea28ccf72c4e59dc0e25d09c5817565684e887cecfa9d68",
+      "restoredContentSha256": "9d41a132daa10eb6aea28ccf72c4e59dc0e25d09c5817565684e887cecfa9d68",
+      "isolatedPort": 55479,
+      "productionDatabaseTouched": false,
+      "serviceStateChanged": false,
+      "cleanupStatus": "isolated_data_removed"
+    },
+    "newBackupRestoreRehearsalPerformed": false,
+    "restoreScope": "Reuse same-day successful 46-table isolated restore; no schema, roles or backup helper changes in this fix."
+  },
+  "beforeAfterMetadata": {
+    "unchangedControlKeys": [
+      "customerServiceRevisions",
+      "customerServiceWriteAuthority",
+      "erpReferenceWriteAuthority",
+      "inventoryRevisions",
+      "inventoryWriteAuthority",
+      "marketRevisions",
+      "marketWriteAuthority",
+      "netshopRevisions",
+      "netshopWriteAuthority",
+      "productsRevisions",
+      "productsWriteAuthority",
+      "revisions",
+      "workflowOperationsWriteAuthority",
+      "workflowRevisions",
+      "workflowWriteAuthority",
+      "writeAuthority"
+    ],
+    "changedControls": [],
+    "migrationsUnchanged": true,
+    "nonAiCountChanges": [
+      {
+        "table": "market_write_request_receipts",
+        "before": 32806,
+        "after": 32834
+      }
+    ],
+    "note": "Revision/authority and row-count comparison, not a row-by-row content equality assertion. Background market polling can create request receipts."
+  },
+  "deploymentOperationalIssue": {
+    "stage": "Django staging local R2 smoke before app replacement",
+    "cause": "Wrangler optional banner version update check left a TLS connection after successful local object operation.",
+    "resolution": "Scope WRANGLER_HIDE_BANNER=true to the successful DeployApp invocation; unchanged put/get/delete/missing and byte-digest gates passed.",
+    "localProbeExitSeconds": 1.688,
+    "dependencyChanges": false,
+    "timeoutOrGateChanges": false,
+    "failedDeployAttempts": 3
+  },
+  "safeguards": {
+    "registeredToolBudgetsUnchanged": true,
+    "unknownToolsStillDenied": true,
+    "fullCatalogSignaturePreserved": true,
+    "auditFailureCloses": true,
+    "oldFailedPaidRequestNotReplayed": true,
+    "businessImports": false,
+    "externalNotifications": false,
+    "newAutomationSchedulesEnabled": false
+  }
+}

@@ -7,6 +7,8 @@ type MarketOverviewSqlOptions = {
   materialized?: boolean;
   confirmedOnlyPriceBands?: boolean;
   useEffectiveMetricsCache?: boolean;
+  rankingLimit?: number;
+  rankingOffset?: number;
 };
 
 type MarketMonthlyCoverageSqlOptions = {
@@ -139,19 +141,19 @@ export function marketEffectiveFactsCtes(factWhere = "") {
     SELECT source.* FROM market_fact_source source
     JOIN market_basis_ids chosen ON chosen.id=source.id AND chosen.price_band_preference=1
   ), real_gmv_anchor_rows AS MATERIALIZED (
-    SELECT m.id, CAST(json_extract(n.metrics_json, '$."成交金额"') AS REAL) real_gmv_yuan
-    FROM market_basis_rows m JOIN netshop_rows n
+    SELECT m.id, n.transaction_amount_cents real_gmv_cents
+    FROM market_basis_rows m JOIN market_netshop_active_projection n
       ON m.ranking_dimension<>'SPU' AND n.sku_id=m.sku_code
       AND n.source='jd_sku_daily' AND n.dataset='sku_daily'
       AND n.business_date BETWEEN m.period_start AND m.period_end
     UNION ALL
-    SELECT m.id, CAST(json_extract(n.metrics_json, '$."成交金额"') AS REAL) real_gmv_yuan
-    FROM market_basis_rows m JOIN netshop_rows n
+    SELECT m.id, n.transaction_amount_cents real_gmv_cents
+    FROM market_basis_rows m JOIN market_netshop_active_projection n
       ON m.ranking_dimension='SPU' AND n.spu_id=m.sku_code
       AND n.source='jd_sku_daily' AND n.dataset='spu_daily'
       AND n.business_date BETWEEN m.period_start AND m.period_end
   ), real_gmv_anchors AS MATERIALIZED (
-    SELECT id, CAST(ROUND(SUM(COALESCE(real_gmv_yuan,0))*100) AS INTEGER) real_gmv_cents
+    SELECT id, CAST(SUM(COALESCE(real_gmv_cents,0)) AS INTEGER) real_gmv_cents
     FROM real_gmv_anchor_rows GROUP BY id HAVING real_gmv_cents>0
   ), anchor_groups AS MATERIALIZED (
     SELECT DISTINCT ${group}
@@ -295,10 +297,8 @@ export function buildMarketOverviewEnrichedSql(options: MarketOverviewSqlOptions
       END AS candidate_price_source,
       ${overviewPriceBandSql()} AS price_band,
       CASE WHEN EXISTS (
-        SELECT 1 FROM netshop_rows n
+        SELECT 1 FROM market_netshop_active_projection n
         WHERE n.sku_id = m.sku_code OR n.product_code = m.sku_code OR n.spu_id = m.sku_code
-      ) OR EXISTS (
-        SELECT 1 FROM sales_order_lines s WHERE s.product_code = m.sku_code
       ) THEN 1 ELSE 0 END AS is_own
     FROM market_effective_rows m
     LEFT JOIN market_image_cache mic ON mic.source_url = m.image_url
@@ -313,15 +313,19 @@ export function buildMarketOverviewEnrichedSql(options: MarketOverviewSqlOptions
 
 /**
  * Builds the ranking query in two stages so expensive ownership, image and
- * price enrichment only runs for the 200 rows that can reach the UI.  The
- * former overview CTE enriched every market fact before applying LIMIT 200.
+ * Price enrichment only runs for the bounded row window that can reach the
+ * UI. The full report keeps the historical 200-row sample while the ranking
+ * workspace can request smaller server-side pages.
  */
-export function buildMarketRankingCtes(options: Pick<MarketOverviewSqlOptions, "factWhere" | "where" | "priceBandWhere"> = {}) {
+export function buildMarketRankingCtes(options: Pick<MarketOverviewSqlOptions, "factWhere" | "where" | "priceBandWhere" | "rankingLimit" | "rankingOffset"> = {}) {
   const clauses = [options.factWhere, options.where]
     .map((part) => part?.replace(/^\s*WHERE\s+/i, "").trim())
     .filter(Boolean);
   const selectionWhere = clauses.length ? `WHERE ${clauses.join(" AND ")}` : "";
   const priceBandFilter = options.priceBandWhere?.trim() ?? "";
+  const rankingLimit = Math.max(1, Math.min(200, Math.trunc(options.rankingLimit ?? 200)));
+  const rankingOffset = Math.max(0, Math.trunc(options.rankingOffset ?? 0));
+  const rankingWindow = `LIMIT ${rankingLimit}${rankingOffset ? ` OFFSET ${rankingOffset}` : ""}`;
   const selectedIds = priceBandFilter
     ? `ranking_candidates AS MATERIALIZED (
       SELECT m.id, m.rank, cached.effective_gmv_cents,
@@ -335,7 +339,7 @@ export function buildMarketRankingCtes(options: Pick<MarketOverviewSqlOptions, "
     ), top_ranked_ids AS MATERIALIZED (
       SELECT id FROM ranking_candidates ${priceBandFilter}
       ORDER BY CASE WHEN rank IS NULL THEN 1 ELSE 0 END, rank, effective_gmv_cents DESC
-      LIMIT 200
+      ${rankingWindow}
     )`
     : `top_ranked_ids AS MATERIALIZED (
       SELECT m.id
@@ -343,16 +347,36 @@ export function buildMarketRankingCtes(options: Pick<MarketOverviewSqlOptions, "
       JOIN market_effective_metrics_cache cached ON cached.market_entry_id=m.id
       ${selectionWhere}
       ORDER BY CASE WHEN m.rank IS NULL THEN 1 ELSE 0 END, m.rank, cached.effective_gmv_cents DESC
-      LIMIT 200
+      ${rankingWindow}
     )`;
-  return `WITH ${selectedIds}, top_ranked AS MATERIALIZED (
+  return `WITH ${selectedIds}, top_ranked_sources AS MATERIALIZED (
     SELECT m.*,
+      COALESCE((
+        SELECT historical.image_url
+        FROM market_ranking_entries historical INDEXED BY market_entries_representative_idx
+        JOIN market_image_cache historical_cache
+          ON historical_cache.source_url=historical.image_url
+          AND historical_cache.status='ready'
+          AND historical_cache.content_sha256<>''
+        WHERE historical.category=m.category
+          AND historical.scope=m.scope
+          AND historical.ranking_dimension=m.ranking_dimension
+          AND historical.sku_code=m.sku_code
+          AND historical.image_url<>''
+        ORDER BY historical.period_end DESC, historical.period_start DESC, historical.id DESC
+        LIMIT 1
+      ), NULLIF(m.image_url,''), '') AS resolved_image_url,
       cached.effective_gmv_cents,
       cached.real_gmv_cents,
       cached.gmv_out_of_band,
       cached.effective_quantity,
       cached.effective_average_transaction_price_cents,
-      cached.effective_conversion_bps,
+      cached.effective_conversion_bps
+    FROM top_ranked_ids selected
+    JOIN market_ranking_entries m ON m.id=selected.id
+    JOIN market_effective_metrics_cache cached ON cached.market_entry_id=m.id
+  ), top_ranked AS MATERIALIZED (
+    SELECT m.*,
       mic.status AS image_cache_status_raw,
       mic.content_sha256 AS image_content_sha256,
       ps.confirmed_market_price_cents,
@@ -373,15 +397,11 @@ export function buildMarketRankingCtes(options: Pick<MarketOverviewSqlOptions, "
       END AS candidate_price_source,
       ${overviewPriceBandSql()} AS price_band,
       CASE WHEN EXISTS (
-        SELECT 1 FROM netshop_rows n
+        SELECT 1 FROM market_netshop_active_projection n
         WHERE n.sku_id=m.sku_code OR n.product_code=m.sku_code OR n.spu_id=m.sku_code
-      ) OR EXISTS (
-        SELECT 1 FROM sales_order_lines s WHERE s.product_code=m.sku_code
       ) THEN 1 ELSE 0 END AS is_own
-    FROM top_ranked_ids selected
-    JOIN market_ranking_entries m ON m.id=selected.id
-    JOIN market_effective_metrics_cache cached ON cached.market_entry_id=m.id
-    LEFT JOIN market_image_cache mic ON mic.source_url=m.image_url
+    FROM top_ranked_sources m
+    LEFT JOIN market_image_cache mic ON mic.source_url=m.resolved_image_url
     LEFT JOIN market_price_snapshots ps ON ps.category=m.category
       AND ps.scope=m.scope AND ps.sku_code=m.sku_code
       AND ps.ranking_dimension=m.ranking_dimension AND ps.month=substr(m.period_end,1,7)
@@ -563,7 +583,11 @@ const marketAnalyticsResultSql = `SELECT * FROM analytics_core
   UNION ALL
   SELECT * FROM analytics_dimensions
   UNION ALL
-  SELECT * FROM analytics_industry`;
+  SELECT * FROM analytics_industry
+  UNION ALL
+  SELECT 'ownership_product', sku_code, NULL, NULL,
+    MAX(is_own), NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL
+  FROM analytics_filtered GROUP BY sku_code`;
 
 export function buildMarketOverviewAnalyticsSql(options: Omit<MarketOverviewSqlOptions, "materialized"> = {}) {
   const priceBandWhere = options.priceBandWhere ?? "";
@@ -598,10 +622,8 @@ export function buildMarketOverviewAnalyticsSql(options: Omit<MarketOverviewSqlO
       CASE WHEN ps.confirmed_market_price_cents IS NOT NULL THEN '人工确认' ELSE '未确认价格' END AS market_price_source,
       ${overviewPriceBandSql(Boolean(options.confirmedOnlyPriceBands))} AS price_band,
       CASE WHEN EXISTS (
-        SELECT 1 FROM netshop_rows n
+        SELECT 1 FROM market_netshop_active_projection n
         WHERE n.sku_id=m.sku_code OR n.product_code=m.sku_code OR n.spu_id=m.sku_code
-      ) OR EXISTS (
-        SELECT 1 FROM sales_order_lines s WHERE s.product_code=m.sku_code
       ) THEN 1 ELSE 0 END AS is_own
     FROM market_monthly_rows m
     LEFT JOIN market_price_snapshots ps ON ps.category=m.category
@@ -652,10 +674,8 @@ export function buildMarketMonthlySummaryRefreshSql() {
       ${overviewPriceBandSql(false)} AS display_price_band,
       ${overviewPriceBandSql(true)} AS confirmed_price_band,
       CASE WHEN EXISTS (
-        SELECT 1 FROM netshop_rows n
+        SELECT 1 FROM market_netshop_active_projection n
         WHERE n.sku_id=m.sku_code OR n.product_code=m.sku_code OR n.spu_id=m.sku_code
-      ) OR EXISTS (
-        SELECT 1 FROM sales_order_lines s WHERE s.product_code=m.sku_code
       ) THEN 1 ELSE 0 END AS is_own
     FROM market_monthly_rows m
     LEFT JOIN market_price_snapshots ps ON ps.category=m.category

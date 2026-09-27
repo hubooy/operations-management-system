@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "enabled": false,
+  "profile": "CORP_ID:OPERATOR_STAFF_ID",
+  "corpId": "CORP_ID",
+  "unifiedAppId": "APPLICATION_ID",
+  "robotCode": "ROBOT_CODE",
+  "robotName": "志高助手",
+  "groups": [{"id": "EXACT_GROUP_ID", "name": "测试群聊"}],
+  "bindings": [
+    {"senderId": "STAFF_ID", "ownerEmail": "account@example.invalid", "role": "analyst", "scope": {"warehouses": [], "channels": [], "platforms": []}}
+  ]
+}

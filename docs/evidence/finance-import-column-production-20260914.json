@@ -1,0 +1,142 @@
+{
+  "date": "2026-09-14",
+  "status": "adopted_and_august_import_completed",
+  "sourceCommit": "f6ad75f2",
+  "authorization": "User explicitly authorized production release after authorizing August finance import.",
+  "validation": {
+    "nodePassed": 2160,
+    "nodeFailed": 0,
+    "nodeSkipped": 20,
+    "postgresFinanceTests": 20,
+    "postgresPort": 55448,
+    "postgresClusterStopped": true,
+    "build": "passed",
+    "realWorkbookNormalizedContract": "passed",
+    "allSourceValuesPreserved": true
+  },
+  "worker": {
+    "plan": {
+      "status": "planned",
+      "version": "teruisi-local-worker-release-rotation-plan-v1",
+      "planSha256": "65743d3e2fd302e0780e3ff4c167db8c18f6cda370b0e26e9e4c5d31cb4b0ccc",
+      "planPath": "D:\\teruisi-runtime\\teruisi-worker-sales\\state\\worker-release-rotation-plans\\65743d3e2fd302e0780e3ff4c167db8c18f6cda370b0e26e9e4c5d31cb4b0ccc.json",
+      "predecessorReleaseId": "20260913T162304Z-3733181f1543a083",
+      "candidateReleaseId": "20260914T094506Z-81d2b9e6d317f82b",
+      "candidateManifestSha256": "100bb15aaa4f442847e6308cadb929b2c92699bcf24b17eb8470030315dd0a15",
+      "candidateGuardReceiptSha256": "1ad8266ec6f6a6506da4dbf3f03e643ea5cf8ff23b39cbef7036f5a507b2fb1d",
+      "cutoverId": "sales-pg-20260829T204417Z-d9896e904d8092cb"
+    },
+    "apply": {
+      "status": "activated",
+      "version": "teruisi-local-worker-release-successor-v1",
+      "planSha256": "65743d3e2fd302e0780e3ff4c167db8c18f6cda370b0e26e9e4c5d31cb4b0ccc",
+      "predecessorReleaseId": "20260913T162304Z-3733181f1543a083",
+      "releaseId": "20260914T094506Z-81d2b9e6d317f82b",
+      "manifestPath": "D:\\teruisi-runtime\\teruisi-worker-sales\\releases\\20260914T094506Z-81d2b9e6d317f82b\\deployment-manifest.json",
+      "manifestSha256": "100bb15aaa4f442847e6308cadb929b2c92699bcf24b17eb8470030315dd0a15",
+      "successorSha256": "2be04b55494fda8ad799a17309b01ae43366798a3a03d21ebdaa31131db54e1e",
+      "consumptionSha256": "e2041aac283d2997fbe2d27435c1d71c50f4edad6021a039183e16c3c5820f53",
+      "startupBindingSha256": "2920c1b6c792e9619f6131ca6044ed2b4b30767aad9a9112732088ae94aac3c4"
+    },
+    "startup": {
+      "status": "verified",
+      "version": "teruisi-local-worker-status-v1",
+      "releaseId": "20260914T094506Z-81d2b9e6d317f82b",
+      "manifestSha256": "100bb15aaa4f442847e6308cadb929b2c92699bcf24b17eb8470030315dd0a15",
+      "startupVerified": true
+    },
+    "system": {
+      "version": "teruisi-operations-system-control-v2",
+      "status": "started",
+      "state": "Running",
+      "backendState": "Ready",
+      "workerState": "exact_release",
+      "releaseId": "20260914T094506Z-81d2b9e6d317f82b",
+      "supervisorProcessId": 21148,
+      "portProcessId": 30892,
+      "url": "http://localhost:3000/",
+      "message": "运营管理系统已由唯一总控完成启动与回查。访问地址：http://localhost:3000/",
+      "checkedAt": "2026-09-14T17:53:16.7991467+08:00"
+    }
+  },
+  "backup": {
+    "before": {
+      "status": "completed",
+      "backupId": "daily-20260914T093646Z-b41d0504edd7",
+      "backupDirectory": "D:\\teruisi-runtime\\django-sales\\backups\\postgres-daily\\daily-20260914T093646Z-b41d0504edd7",
+      "manifestSha256": "96adfcd37295d6c3bd057ffbe77b9ba25b59ff3f59832942f9ce3a2e78dc2ce9",
+      "dumpSha256": "3389cd785e9d7421a4066d677ca222b90afc2127746325ff67a64f32dab97ef1",
+      "contentSha256": "1019ca6cdc43a4b008e8c72603648d97f7ebed46ae231fbb5d41df74a88b76db",
+      "completedAt": "2026-09-14T09:38:37.0577647+00:00",
+      "serviceStateChanged": false
+    },
+    "isolatedRestore": {
+      "version": "teruisi-postgres-restore-rehearsal-v1",
+      "status": "completed",
+      "rehearsalId": "f6ad75f20914",
+      "startedAt": "2026-09-14T09:39:19.7445298+00:00",
+      "completedAt": "2026-09-14T09:44:15.6729791+00:00",
+      "backupId": "daily-20260914T093646Z-b41d0504edd7",
+      "backupManifestSha256": "96adfcd37295d6c3bd057ffbe77b9ba25b59ff3f59832942f9ce3a2e78dc2ce9",
+      "dumpSha256": "3389cd785e9d7421a4066d677ca222b90afc2127746325ff67a64f32dab97ef1",
+      "expectedContentSha256": "1019ca6cdc43a4b008e8c72603648d97f7ebed46ae231fbb5d41df74a88b76db",
+      "restoredContentSha256": "1019ca6cdc43a4b008e8c72603648d97f7ebed46ae231fbb5d41df74a88b76db",
+      "isolatedPort": 55439,
+      "productionDatabaseTouched": false,
+      "serviceStateChanged": false,
+      "cleanupStatus": "isolated_data_removed"
+    },
+    "afterVerify": {
+      "status": "completed",
+      "backupId": "daily-20260914T095432Z-1ebee0e98715",
+      "manifestSha256": "1ca512f5d9422c3a12c01f3760008e9ea0035ca9071f49b6c70d2b863f751f61",
+      "dumpSha256": "4e8a5bf67a14f4ecfacd644866f0d5330403ebbe32d78397b96bd382b19b3561",
+      "contentSha256": "a1e5ab3406ea05af1fe25fc3e5ad22a7f1a9892164a4422e5aea699ca2ce28d3",
+      "serviceStateChanged": false
+    },
+    "afterBackupOrigin": "Reused concurrent controlled maintenance backup whose snapshot began after this import; no duplicate backup created.",
+    "eDriveArchive": "E:/运营管理系统业务数据/daily-20260914T095432Z-1ebee0e98715",
+    "archiveVerified": [
+      {
+        "file": "teruisi-sales.dump",
+        "sha256": "4e8a5bf67a14f4ecfacd644866f0d5330403ebbe32d78397b96bd382b19b3561",
+        "verified": true
+      },
+      {
+        "file": "backup-manifest.json",
+        "sha256": "1ca512f5d9422c3a12c01f3760008e9ea0035ca9071f49b6c70d2b863f751f61",
+        "verified": true
+      },
+      {
+        "file": "backup-manifest.json.sha256",
+        "sha256": "8c24541fbd234982e3ee79622836359390f3158d0b201ad88d33e4db758f0bd8",
+        "verified": true
+      }
+    ]
+  },
+  "import": {
+    "http": 201,
+    "batchId": "b940e603b3c66c1cc381492917161f2742ddf205df964ec76f858675cd0174b3",
+    "status": "imported",
+    "months": [
+      "2026-08"
+    ],
+    "insertedCount": 2294,
+    "warningCount": 0,
+    "shopCount": 30,
+    "subjectCount": 81,
+    "historicalMonthsUnchanged": 19,
+    "headlineAmountsMatched": 9,
+    "dataCutoffMonth": "2026-08"
+  },
+  "maintenance": {
+    "pausedPlans": 1,
+    "drainedTwice": true,
+    "allClaimedOrInferencingRowsZero": true,
+    "helperIdle": true,
+    "resumedPlans": 1,
+    "newMigrations": 0,
+    "directDatabaseWrites": false,
+    "n8nRestarted": false
+  }
+}

@@ -5,9 +5,18 @@ export type BundledTmallStore = {
   platform: "天猫";
   shopName: string;
   enabled: boolean;
+  loginMode?: "manual" | "saved_browser_credentials" | "windows_dpapi_credentials";
+  productMasterExportMode?: "product_manager" | "on_sale_pagewise_excel";
+  productMasterCadence?: {
+    intervalDays: number;
+    initialDueDate: string;
+  };
   initialStartDate: string | null;
   portalUrl: string;
   browser: {
+    executablePath?: string;
+    userDataDir?: string;
+    profileName?: string;
     profileDir: string;
     debugPort: number;
     downloadDir: string;
@@ -16,6 +25,12 @@ export type BundledTmallStore = {
 
 type BundledRegistry = { version: number; stores: BundledTmallStore[] };
 export const tmallStoreRegistryData = registryData as BundledRegistry;
+
+function validIsoDate(value: unknown): value is string {
+  if (typeof value !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+  const date = new Date(`${value}T00:00:00.000Z`);
+  return !Number.isNaN(date.getTime()) && date.toISOString().slice(0, 10) === value;
+}
 
 function assertNoSecrets(value: unknown, location: string): void {
   if (!value || typeof value !== "object") return;
@@ -36,7 +51,15 @@ function validateBundledRegistry() {
   const keys = new Set<string>();
   const shops = new Set<string>();
   for (const [index, store] of tmallStoreRegistryData.stores.entries()) {
-    if (!store.storeKey || !store.shopName || store.platform !== "天猫" || typeof store.enabled !== "boolean") {
+    if (!store.storeKey || !store.shopName || store.platform !== "天猫" || typeof store.enabled !== "boolean"
+      || store.loginMode !== undefined && !["manual", "saved_browser_credentials", "windows_dpapi_credentials"].includes(store.loginMode)
+      || store.productMasterExportMode !== undefined
+        && !["product_manager", "on_sale_pagewise_excel"].includes(store.productMasterExportMode)
+      || store.productMasterCadence !== undefined && (
+        !Number.isInteger(store.productMasterCadence.intervalDays)
+        || store.productMasterCadence.intervalDays < 1 || store.productMasterCadence.intervalDays > 30
+        || !validIsoDate(store.productMasterCadence.initialDueDate)
+      )) {
       throw new Error(`天猫店铺注册表字段无效: stores[${index}]`);
     }
     if (keys.has(store.storeKey) || shops.has(store.shopName)) {

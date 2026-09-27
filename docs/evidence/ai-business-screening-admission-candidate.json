@@ -1,0 +1,7 @@
+{
+  "date": "2026-09-17", "batch": 45,
+  "status": "candidate_actual_model_capacity_not_dispatch_permission",
+  "verification": {"passed": 9, "pureTests": 4, "postgresTests": 5, "seconds": 73.632, "log": ".runtime/ai-pg-71000ebf8c4e/tests.log", "suite": "ai_assistant.test_business_screening_admission", "catalog": "Three actual entries exported from current 50-tool TypeScript registry; only signed network delivery mocked", "actualFrameMeasurement": true, "actualFixedReportsModelsPackagesBudgets": true},
+  "remaining": ["Leased readiness", "Trusted in-process permission reuse", "Workflow and provider gate", "Diagnosis and files", "Real model and production acceptance"],
+  "operations": {"productionBusinessReads": false, "productionWrites": false, "deployment": false, "serviceRestart": false, "paidModelCalls": false, "externalMessages": false}
+}

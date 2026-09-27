@@ -1,10 +1,15 @@
 import { getChatGPTUser } from "@/app/chatgpt-auth";
 import { env } from "cloudflare:workers";
+import { headers } from "next/headers";
 import {
-  getSalesDatabase,
-  type SalesDatabase,
-} from "@/lib/sales/database";
-import { decideLocalDirectAccess } from "@/lib/auth/local-direct-access";
+  ACCESS_CONTROL_RESOLVE_PATH,
+  AccessControlServiceError,
+  createDjangoAccessControlService,
+} from "@/lib/django/access-control-service";
+import {
+  decideLocalDirectAccess,
+  isLoopbackRequestHost,
+} from "@/lib/auth/local-direct-access";
 
 export const BOOTSTRAP_ADMIN_EMAIL = "dengweizhang321@gmail.com";
 
@@ -31,20 +36,12 @@ export type AppPrincipal = {
   scope: AppDataScope;
 };
 
-type AppUserRow = {
-  email: string;
-  display_name: string;
-  role: string;
-  status: string;
-  scope_json: string | null;
-};
-
 export class AuthorizationError extends Error {
-  readonly status: 401 | 403;
-  readonly code: "authentication_required" | "access_denied" | "insufficient_role";
+  readonly status: 401 | 403 | 503;
+  readonly code: "authentication_required" | "access_denied" | "insufficient_role" | "service_unavailable";
 
   constructor(
-    status: 401 | 403,
+    status: 401 | 403 | 503,
     code: AuthorizationError["code"],
     message: string,
   ) {
@@ -53,80 +50,6 @@ export class AuthorizationError extends Error {
     this.status = status;
     this.code = code;
   }
-}
-
-const schemaStatements = [
-  `CREATE TABLE IF NOT EXISTS app_users (
-    email TEXT PRIMARY KEY NOT NULL COLLATE NOCASE,
-    display_name TEXT NOT NULL DEFAULT '',
-    role TEXT NOT NULL CHECK (role IN ('viewer', 'analyst', 'operator', 'admin')),
-    status TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'disabled')),
-    scope_json TEXT,
-    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
-  )`,
-  `CREATE INDEX IF NOT EXISTS app_users_role_status_idx
-    ON app_users (role, status)`,
-  `CREATE TABLE IF NOT EXISTS ai_tool_audit_logs (
-    id TEXT PRIMARY KEY NOT NULL,
-    request_id TEXT NOT NULL,
-    invocation_id TEXT NOT NULL DEFAULT '',
-    provider_call_id TEXT,
-    actor_email TEXT NOT NULL,
-    actor_role TEXT NOT NULL,
-    surface TEXT NOT NULL,
-    tool_name TEXT NOT NULL,
-    arguments_json TEXT NOT NULL DEFAULT '{}',
-    status TEXT NOT NULL,
-    row_count INTEGER,
-    duration_ms INTEGER,
-    response_digest TEXT,
-    error_code TEXT,
-    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
-  )`,
-  `CREATE INDEX IF NOT EXISTS ai_tool_audit_logs_actor_created_idx
-    ON ai_tool_audit_logs (actor_email, created_at)`,
-  `CREATE INDEX IF NOT EXISTS ai_tool_audit_logs_tool_created_idx
-    ON ai_tool_audit_logs (tool_name, created_at)`,
-  `INSERT INTO app_users (email, display_name, role, status, scope_json)
-    VALUES (?, '系统管理员', 'admin', 'active', NULL)
-    ON CONFLICT(email) DO NOTHING`,
-] as const;
-
-const schemaReadyByDatabase = new WeakMap<object, Promise<void>>();
-
-export async function ensureAuthorizationSchema(
-  db: SalesDatabase = getSalesDatabase(),
-): Promise<void> {
-  const key = db as unknown as object;
-  const existing = schemaReadyByDatabase.get(key);
-  if (existing) return existing;
-
-  const setup = db
-    .batch(
-      schemaStatements.map((statement, index) => {
-        const prepared = db.prepare(statement);
-        return index === schemaStatements.length - 1
-          ? prepared.bind(BOOTSTRAP_ADMIN_EMAIL)
-          : prepared;
-      }),
-    )
-    .then(() => ensureAiToolAuditExecutionIndex(db))
-    .catch((error: unknown) => {
-      schemaReadyByDatabase.delete(key);
-      throw error;
-    });
-
-  schemaReadyByDatabase.set(key, setup);
-  return setup;
-}
-
-async function ensureAiToolAuditExecutionIndex(db: SalesDatabase): Promise<void> {
-  const info = await db.prepare("PRAGMA table_info(ai_tool_audit_logs)").all<{ name: string }>();
-  const names = new Set((info.results ?? []).map((column) => column.name));
-  if (!names.has("invocation_id")) return;
-  await db.prepare(`CREATE INDEX IF NOT EXISTS ai_tool_audit_logs_invocation_created_idx
-    ON ai_tool_audit_logs (invocation_id, created_at)`).run();
 }
 
 export async function requireAppPrincipal(
@@ -152,12 +75,23 @@ export async function requireAppPrincipal(
         : undefined,
     viteDevelopment: viteEnvironment?.DEV === true,
     viteProduction: viteEnvironment?.PROD === true,
+    nodeEnvironment: process.env.NODE_ENV,
     localBuild:
       viteEnvironment?.VITE_TERUISI_LOCAL_BUILD?.trim().toLowerCase() ===
-      "true",
+        "true" ||
+      (typeof env.VITE_TERUISI_LOCAL_BUILD === "string" &&
+        env.VITE_TERUISI_LOCAL_BUILD.trim().toLowerCase() === "true"),
   });
 
   if (localAccess === "allowed") {
+    const requestHeaders = await headers();
+    if (!isLoopbackRequestHost(requestHeaders.get("host"))) {
+      throw new AuthorizationError(
+        403,
+        "access_denied",
+        "本地直连仅允许通过回环地址访问",
+      );
+    }
     return LOCAL_DIRECT_ACCESS_PRINCIPAL;
   }
   if (localAccess === "role_denied") {
@@ -177,29 +111,35 @@ export async function requireAppPrincipal(
     );
   }
 
-  const db = getSalesDatabase();
-  await ensureAuthorizationSchema(db);
   const normalizedEmail = identity.email.trim().toLowerCase();
-  let row = await findAppUser(db, normalizedEmail);
-
-  if (!row) {
-    await db.prepare(
-      `INSERT INTO app_users (email, display_name, role, status, scope_json)
-       VALUES (?, ?, 'viewer', 'active', NULL)
-       ON CONFLICT(email) DO NOTHING`,
-    ).bind(
-      normalizedEmail,
-      identity.fullName ?? identity.displayName ?? normalizedEmail,
-    ).run();
-    row = await findAppUser(db, normalizedEmail);
+  const identityDisplayName = identity.fullName ?? identity.displayName ?? normalizedEmail;
+  const edgeIdentity: AppPrincipal = {
+    email: normalizedEmail,
+    displayName: identityDisplayName,
+    role: "viewer",
+    scope: null,
+  };
+  let row: { email: string; displayName: string; role: string; status: string; scope: AppDataScope };
+  try {
+    const result = await createDjangoAccessControlService().request<{ user?: unknown }>(
+      edgeIdentity,
+      {
+        method: "POST",
+        path: ACCESS_CONTROL_RESOLVE_PATH,
+        service: "reader",
+        payload: { email: normalizedEmail, displayName: identityDisplayName },
+      },
+    );
+    row = parseResolvedUser(result.data.user, normalizedEmail);
+  } catch (error) {
+    if (error instanceof AccessControlServiceError && error.status === 403) {
+      throw new AuthorizationError(403, "access_denied", error.message);
+    }
+    throw new AuthorizationError(503, "service_unavailable", "用户权限服务暂时不可用，请稍后重试");
   }
 
-  if (!row || row.status !== "active" || !isAppRole(row.role)) {
-    throw new AuthorizationError(
-      403,
-      "access_denied",
-      "当前账号未获得运营管理系统访问权限",
-    );
+  if (row.status !== "active" || !isAppRole(row.role)) {
+    throw new AuthorizationError(403, "access_denied", "当前账号未获得运营管理系统访问权限");
   }
 
   if (!allowedRoles.includes(row.role)) {
@@ -212,10 +152,27 @@ export async function requireAppPrincipal(
 
   return {
     email: row.email,
-    displayName: identity.fullName ?? (row.display_name || row.email),
+    displayName: row.displayName,
     role: row.role,
-    scope: parseScope(row.scope_json),
+    scope: row.scope,
   };
+}
+
+/**
+ * Legacy aggregate endpoints must not silently ignore a restricted principal.
+ * Keep them fail-closed until their domain query accepts and applies AppDataScope.
+ */
+export function requireUnrestrictedDataScope(
+  principal: AppPrincipal,
+  resourceLabel: string,
+  operationLabel = "读取",
+): void {
+  if (principal.scope === null) return;
+  throw new AuthorizationError(
+    403,
+    "access_denied",
+    `当前账号的数据范围暂不支持${operationLabel}${resourceLabel}`,
+  );
 }
 
 export function authorizationErrorResponse(error: unknown): Response | null {
@@ -230,39 +187,48 @@ function isAppRole(value: string): value is AppRole {
   return appRoles.includes(value as AppRole);
 }
 
-function findAppUser(db: SalesDatabase, email: string) {
-  return db
-    .prepare(
-      `SELECT email, display_name, role, status, scope_json
-       FROM app_users
-       WHERE email = ? COLLATE NOCASE
-       LIMIT 1`,
-    )
-    .bind(email)
-    .first<AppUserRow>();
-}
-
-function parseScope(value: string | null): AppDataScope {
-  if (value === null) return null;
-  try {
-    const parsed = JSON.parse(value) as unknown;
-    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
-      return { warehouses: [], channels: [], platforms: [] };
-    }
-    const record = parsed as Record<string, unknown>;
-    return {
-      warehouses: stringArray(record.warehouses),
-      channels: stringArray(record.channels),
-      platforms: stringArray(record.platforms),
-    };
-  } catch {
-    return { warehouses: [], channels: [], platforms: [] };
+function parseResolvedUser(
+  value: unknown,
+  expectedEmail: string,
+): { email: string; displayName: string; role: string; status: string; scope: AppDataScope } {
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    throw new Error("invalid access-control principal response");
   }
+  const row = value as Record<string, unknown>;
+  if (row.email !== expectedEmail || typeof row.displayName !== "string"
+    || typeof row.role !== "string" || row.status !== "active") {
+    throw new Error("invalid access-control principal response");
+  }
+  return {
+    email: expectedEmail,
+    displayName: row.displayName,
+    role: row.role,
+    status: row.status,
+    scope: parseScope(row.scope),
+  };
 }
 
-function stringArray(value: unknown): string[] {
-  if (!Array.isArray(value) || !value.every((item) => typeof item === "string")) {
-    return [];
+function parseScope(value: unknown): AppDataScope {
+  if (value === null) return null;
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    throw new Error("invalid access-control scope response");
+  }
+  const record = value as Record<string, unknown>;
+  if (Object.keys(record).length !== 3
+    || !("warehouses" in record) || !("channels" in record) || !("platforms" in record)) {
+    throw new Error("invalid access-control scope response");
+  }
+  return {
+    warehouses: strictStringArray(record.warehouses),
+    channels: strictStringArray(record.channels),
+    platforms: strictStringArray(record.platforms),
+  };
+}
+
+function strictStringArray(value: unknown): string[] {
+  if (!Array.isArray(value) || value.length > 500
+    || !value.every((item) => typeof item === "string" && item.trim() && item.length <= 100)) {
+    throw new Error("invalid access-control scope response");
   }
   return [...new Set(value.map((item) => item.trim()).filter(Boolean))];
 }

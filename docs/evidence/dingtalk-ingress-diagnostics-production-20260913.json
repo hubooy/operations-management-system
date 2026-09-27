@@ -1,0 +1,88 @@
+{
+  "date": "2026-09-13",
+  "status": "diagnostics_deployed_private_chat_verified_group_pending",
+  "sourceCommit": "c14f80908fb111b1825f88ea006708c85a9b2d96",
+  "authorization": "User explicitly approved controlled diagnostic deployment, backup/restore workflow and required service maintenance in this conversation.",
+  "preflight": {
+    "state": "Running",
+    "backendState": "Ready",
+    "workerState": "exact_release",
+    "activeChatReceipts": 0,
+    "activeScheduleRuns": 0,
+    "activeAiRequests": 0,
+    "activeN8nExecutionsAtObservation": 0,
+    "nextDingTalkScheduleAt": "2026-09-14T09:00:00+08:00",
+    "source": "Local read-only PostgreSQL and configured n8n execution metadata; no operational MCP available."
+  },
+  "preReleaseBackup": {
+    "backupId": "daily-20260913T063654Z-d9271b1a0563",
+    "manifestSha256": "18a259072a7f04891f1b80c76dcc9efb2d23837e1b96af9241f861755ecc117d",
+    "dumpSha256": "687cfd1ce1c5c1fbae557e280e48da090d1178ca03ae4b063a005643987b2630",
+    "contentSha256": "4917ec3ee00b3e798a31e8c1da1469e2f1373d442b04f91f702c89d65749e69c",
+    "independentRestore": {
+      "status": "completed",
+      "rehearsalId": "7de90b138c41",
+      "isolatedPort": 55480,
+      "restoredContentSha256": "4917ec3ee00b3e798a31e8c1da1469e2f1373d442b04f91f702c89d65749e69c",
+      "productionDatabaseTouched": false,
+      "cleanupStatus": "isolated_data_removed"
+    }
+  },
+  "deployment": {
+    "controlledSystemStopCompletedAt": "2026-09-13T14:46:46.9870409+08:00",
+    "deployedAt": "2026-09-13T14:47:57.6592653+08:00",
+    "sourceRoot": "D:/运营管理系统-sales-django-release",
+    "manifestSha256": "eb6aeed6c8ad45a4335bd05dfc04c2b2267af643f14c765c261cf5dbba9d2e63",
+    "appFingerprint": "e1415d12450c94e4a4083659a11c55ddabd549c03e247673692755164942c5fd",
+    "fileCount": 2024,
+    "changedSourceFilesMatchRuntime": true,
+    "hardenAcl": "passed",
+    "databaseMigrationsApplied": false,
+    "databaseRolesChanged": false,
+    "workerReleaseChanged": false,
+    "n8nRestarted": false
+  },
+  "productionReadback": {
+    "systemStartCompletedAt": "2026-09-13T14:54:15.6915437+08:00",
+    "statusCheckedAt": "2026-09-13T14:55:17.0895055+08:00",
+    "state": "Running",
+    "backendState": "Ready",
+    "workerState": "exact_release",
+    "homeHttpStatus": 200,
+    "guardedReadiness": {"ok": true, "backend": "django-postgresql", "unavailableServices": [], "status": "ready"},
+    "receiverLog": "django-ai-dingtalk.20260913-145316-2752d182.stdout.log",
+    "receiverConnected": true,
+    "automaticStartupConfigUnchangedSha256": "b2b36b75ac9efe8448b6233a12dd0f29b19eef41ea0e8291780818c8b4174710",
+    "receiverConfigUnchangedSha256": "a1b213df72f503b25cb7ad635d67cfdf5b61d47c5f0fe7bacc7dd25f508d9c25"
+  },
+  "postReleaseBackup": {
+    "backupId": "daily-20260913T065455Z-0a12ab8a8d14",
+    "manifestSha256": "2c989c7d5ac8cf4acd6448cc508da118f1f79c76ed6e175043f0b47b3057299b",
+    "dumpSha256": "31ef812abf4cf9a19d17e40391d914c3833bc35e91aca0a6314bc5f39e5b4717",
+    "contentSha256": "9c48b3163a6a702f96d9c8c72626bf4ab89b453d52281f96f0a0d16f09e6aa46",
+    "independentVerify": "completed",
+    "secondRestoreRehearsalPerformed": false
+  },
+  "postDeploymentPrivateChat": {
+    "source": "New user-originated DM; receiver logs and read-only PostgreSQL receipt metadata",
+    "messageCreatedAt": "2026-09-13T15:15:52.639000+08:00",
+    "callbackReceivedAt": "2026-09-13T15:15:53.081656+08:00",
+    "callbackAcceptedAt": "2026-09-13T15:15:53.180384+08:00",
+    "aiStartedAt": "2026-09-13T15:15:56.425455+08:00",
+    "aiCompletedAt": "2026-09-13T15:16:04.748133+08:00",
+    "aiStatus": "succeeded",
+    "deliveryUpdatedAt": "2026-09-13T15:16:07.718796+08:00",
+    "ackStatus": "sent",
+    "deliveryStatus": "sent",
+    "errorCode": "",
+    "conversationType": "1",
+    "replyCharacters": 402,
+    "recipientReadConfirmation": "confirmed_by_user_screenshot",
+    "groupChatVerification": "pending"
+  },
+  "limitations": [
+    "The new DM passed callback, durable acceptance, AI generation and platform-accepted source-DM delivery after controlled restart. This does not identify the earlier no-response cause because historical callback diagnostics were absent, nor establish long-term reliability or group-chat success.",
+    "No old message or unknown result was replayed. Deployment checks sent no messages or model requests; the subsequent new DM was sent by the user and naturally triggered the normal AI reply.",
+    "Previously enabled background jobs may naturally resume through the existing system startup path."
+  ]
+}

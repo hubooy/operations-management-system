@@ -1,0 +1,99 @@
+{
+  "status": "candidate_verified_not_deployed",
+  "baseCommit": "ead0402a",
+  "approvedCoverage": [
+    "trigger",
+    "webhook",
+    "manual"
+  ],
+  "historicalObservation": {
+    "businessDateRangeShanghai": [
+      "2026-09-15",
+      "2026-09-27"
+    ],
+    "scheduledExecutions": 13,
+    "scheduledSuccesses": 3,
+    "scheduledLoginPreparationFailures": 7,
+    "derivedOldRunBlockedFailures": 26,
+    "mixedHistoricalVersions": true
+  },
+  "behavior": {
+    "automaticEntryRecovery": "fresh plan-api only, original global lock, fresh n8n snapshot and four absent effect paths",
+    "newReceiptVersion": 3,
+    "replacementExecutionBound": true,
+    "preLoginPageRetryReceiptVersion": 4,
+    "existingHourlyMarkerReused": true,
+    "missingReadAttemptsMax": 3,
+    "missingStatusProbesMax": 3,
+    "missingRetryBackoffMs": [
+      500,
+      1000
+    ],
+    "manualOnlyFailures": [
+      "challenge",
+      "credential rejection",
+      "tenant/origin/form mismatch",
+      "foreign-page diagnostics",
+      "occupied manual browser"
+    ],
+    "uncertainSubmissionOrAnyBusinessEffectRefused": true
+  },
+  "validation": {
+    "focusedTestsPassed": 89,
+    "focusedTestsFailed": 0,
+    "sharedHelperTestsPassed": 7,
+    "focusedEslintErrors": 0,
+    "realSixWorkerSmokePassed": true,
+    "realJackyunWorkerRecoverySmokePassed": true,
+    "syntheticN8nAndOriginalPlanUnchanged": true,
+    "smokePlatformActions": 0,
+    "helperSha256": "2c326c8d0cec25253169a51700f83da4613186a786794f2bcb51a5bf125e9701",
+    "typecheck": {
+      "candidateDiagnostics": 154,
+      "baselineDiagnostics": 154,
+      "newDiagnostics": 0,
+      "baselineCommit": "e03d77a5",
+      "overallPassed": false
+    },
+    "sharedHelperTestsIncludedInFocusedCount": true,
+    "fullUnit": {
+      "total": 2295,
+      "passed": 2270,
+      "failed": 2,
+      "skipped": 23,
+      "failuresReproducedOnBaseline": [
+        "finance route static dispatch assertion",
+        "semantic design token coverage"
+      ],
+      "baselineCommit": "e03d77a5"
+    },
+    "fullLint": {
+      "errors": 0,
+      "existingWarnings": 11
+    },
+    "productionBoundary": {
+      "checkedModules": 461,
+      "violations": 0,
+      "onlyApprovedMetadataReader": "lib/jackyun/n8n-preflight-evidence.ts",
+      "normalizedSourceSha256": "abf75f3fac7740574c977bcbdc5d520ed987b87afeb730161cde3022ffa2685c",
+      "onlyPermittedRoot": "tools/tmall-sycm-cookie-pipeline.ts"
+    },
+    "environmentNotes": [
+      "Initial test installation had skipped the existing heap-adapter postinstall; applied the repository digest-verified adapter only to isolated worktree dependencies.",
+      "The one initial isolated supervisor startup failure passed independently and in the final full rerun.",
+      "Final date-validation and test-isolation refinements were additionally covered by the final 89 focused tests and rebuilt real helper smoke."
+    ]
+  },
+  "productionChanges": {
+    "serviceRestarted": false,
+    "n8nDefinitionChanged": false,
+    "credentialOrProfileChanged": false,
+    "originalRunClosed": false,
+    "businessReplayStarted": false
+  },
+  "limitations": [
+    "The underlying intermittent DPAPI lookup cause is not proven; success-rate improvement has not yet been measured on natural production failures.",
+    "If the bound replacement is canceled or its new plan cannot be written after closure, another execution cannot steal the permit; this interruption requires manual review.",
+    "Publication needs a new explicitly authorized Worker/helper maintenance; the earlier 4726 maintenance and 4737 success do not authorize another rollout or test."
+  ]
+}

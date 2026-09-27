@@ -1,0 +1,277 @@
+{
+  "version": "teruisi-ai-chat-production-fix-v1",
+  "adoptedAt": "2026-09-09T16:32:35.1249575+08:00",
+  "scope": "Local Windows AI chat and bounded read-only market tool adapter",
+  "sourceCommit": "afb9a30c87f6176ad998241e9ba338638fcbefbf",
+  "fixes": [
+    "Allowlisted model synthetic DNS recovery using fixed verified HTTPS DoH and pinned public address",
+    "Stop reading completed HTTP responses before accessing a closed socket",
+    "Preserve registered singular market filters in Django requests",
+    "Return bounded market analytics instead of full dashboard details"
+  ],
+  "backend": {
+    "sourceCommit": "22807be6",
+    "transportSha256": "4a9da0871ecbd3e312a2642ca04bd29923de14cff990b2b0c20368ce292b7490",
+    "deploymentManifestSha256": "f4a5e17ac3450dee8e83b005bcd6296d518cbac91c343a801334092ee9d1d4ef"
+  },
+  "worker": {
+    "status": "activated",
+    "version": "teruisi-local-worker-release-successor-v1",
+    "planSha256": "b2d7a0d9e78ed6611218cb809e847002c7a7f6850bb7df5cade7cc5a9e4022e4",
+    "predecessorReleaseId": "20260909T065210Z-0083ad8b4ebf957d",
+    "releaseId": "20260909T082314Z-77039002a8332b1d",
+    "manifestPath": "D:\\teruisi-runtime\\teruisi-worker-sales\\releases\\20260909T082314Z-77039002a8332b1d\\deployment-manifest.json",
+    "manifestSha256": "5c6cc6fa759526079734772d5d4130a89bb9a11c8bbea7e652f6e57c636d7db8",
+    "successorSha256": "4a13c7f993cb3e5d1841c858fa0733e88374c9198321bb67bdf44b6338c0fafa",
+    "consumptionSha256": "d83850c3cef30ca737d4965de8539f37e1d2d5b49cf20e3a91b32f9c02e6d8b8",
+    "startupBindingSha256": "a270d3bbcd64a43f5f85219774760cabfa0a7a4211775f07b846d78adad9e90b"
+  },
+  "backup": {
+    "status": "completed",
+    "backupId": "daily-20260909T072216Z-61df53b173e2",
+    "backupDirectory": "D:\\teruisi-runtime\\django-sales\\backups\\postgres-daily\\daily-20260909T072216Z-61df53b173e2",
+    "manifestSha256": "4a27cd8e59772bdd8f4aa782ce8ccdff4943373598d0671910a69d6dc8fc9d38",
+    "dumpSha256": "305e87bf1c1ea3a619d121a994af6a242144dc220fdd854be624c0f2e07566c8",
+    "contentSha256": "0490b8c29fc172981d2967e15d2122ac1bb771cddf6c8070ce52d3d3c00fa6b6",
+    "completedAt": "09/09/2026 15:23:49",
+    "serviceStateChanged": false
+  },
+  "isolatedRestore": {
+    "version": "teruisi-postgres-restore-rehearsal-v1",
+    "status": "completed",
+    "rehearsalId": "092609a1d5f3",
+    "startedAt": "2026-09-09T15:24:24.2745437+08:00",
+    "completedAt": "2026-09-09T15:28:54.7480527+08:00",
+    "backupId": "daily-20260909T072216Z-61df53b173e2",
+    "backupManifestSha256": "4a27cd8e59772bdd8f4aa782ce8ccdff4943373598d0671910a69d6dc8fc9d38",
+    "dumpSha256": "305e87bf1c1ea3a619d121a994af6a242144dc220fdd854be624c0f2e07566c8",
+    "expectedContentSha256": "0490b8c29fc172981d2967e15d2122ac1bb771cddf6c8070ce52d3d3c00fa6b6",
+    "restoredContentSha256": "0490b8c29fc172981d2967e15d2122ac1bb771cddf6c8070ce52d3d3c00fa6b6",
+    "isolatedPort": 55432,
+    "productionDatabaseTouched": false,
+    "serviceStateChanged": false,
+    "cleanupStatus": "isolated_data_removed"
+  },
+  "modelConfiguration": {
+    "id": "ai-model-2d82fdcf-221e-44c1-b277-3f59d99f8eba",
+    "modelName": "glm-5.2",
+    "previousVersion": 1,
+    "version": 2,
+    "previousReasoningMode": "disabled",
+    "reasoningMode": "auto",
+    "apiKeyChanged": false
+  },
+  "ordinaryChat": {
+    "status": "completed",
+    "clientRequestId": "ai-config-smoke-20260909-075500",
+    "conversationId": "ai-conversation-5a532441-6bec-4d9b-8a28-9298187d45fe",
+    "assistantMessageId": "ai-msg-1d110243-6a47-40fa-8699-dbda1e1a5a0f",
+    "modelId": "ai-model-2d82fdcf-221e-44c1-b277-3f59d99f8eba",
+    "outcome": "answered",
+    "reply": "AI对话修复验证成功。",
+    "elapsedMilliseconds": 6615,
+    "persistedMessageVerified": true,
+    "completedAt": "2026-09-09T15:51:26.5085045+08:00"
+  },
+  "marketChat": {
+    "status": "completed",
+    "clientRequestId": "ai-market-delivery-20260909-082000",
+    "conversationId": "ai-conversation-3433e30e-3672-4c31-80e5-62a93d7ca371",
+    "assistantMessageId": "ai-msg-61727987-9acc-4db5-b8f4-500482528508",
+    "modelId": "ai-model-2d82fdcf-221e-44c1-b277-3f59d99f8eba",
+    "outcome": "answered",
+    "replyCharacters": 359,
+    "elapsedMilliseconds": 76785,
+    "persistedMessageVerified": true,
+    "completedAt": "2026-09-09T16:31:21.4214633+08:00"
+  },
+  "marketToolAudit": {
+    "status": "completed",
+    "receiptStatus": "succeeded",
+    "providerDispatches": 3,
+    "tools": [
+      {
+        "tool_name": "get_data_freshness",
+        "status": "started",
+        "row_count": null,
+        "error_code": null
+      },
+      {
+        "tool_name": "get_data_freshness",
+        "status": "succeeded",
+        "row_count": null,
+        "error_code": null
+      },
+      {
+        "tool_name": "get_market_overview",
+        "status": "started",
+        "row_count": null,
+        "error_code": null
+      },
+      {
+        "tool_name": "get_market_overview",
+        "status": "succeeded",
+        "row_count": null,
+        "error_code": null
+      }
+    ]
+  },
+  "systemStatus": {
+    "version": "teruisi-operations-system-control-v2",
+    "state": "Running",
+    "backendState": "Ready",
+    "workerState": "exact_release",
+    "releaseId": "20260909T082314Z-77039002a8332b1d",
+    "supervisorProcessId": 32668,
+    "portProcessId": 47440,
+    "url": "http://localhost:3000/",
+    "reason": null,
+    "components": {
+      "core": true,
+      "finance": true,
+      "netshop": true,
+      "market": true,
+      "products": true,
+      "workflow": true,
+      "inventory": true,
+      "customerService": true,
+      "accessControl": true,
+      "erpReference": true,
+      "bi": true,
+      "ai": true
+    },
+    "checkedAt": "2026-09-09T16:30:38.9771083+08:00"
+  },
+  "readiness": [
+    {
+      "port": 8012,
+      "httpStatus": 200
+    },
+    {
+      "port": 8081,
+      "httpStatus": 200
+    },
+    {
+      "port": 8112,
+      "httpStatus": 200
+    },
+    {
+      "port": 8111,
+      "httpStatus": 200
+    },
+    {
+      "port": 8102,
+      "httpStatus": 200
+    },
+    {
+      "port": 8101,
+      "httpStatus": 200
+    },
+    {
+      "port": 8071,
+      "httpStatus": 200
+    },
+    {
+      "port": 8072,
+      "httpStatus": 200
+    },
+    {
+      "port": 8062,
+      "httpStatus": 200
+    },
+    {
+      "port": 8052,
+      "httpStatus": 200
+    },
+    {
+      "port": 8091,
+      "httpStatus": 200
+    },
+    {
+      "port": 8041,
+      "httpStatus": 200
+    },
+    {
+      "port": 8061,
+      "httpStatus": 200
+    },
+    {
+      "port": 8042,
+      "httpStatus": 200
+    },
+    {
+      "port": 8002,
+      "httpStatus": 200
+    },
+    {
+      "port": 8032,
+      "httpStatus": 200
+    },
+    {
+      "port": 8001,
+      "httpStatus": 200
+    },
+    {
+      "port": 8031,
+      "httpStatus": 200
+    },
+    {
+      "port": 8021,
+      "httpStatus": 200
+    },
+    {
+      "port": 8022,
+      "httpStatus": 200
+    },
+    {
+      "port": 8011,
+      "httpStatus": 200
+    },
+    {
+      "port": 8051,
+      "httpStatus": 200
+    },
+    {
+      "port": 8092,
+      "httpStatus": 200
+    }
+  ],
+  "validation": {
+    "backendAi": {
+      "passed": 64,
+      "failed": 0,
+      "total": 65,
+      "skipped": 1
+    },
+    "typescriptUnit": {
+      "durationMilliseconds": 75832,
+      "passed": 2028,
+      "skipped": 20,
+      "cancelled": 0,
+      "total": 2048,
+      "failed": 0
+    },
+    "priorLoadRelatedTimeout": "An earlier full run timed out in an unrelated Jackyun combo test; targeted rerun and final full run passed.",
+    "lint": {
+      "existingWarnings": 9,
+      "errors": 0
+    },
+    "productionBuild": "passed",
+    "backendBoundary": "passed; zero violations",
+    "schemaChanges": false,
+    "migrationCheck": "No changes detected",
+    "diffCheck": "passed",
+    "marketProjection": {
+      "summaryCharacters": 8448,
+      "existingCharacterLimit": 40000,
+      "fullDashboardCharacters": 82128
+    }
+  },
+  "boundaries": [
+    "No private address bypass",
+    "No provider request replay",
+    "No D1 fallback or authority change",
+    "Provider key unchanged",
+    "No business facts modified"
+  ]
+}

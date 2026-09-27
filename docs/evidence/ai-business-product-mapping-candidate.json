@@ -1,0 +1,22 @@
+{
+  "date": "2026-09-17",
+  "branch": "codex/ai-business-analysis-stages",
+  "baseCommit": "9fb2e92f",
+  "batch": 25,
+  "status": "candidate_not_production_adopted",
+  "changes": ["Separate read-only mapping-v2 API over complete sealed sources", "Disk-partitioned exact matching with full reconciliation and bounded stable pages", "Legacy mapping and historical report behavior preserved", "Explicit cursor cleanup for abandoned scans on Windows"],
+  "verification": {
+    "postgresRegression": {"passed": 26, "log": ".runtime/ai-pg-957f3195a599/tests.log"},
+    "postgres5001Rows": {"passed": 1, "persistedPages": 52, "legacyRejected": true, "mappedRows": 5000, "unmatchedRows": 1, "netSalesCents": 50010000, "log": ".runtime/ai-pg-be2c51660537/tests.log"},
+    "pureIndependentRun": {"passed": 12, "seconds": 31.3},
+    "legacyParity": {"randomCases": 80, "passed": 80},
+    "pureScale": {"rowsPerSource": 30001, "sourcePages": 602, "sourceBytes": 9573561, "scratchBytes": 6516736, "pythonTracedPeakBytes": 245182, "isProcessRss": false, "isProductionSla": false, "measurement": ".runtime/batch25-identity-pure.json"},
+    "nodeRoutesAndForwarding": {"passed": 24},
+    "build": {"passed": true, "log": ".runtime/batch25-build.log"},
+    "renderedPages": {"passed": 20, "log": ".runtime/batch25-rendered.log"},
+    "targetedLint": {"passed": true, "log": ".runtime/batch25-lint.log"},
+    "backendBoundary": {"passed": true, "log": ".runtime/batch25-boundary.log"}
+  },
+  "limits": ["New API only; report, mapped comparisons and export integration remain outstanding", "Current master does not prove historical identity or advertising attribution", "No persistent derived cache or cursor renewal implemented", "Real-business and production acceptance remain outstanding; no full phase declared complete"],
+  "operations": {"productionBusinessReads": false, "productionWrites": false, "newMigration": false, "deployment": false, "serviceRestart": false, "paidModelCalls": false, "externalMessages": false}
+}

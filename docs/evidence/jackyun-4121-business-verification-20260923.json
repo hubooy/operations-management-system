@@ -1,0 +1,172 @@
+{
+  "status": "verified_success",
+  "checkedAt": "2026-09-23T02:37:47.150Z",
+  "source": "authorized local read-only APIs; operations MCP unavailable",
+  "execution": {
+    "id": 4121,
+    "workflowId": "J8kY2mQ5vR7sT4pN",
+    "status": "success",
+    "mode": "manual",
+    "startedAt": "2026-09-23 02:33:04.844",
+    "stoppedAt": "2026-09-23 02:36:27.286"
+  },
+  "runId": "n8n-export-first-4121",
+  "snapshotDate": "2026-09-23",
+  "salesPeriod": {
+    "startDate": "2026-09-01",
+    "endDate": "2026-09-22"
+  },
+  "planSha256": "958cfb8bb9ccdeefe49a87e0f64ce522662d5762cd3b113a59a07349e3e0b5da",
+  "manifestSha256": "ed673d240c8376fe94cdc074d0cc9c29b0482b0de51b481b018465ee1cc660eb",
+  "modules": [
+    {
+      "module": "products",
+      "status": "completed",
+      "batchId": "products:63c37ac7662ef98833cc62326f882a5d0ca0d4dff51fb9e6570ce9f445aa5150",
+      "rowCount": 8517,
+      "warningCount": 0,
+      "outputSha256": "37f664057647ed88d07c8a38513293ba433552b90346380f86374f9fc5c94a0e",
+      "djangoReceipt": {
+        "status": "imported",
+        "inputSha256": "37f664057647ed88d07c8a38513293ba433552b90346380f86374f9fc5c94a0e",
+        "batchId": "products:63c37ac7662ef98833cc62326f882a5d0ca0d4dff51fb9e6570ce9f445aa5150",
+        "sourceKey": "products",
+        "contentHash": "e42cd04d616b1cd87d30d1fd57746669b900a965728bf1e5d847ff093011174e",
+        "rawFileHash": "37f664057647ed88d07c8a38513293ba433552b90346380f86374f9fc5c94a0e"
+      }
+    },
+    {
+      "module": "inventory",
+      "status": "completed",
+      "batchId": "fe03a04ca0719e0498da159c9a298fcb5569d5f97d455056a9f21b5c6c20eebe",
+      "rowCount": 23952,
+      "warningCount": 6,
+      "outputSha256": "af07502bed0699b354512f7c6fc24f5eedd18575f7a160bccb2dba9157f10d04",
+      "djangoReceipt": {
+        "status": "imported",
+        "inputSha256": "af07502bed0699b354512f7c6fc24f5eedd18575f7a160bccb2dba9157f10d04",
+        "batchId": "fe03a04ca0719e0498da159c9a298fcb5569d5f97d455056a9f21b5c6c20eebe",
+        "sourceKey": "inventory_stock",
+        "contentHash": "c7fc72ccdefe3cb38d4f33eeddc107f6083f88f8aa549971487f555511e39733",
+        "rawFileHash": "af07502bed0699b354512f7c6fc24f5eedd18575f7a160bccb2dba9157f10d04"
+      }
+    },
+    {
+      "module": "inventory_age",
+      "status": "completed",
+      "batchId": "inventory_age:41bbfa19c7e1caeba8f5686e52ddfa5d23c4b5b1ae80c925beadae513b0565d5",
+      "rowCount": 5747,
+      "warningCount": 0,
+      "outputSha256": "ee5aecf27341aae9db735fb3e8a2305af9c6237cfa420931b6864b2d77928763",
+      "djangoReceipt": {
+        "status": "imported",
+        "inputSha256": "ee5aecf27341aae9db735fb3e8a2305af9c6237cfa420931b6864b2d77928763",
+        "batchId": "inventory_age:41bbfa19c7e1caeba8f5686e52ddfa5d23c4b5b1ae80c925beadae513b0565d5",
+        "sourceKey": "inventory_age",
+        "contentHash": "00be241d9077097678531ec7f05ee0b715558eec444067d8d1f786867328571d",
+        "rawFileHash": "ee5aecf27341aae9db735fb3e8a2305af9c6237cfa420931b6864b2d77928763"
+      }
+    },
+    {
+      "module": "sales",
+      "status": "completed",
+      "batchId": "ed9896e55c28e3a70a8328d9dc279c13b42d9b4919b1c9ea35e3cac1b4637311",
+      "rowCount": 20350,
+      "warningCount": 57,
+      "outputSha256": "8669a98fb12eec803fc3b9405d2654eb0df41eccfa54d2f48de9dc200e714449"
+    },
+    {
+      "module": "combos",
+      "status": "completed",
+      "batchId": "combos:6f327976a18f5fa283a06fc5187f0bc7fa101c93b7126831a2c7c9b7925f0f4c",
+      "rowCount": 4450,
+      "warningCount": 2,
+      "outputSha256": "17cec275ec30980e382d263e024403d584e2d834597bd38abf9491c9f10d6a17",
+      "djangoReceipt": {
+        "status": "imported",
+        "inputSha256": "17cec275ec30980e382d263e024403d584e2d834597bd38abf9491c9f10d6a17",
+        "batchId": "combos:6f327976a18f5fa283a06fc5187f0bc7fa101c93b7126831a2c7c9b7925f0f4c",
+        "sourceKey": "combos",
+        "contentHash": "6061c842c8b98d1aa2857d23db1fd72e88c79118123563e4776914e55ca30d54",
+        "rawFileHash": "17cec275ec30980e382d263e024403d584e2d834597bd38abf9491c9f10d6a17"
+      }
+    }
+  ],
+  "workflowUnchanged": true,
+  "pinnedDataAbsent": true,
+  "exactBatchesVerified": true,
+  "sourceAndProcessedFileHashesVerified": true,
+  "salesFreshness": {
+    "status": "available",
+    "source": "django_postgresql",
+    "authority": "sales_single_write",
+    "revision": "35:34",
+    "timeZone": "Asia/Shanghai",
+    "currentBusinessDate": "2026-09-23",
+    "expectedThroughDate": "2026-09-22",
+    "checkedAt": "2026-09-23T02:37:44.809Z",
+    "coverage": {
+      "startDate": "2025-01-01",
+      "cutoffDate": "2026-09-22",
+      "coveredDayCount": 630,
+      "lagDaysToCurrentBusinessDate": 1,
+      "throughYesterday": true
+    },
+    "latestBatch": {
+      "id": "ed9896e55c28e3a70a8328d9dc279c13b42d9b4919b1c9ea35e3cac1b4637311",
+      "fileName": "销售单明细账_2026-09-01_2026-09-22_已筛选并匹配成本.xlsx",
+      "completedAt": "2026-09-23T02:36:15.627221+00:00",
+      "rowCount": 20350
+    }
+  },
+  "cleanup": {
+    "helperReady": true,
+    "helperBusy": false,
+    "helperActiveWorkflow": null,
+    "lockAbsent": true,
+    "browserPortClosed": true,
+    "nonterminalForJackyun": 0
+  },
+  "authorization": "用户明确要求现在从原工作流完整测试一次，确认下载、导入与落库是否成功。",
+  "onlyOneManualExecutionStarted": true,
+  "n8nRestarted": false,
+  "servicesRestarted": false,
+  "workflowScheduleChanged": false,
+  "warningSummaries": [
+    {
+      "module": "inventory",
+      "total": 6,
+      "returnedWarningCount": 6,
+      "codesInReturnedSample": {
+        "RETAINED_ZERO_UNIT_COST": 1,
+        "MISSING_SPEC_SUPPLIER": 1,
+        "WAREHOUSE_NOT_COUNTED_IN_OVERVIEW": 1,
+        "MISSING_LOCKED_QUANTITY": 1,
+        "MISSING_IN_TRANSIT_QUANTITY": 1,
+        "MANUAL_SNAPSHOT_DATE": 1
+      },
+      "warningSampleTruncated": false
+    },
+    {
+      "module": "sales",
+      "total": 57,
+      "returnedWarningCount": 20,
+      "codesInReturnedSample": {
+        "ALLOCATED_AMOUNT_MISMATCH": 20
+      },
+      "warningSampleTruncated": true
+    },
+    {
+      "module": "combos",
+      "total": 2,
+      "returnedWarningCount": 2,
+      "codesInReturnedSample": {
+        "DUPLICATE_KEYS": 1,
+        "NORMALIZED_DISPLAY_WHITESPACE": 1
+      },
+      "warningSampleTruncated": false
+    }
+  ],
+  "durationSeconds": 202.442,
+  "uiConfirmedSucceeded": true
+}

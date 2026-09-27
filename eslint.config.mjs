@@ -18,6 +18,7 @@ const eslintConfig = defineConfig([
     "build/**",
     "dist/**",
     ".runtime/**",
+    "**/.venv/**",
     ".codex-tmp/**",
     ".vite-sites-cache/**",
     "tmp/**",

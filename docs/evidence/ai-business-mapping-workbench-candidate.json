@@ -1,0 +1,34 @@
+{
+  "date": "2026-09-17",
+  "branch": "codex/ai-business-analysis-stages",
+  "baseCommit": "9a568a7f",
+  "batch": 28,
+  "status": "candidate_mapping_workbench_not_production_adopted",
+  "changes": [
+    "Verify complete sealed v2 source directory before explicit current/previous/yearAgo sales-to-current-master choices",
+    "Attach selected pairs to both ordinary and budget report submissions while preserving the original no-choice path",
+    "Preserve requested mapping intent through failed reload or changed version/catalog; require re-selection or explicit clearing",
+    "Check complete report UTF8 request and pending-record capacity before storage/network; preserve unknown original body and UUID"
+  ],
+  "verification": {
+    "node": {"passed": 39, "log": ".runtime/batch28-node.log"},
+    "componentChrome": {"passed": 7, "log": ".runtime/batch28-mapping-builder-ui/evidence.json"},
+    "parentChrome": {"passed": 13, "log": ".runtime/business-mapping-workbench-ui/evidence.json", "includes": "Ordinary and combined budget submits, original no-mapping body, reload failure and verified empty state, explicit clear, lost capability flag, detail error, same-task version/catalog changes, cross-task/account late results, unknown original-body retry, byte limits and mobile overflow"},
+    "existingBudgetWorkbenchChrome": {"passed": 7, "log": ".runtime/batch28-old-budget-workbench/evidence.json"},
+    "existingWorkbenchChrome": {"passed": 16, "log": ".runtime/batch28-old-workbench/evidence.json"},
+    "existingV2WorkbenchChrome": {"passed": 9, "log": ".runtime/batch28-old-v2-workbench/evidence.json"},
+    "isolatedPostgres": {"passed": 4, "seconds": 17.314, "log": ".runtime/ai-pg-b30d930ba9d5/tests.log"},
+    "build": {"passed": true, "log": ".runtime/batch28-build.log"},
+    "renderedPages": {"passed": 20, "log": ".runtime/batch28-rendered.log"},
+    "ownedTypeDiagnostics": 0,
+    "targetedLintErrors": 0,
+    "independentParentReview": "No blocking findings; separate static review of live identity, selection intent, late responses, clearing and frozen pending submissions",
+    "visualReview": "Desktop form inspected; introductory text shortened and backend implementation wording removed; component and parent Chrome suites rerun afterward"
+  },
+  "limits": [
+    "Scope remains explicit; automatic natural-language resolution and authoritative identity options are separate work",
+    "Current master does not establish historical identity or advertising attribution",
+    "Synthetic browser/network and backend tests do not prove real-model business quality or production adoption"
+  ],
+  "operations": {"productionBusinessReads": false, "productionWrites": false, "newMigration": false, "deployment": false, "serviceRestart": false, "paidModelCalls": false, "externalMessages": false}
+}

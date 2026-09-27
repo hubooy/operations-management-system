@@ -1,0 +1,22 @@
+{
+  "date": "2026-09-17",
+  "branch": "codex/ai-business-analysis-stages",
+  "baseCommit": "4793f1cf",
+  "batch": 30,
+  "status": "candidate_netshop_metadata_options_reader",
+  "scope": "GET /api/netshop/analysis-options, exact published metadata identities and bounded signed keyset pages; workbench integration remains future work",
+  "verification": {
+    "isolatedPostgres": {"passed": 21, "seconds": 0.367, "log": ".runtime/ai-pg-819e374fa652/tests.log", "newOptionsTests": 12, "legacyAnalysisTests": 9},
+    "node": {"passed": 11, "failed": 0, "log": ".runtime/batch30-node.log"},
+    "build": {"passed": true, "log": ".runtime/batch30-build.log"},
+    "renderedPages": {"passed": 20, "log": ".runtime/batch30-rendered.log"},
+    "eslintChangedFiles": {"passed": true, "log": ".runtime/batch30-eslint.log"},
+    "typescript": {"baselineOutputLines": 223, "exactlyMatchesExistingBaseline": true, "log": ".runtime/batch30-types.log"},
+    "backendBoundary": {"modules": 488, "violations": 0},
+    "independentReview": "Separate Agent reviewed exact grouping and same-collation keyset ordering, publication revision transaction, cursor principal/query/version binding, metadata-only SQL and reader isolation; root reviewed final implementation",
+    "negativeCases": ["Cross-principal, query, version, signature and expired cursor", "Revision changes during read", "Unicode Cc/Cs and invalid stored identity", "Malformed or reversed metadata dates", "Whole UTF-8 page capacity rejection without clipping", "Unknown or duplicate filters and unsupported source pairs", "Scoped/non-admin/unsigned access, POST and writer route refusal"]
+  },
+  "contract": {"pageItems": 20, "sqlGroupLimit": 21, "maxJsonUtf8Bytes": 38000, "cursorMaxAgeSeconds": 3600, "dateCoverageVerified": false, "factRowsRead": false},
+  "limits": ["Completed import metadata is historical publication evidence, not current fact coverage", "No ERP or market options projection yet", "No selector UI or automatic scope resolution in this batch", "Synthetic correctness is not production query-plan or latency acceptance"],
+  "operations": {"productionBusinessReads": false, "productionWrites": false, "newMigration": false, "deployment": false, "serviceRestart": false, "paidModelCalls": false, "externalMessages": false}
+}

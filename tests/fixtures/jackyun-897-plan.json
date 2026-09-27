@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "protocol": "2026-09-06.export-first.1",
+  "executionId": "897",
+  "runId": "n8n-export-first-897",
+  "runDate": "2026-09-08",
+  "asOfDate": "2026-09-07",
+  "baseUrl": "http://localhost:3000",
+  "createdAt": "2026-09-08T03:51:54.791Z",
+  "phase": "exporting",
+  "exports": {},
+  "exportTransport": "web_prepared_http_v1",
+  "exportIntent": "inventory"
+}

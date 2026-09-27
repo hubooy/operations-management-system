@@ -1,0 +1,113 @@
+{
+  "date": "2026-09-15",
+  "stage": "isolated_validation_only",
+  "productionAdopted": false,
+  "baseCommit": "26db2f976c79b579425bb70e98d2206abb73fb61",
+  "rules": {
+    "manualHealthyReset": "strict physical on-hand increase versus preceding current snapshot; decline and zero retain override",
+    "remainingQuantity": "latest non-cancelled exact Guangdong plan quantity minus sum of positive daily on-hand changes after order date",
+    "baseline": "order-date daily snapshot",
+    "decreasesOffsetIncreases": false,
+    "negativeRemainingAllowed": true,
+    "missingHistory": "null with explanation; never assume zero",
+    "sameDayVersions": "only current authoritative daily snapshot; not an inbound receipt ledger"
+  },
+  "validation": {
+    "postgresTests": {
+      "passed": 101,
+      "failed": 0
+    },
+    "postgresMirror": {
+      "status": "passed",
+      "postgresPort": 55458,
+      "syntheticDataOnly": true,
+      "migration": "0010_replenishment_health",
+      "tables": {
+        "inventory_guangdong_monitor_items": {
+          "rows": 1,
+          "sha256": "8c28be34960349397fe8abf3890f43bf3839b59e224b8c31dd6a199c8a0effb5"
+        },
+        "inventory_guangdong_supplier_cycles": {
+          "rows": 1,
+          "sha256": "307e180f89a6ec3c13d9745856a6c1b960ccf13ca607b120f57fc6bdaff2315c"
+        },
+        "inventory_guangdong_monitor_audits": {
+          "rows": 4,
+          "sha256": "b4ab53257c2afc41908791e71bd3ab5acd86c496edf2d9ee38919bd1f71f921e"
+        },
+        "replenishment_plan_items": {
+          "rows": 1,
+          "sha256": "22db78ffc68e8d838c8b4c6c4e91cceb5994fdf275c5a21daa95faa37430e9d9"
+        },
+        "inventory_data_revisions": {
+          "rows": 1,
+          "sha256": "fbb24655ea9199a87c98f2e45c1b05a1cefe36e4b998770d7bdc1ead0519c434"
+        }
+      },
+      "minimumRoleChecks": "passed",
+      "restoreMatches": true
+    },
+    "nodeFullSuiteBeforeColumnAddition": {
+      "passed": 2164,
+      "failed": 0,
+      "skipped": 23,
+      "total": 2187
+    },
+    "nodeRelevantAfterColumnAddition": {
+      "passed": 19,
+      "failed": 0
+    },
+    "ui": {
+      "status": "passed",
+      "mockedApi": true,
+      "requests": 19,
+      "checks": [
+        "fixed-warehouse",
+        "risk-url",
+        "item-overrides-risk-reason-and-fallback",
+        "paste-preview-commit",
+        "supplier-cycle",
+        "versioned-export",
+        "viewer-read-only",
+        "desktop-mobile-render"
+      ]
+    },
+    "build": "passed in isolated worktree",
+    "lintFullBeforeColumnAddition": {
+      "errors": 0,
+      "existingWarnings": 11
+    },
+    "backendBoundary": {
+      "checkedModules": 444,
+      "violations": 0
+    },
+    "newMigrations": 0,
+    "review": "reviewed physical quantity field, exact warehouse/SKU, latest order selection, daily completeness, bounded read, revision consistency, atomic reset/audit, and reader permissions",
+    "lintChangedFilesAfterColumnAddition": {
+      "errors": 0,
+      "warnings": 0
+    }
+  },
+  "pending": [
+    "user confirmation of UI and formula preview",
+    "controlled production deployment authorization"
+  ],
+  "productionOperations": {
+    "writes": false,
+    "migrations": false,
+    "serviceRestarts": false,
+    "notifications": false
+  },
+  "sourceLfSha256": {
+    "backend/inventory/guangdong_risk_reset.py": "d44e44913b2d47937b810dc2a4b29e569dffd97481cf5ea9b494e8fca7783e67",
+    "backend/inventory/import_service.py": "bb27d7c03032d038b8dd42b8f6128ad0922fd26ddd53cf8351624dd57891d0d0",
+    "backend/inventory/guangdong.py": "ab7ecdad653c92f858994e3b543170bffcdc8b97f26ed4a601b1148ab562cac0",
+    "backend/inventory/guangdong_replenishment.py": "b863d18f9d3e1ae1af48d4d2af443e92d7fa1ccfc05712c560a34ba8b428b20e",
+    "backend/inventory/tests/test_replenishment_health.py": "09bcaf54e3bf7dc540cafe3b3b6137ddd893a2873588fa21f26549136a19e0c3",
+    "backend/inventory/tests/test_guangdong_replenishment.py": "83d0d424c47d5fd4343a8e32c4c019394189da55a3d10e1727efc5ae196ad715",
+    "app/inventory-guangdong-view.tsx": "51cf5ab9b01188d982b61d182aed11320bfa0c1e501f5695b884e2a120ef04c2",
+    "lib/inventory/guangdong-contract.ts": "bc06703b3c042b315e655773761f2b87ee8aa26f719da2058a76fa7336139d3e",
+    "lib/inventory/guangdong-workbook.ts": "7887f0c04c4ce68790f259a3baefce9b3aa094f968029bfc53bdf599327c9f6f",
+    "lib/ai/page-data-tools.ts": "0b017a53ffef1de860432aa93dbededba346f49ded46bff60e3513e4f797db3e"
+  }
+}

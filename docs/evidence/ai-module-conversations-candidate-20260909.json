@@ -1,0 +1,121 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-09-09",
+  "status": "isolated-candidate-not-deployed",
+  "branch": "codex/ai-module-conversations-20260909",
+  "baseCommit": "c84afdd9558efe40a9b5a8e69206c12d9d79290e",
+  "productionModified": false,
+  "realModelCalls": 0,
+  "externalNotifications": 0,
+  "checks": {
+    "backendRelevant": {
+      "tests": 45,
+      "skipped": 1,
+      "failures": 0
+    },
+    "postgresWorkspaceTests": {
+      "tests": 7,
+      "failures": 0
+    },
+    "postgresIsolated": {
+      "version": "17.11",
+      "port": 15479,
+      "syntheticDataOnly": true,
+      "stoppedAfterVerification": true,
+      "passed": [
+        "0005-to-0006-upgrade",
+        "legacy-snapshot-digest-unchanged",
+        "reader-readiness-and-receipt-readback",
+        "writer-readiness",
+        "reader-write-denial",
+        "writer-epoch-fencing",
+        "immutable-module-and-conversation",
+        "uniqueness-and-context-size",
+        "dump-restore-data-and-guards",
+        "delete-cascade-and-audit"
+      ]
+    },
+    "migrationDrift": "no-changes-detected",
+    "fullTypecheck": {
+      "status": "baseline-failures",
+      "diagnostics": 142,
+      "baseAndCandidateLogIdentical": true,
+      "newDiagnostics": 0,
+      "normalizedLogSha256": "936d12a6b94a23ea79b6a719c59dbd35e416a47e10668159494b8d08f61bdf84"
+    },
+    "systemDatasetCoverage": {
+      "status": "pre-existing-gap",
+      "model": "inventory.GuangdongMonitorItem",
+      "missingFields": [
+        "risk_override",
+        "buyer_override",
+        "buffer_days_override",
+        "operator_name_override",
+        "risk_reason_override",
+        "lead_days_override"
+      ]
+    },
+    "frontendFull": {
+      "command": "node --import tsx --test --test-concurrency=4 tests/*.test.ts",
+      "tests": 2060,
+      "passed": 2038,
+      "skipped": 22,
+      "failures": 0,
+      "note": "Default parallel run encountered a Node test runner serialization failure; bounded full rerun passed."
+    },
+    "frontendRegression": {
+      "tests": 133,
+      "passed": 132,
+      "skipped": 1,
+      "failures": 0
+    },
+    "build": {
+      "status": "passed"
+    },
+    "builtWorkerAndAssets": {
+      "tests": 20,
+      "failures": 0,
+      "realBackendConnections": 0
+    },
+    "lint": {
+      "status": "passed",
+      "errors": 0,
+      "warnings": 9,
+      "warningsPresentOnBaseline": true,
+      "venvDependenciesExcluded": true
+    },
+    "diffWhitespace": "passed",
+    "backupCompatibility": {
+      "scenarios": 12,
+      "status": "passed",
+      "legacy45TableBackupAccepted": true,
+      "orphanMigrationRejected": true
+    },
+    "finalTargeted": {
+      "tests": 19,
+      "failures": 0
+    },
+    "finalBuildAndBundleChecks": {
+      "build": "passed",
+      "tests": 23,
+      "failures": 0,
+      "skipped": 0
+    }
+  },
+  "notVerified": [
+    "real-provider-response",
+    "browser-interaction",
+    "production-upgrade"
+  ],
+  "remaining": [
+    "resolve-baseline-checks-before-merge",
+    "controlled-production-release",
+    "cross-domain-analysis-contracts",
+    "durable-recurring-monitors",
+    "authorized-notifications"
+  ],
+  "retainedTemporaryBaseline": {
+    "path": "D:/codex-worktrees/ai-baseline-review-20260909-audit",
+    "reason": "Automatic approval review rejected exact cleanup; only blocked by policy was returned. No bypass attempted."
+  }
+}

@@ -1,0 +1,77 @@
+{
+  "date": "2026-09-11",
+  "scope": "Local n8n availability and native process logging only",
+  "sourceCommit": "daf263377b07bf73b9ffd33ceeb4e8f4aa572735",
+  "rootCause": {
+    "confirmed": "Windows PowerShell 5.1 converts redirected native stderr into NativeCommandError. ErrorActionPreference Stop unwinds the wrapper, closing its kill-on-close Job Object.",
+    "reproduction": "A Node fixture emitting only a nonfatal warning caused the old redirection path to throw NativeCommandError before its delayed success marker.",
+    "rejectedHypotheses": ["SQLite corruption", "Implicit N8N_USER_FOLDER as the cause"],
+    "powerPolicy": "Allow battery start and continue on battery; this is additional resilience, not proof of the original stop cause."
+  },
+  "runtime": {
+    "directory": "D:\\teruisi-runtime\\n8n-service\\20260911-daf263377b07",
+    "entry": "Start.ps1",
+    "entrySha256": "3345f0557c56812264b0e318b6a71f8168a933f9e185754e612dbb9dc69081fa",
+    "entryEncoding": "UTF-8 BOM for Windows PowerShell 5.1 Chinese project path",
+    "projectRoot": "D:\\运营管理系统",
+    "task": "TERUISI-n8n-Service",
+    "lastStartShanghai": "2026-09-11T21:18:23+08:00",
+    "observedAtShanghai": "2026-09-11T21:20:30+08:00",
+    "state": "Running",
+    "nodePid": 40616,
+    "listenAddress": "127.0.0.1",
+    "ports": [5678, 5679],
+    "http": {"/": 200, "/healthz": 200, "/healthz/readiness": 200},
+    "logs": [".runtime/n8n/service.stdout.utf8.log", ".runtime/n8n/service.stderr.utf8.log"],
+    "taskBackup": "task-before.xml",
+    "taskReadback": "task-after.xml",
+    "temporaryServiceTaskRemoved": "TERUISI-n8n-UserFolder-Fix-Test-20260911"
+  },
+  "databaseBackup": {
+    "path": "C:\\Users\\86137\\.n8n\\backups\\database-pre-stderr-fix-20260911-2115.sqlite",
+    "method": "SQLite backup API",
+    "sha256": "617ef28aa6efdae52fb3e18c1a0798ad58d98e8e336e455be26d997003bcf5b4",
+    "integrityCheck": "ok"
+  },
+  "readback": {
+    "activeWorkflows": 13,
+    "definitionsUnchanged": true,
+    "ownersUnchanged": true,
+    "webhooksUnchanged": true,
+    "definitionsSha256": "3de3485d8eb99afd18680968d3cae6ebd7b37ec2844389cc3471bccf6bb53bbc",
+    "ownersSha256": "8ac3c65614d65ead27ec76e66ee6acbf292ec0a6c8a7d5cb7f3bd110c66a9cd5",
+    "webhooksSha256": "73348c4e6f0a7eb0aa375ff40329c607caf6a8638e154382c3b1245739900825",
+    "naturalExecution": {"id": 1011, "workflowId": "NewProductWeeklyDingTalk2026", "status": "success", "businessResult": "not_due"},
+    "interruptedExecutions": [
+      {"id": 1006, "status": "crashed", "note": "The overdue retry resumed during the deployment attempt and was interrupted when correcting the wrapper path encoding. It is no longer waiting and was not manually replayed."},
+      {"id": 1010, "status": "crashed", "note": "Stale running weekly execution from the earlier failed service."}
+    ],
+    "remainingBusinessFailure": "Tmall Lili product-master export remains export_submitted for 2026-09-10; execution 1004 failed at M. The original manifest is retained. Service availability does not prove business import success."
+  },
+  "cleanup": {
+    "diagnosticCopies": "Retained: automated policy review rejected the requested deletion with blocked by policy; no deletion was performed.",
+    "branchAndWorktree": "Retained because the branch is not merged into main."
+  },
+  "validation": {
+    "nativeIntegration": "passed: no-console launcher, real Node warning, concurrent stdout/stderr over 1 MiB each, UTF-8 bytes, append, native exit code 37, scheduler process-tree cleanup, battery settings",
+    "focusedNodeTests": {"passed": 6, "failed": 0},
+    "lint": {"exitCode": 0, "errors": 0, "warnings": 11},
+    "fullUnit": {"passed": 2081, "failed": 2, "note": "AI Agent view stale text assertion reproduced on unchanged main; local-worker-start test-runner deserialization error passed in isolated rerun, 23/23."},
+    "diffCheck": "passed",
+    "mainMerge": "not performed: full-suite gate is not green; retain branch and worktree",
+    "workerOrDjangoDeployment": false,
+    "manualBusinessExecutionOrNotification": false
+  },
+  "mainIntegration": {
+    "date": "2026-09-12",
+    "integrationCommit": "c2e280e6e813fb2a21935e96a78d3cd361386c81",
+    "focusedNodeTests": {"passed": 6, "failed": 0},
+    "nativeLauncherIntegration": "passed",
+    "fullUnit": {"passed": 2109, "failed": 0, "skipped": 23, "total": 2132},
+    "lint": {"exitCode": 0, "errors": 0, "warnings": 11},
+    "buildOnly": "passed",
+    "diffCheck": "passed",
+    "productionAction": "No repeat restart: the scheduled task was already running the exact adopted source bytes from the immutable 20260911-daf263377b07 runtime.",
+    "mainPush": "completed"
+  }
+}

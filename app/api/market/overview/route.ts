@@ -1,36 +1,49 @@
-import { ensureMarketSchema, getMarketDatabase, getMarketOverview } from "@/lib/market/database";
-import { ensureNetshopSchema } from "@/lib/netshop/database";
-import { ensureSalesSchema } from "@/lib/sales/database";
-import { getCachedMarketOverview } from "@/lib/market/overview-response-cache";
-
-function validDate(value: string | null) {
-  return value && /^\d{4}-\d{2}-\d{2}$/.test(value) ? value : undefined;
-}
+import {
+  authorizationErrorResponse,
+  requireAppPrincipal,
+  requireUnrestrictedDataScope,
+} from "@/lib/auth/authorization";
+import {
+  MARKET_QUERIES_PATH,
+  requestDjangoMarketService,
+} from "@/lib/django/market-service";
+import { safeApiErrorResponse } from "@/lib/http/api-error";
+import { parseMarketOverviewQuery } from "@/lib/market/query-contract";
 
 export async function GET(request: Request) {
   try {
-    const db = getMarketDatabase();
-    await Promise.all([ensureMarketSchema(db), ensureNetshopSchema(db), ensureSalesSchema(db)]);
-    const params = new URL(request.url).searchParams;
-    const view = params.get("view") === "ranking" ? "ranking" : "full";
-    const filters = {
-      query: params.get("q")?.trim() || undefined,
-      categories: params.getAll("category"),
-      scopes: params.getAll("scope"),
-      brands: params.getAll("brand"),
-      rankingDimensions: params.getAll("dimension"),
-      operationModes: params.getAll("operationMode"),
-      subcategories: params.getAll("subcategory"),
-      priceBands: params.getAll("priceBand"),
-      startDate: validDate(params.get("startDate")),
-      endDate: validDate(params.get("endDate")),
-    };
-    const result = await getCachedMarketOverview(db, { view, filters }, () =>
-      getMarketOverview(db, filters, { view }));
-    return Response.json(result.payload, {
-      headers: { "cache-control": "no-store", "x-market-overview-cache": result.status },
+    const principal = await requireAppPrincipal(["viewer", "analyst", "operator", "admin"]);
+    requireUnrestrictedDataScope(principal, "市场分析概览");
+    const { view, pagination, filters } = parseMarketOverviewQuery(
+      new URL(request.url).searchParams,
+    );
+    const result = await requestDjangoMarketService<Record<string, unknown>>(
+      principal,
+      {
+        path: MARKET_QUERIES_PATH,
+        service: "reader",
+        payload: {
+          operation: "overview",
+          view,
+          page: pagination.page,
+          pageSize: pagination.pageSize,
+          filters,
+          ...(new URL(request.url).searchParams.get("includeFilterOptions") === "false" ? { includeFilterOptions: false } : {}),
+        },
+      },
+      { signal: request.signal },
+    );
+    return Response.json(result.data, {
+      headers: {
+        "cache-control": "no-store",
+        "x-market-data-revision": result.revision,
+      },
     });
   } catch (error) {
-    return Response.json({ error: error instanceof Error ? error.message : "市场分析数据读取失败" }, { status: 500 });
+    const authResponse = authorizationErrorResponse(error);
+    if (authResponse) return authResponse;
+    return safeApiErrorResponse(error, "市场分析数据读取失败", {
+      headers: { "cache-control": "no-store" },
+    });
   }
 }

@@ -1,0 +1,96 @@
+{
+  "status": "candidate_validated_pending_ui_acceptance",
+  "date": "2026-09-12",
+  "productionChanged": false,
+  "sourceBase": "2138fb2d",
+  "branch": "codex/unified-green-cross-app-sandbox",
+  "preview": "http://127.0.0.1:3100/?module=workflow",
+  "sourceDigests": {
+    "app/styles/tokens.css": "2ace15414813a4e0f92fab6ec9ca6c3daa5a2f723a2edd674b06e31c70ccfe14",
+    "app/styles/shared-theme.css": "83b29b3b72af0a0170a1fababe781473ea1fd97d92bd062eb3d029214baa094f",
+    "app/globals.css": "f2ebbae1fb333e53720f1671f4b10a1d5f9273364e83ac85f9bfa64b839564bb",
+    "backend/ai_assistant/pandas_sandbox.py": "a83ffc8867f05bb1e7b586ca72c4fa8f9bd7cc40451746164b305d3897566476",
+    "backend/ai_assistant/artifacts.py": "66ccfe9c283a1b39c7f3b86409a73516fa2693e4ee7bf6e5e8485535089b2843",
+    "backend/ai_assistant/test_pandas_sandbox.py": "c0d2ab2e4dce84d1dc93f05a4ce6545479da9e448ddf006676cf1c128805b215"
+  },
+  "verification": {
+    "build": "passed",
+    "renderedWorkerChecks": {
+      "passed": 20,
+      "failed": 0
+    },
+    "updatedNavigationAndTableContracts": {
+      "passed": 38,
+      "failed": 0
+    },
+    "backendBoundary": {
+      "modules": 426,
+      "violations": 0
+    },
+    "isolatedPostgresAi": {
+      "port": 55449,
+      "passed": 179,
+      "failed": 0,
+      "skipped": 0,
+      "log": ".runtime/ai-pg-be2ad89fa62f/tests.log"
+    },
+    "realContainer": {
+      "port": 18121,
+      "image": "sha256:b3b657aa2ff87fe3d8cef0bc26872a3f4253fafe82f839980c82edb64c01cffe",
+      "independentKeyAndLedger": true,
+      "separateTestContainerLabel": true,
+      "brokerStopped": true,
+      "cleanupVerified": true,
+      "domains": [
+        "sales",
+        "erp_reference",
+        "inventory"
+      ],
+      "sourcePages": [
+        2,
+        1,
+        1
+      ],
+      "syntheticExpectedResult": {
+        "salesYuan": 75,
+        "netQuantity": 1,
+        "availableQuantity": 8
+      }
+    },
+    "modelProtocolFixtures": [
+      "openai_compatible",
+      "anthropic"
+    ],
+    "artifactChecks": [
+      "Chinese units preserved",
+      "private CSV download",
+      "other owner rejected"
+    ],
+    "previewChecks": 12,
+    "selfReview": [
+      "explicit native paging contracts",
+      "Guangdong totalPages verified",
+      "no source permission expansion",
+      "unit labels match write/read/CSV contracts",
+      "legacy sandbox deep links normalize to chat"
+    ],
+    "fullNodeSuite": {
+      "total": 2141,
+      "passed": 2121,
+      "failed": 0,
+      "skipped": 20,
+      "log": ".runtime/unit-tests-final.log"
+    },
+    "eslintChangedTypeScript": "passed"
+  },
+  "paidModelCalls": 0,
+  "realDingTalkMessages": 0,
+  "businessMigrations": 0,
+  "limitations": [
+    "Source edge network transport replaced by fixture in database/container integration",
+    "Real paid model natural-language end-to-end not tested",
+    "Cross-source reads are not an atomic snapshot",
+    "Preview uses synthetic data and disallows AI writes",
+    "Not merged or deployed; awaiting UI acceptance and separate production authorization"
+  ]
+}

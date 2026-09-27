@@ -1,0 +1,113 @@
+{
+  "version": "market-django-isolated-rehearsal-evidence-v1",
+  "status": "passed",
+  "performedAt": "2026-09-01T16:34:00+08:00",
+  "environment": "isolated-local-mirror",
+  "productionChanged": false,
+  "source": {
+    "kind": "local-d1-consistent-snapshot",
+    "fallbackReason": "teruisi_operations MCP was unavailable",
+    "snapshotBytes": 9586368512,
+    "sealedSnapshotSha256": "2ba096ea9e84764615c9e6e2fae0796d67f92561d306a651a749608e4eff0c89",
+    "rehearsalSourceFinalSha256": "da341cba5ca5b36a3c286b5344131c66d47eebd8f72fc505f343bfaefd91ec1f",
+    "rankingPeriodStart": "2026-01-01",
+    "rankingPeriodEnd": "2026-08-24"
+  },
+  "preflight": {
+    "liveSourceReadyForCutover": false,
+    "blockingProcessingBatches": 2,
+    "blockingStagingRows": 8000,
+    "blockingBatchDates": [
+      "2026-08-12",
+      "2026-08-14"
+    ],
+    "note": "The two unpublished stale batches were removed only from the disposable rehearsal copy after exact identity and zero-claim checks. The live D1 source was not changed."
+  },
+  "migration": {
+    "runId": "market-4302d65ae56c1c17acb7e8c8",
+    "cutoverId": "market-rehearsal-20260901",
+    "authorityEpoch": "ed5d03f7-2793-47b7-adac-78e21da23948",
+    "sourceDigest": "4302d65ae56c1c17acb7e8c8d770c777b53aefdf650f3a5bc05a36534fc1c147",
+    "targetDigest": "4302d65ae56c1c17acb7e8c8d770c777b53aefdf650f3a5bc05a36534fc1c147",
+    "normalizations": {
+      "marketMasterAuditBeforeNullToEmptyObject": 4400
+    },
+    "counts": {
+      "marketRankingEntries": 290302,
+      "marketImportBatches": 190,
+      "marketMasterIdentities": 44402,
+      "marketPriceSnapshots": 90935,
+      "marketSkuAnnotations": 39488,
+      "marketAnnotationItems": 93357,
+      "marketAnnotationCommitReceipts": 89704,
+      "marketImageCache": 41535,
+      "marketNetshopProjection": 115341
+    }
+  },
+  "services": {
+    "postgresPort": 55483,
+    "readerPort": 58331,
+    "writerPort": 58332,
+    "salesConsumerStubPort": 58401,
+    "leastPrivilegeReader": "passed",
+    "leastPrivilegeWriter": "passed"
+  },
+  "systemTest": {
+    "status": "passed",
+    "revision": "776:4302d65ae56c",
+    "checks": {
+      "readerReady": "passed",
+      "writerReady": "passed",
+      "readerHmac": "passed",
+      "writerInvalidHmacRejected": "passed",
+      "writerFailureAtomic": "passed",
+      "readerWriterSurfaceIsolation": "passed",
+      "overview": "passed",
+      "trend": "passed",
+      "annotations": "passed",
+      "master": "passed",
+      "imageMetadata": "passed",
+      "salesConsumerIsolated": "passed",
+      "topRankingMetricGate": "passed",
+      "postSmokeDigestParity": "passed"
+    },
+    "resultCounts": {
+      "activeProjectionRows": 115341,
+      "overviewItems": 20,
+      "trendMonths": 8,
+      "opportunityCells": 3,
+      "decisionReadyCells": 0
+    },
+    "timingsMs": {
+      "annotationCandidateCounts": 1516,
+      "overviewFull": 5561,
+      "trend": 228,
+      "settings": 101,
+      "imageMetadata": 65
+    }
+  },
+  "repositoryValidation": {
+    "vinextBuild": "passed",
+    "nodeTests": {
+      "passed": 1703,
+      "skipped": 4,
+      "failed": 0
+    },
+    "renderedHtmlTests": {
+      "passed": 19,
+      "failed": 0
+    },
+    "djangoDomainTests": {
+      "passed": 186,
+      "failed": 0
+    },
+    "djangoSystemCheck": "passed",
+    "djangoMigrationDriftCheck": "passed",
+    "powershellParse": "passed",
+    "eslint": {
+      "status": "passed",
+      "errors": 0,
+      "existingWarnings": 9
+    }
+  }
+}

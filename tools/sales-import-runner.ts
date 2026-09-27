@@ -11,6 +11,7 @@ import {
 import { createXlsxWorkbookBytes } from "../lib/imports/xlsx-write";
 import { normalizeSalesLedgerDate } from "../lib/imports/sales-ledger";
 import { readJsonFileOr, writeJsonAtomic } from "../lib/jackyun/json-file";
+import { jackyunSalesPeriod } from "../lib/jackyun/sales-period";
 
 type Policy = {
   version: string;
@@ -32,6 +33,7 @@ type Policy = {
 
 type CliOptions = {
   asOfDate: string;
+  salesStartDate?: string;
   downloadPath?: string;
   costSourcePath?: string;
   expectedDownloadSha256?: string;
@@ -40,6 +42,8 @@ type CliOptions = {
   auditRootPath?: string;
   baseUrl: string;
   dryRun: boolean;
+  /** 以销售明细文件自带的"货品成本"列为最终成本，跳过库存成本源匹配/重算。默认 false。 */
+  useFileCost?: boolean;
 };
 
 export const salesSourceRowCountSemantic = "xlsx_nonblank_data_rows" as const;
@@ -111,9 +115,10 @@ function wrapSalesImportError(
 
 export type SalesImportRunOptions = Omit<CliOptions, "downloadPath" | "costSourcePath"> & {
   downloadPath: string;
-  costSourcePath: string;
+  costSourcePath?: string | null;
   downloadBytes?: Uint8Array;
   preserveRawCopy?: boolean;
+  useFileCost?: boolean;
 };
 
 export type SalesImportRunResult = {
@@ -232,7 +237,6 @@ const salesRequiredHeaders: readonly (string | readonly string[])[] = [
   "货品成本",
   "分摊后单价",
   "分摊后金额",
-  "费用分摊",
   "毛利",
 ];
 
@@ -330,6 +334,10 @@ function parseCli(): SalesImportRunOptions {
       options.dryRun = true;
       continue;
     }
+    if (argument === "--use-file-cost") {
+      options.useFileCost = true;
+      continue;
+    }
     if (!next) throw new Error(`参数 ${argument} 缺少取值。`);
     if (argument === "--as-of") options.asOfDate = next;
     else if (argument === "--download") options.downloadPath = next;
@@ -342,8 +350,11 @@ function parseCli(): SalesImportRunOptions {
     else throw new Error(`不支持的参数：${argument}`);
     index += 1;
   }
-  if (!options.downloadPath || !options.costSourcePath) {
-    throw new Error("正式销售任务必须同时显式提供 --download 和 --cost-source，不允许自动猜测历史文件。");
+  if (!options.downloadPath || (!options.costSourcePath && !options.useFileCost)) {
+    throw new Error("正式销售任务必须显式提供 --download，且(--cost-source 或 --use-file-cost) 二选一；不允许自动猜测历史文件。");
+  }
+  if (!options.useFileCost && !options.costSourcePath) {
+    throw new Error("非 --use-file-cost 模式必须显式提供 --cost-source 库存成本源。");
   }
   if (!Number.isSafeInteger(options.expectedSourceRows) || Number(options.expectedSourceRows) <= 0) {
     throw new Error("--expected-source-rows 必须明确提供页面确认的非空导出明细行数。");
@@ -528,9 +539,18 @@ export async function runSalesImport(options: SalesImportRunOptions): Promise<Sa
   if (!policy.version || policy.dateRule.type !== "month_to_previous_day") throw new Error("销售导入策略文件无效。");
   if (!options.dryRun) await assertServerPolicyVersion(options.baseUrl, policy.version);
   const period = monthToPreviousDay(options.asOfDate);
+  if (options.salesStartDate !== undefined) {
+    const rolling = jackyunSalesPeriod(options.asOfDate, options.salesStartDate);
+    period.startDate = rolling.startDate;
+    period.startDateTime = `${rolling.startDate} 00:00:00`;
+  }
   const auditRoot = path.resolve(options.auditRootPath ?? defaultAuditRoot);
   const downloadPath = path.resolve(options.downloadPath);
-  const costSourcePath = path.resolve(options.costSourcePath);
+  const useFileCost = options.useFileCost === true;
+  const costSourcePath = options.costSourcePath ? path.resolve(options.costSourcePath) : null;
+  if (!useFileCost && !costSourcePath) {
+    throw new Error("非 --use-file-cost 模式必须提供 --cost-source 库存成本源。");
+  }
   const rawBytes = options.downloadBytes ?? new Uint8Array(await readFile(downloadPath));
   const rawHash = sha256(rawBytes);
   if (options.expectedDownloadSha256 && rawHash !== options.expectedDownloadSha256) {
@@ -551,6 +571,10 @@ export async function runSalesImport(options: SalesImportRunOptions): Promise<Sa
     const previousSources = previousAudit?.sources as Record<string, unknown> | undefined;
     const previousCost = previousSources?.costSource as Record<string, unknown> | undefined;
     const previousFiltering = previousAudit?.filtering as Record<string, unknown> | undefined;
+    // 成本口径必须一致：useFileCost 只能恢复 file_cost 历史批次，不能复用库存成本源旧批次；
+    // 反之亦然。成本口径变化必须创建新批次替换旧事实。
+    const previousFileCostMode = (previousCost as { mode?: string } | undefined)?.mode === "file_cost";
+    if (previousFileCostMode !== useFileCost) continue;
     if (options.expectedCostSha256 && previousCost?.sha256 !== options.expectedCostSha256) continue;
     if (previousFiltering?.sourceRows !== options.expectedSourceRows) continue;
     const previousCountContract = previousAudit?.sourceCountContract as Record<string, unknown> | undefined;
@@ -615,7 +639,11 @@ export async function runSalesImport(options: SalesImportRunOptions): Promise<Sa
   }
 
   // Start reading cost source file in parallel with synchronous xlsx parsing below.
-  const costBytesPromise = readFile(costSourcePath);
+  // When useFileCost is set, the sales workbook's own "货品成本" column is authoritative,
+  // so no inventory cost source is read or matched.
+  const costBytesPromise = useFileCost
+    ? Promise.resolve(new Uint8Array(0))
+    : readFile(costSourcePath!);
   const salesWorkbook = parseXlsxFirstSheet(rawBytes, {
     maxCompressedBytes: 256 * 1024 * 1024,
     maxUncompressedBytes: 2 * 1024 * 1024 * 1024,
@@ -631,7 +659,8 @@ export async function runSalesImport(options: SalesImportRunOptions): Promise<Sa
     quantity: requiredColumn(salesHeader, "数量", "销售明细文件"),
     cost: requiredColumn(salesHeader, "货品成本", "销售明细文件"),
     allocatedAmount: requiredColumn(salesHeader, "分摊后金额", "销售明细文件"),
-    fee: requiredColumn(salesHeader, "费用分摊", "销售明细文件"),
+    // 吉客云 v4 导出自 2026-08-27 起不再包含"费用分摊"列；缺失时按 0 处理（用户已确认）
+    fee: optionalColumn(salesHeader, "费用分摊"),
     gross: requiredColumn(salesHeader, "毛利", "销售明细文件"),
     grossMargin: optionalColumn(salesHeader, "毛利率"),
     untaxedGross: optionalColumn(salesHeader, "未税毛利"),
@@ -701,37 +730,52 @@ export async function runSalesImport(options: SalesImportRunOptions): Promise<Sa
   // Await the cost source file that was started in parallel with xlsx parsing above.
   const costBytes = new Uint8Array(await costBytesPromise);
   const costHash = sha256(costBytes);
-  if (options.expectedCostSha256 && costHash !== options.expectedCostSha256) {
+  if (!useFileCost && options.expectedCostSha256 && costHash !== options.expectedCostSha256) {
     throw new Error("销售成本源 SHA 与本轮 inventory 清单不一致。");
   }
-  const costWorkbook = parseXlsxFirstSheet(costBytes);
-  const costHeader = findHeaderRow(costWorkbook, [policy.costSource.productCodeHeader, policy.costSource.productNameHeader, policy.costSource.unitCostHeader], "成本源文件");
-  const costCodeColumn = requiredColumn(costHeader, policy.costSource.productCodeHeader, "成本源文件");
-  const costNameColumn = requiredColumn(costHeader, policy.costSource.productNameHeader, "成本源文件");
-  const unitCostColumn = requiredColumn(costHeader, policy.costSource.unitCostHeader, "成本源文件");
-  const costWarehouseColumn = optionalColumn(costHeader, "仓库");
-  const costRows = costWorkbook.rows.filter((item) => item.rowNumber > costHeader.rowNumber && !isBlankRow(item));
-  const excludedCostWarehouseRows = costWarehouseColumn === undefined
-    ? 0
-    : costRows.filter((row) => policy.excludedWarehouses.includes(text(cellAt(row, costWarehouseColumn)))).length;
+  let costWorkbook: XlsxFirstSheet | null = null;
+  let costHeader: HeaderRow | null = null;
+  let costCodeColumn: number | null = null;
+  let costNameColumn: number | null = null;
+  let unitCostColumn: number | null = null;
+  let costWarehouseColumn: number | undefined;
+  let excludedCostWarehouseRows = 0;
   const costEntries = new Map<string, CostEntry>();
-  for (const row of costRows) {
-    if (costWarehouseColumn !== undefined
-      && policy.excludedWarehouses.includes(text(cellAt(row, costWarehouseColumn)))) continue;
-    const code = text(cellAt(row, costCodeColumn));
-    const unitCost = parseNumber(cellAt(row, unitCostColumn));
-    if (!code || unitCost === null) continue;
-    const entry = costEntries.get(code) ?? { productName: text(cellAt(row, costNameColumn)), costCents: new Set<number>() };
-    entry.costCents.add(moneyToCents(unitCost));
-    if (!entry.productName) entry.productName = text(cellAt(row, costNameColumn));
-    costEntries.set(code, entry);
+  const costConflicts: Array<{ code: string; costs: number[] }> = [];
+  const costMap = new Map<string, number>();
+  if (!useFileCost) {
+    costWorkbook = parseXlsxFirstSheet(costBytes);
+    costHeader = findHeaderRow(costWorkbook, [policy.costSource.productCodeHeader, policy.costSource.productNameHeader, policy.costSource.unitCostHeader], "成本源文件");
+    costCodeColumn = requiredColumn(costHeader, policy.costSource.productCodeHeader, "成本源文件");
+    costNameColumn = requiredColumn(costHeader, policy.costSource.productNameHeader, "成本源文件");
+    unitCostColumn = requiredColumn(costHeader, policy.costSource.unitCostHeader, "成本源文件");
+    costWarehouseColumn = optionalColumn(costHeader, "仓库");
+    const costRows = costWorkbook.rows.filter((item) => item.rowNumber > costHeader!.rowNumber && !isBlankRow(item));
+    excludedCostWarehouseRows = costWarehouseColumn === undefined
+      ? 0
+      : costRows.filter((row) => policy.excludedWarehouses.includes(text(cellAt(row, costWarehouseColumn!)))).length;
+    for (const row of costRows) {
+      if (costWarehouseColumn !== undefined
+        && policy.excludedWarehouses.includes(text(cellAt(row, costWarehouseColumn)))) continue;
+      const code = text(cellAt(row, costCodeColumn!));
+      const unitCost = parseNumber(cellAt(row, unitCostColumn!));
+      if (!code || unitCost === null) continue;
+      const entry = costEntries.get(code) ?? { productName: text(cellAt(row, costNameColumn!)), costCents: new Set<number>() };
+      entry.costCents.add(moneyToCents(unitCost));
+      if (!entry.productName) entry.productName = text(cellAt(row, costNameColumn!));
+      costEntries.set(code, entry);
+    }
+    for (const [code, entry] of costEntries.entries()) {
+      if (entry.costCents.size > 1) {
+        costConflicts.push({ code, costs: [...entry.costCents].sort((a, b) => a - b).map((value) => value / 100) });
+      }
+    }
+    for (const [code, entry] of costEntries.entries()) {
+      if (entry.costCents.size === 1) {
+        costMap.set(code, [...entry.costCents][0] / 100);
+      }
+    }
   }
-  const costConflicts = [...costEntries.entries()]
-    .filter(([, entry]) => entry.costCents.size > 1)
-    .map(([code, entry]) => ({ code, costs: [...entry.costCents].sort((a, b) => a - b).map((value) => value / 100) }));
-  const costMap = new Map([...costEntries.entries()]
-    .filter(([, entry]) => entry.costCents.size === 1)
-    .map(([code, entry]) => [code, [...entry.costCents][0] / 100]));
 
   const numericProblems: Array<{ row: number; field: string }> = [];
   const unmatchedCosts = new Map<string, { productName: string; rows: number[] }>();
@@ -753,23 +797,37 @@ export async function runSalesImport(options: SalesImportRunOptions): Promise<Sa
     const productName = text(cellAt(sourceRow, columns.productName));
     const quantity = parseNumber(cellAt(sourceRow, columns.quantity));
     const allocated = parseNumber(cellAt(sourceRow, columns.allocatedAmount));
-    const fee = parseNumber(cellAt(sourceRow, columns.fee));
+    // "费用分摊"列缺失（吉客云 v4 导出不再包含）时按 0 处理
+    const fee = columns.fee === undefined ? 0 : parseNumber(cellAt(sourceRow, columns.fee));
     const sourceCost = parseNumber(cellAt(sourceRow, columns.cost));
+    const feeInvalid = columns.fee !== undefined && fee === null;
     if (quantity === null || quantity === 0) numericProblems.push({ row: sourceRow.rowNumber, field: "数量" });
     if (allocated === null) numericProblems.push({ row: sourceRow.rowNumber, field: "分摊后金额" });
-    if (fee === null) numericProblems.push({ row: sourceRow.rowNumber, field: "费用分摊" });
-    if (quantity === null || quantity === 0 || allocated === null || fee === null) continue;
+    if (feeInvalid) numericProblems.push({ row: sourceRow.rowNumber, field: "费用分摊" });
+    if (quantity === null || quantity === 0 || allocated === null || feeInvalid) continue;
     const isPriceAdjustment = policy.costSource.zeroCostProductNames.includes(productName);
     const isBlankCodeZeroCost = !code && sourceCost === 0;
     if (isBlankCodeZeroCost) blankCodeZeroCostRows += 1;
-    const unitCost = isPriceAdjustment || isBlankCodeZeroCost ? 0 : costMap.get(code);
-    if (unitCost === undefined) {
-      const current = unmatchedCosts.get(code) ?? { productName, rows: [] };
-      if (current.rows.length < 10) current.rows.push(sourceRow.rowNumber);
-      unmatchedCosts.set(code, current);
-      continue;
+    // useFileCost 模式：以销售明细文件自带的"货品成本"列为整行成本，不做库存成本源匹配/重算。
+    let lineCost: number;
+    if (useFileCost) {
+      if (sourceCost === null || !Number.isFinite(sourceCost)) {
+        const current = unmatchedCosts.get(code || "") ?? { productName, rows: [] };
+        if (current.rows.length < 10) current.rows.push(sourceRow.rowNumber);
+        unmatchedCosts.set(code || "", current);
+        continue;
+      }
+      lineCost = roundMoney(sourceCost);
+    } else {
+      const unitCost = isPriceAdjustment || isBlankCodeZeroCost ? 0 : costMap.get(code);
+      if (unitCost === undefined) {
+        const current = unmatchedCosts.get(code) ?? { productName, rows: [] };
+        if (current.rows.length < 10) current.rows.push(sourceRow.rowNumber);
+        unmatchedCosts.set(code, current);
+        continue;
+      }
+      lineCost = roundMoney(unitCost * quantity);
     }
-    const lineCost = roundMoney(unitCost * quantity);
     const grossProfit = roundMoney(allocated - lineCost - fee);
     const grossMargin = allocated === 0 ? "" : `${(grossProfit / allocated * 100).toFixed(2)}%`;
     const row = outputRowsFor(sourceRow, salesHeader.headers.length);
@@ -864,10 +922,18 @@ export async function runSalesImport(options: SalesImportRunOptions): Promise<Sa
     .filter((row) => !policy.costSource.zeroCostProductNames.includes(text(row[columns.productName])))
     .map((row) => text(row[columns.productCode]))
     .filter(Boolean))].sort((left, right) => left.localeCompare(right, "zh-CN"));
-  const costSheetRows: XlsxCellValue[][] = [
-    ["货品编号", "固定成本价", "货品名称", "成本来源"],
-    ...usedCodes.map((code) => [code, costMap.get(code) ?? null, costEntries.get(code)?.productName ?? "", path.basename(costSourcePath)]),
-  ];
+  const costSheetRows: XlsxCellValue[][] = useFileCost
+    ? [
+      ["货品编号", "货品成本(文件)", "货品名称", "成本来源"],
+      ...usedCodes.map((code) => {
+        const firstRow = outputRows.find((row) => text(row[columns.productCode]) === code);
+        return [code, firstRow ? parseNumber(firstRow[columns.cost]) ?? null : null, text(firstRow?.[columns.productName] ?? ""), "销售明细文件货品成本列"];
+      }),
+    ]
+    : [
+      ["货品编号", "固定成本价", "货品名称", "成本来源"],
+      ...usedCodes.map((code) => [code, costMap.get(code) ?? null, costEntries.get(code)?.productName ?? "", path.basename(costSourcePath!)]),
+    ];
   const whitelistRows: XlsxCellValue[][] = [["保留店铺（销售渠道精确匹配）", "保留行数", "状态", "被剔除店铺", "剔除行数"]];
   const excludedShopEntries = [...excludedShopCounts.entries()].sort((left, right) => right[1] - left[1]);
   const auditRowCount = Math.max(policy.approvedSalesChannels.length, excludedShopEntries.length);
@@ -934,13 +1000,15 @@ export async function runSalesImport(options: SalesImportRunOptions): Promise<Sa
     sourceCountContract,
     sources: {
       rawDownload: { path: downloadPath, sha256: rawHash, bytes: rawBytes.byteLength },
-      costSource: {
-        path: costSourcePath,
-        sha256: costHash,
-        bytes: costBytes.byteLength,
-        uniqueCosts: costMap.size,
-        excludedWarehouseRows: excludedCostWarehouseRows,
-      },
+      costSource: useFileCost
+        ? { mode: "file_cost", path: null, note: "以销售明细文件自带货品成本列为最终成本" }
+        : {
+          path: costSourcePath,
+          sha256: costHash,
+          bytes: costBytes.byteLength,
+          uniqueCosts: costMap.size,
+          excludedWarehouseRows: excludedCostWarehouseRows,
+        },
     },
     filtering: {
       sourceRows: sourceRows.length,
@@ -983,7 +1051,18 @@ export async function runSalesImport(options: SalesImportRunOptions): Promise<Sa
   try {
     imported = await uploadInChunks(options.baseUrl, processedBytes, path.basename(outputPath), processedHash, period);
   } catch (error) {
-    throw wrapSalesImportError(error, "IMPORT_FAILED", "chunk_upload_and_import");
+    const failure = wrapSalesImportError(error, "IMPORT_FAILED", "chunk_upload_and_import");
+    audit.ok = false;
+    audit.import = null;
+    audit.postImportVerification = null;
+    audit.failure = {
+      code: failure.failureCode,
+      stage: failure.stage,
+      message: failure.message,
+      failedAt: new Date().toISOString(),
+    };
+    await writeJson(path.join(runDir, "audit.json"), audit);
+    throw failure;
   }
   let verification: SalesPostImportVerification | null = null;
   try {

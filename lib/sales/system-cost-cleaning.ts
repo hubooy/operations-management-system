@@ -1,5 +1,5 @@
 import { isZeroCostProductName } from "./import-policy";
-import type { SalesLineInput } from "./database";
+import type { SalesLineInput } from "./import-contract";
 
 export type SystemCostRecord = {
   productCode: string;

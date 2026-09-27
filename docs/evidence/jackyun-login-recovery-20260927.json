@@ -1,0 +1,130 @@
+{
+  "status": "classifier_published_business_recovery_pending_maintenance_authorization",
+  "checkedAt": "2026-09-27T02:01:24.694Z",
+  "classifier": {
+    "commit": "4dc612ac",
+    "mergedAndPushedMain": true,
+    "versionId": "e477fdf4-ccf2-4e4e-bad4-ba8bff7b2d54",
+    "activeVersionId": "e477fdf4-ccf2-4e4e-bad4-ba8bff7b2d54",
+    "classifierSha256": "b9c8bee1f4e770ffab8c54d96b0ba5f79e69672a0db9bd7e004f9116ccc5f512",
+    "workflowsCompared": 18,
+    "onlyClassifierChanged": true
+  },
+  "beforeN8nBackup": {
+    "path": "E:/TERUISI-candidate-artifacts/jackyun-login-recovery-20260927/n8n-before.sqlite",
+    "sha256": "41ea58c45533f8cbe8cfece7686ae4c7315865ed19cb055d66017bb27b16084c",
+    "quickCheck": "ok"
+  },
+  "closure4605": {
+    "status": "closed_before_business",
+    "sha256": "dccd2ccf7c6e651c6ad4951f47f89fd78644b806b808ac626e0aec522dc7fe0a"
+  },
+  "businessTest": {
+    "id": 4726,
+    "status": "error",
+    "mode": "manual",
+    "startedAt": "2026-09-27 01:49:15.180",
+    "stoppedAt": "2026-09-27 01:49:21.611",
+    "planSha256": "6138ff2d7a95a5e09ec264592671d76e6ba4462f31da6843eee6384a1f6f3343",
+    "evidence": {
+      "executionId": "4726",
+      "workflowId": "J8kY2mQ5vR7sT4pN",
+      "status": "error",
+      "startedAt": "2026-09-27T01:49:15.180Z",
+      "stoppedAt": "2026-09-27T01:49:21.611Z",
+      "retrySuccessId": null,
+      "lastNode": "B·接口校验与五表下载",
+      "runNodes": [
+        "手动运行",
+        "领取共享 helper",
+        "helper 领取成功？",
+        "A·固定采集日和销售日期",
+        "B·接口校验与五表下载"
+      ],
+      "error": "waiting_login：吉客云 DPAPI 凭据配置或解密未完成（missing）。",
+      "httpCode": "500",
+      "requestUrl": "http://127.0.0.1:5791/jackyun/export-first/export-all",
+      "executionDataSha256": "0cf4719a609968a537fe23fa276f449ec32ec46a55d44cee4aafed5c6fbf4100",
+      "activeExecutions": 0
+    },
+    "plan": {
+      "version": 2,
+      "protocol": "2026-09-06.export-first.1",
+      "executionId": "4726",
+      "runId": "n8n-export-first-4726",
+      "runDate": "2026-09-27",
+      "asOfDate": "2026-09-26",
+      "baseUrl": "http://localhost:3000",
+      "createdAt": "2026-09-27T01:49:16.802Z",
+      "phase": "exporting",
+      "exports": {},
+      "salesStartDate": "2026-08-13",
+      "exportTransport": "session_api_v1"
+    },
+    "effectPaths": [
+      {
+        "path": "D:\\运营管理系统\\outputs\\jackyun-browser-events\\n8n-export-first-4726",
+        "exists": false
+      },
+      {
+        "path": "D:\\运营管理系统\\outputs\\jackyun-import-runs\\n8n-export-first-4726",
+        "exists": false
+      },
+      {
+        "path": "D:\\运营管理系统\\outputs\\jackyun-export-first-validation\\n8n-export-first-4726",
+        "exists": false
+      },
+      {
+        "path": "D:\\谷歌浏览器\\jackyun\\n8n-export-first-4726",
+        "exists": false
+      }
+    ]
+  },
+  "credentialProbes": {
+    "sourceStatus": "ready",
+    "isolatedMainAndWorkerStatus": "ready",
+    "helperSelectedEnvironmentMatchesCaller": true,
+    "deployedDpapiProgramMatchesSource": true,
+    "credentialsChanged": false,
+    "underlyingMissingCauseConfirmed": false
+  },
+  "candidate": {
+    "commit": "04f0f193",
+    "branch": "codex/jackyun-login-recovery",
+    "pushed": true,
+    "testsPassed": 48,
+    "testsFailed": 0,
+    "focusedLintExit": 0,
+    "helperBuildSha256": "b12a2cb1f68622e757953fff8bd873c8aad3b79fb68851763e80b52a5aaeb5cc",
+    "formal4726ReadOnlyPlanPassed": true,
+    "deployed": false,
+    "closureApplied": false
+  },
+  "salesFreshness": {
+    "status": "available",
+    "source": "django_postgresql",
+    "authority": "sales_single_write",
+    "revision": "39:39",
+    "timeZone": "Asia/Shanghai",
+    "currentBusinessDate": "2026-09-27",
+    "expectedThroughDate": "2026-09-26",
+    "checkedAt": "2026-09-27T02:01:24.639Z",
+    "coverage": {
+      "startDate": "2025-01-01",
+      "cutoffDate": "2026-09-25",
+      "coveredDayCount": 633,
+      "lagDaysToCurrentBusinessDate": 2,
+      "throughYesterday": false
+    },
+    "latestBatch": {
+      "id": "3c2a5f9e0c60a39c1ac252c2126301167f1dfb80b443dc85c2bc5e446f67059c",
+      "fileName": "销售单明细账_2026-08-12_2026-09-25_已筛选并匹配成本.xlsx",
+      "completedAt": "2026-09-26T00:16:58.574282+00:00",
+      "rowCount": 39495
+    }
+  },
+  "serviceRestarts": 0,
+  "databaseMigrations": 0,
+  "manualFullRunsStarted": 1,
+  "limitation": "The retry bug is fixed; the new missing-credential lookup failure remains unexplained and sales are not current. Further Worker/helper adoption requires explicit service-maintenance authorization."
+}

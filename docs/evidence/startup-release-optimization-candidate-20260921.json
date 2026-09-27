@@ -1,0 +1,58 @@
+{
+  "status": "candidate_not_deployed",
+  "date": "2026-09-21",
+  "baseCommit": "ae3d0780",
+  "reportUrl": "https://claude.ai/artifact/DSjjmPVVwmKfLNPingSs4H",
+  "observedStartup": {
+    "source": "existing Django launcher events, read only",
+    "startedAt": "2026-09-21T13:57:02.4446657+08:00",
+    "completedAt": "2026-09-21T13:59:08.7557407+08:00",
+    "elapsedSeconds": 126.311075,
+    "aclAuditMilliseconds": 13117,
+    "scope": "Django Start only; excludes outer controller, Worker and subsequent DingTalk startup"
+  },
+  "implemented": [
+    "explicit online Worker candidate preparation with repeated exact predecessor verification",
+    "Django preparation receipt binding predecessor and complete candidate manifest",
+    "persistent application maintenance preserving owned ready PostgreSQL",
+    "overlapping reader/writer startup in eleven paired domains",
+    "ERP port checks added to stopped-application gate"
+  ],
+  "verification": {
+    "unit": { "total": 2243, "passed": 2218, "failed": 2, "skipped": 23, "cancelled": 0 },
+    "unchangedBaselineFailures": [
+      "finance routes have no D1 branch and every write has one Django dispatch",
+      "semantic design tokens cover every stylesheet variable reference: color-surface-subtle"
+    ],
+    "baselineReproduction": "Both failures reproduced in a separate clean ae3d0780 checkout",
+    "targetedDjangoAndLifecycle": { "total": 42, "passed": 42 },
+    "newBehaviorTests": "Windows PowerShell 5.1 and PowerShell 7 passed",
+    "independentBuild": "passed",
+    "backendBoundary": { "modules": 456, "violations": 0 },
+    "lint": { "errors": 0, "warnings": 11 },
+    "diffCheck": "passed",
+    "isolatedFileAndR2Runtime": {
+      "result": "passed",
+      "firstPreparationMilliseconds": 45914,
+      "activationAndVerificationMilliseconds": 12589,
+      "secondPreparationMilliseconds": 50593,
+      "installedManifestUnchangedDuringPreparation": true,
+      "realChecks": ["runtime dependency copy", "full tree hash", "Wrangler version/help", "R2 put/get/hash/delete/missing readback"],
+      "limits": "Synthetic stopped-process admission in a unique temporary runtime, no business database or production process. CLI timeouts in longer temporary paths retained as failed attempts; successful attempt used a shorter isolated path and official version metadata cache, with unchanged checks and timeouts."
+    }
+  },
+  "productionActions": {
+    "maintenance": false,
+    "deployment": false,
+    "migration": false,
+    "serviceStopOrRestart": false,
+    "businessReplayOrNotification": false
+  },
+  "remainingAcceptance": [
+    "actual immutable Worker preparation on the authorized production lineage",
+    "first adoption through existing controlled full maintenance",
+    "actual preserved-database application maintenance after adoption",
+    "new production cold-start and downtime measurements",
+    "pre/post backup, independent restore and E-drive archival gates"
+  ]
+}

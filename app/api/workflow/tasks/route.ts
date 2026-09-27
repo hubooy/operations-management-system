@@ -1,85 +1,89 @@
 import {
-  createWorkflowTask,
-  deleteWorkflowTask,
-  ensureWorkflowTaskSchema,
-  listWorkflowTasks,
-  updateWorkflowTask,
-  type CreateWorkflowTaskInput,
-  type UpdateWorkflowTaskInput,
-} from "@/lib/workflow/tasks";
-import { getSalesDatabase } from "@/lib/sales/database";
-import {
   authorizationErrorResponse,
   requireAppPrincipal,
+  requireUnrestrictedDataScope,
 } from "@/lib/auth/authorization";
+import {
+  createDjangoWorkflowService,
+  getWorkflowBackendMode,
+  WORKFLOW_TASKS_PATH,
+} from "@/lib/django/workflow-service";
+import { safeApiErrorResponse } from "@/lib/http/api-error";
+import { drainWorkflowAttachmentCleanup } from "@/lib/workflow/attachment-cleanup";
+import { requireWorkflowJsonObject, workflowServiceResponse } from "@/lib/workflow/django-api";
 
-function errorMessage(error: unknown, fallback: string) {
-  return error instanceof Error ? error.message : fallback;
+function routeError(error: unknown, fallback: string) {
+  return authorizationErrorResponse(error) ?? safeApiErrorResponse(error, fallback);
 }
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
-    const db = getSalesDatabase();
-    await ensureWorkflowTaskSchema(db);
-    return Response.json(
-      { items: await listWorkflowTasks(db) },
-      { headers: { "cache-control": "no-store" } },
+    const principal = await requireAppPrincipal(["viewer", "analyst", "operator", "admin"]);
+    requireUnrestrictedDataScope(principal, "工作计划");
+    await getWorkflowBackendMode();
+    const result = await createDjangoWorkflowService().requestJson<Record<string, unknown>>(
+      principal,
+      { method: "GET", path: WORKFLOW_TASKS_PATH, service: "reader", rawQuery: new URL(request.url).searchParams.toString() },
+      { signal: request.signal },
     );
+    return workflowServiceResponse(result);
   } catch (error) {
-    return Response.json({ error: errorMessage(error, "读取工作计划失败") }, { status: 500 });
+    return routeError(error, "读取工作计划失败。");
   }
 }
 
 export async function POST(request: Request) {
   try {
-    const principal = await requireAppPrincipal(["admin"]);
-    const payload = await request.json().catch(() => null) as CreateWorkflowTaskInput | null;
-    if (!payload || typeof payload !== "object" || Array.isArray(payload)) {
-      return Response.json({ error: "工作项内容必须是有效的 JSON 对象" }, { status: 400 });
-    }
-    const db = getSalesDatabase();
-    await ensureWorkflowTaskSchema(db);
-    const item = await createWorkflowTask(payload, principal.email, db);
-    return Response.json({ item }, { status: 201, headers: { "cache-control": "no-store" } });
+    const principal = await requireAppPrincipal(["operator", "admin"]);
+    requireUnrestrictedDataScope(principal, "工作计划", "修改");
+    await getWorkflowBackendMode();
+    const payload = requireWorkflowJsonObject(await request.json().catch(() => null), "工作项内容必须是有效的 JSON 对象。");
+    const result = await createDjangoWorkflowService().requestJson<Record<string, unknown>>(
+      principal, { method: "POST", path: WORKFLOW_TASKS_PATH, service: "writer", payload }, { signal: request.signal },
+    );
+    return workflowServiceResponse(result);
   } catch (error) {
-    const authResponse = authorizationErrorResponse(error);
-    if (authResponse) return authResponse;
-    return Response.json({ error: errorMessage(error, "保存工作项失败") }, { status: 400 });
+    return routeError(error, "保存工作项失败。");
   }
 }
 
 export async function PATCH(request: Request) {
   try {
-    const principal = await requireAppPrincipal(["admin"]);
-    const id = new URL(request.url).searchParams.get("id");
-    const payload = await request.json().catch(() => null) as UpdateWorkflowTaskInput | null;
-    if (!payload || typeof payload !== "object" || Array.isArray(payload)) {
-      return Response.json({ error: "缺少可更新的工作项字段" }, { status: 400 });
-    }
-    const db = getSalesDatabase();
-    await ensureWorkflowTaskSchema(db);
-    const item = await updateWorkflowTask(id, payload, principal.email, db);
-    if (!item) return Response.json({ error: "工作项不存在或已删除" }, { status: 404 });
-    return Response.json({ item }, { headers: { "cache-control": "no-store" } });
+    const principal = await requireAppPrincipal(["operator", "admin"]);
+    requireUnrestrictedDataScope(principal, "工作计划", "修改");
+    await getWorkflowBackendMode();
+    const payload = requireWorkflowJsonObject(await request.json().catch(() => null), "缺少可更新的工作项字段。");
+    const result = await createDjangoWorkflowService().requestJson<Record<string, unknown>>(
+      principal,
+      { method: "PATCH", path: WORKFLOW_TASKS_PATH, service: "writer", payload, rawQuery: new URL(request.url).searchParams.toString() },
+      { signal: request.signal },
+    );
+    return workflowServiceResponse(result);
   } catch (error) {
-    const authResponse = authorizationErrorResponse(error);
-    if (authResponse) return authResponse;
-    return Response.json({ error: errorMessage(error, "更新工作项失败") }, { status: 400 });
+    return routeError(error, "更新工作项失败。");
   }
 }
 
 export async function DELETE(request: Request) {
   try {
-    await requireAppPrincipal(["admin"]);
-    const id = new URL(request.url).searchParams.get("id");
-    const db = getSalesDatabase();
-    await ensureWorkflowTaskSchema(db);
-    const deleted = await deleteWorkflowTask(id, db);
-    if (!deleted) return Response.json({ error: "工作项不存在或已删除" }, { status: 404 });
-    return Response.json({ ok: true }, { headers: { "cache-control": "no-store" } });
+    const principal = await requireAppPrincipal(["operator", "admin"]);
+    requireUnrestrictedDataScope(principal, "工作计划", "修改");
+    await getWorkflowBackendMode();
+    const result = await createDjangoWorkflowService().requestJson<Record<string, unknown>>(
+      principal,
+      { method: "DELETE", path: WORKFLOW_TASKS_PATH, service: "writer", rawQuery: new URL(request.url).searchParams.toString() },
+      { signal: request.signal },
+    );
+    const cleanupObjectKeys = Array.isArray(result.data.cleanupObjectKeys)
+      ? result.data.cleanupObjectKeys.filter((value): value is string => typeof value === "string")
+      : [];
+    if (cleanupObjectKeys.length) {
+      await drainWorkflowAttachmentCleanup(principal, cleanupObjectKeys, { signal: request.signal }).catch(() => undefined);
+    }
+    const publicData = { ...result.data };
+    delete publicData.cleanupObjectKeys;
+    return workflowServiceResponse(result, publicData);
   } catch (error) {
-    const authResponse = authorizationErrorResponse(error);
-    if (authResponse) return authResponse;
-    return Response.json({ error: errorMessage(error, "删除工作项失败") }, { status: 400 });
+    return routeError(error, "删除工作项失败。");
   }
 }

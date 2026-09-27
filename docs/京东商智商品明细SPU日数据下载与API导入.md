@@ -58,7 +58,7 @@ ORDER BY business_date;
 npm run jdsz:product-detail-export -- --dimension SPU --start-date YYYY-MM-DD --end-date YYYY-MM-DD
 ```
 
-程序使用专用持久化 Chrome 配置和 `D:\谷歌浏览器` 下载目录。不要改用独立登录状态的浏览器，除非用户明确要求。
+程序使用专用持久化 Chrome 配置和 `D:\谷歌浏览器` 下载目录。日常默认以 `headless=new` 后台运行；只有登录失效、验证码、安全验证或店铺登录身份异常才打开当前店铺的独立可见 Chrome，并保持任务失败关闭、不自动重放确认或下载。首次登录使用 `--interactive-login`。不要改用独立登录状态的浏览器，除非用户明确要求。
 
 ### 4.1 创建任务前门禁
 
@@ -67,9 +67,9 @@ npm run jdsz:product-detail-export -- --dimension SPU --start-date YYYY-MM-DD --
 1. 页面是商品明细。
 2. `SPU` 标签唯一且 `aria-selected=true`。
 3. SPU 切换后的加载状态已结束。
-4. 自定义日期起点具有 `jmt-date-picker-calendar-cell-start`。
-5. 终点具有 `jmt-date-picker-calendar-cell-end`。
-6. 页面“当前”日期回显与目标区间完全一致。
+4. 自定义日期起点具有未禁用的 `cell-start + cell-selected` 状态（CSS 类名可带动态哈希）。
+5. 结束单元格的 `cell-end + cell-selected` 只能记录为诊断，不能作为成功依据；`cell-now` 也绝不是端点。
+6. 页面“当前”日期回显与目标区间完全一致才可继续；若目标日带 `cell-disabled`，在任何点击前停止并报日期尚未开放，回显成功后不得再点结束日。
 7. 下载弹窗唯一，包含“分天下载”和“不包含对比时间”。
 
 单日区间也必须点击同一天两次，分别取得 `start` 和 `end` 状态。仅显示“当前：YYYY-MM-DD HH:mm:ss”或日历仍打开时不得继续，也不得用商品筛选区的“查询”按钮兜底。若弹窗只显示“下载设置”并提示最多 1000 行，这是实时汇总下载，不是离线分天任务；必须在写 manifest 和确认前停止。

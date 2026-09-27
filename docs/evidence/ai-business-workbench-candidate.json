@@ -1,0 +1,40 @@
+{
+  "schemaVersion": "candidate-evidence-v1",
+  "date": "2026-09-17",
+  "branch": "codex/ai-business-analysis-stages",
+  "baseCommit": "251dc217",
+  "batch": 15,
+  "status": "candidate_not_production_adopted",
+  "changes": [
+    "Explicit problem and scope planner with complete unsupported and over-capacity matrix",
+    "Persistent evidence discovery and manual transition to existing analysis and report delivery",
+    "Account-bound frozen request recovery across reloads, retaining formerly unknown requests after retry rejection",
+    "Legacy evidence byte/digest/idempotency admission preserved"
+  ],
+  "verification": {
+    "workbenchPostgres": {"tests": 11, "passed": 11, "log": ".runtime/ai-pg-2b58a89212c1/tests.log"},
+    "fullAiAndBusinessPostgres": {
+      "tests": 351, "passed": 348, "errors": 1, "skipped": 2,
+      "log": ".runtime/ai-pg-6977ffa1518c/failure.log",
+      "error": "Existing test_weekly_table_capture temporary Chrome profile cleanup WinError 32, Default/Extension Rules/000003.log; no new business test failed",
+      "unchangedTargetedRecheck": {"tests": 3, "passed": 3, "log": ".runtime/ai-pg-03043d7ae624/tests.log"},
+      "limitation": "Likely existing browser exit/file-handle race, exact holder was not captured; targeted pass does not establish a fix"
+    },
+    "chromeSynthetic": {"cases": 13, "passed": 13, "apiRequests": 52, "pageErrors": [], "log": ".runtime/business-workbench-ui-review/evidence.json", "screenshot": ".runtime/business-workbench-ui-review/workbench-mobile.png"},
+    "fullNode": {"tests": 2234, "passed": 2213, "failed": 0, "skipped": 21, "log": ".runtime/batch15-full-node.log"},
+    "freshBundleRecheck": {"tests": 2, "passed": 2, "skipped": 0, "log": ".runtime/batch15-bundle-final.log", "note": "Covers the build-timing gate skipped by the earlier full Node run; other 20 skips pre-exist"},
+    "build": {"passed": true, "log": ".runtime/batch15-build.log"},
+    "lint": {"errors": 0, "existingWarnings": 11, "log": ".runtime/batch15-lint.log"},
+    "backendBoundary": {"passed": true, "log": ".runtime/batch15-boundary.log"},
+    "typecheck": {"existingDiagnostics": 153, "changedPathDiagnostics": 0, "log": ".runtime/batch15-typecheck.log"},
+    "independentReview": {"blockingFindingsRemaining": 0, "fixed": ["Unknown original submission was incorrectly cleared by retry 403", "Page identity mismatch on account change", "Exact shop/channel values incorrectly translated as enums", "Manual legacy collection exposed unsupported background controls"]}
+  },
+  "limits": [
+    "Form-guided scope only; no automatic natural-language identity resolution",
+    "12 sources, 64 MiB facts, 2000 pages and existing mapping/file limits remain",
+    "Planned windows and completed pagination do not prove real date/field coverage",
+    "Real multi-shop multi-period data and paid multi-Agent acceptance remain pending",
+    "No complete phase is declared accepted"
+  ],
+  "operations": {"productionReads": false, "productionWrites": false, "newMigration": false, "deployment": false, "serviceRestart": false, "paidModelCalls": false, "externalMessages": false}
+}

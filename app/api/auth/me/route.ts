@@ -20,6 +20,7 @@ export async function GET() {
           displayName: principal.displayName,
           role: principal.role,
           roleLabel: roleLabels[principal.role],
+          scopeRestricted: principal.scope !== null,
         },
       },
       { headers: { "cache-control": "no-store" } },

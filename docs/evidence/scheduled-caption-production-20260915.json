@@ -1,0 +1,100 @@
+{
+  "version": "teruisi-schedule-caption-production-v1",
+  "date": "2026-09-15",
+  "sourceCommit": "4507d966",
+  "databaseMigration": false,
+  "scope": "Editable fixed caption before fresh screenshot; same bot and original recipient",
+  "validation": {
+    "node": {
+      "passed": 2167,
+      "failed": 0,
+      "skipped": 20,
+      "cancelled": 0
+    },
+    "postgres": {
+      "tests": 229,
+      "passed": 227,
+      "skipped": 2
+    },
+    "renderedHtml": 20,
+    "lintErrors": 0,
+    "lintExistingWarnings": 11,
+    "backendBoundaryModules": 444
+  },
+  "preBackup": {
+    "id": "daily-20260915T015924Z-37cfca60b890",
+    "manifestSha256": "3b44d8533173c9620e3f2e7a76fd496ec98b490896bef11eafb3189b168c0b5c",
+    "contentSha256": "795368a0476dc8732fe3afc7e66799d1fd9bb25c818c188737e3f86cd5a377f9",
+    "rehearsalId": "ca09202615a1",
+    "port": 55470,
+    "restoredContentMatched": true,
+    "productionDatabaseTouched": false
+  },
+  "priorImageDelivery": {
+    "userConfirmed": true,
+    "runAt": "2026-09-15T09:00:00+08:00",
+    "status": "sent"
+  },
+  "liveCombinedSendTriggered": false,
+  "maintenance": {
+    "activeCloudRuns": 0,
+    "completedCloudRuns": 38,
+    "activeScheduleRuns": 0,
+    "helperBusy": false,
+    "concurrentStartup": "A separate Start at 10:11 blocked DeployApp; waited for completion, repeated controlled stop; no running files overwritten."
+  },
+  "django": {
+    "manifestSha256": "31cae8dd96cb323ee9ecb39bdcef335a71890aecd873914142780bb5339fae58",
+    "appFingerprint": "f748117c86e0e0b31483eb78eb9fc1dd40ece025586ad91617d58fc6023edcf9",
+    "scheduleCodeSha256": "028b2e2f6375270d3852946a8cd42c838ef451ea2823bdd8adefda967a83979d"
+  },
+  "worker": {
+    "releaseId": "20260915T022221Z-62869892e2c72ed9",
+    "manifestSha256": "016a5838e1e7558ad10755e2c7f211ee772e9ccf2730dcf82e752572f77691b7",
+    "planSha256": "d643d320925b43d4269032d8906c2ceb154bd34293b64fd50a04a5a04144a329"
+  },
+  "task": {
+    "id": "ding-schedule-16eb85c3-b092-4629-a168-74ff335885c2",
+    "name": "新品上新周销量趋势",
+    "prompt": "新品周销量趋势数据",
+    "version": 3,
+    "contentType": "screenshot",
+    "sourceRef": "workflow:launch-followup",
+    "order": [
+      "caption",
+      "image"
+    ],
+    "cadence": "daily",
+    "hour": 9,
+    "minute": 0,
+    "nextRunAt": "2026-09-16T09:00:00+08:00",
+    "recipientPreserved": true,
+    "historyPreserved": true,
+    "otherSchedulePreserved": true,
+    "runTriggered": false
+  },
+  "ui": {
+    "captionFieldVisible": true,
+    "captionMatches": true,
+    "editorOpenedAndCancelled": true
+  },
+  "postBackup": {
+    "id": "daily-20260915T023057Z-aeb74248cbfc",
+    "manifestSha256": "3b2aeacc7495649234e2fd06f15318112b46571a1bc8ea340dc8783c561abd6b",
+    "contentSha256": "98486692bfd52d4069a54c153d43272a0a594300210841f2a87bb14212e3eeaf",
+    "verified": true,
+    "archive": "E:/运营管理系统业务数据/daily-20260915T023057Z-aeb74248cbfc",
+    "archiveFiles": 3,
+    "archiveHashesMatch": true
+  },
+  "system": {
+    "state": "Running",
+    "backendState": "Ready",
+    "workerState": "exact_release",
+    "checkedAt": "2026-09-15T10:32:57.1201173+08:00",
+    "receiver": "connected",
+    "supervisor": "running/healthy/all_components_ready",
+    "restartAttemptsInWindow": 1
+  },
+  "status": "adopted_without_live_combined_delivery"
+}

@@ -1,0 +1,14 @@
+{
+  "version": 2,
+  "protocol": "2026-09-06.export-first.1",
+  "executionId": "4299",
+  "runId": "n8n-export-first-4299",
+  "runDate": "2026-09-26",
+  "asOfDate": "2026-09-25",
+  "baseUrl": "http://localhost:3000",
+  "createdAt": "2026-09-25T16:10:02.378Z",
+  "phase": "exporting",
+  "exports": {},
+  "salesStartDate": "2026-08-12",
+  "exportTransport": "session_api_v1"
+}

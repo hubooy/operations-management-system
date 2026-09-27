@@ -1,0 +1,368 @@
+{
+  "id": "J8kY2mQ5vR7sT4pN",
+  "name": "吉客云导入系统",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "1089d9d9bae73f47533eafb088a3b471",
+      "name": "手动运行",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -760,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:5791/coordination/claim",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-TERUISI-N8N-EXECUTION-ID",
+              "value": "={{ $execution.id }}"
+            },
+            {
+              "name": "X-TERUISI-COORDINATION-ATTEMPT",
+              "value": "={{ $runIndex }}"
+            },
+            {
+              "name": "X-TERUISI-WORKFLOW-KEY",
+              "value": "jackyun"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 10000
+        }
+      },
+      "id": "a0c83e83c41ca10531952f14c8c801fb",
+      "name": "领取共享 helper",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -540,
+        0
+      ],
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "d01a0d62-bd97-49e9-a2f6-000000000010",
+              "leftValue": "={{ $json.coordinationStatus }}",
+              "rightValue": "granted",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "be724a68e28a8e72619d5eb1616e9dcd",
+      "name": "helper 领取成功？",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -300,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "resume": "timeInterval",
+        "amount": 5,
+        "unit": "minutes"
+      },
+      "id": "fc3fc973991cef87e2598bbaaab28167",
+      "name": "等待前序流程释放 helper",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -540,
+        220
+      ]
+    },
+    {
+      "id": "655888697f8742356bc5ba5d48dd3af0",
+      "name": "A·固定采集日和销售日期",
+      "position": [
+        -60,
+        0
+      ],
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:5791/jackyun/export-first/plan-direct-http",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-TERUISI-N8N-EXECUTION-ID",
+              "value": "={{ $execution.id }}"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 120000
+        }
+      }
+    },
+    {
+      "id": "fb6028846f14fb982282281d2d8d4432",
+      "name": "B·网页校验后 HTTP 导出五表",
+      "position": [
+        280,
+        0
+      ],
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:5791/jackyun/export-first/export-all",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-TERUISI-N8N-EXECUTION-ID",
+              "value": "={{ $execution.id }}"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 1800000
+        }
+      }
+    },
+    {
+      "id": "46831fd7e8668d9cc85c10ae92c721d9",
+      "name": "C·五表完整校验和导入演练",
+      "position": [
+        620,
+        0
+      ],
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:5791/jackyun/export-first/validate",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-TERUISI-N8N-EXECUTION-ID",
+              "value": "={{ $execution.id }}"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 1800000
+        }
+      }
+    },
+    {
+      "id": "366a4fc139ed556417dca4f17feb7a7e",
+      "name": "D·统一导入运营管理系统",
+      "position": [
+        960,
+        0
+      ],
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:5791/jackyun/export-first/import",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-TERUISI-N8N-EXECUTION-ID",
+              "value": "={{ $execution.id }}"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 5400000
+        }
+      }
+    },
+    {
+      "id": "e2d15d0604985fa8550747ad0cf37bdf",
+      "name": "E·独立核验五类精确批次",
+      "position": [
+        1300,
+        0
+      ],
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:5791/jackyun/export-first/verify",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-TERUISI-N8N-EXECUTION-ID",
+              "value": "={{ $execution.id }}"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 300000
+        }
+      }
+    },
+    {
+      "id": "a7519c3d2953453e143d341da5cfed45",
+      "name": "五表操作说明",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        280,
+        -300
+      ],
+      "parameters": {
+        "content": "## 先导出五张表，再导入\n导出顺序：分仓库存 → 组合装及子件 → 销售单明细账 → 库龄分析 → 货品 SKU。五表共用一次专用浏览器登录态；每表按已核验的条件查询，调用网页自身的“导出所有页”能力，按任务接口等待并下载原始 Excel。保留平台原有校验，组合装导出母件及子件；不保存 Cookie 到 n8n。销售按发货时间，本月 1 日至昨天；每月 1 日按已有业务规则处理上月整月。销售使用截图中的普通“导出”，组合装使用“导出组合装及子件”。\n库存与库龄记录实际采集日；当前查询不会标成昨天的历史快照。分仓库存继续使用公司全仓范围，导入时按现有规则过滤刷刷仓等无效行。\nHTTP 版本保留网页初始化、动态仓库/字段、权限和组合装确认；拦截最终提交，以本机 HTTP 创建任务和查询结果。HTTP 阶段专用浏览器离线，由唯一会话所有者按需续期；遇到提交不确定性不重试。此版本仍需要专用浏览器，不是零浏览器实现。",
+        "width": 1280,
+        "height": 245,
+        "color": 4
+      }
+    },
+    {
+      "id": "1636e7e168e19fca0591a23d4a00b23a",
+      "name": "导入与运行说明",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        0,
+        280
+      ],
+      "parameters": {
+        "content": "## 导入门槛\n5 张本轮文件全部落地后，核验表头、页面总数、SHA-256、组合装母子关系和销售日期，并进行无业务写入的导入演练。全部通过才依次导入：货品 → 分仓库存 → 库龄 → 销售 → 组合装；最后独立回查 PostgreSQL 权威 API 的批次与事实归属。\n同一 execution 全程绑定；提交前保存任务基线和 intent；提交结果未决时保留原运行，只查询原任务，禁止重复生成。仅共享 helper 的领取允许自动重试，业务节点失败后停止。默认手动、未激活，无定时器。账号密码及浏览器会话均不保存在 n8n。需要配套 helper 版本支持 /jackyun/export-first/ 路由。",
+        "width": 1200,
+        "height": 245,
+        "color": 4
+      }
+    }
+  ],
+  "connections": {
+    "手动运行": {
+      "main": [
+        [
+          {
+            "node": "领取共享 helper",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "领取共享 helper": {
+      "main": [
+        [
+          {
+            "node": "helper 领取成功？",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "helper 领取成功？": {
+      "main": [
+        [
+          {
+            "node": "A·固定采集日和销售日期",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "等待前序流程释放 helper",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "等待前序流程释放 helper": {
+      "main": [
+        [
+          {
+            "node": "领取共享 helper",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "A·固定采集日和销售日期": {
+      "main": [
+        [
+          {
+            "node": "B·网页校验后 HTTP 导出五表",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "B·网页校验后 HTTP 导出五表": {
+      "main": [
+        [
+          {
+            "node": "C·五表完整校验和导入演练",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "C·五表完整校验和导入演练": {
+      "main": [
+        [
+          {
+            "node": "D·统一导入运营管理系统",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "D·统一导入运营管理系统": {
+      "main": [
+        [
+          {
+            "node": "E·独立核验五类精确批次",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Asia/Shanghai"
+  },
+  "tags": []
+}

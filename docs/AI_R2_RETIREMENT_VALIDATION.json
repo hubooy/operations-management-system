@@ -1,0 +1,234 @@
+{
+  "version": "ai-r2-retirement-validation-v1",
+  "status": "production_verified",
+  "completedAt": "2026-09-05T16:36:48.011592+00:00",
+  "scope": "local-ai-assistant-ai-space-prefix",
+  "codeCommit": "bc9dd36fdc9931889895bf2b448f90782293718f",
+  "postgresTableCount": 45,
+  "newPayloadTable": "ai_space_asset_payloads",
+  "assetWatermark": 0,
+  "r2ObjectsMigrated": 0,
+  "r2ObjectsDeleted": 0,
+  "globalR2Retained": true,
+  "runtime": {
+    "version": 2,
+    "deployedAt": "2026-09-06T00:16:44.9326771+08:00",
+    "sourceRoot": "D:\\运营管理系统-ai-r2",
+    "fingerprintAlgorithm": "relative-path-file-sha256-ordinal-v2",
+    "fileCount": 1964,
+    "appFingerprint": "a2ca23385daf8bb0e8f6b7dc8512f43803ca1a9cf7138fd14c10cc53ae00556f"
+  },
+  "release": {
+    "status": "activated",
+    "version": "teruisi-local-worker-release-successor-v1",
+    "planSha256": "cfe099689b1efe4ea0d1884cff18f854d493892ac0c7ef2e8d0f45873b9c5584",
+    "predecessorReleaseId": "20260905T153926Z-2b35a94f0222a5e5",
+    "releaseId": "20260905T161941Z-2f1ddff054f33ff5",
+    "manifestPath": "D:\\teruisi-runtime\\teruisi-worker-sales\\releases\\20260905T161941Z-2f1ddff054f33ff5\\deployment-manifest.json",
+    "manifestSha256": "d132f96fc826ad42b1cf6c87fcb77c394fe125a0a882906a46b2fc14f9423ec9",
+    "successorSha256": "1156564a86afdecad3b99007785632c999f0497a2205e600dfc4a37e5f4d70a8",
+    "consumptionSha256": "db49c1c5c1deceee6d9ec449f601c9ef349ad231e1a9ee7a7971302381a05e23",
+    "startupBindingSha256": "52260e7e58af27296821714ad94098616877810dc0faec31d097d2548495a0f1"
+  },
+  "startup": {
+    "status": "verified",
+    "version": "teruisi-local-worker-status-v1",
+    "releaseId": "20260905T161941Z-2f1ddff054f33ff5",
+    "manifestSha256": "d132f96fc826ad42b1cf6c87fcb77c394fe125a0a882906a46b2fc14f9423ec9",
+    "startupVerified": true
+  },
+  "system": {
+    "version": "ai-r2-production-verification-v1",
+    "status": "passed",
+    "releaseId": "20260905T161941Z-2f1ddff054f33ff5",
+    "manifestSha256": "d132f96fc826ad42b1cf6c87fcb77c394fe125a0a882906a46b2fc14f9423ec9",
+    "readinessPorts": [
+      8001,
+      8002,
+      8011,
+      8012,
+      8021,
+      8022,
+      8031,
+      8032,
+      8041,
+      8042,
+      8051,
+      8052,
+      8061,
+      8062,
+      8071,
+      8072,
+      8081,
+      8091,
+      8092,
+      8101,
+      8102,
+      8111,
+      8112
+    ],
+    "publicRoutes": [
+      "models",
+      "channels",
+      "conversations",
+      "memories",
+      "sandbox",
+      "agent-jobs",
+      "workflow-runs",
+      "space/meta",
+      "space/profiles",
+      "space/templates",
+      "space/jobs",
+      "space/assets"
+    ],
+    "signedCatalogControlPassed": true,
+    "retiredActionsRejected": [
+      "storage_get",
+      "storage_put",
+      "storage_delete"
+    ],
+    "r2": {
+      "version": "ai-r2-retirement-evidence-v1",
+      "status": "passed",
+      "prefix": "ai-space/",
+      "objectCount": 0,
+      "objectBytes": 0,
+      "multipartUploadCount": 0,
+      "multipartPartCount": 0,
+      "preservedObjectCount": 38050,
+      "preservedMetadataDigest": "d16d43eb121f3b2ef413994ef77ab067595b07846196f7239a147c70b0e7beff",
+      "productionWrites": false,
+      "recordedAt": "2026-09-05T16:31:33.534858+00:00"
+    },
+    "providerCalls": 0,
+    "checkedAt": "2026-09-05T16:31:33.534858+00:00"
+  },
+  "preMigrationBackup": {
+    "status": "completed",
+    "backupId": "daily-20260905T161016Z-48a3c850f743",
+    "backupDirectory": "D:\\teruisi-runtime\\django-sales\\backups\\postgres-daily\\daily-20260905T161016Z-48a3c850f743",
+    "manifestSha256": "31a6c6d9362f47e9681f4941fcbe087c03c3b41b59ada57f3cd148fd2004547b",
+    "dumpSha256": "2f94128fdb0ae322098aba39724fa3d269c10cf6c7f648ab2087c6c73847efef",
+    "contentSha256": "84bfbdb16560306890e350791e92045a100ea4e2cb7473eab06483ca1841445d",
+    "completedAt": "09/06/2026 00:11:40",
+    "serviceStateChanged": false
+  },
+  "postMigrationBackup": {
+    "status": "completed",
+    "backupId": "daily-20260905T162938Z-8fa556de4423",
+    "backupDirectory": "D:\\teruisi-runtime\\django-sales\\backups\\postgres-daily\\daily-20260905T162938Z-8fa556de4423",
+    "manifestSha256": "9e584650bad5c1d3aeb056fd4f7ce6c86a77a43a2b552c9eb5d444b732bb6e1c",
+    "dumpSha256": "c8f19ad1e7b78b9a8bf753be8f30a49dbf9cec65c38afd3b4dd4cfa1b02cf50e",
+    "contentSha256": "106870f5a70797d4f03d08c9cb48534f907572f748b36423d1abe94f2045054a",
+    "completedAt": "09/06/2026 00:31:01",
+    "serviceStateChanged": false
+  },
+  "restore": {
+    "version": "teruisi-postgres-restore-rehearsal-v1",
+    "status": "completed",
+    "rehearsalId": "f52ac799e042",
+    "startedAt": "2026-09-05T16:32:12.9678789+00:00",
+    "completedAt": "2026-09-05T16:36:17.8428328+00:00",
+    "backupId": "daily-20260905T162938Z-8fa556de4423",
+    "backupManifestSha256": "9e584650bad5c1d3aeb056fd4f7ce6c86a77a43a2b552c9eb5d444b732bb6e1c",
+    "dumpSha256": "c8f19ad1e7b78b9a8bf753be8f30a49dbf9cec65c38afd3b4dd4cfa1b02cf50e",
+    "expectedContentSha256": "106870f5a70797d4f03d08c9cb48534f907572f748b36423d1abe94f2045054a",
+    "restoredContentSha256": "106870f5a70797d4f03d08c9cb48534f907572f748b36423d1abe94f2045054a",
+    "isolatedPort": 55448,
+    "productionDatabaseTouched": false,
+    "serviceStateChanged": false,
+    "cleanupStatus": "isolated_data_removed"
+  },
+  "supervisor": {
+    "status": "completed",
+    "desiredState": "running",
+    "supervisorProcess": "running",
+    "health": "healthy",
+    "code": "all_components_ready",
+    "lastHealthyAt": "09/06/2026 00:34:56",
+    "restartAttemptsInWindow": 0,
+    "pendingAlertCount": 9,
+    "serviceStateChanged": false
+  },
+  "tests": {
+    "frontend": {
+      "total": 1855,
+      "passed": 1832,
+      "failed": 0,
+      "skipped": 23,
+      "postBuildArtifactChecksPassed": 3,
+      "remainingPreexistingSkips": 20
+    },
+    "backendSQLite": {
+      "total": 363,
+      "failed": 0,
+      "skipped": 1
+    },
+    "aiPostgresPassed": 33,
+    "minimumRoleHttpPassed": 21,
+    "databaseNegativePrivilegesPassed": 10,
+    "r2EvidencePassed": 3,
+    "focusedNodePassed": 18,
+    "renderedHtmlPassed": 19,
+    "lint": {
+      "errors": 0,
+      "preexistingWarnings": 10
+    },
+    "typeScript": {
+      "preexistingErrors": 160,
+      "newErrors": 0
+    },
+    "paidProviderCalls": 0
+  },
+  "isolatedRehearsal": "D:\\运营管理系统-ai-r2\\.runtime\\ai-pg-d098e9ee2681\\result.json",
+  "evidence": {
+    "ai-r2-final-verification.json": {
+      "path": "D:\\teruisi-runtime\\django-sales\\audits\\ai-r2-retirement\\20260906-003647-937b9611d7a3\\ai-r2-final-verification.json",
+      "sha256": "09bca9f2211f963c4427911529f163890804b679e675234b5a2e22e6b9f3ed65"
+    },
+    "ai-r2-baseline-backup.json": {
+      "path": "D:\\teruisi-runtime\\django-sales\\audits\\ai-r2-retirement\\20260906-003647-937b9611d7a3\\ai-r2-baseline-backup.json",
+      "sha256": "045e28f6eb05efae2054d48f4bbc90753beccb12026a9c785a79075db5fff9c3"
+    },
+    "ai-r2-post-backup.json": {
+      "path": "D:\\teruisi-runtime\\django-sales\\audits\\ai-r2-retirement\\20260906-003647-937b9611d7a3\\ai-r2-post-backup.json",
+      "sha256": "c044e42e8bcacf6426953b5ab43967c52e58e9c042f8a49d15bfd9a78f52f718"
+    },
+    "ai-r2-post-restore.json": {
+      "path": "D:\\teruisi-runtime\\django-sales\\audits\\ai-r2-retirement\\20260906-003647-937b9611d7a3\\ai-r2-post-restore.json",
+      "sha256": "7d019e5a90313bc2a5759cbafd20878764ad5c9cb4c9165074c12632cd155797"
+    },
+    "ai-r2-post-restore-request.json": {
+      "path": "D:\\teruisi-runtime\\django-sales\\audits\\ai-r2-retirement\\20260906-003647-937b9611d7a3\\ai-r2-post-restore-request.json",
+      "sha256": "9e42da5c9834d54a7e83c90c5ebdb8c431a16e88358cd95970fad46583f7e5d4"
+    },
+    "ai-r2-worker-plan.json": {
+      "path": "D:\\teruisi-runtime\\django-sales\\audits\\ai-r2-retirement\\20260906-003647-937b9611d7a3\\ai-r2-worker-plan.json",
+      "sha256": "b0e7ac56bf99907d96d67c1350b1df350f5db41f91a2ea6cad2fec0d367d0a6b"
+    },
+    "ai-r2-worker-apply.json": {
+      "path": "D:\\teruisi-runtime\\django-sales\\audits\\ai-r2-retirement\\20260906-003647-937b9611d7a3\\ai-r2-worker-apply.json",
+      "sha256": "982c3556226549c07b4b6156cab3e2669d2ec4a5bf6173f6a0e1049a7342f5ed"
+    },
+    "ai-r2-startup.json": {
+      "path": "D:\\teruisi-runtime\\django-sales\\audits\\ai-r2-retirement\\20260906-003647-937b9611d7a3\\ai-r2-startup.json",
+      "sha256": "63c0afdbeb132cb0e6c9cc20787a87f1cf511136244fd50a6ac60248d637390f"
+    },
+    "ai-r2-schema.json": {
+      "path": "D:\\teruisi-runtime\\django-sales\\audits\\ai-r2-retirement\\20260906-003647-937b9611d7a3\\ai-r2-schema.json",
+      "sha256": "1f2c590500c47291db4cef64da0ceb75d739cc86b46d1df6f0dec43522346e80"
+    },
+    "ai-r2-supervisor-final.json": {
+      "path": "D:\\teruisi-runtime\\django-sales\\audits\\ai-r2-retirement\\20260906-003647-937b9611d7a3\\ai-r2-supervisor-final.json",
+      "sha256": "2d9deb33086c0372238dd75da40cac0a06234649d3387216d33d84d68ae9a007"
+    },
+    "ai-r2-preflight.json": {
+      "path": "D:\\teruisi-runtime\\django-sales\\audits\\ai-r2-retirement\\20260906-003647-937b9611d7a3\\ai-r2-preflight.json",
+      "sha256": "03a9950d7ebc18eab876654b18f8df34b16aa3413140ed965e2338e4a9a2f2a8"
+    },
+    "ai-r2-stopped-proof.json": {
+      "path": "D:\\teruisi-runtime\\django-sales\\audits\\ai-r2-retirement\\20260906-003647-937b9611d7a3\\ai-r2-stopped-proof.json",
+      "sha256": "8e015df0801d57b2951448b77322d4bc390ba098dbcf10efdf4bf08a3cf093a4"
+    }
+  }
+}

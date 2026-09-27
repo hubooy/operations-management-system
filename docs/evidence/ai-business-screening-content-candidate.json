@@ -1,0 +1,14 @@
+{
+  "date":"2026-09-17","batch":49,"status":"candidate_five_role_content_and_short_review",
+  "verification":{
+    "pureWithLegacyReceipts":{"passed":22,"seconds":14.443,"log":".runtime/screening-content-49-pure.log"},
+    "diagnosisAndContent":{"passed":7,"seconds":144.554,"log":".runtime/ai-pg-4e98cf66cbee/tests.log"},
+    "reviewAndLegacyClaimsReceipts":{"reviewPassed":3,"legacyClaimsPassed":8,"legacyReceiptsPassed":2,"combinedSuitePassed":14,"seconds":182.278,"log":".runtime/ai-pg-bbb1de0ded78/tests.log"},
+    "reviewPureFinal":{"passed":4,"seconds":0.022,"log":".runtime/batch51-content-fence-discovery-pure.log"},
+    "fenceAndFinalReview":{"fencePassed":5,"reviewPassed":3,"executionRegressionPassed":1,"combinedSuitePassed":9,"seconds":158.777,"log":".runtime/ai-pg-85cba69e34d5/tests.log"},
+    "fixtureCorrection":"Tool immutable identities are rejected by the real database; application read corruption is separately injected without disabling triggers",
+    "realModelJudgmentVerified":false
+  },
+  "limits":{"contentBytes":4194304,"jobs":5,"providersPerJob":20,"toolsPerJob":40},
+  "operations":{"productionBusinessReads":false,"productionWrites":false,"deployment":false,"serviceRestart":false,"paidModelCalls":false,"externalMessages":false}
+}

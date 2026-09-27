@@ -1,0 +1,53 @@
+{
+  "date": "2026-09-17",
+  "branch": "codex/ai-business-analysis-stages",
+  "baseCommit": "6105ba13",
+  "batch": 27,
+  "status": "candidate_integrated_runtime_and_files_not_production_adopted",
+  "changes": [
+    "Explicit fixed mapping plan and optional original promotion budget bound atomically to a separate report profile",
+    "Three report-bound read-only tools, actual context admission and independent per-Agent durable receipt recomputation",
+    "Mapped SKU/SPU facts and compatible comparisons in validated diagnosis and complete persisted multivolume HTML/XLSX",
+    "Migration 0022 guards and exact health checks without a new owned table"
+  ],
+  "verification": {
+    "upgradeAndRestore": {
+      "passed": true,
+      "log": ".runtime/ai-pg-15a42301a4f4/business-evidence-upgrade.json",
+      "ownedTables": 63,
+      "previous63TablesDigestPreserved": "2dcc8c6e48b1911701595fdc602bcafe4a6dcf48118fe484cbf40a45d8743dd4",
+      "integratedReportsRestored": 2,
+      "dumpRestoreDigest": "bc82883663a998d821e1d759e2d237991988b873f55e146edc71e01e4614f5cd",
+      "includes": "Restricted roles, trigger/function health tampering, no-data rollback, dependent-data rollback denial, restored mapped and budget readers",
+      "followingUnshardedRegression": "Exceeded the isolated harness 300 second subprocess limit; regression split into bounded groups"
+    },
+    "finalIntegratedPostgres": {
+      "passed": 13,
+      "seconds": 68.622,
+      "log": ".runtime/ai-pg-00266236d260/tests.log",
+      "includes": "Actual sealed readers; five jobs with three professional jobs concurrent; with/without budget; independent and human review; persisted complete files and downloads; exact HTML/XLSX mapped cells; request replay and new versions; early final and tampered successful native/mapped receipts retain results with no redispatch"
+    },
+    "regressionShardA": {"tests": 234, "passed": 232, "skipped": 2, "seconds": 26.893, "log": ".runtime/ai-pg-077cd4c0b813/tests.log"},
+    "regressionShardB": {"tests": 189, "passed": 189, "seconds": 111.866, "log": ".runtime/ai-pg-6d116a0bdc5b/tests.log"},
+    "regressionShardC": {"tests": 131, "passed": 131, "seconds": 205.815, "log": ".runtime/ai-pg-e14f9763ef01/tests.log", "includes": "Final graph admission and simulation with/without budget makes no model/tool dispatch and cannot create files"},
+    "completeAiRegression": {"modules": 65, "tests": 567, "passed": 565, "skipped": 2, "failed": 0, "strategy": "Disjoint file groups A/B/C plus final integrated group; the additional dry-run method is in group C"},
+    "pureFileRegression": {"passed": 44, "seconds": 0.698, "log": ".runtime/batch27-pure-files.log"},
+    "independentExportReview": {"passed": 5, "volumes": 4, "tables": 27, "widestMappedComparisonColumns": 156, "legacyManifestHtmlXlsxBytesEqual": true},
+    "nodeFullInitial": {"tests": 2330, "passed": 2306, "failed": 3, "cancelled": 1, "skipped": 20, "seconds": 310.881, "log": ".runtime/batch27-node-full.log", "explanation": "New integrated response guards and their fixtures were updated while this run was in progress; three affected tool assertions failed. Existing Jackyun browser test timed out under full-run load. All affected files were rerun after edits froze."},
+    "nodeFinalFocused": {"passed": 37, "failed": 0, "cancelled": 0, "log": ".runtime/batch27-node-final-focused.log"},
+    "legacyCatalog": {"unchangedEntries": 44, "oldSurfaces": 11, "rolesPerSurface": 4, "scopeVariants": 2, "canonicalEntrySha256": "48a2b381df15c7e107199fec9ec494e5c68f4080f60ebecee9d1267840653d9e"},
+    "build": {"passed": true, "log": ".runtime/batch27-build.log"},
+    "renderedPages": {"passed": 20, "log": ".runtime/batch27-rendered.log"},
+    "typescript": {"baselineDiagnosticsUnchanged": true, "outputLines": 223, "baseline": ".runtime/batch24-types-final.log", "log": ".runtime/batch27-types.log"},
+    "targetedLint": {"errors": 0, "warnings": 0},
+    "backendBoundary": {"checkedModules": 487, "violations": []},
+    "initialPostgresFailure": {"log": ".runtime/ai-pg-286382baaaba/failure.log", "tests": 33, "failed": 1, "explanation": "Fixture changed one unmatched sale into the existing SKU and one old matched sale into another SKU; correct original SKU count is 11, not 10. Added original source, amount and exact SPU distribution assertions; final integrated rerun passed."}
+  },
+  "limits": [
+    "Synthetic model/network responses do not prove paid-model diagnosis quality or real business acceptance",
+    "At least one verified mapped page is not a claim that the model read every detail; complete details are independently generated into files",
+    "Current master is retrospective allocation, not historical identity, promotion attribution or keyword profit",
+    "Workbench explicit mapping choices belong to the following batch; full five-phase acceptance is outstanding"
+  ],
+  "operations": {"productionBusinessReads": false, "productionWrites": false, "newMigration": "0022 candidate and isolated rehearsals only", "deployment": false, "serviceRestart": false, "paidModelCalls": false, "externalMessages": false}
+}

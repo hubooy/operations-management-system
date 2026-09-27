@@ -1,0 +1,61 @@
+{
+  "version": "ai-promotion-sixday-mvp-production-v1",
+  "date": "2026-09-27",
+  "scope": "京东志高商用设备旗舰店 2026-09-20 至 2026-09-25，前等长 2026-09-14 至 2026-09-19；仅运营系统已导入数据",
+  "source": {
+    "mergedCommit": "8c81656cf9c233b4026c6cf33cf6e1c26492435d",
+    "pullRequest": 48,
+    "djangoFingerprint": "fec968651ca40d86ecf796514751659b51f616502c559b8c1e478e6806a5e884",
+    "workerReleaseId": "20260927T025729Z-73db9d9489dd6952",
+    "workerManifestSha256": "7b9bf0adab4d541daeb4bee5ea27162b1ea96e5769e041efac393a28f6bafa97",
+    "workerPlanSha256": "b5a7472e17ecdfcab4e0625a58658e4fd2756c2735ac4489eb5e388aa4207799"
+  },
+  "preBackup": {
+    "id": "daily-20260927T044850Z-ae56525bd62e",
+    "manifestSha256": "1f294dd1da645435084fb7a54fd20a7a39d287ef435a68f213a38669b2aa449b",
+    "contentSha256": "5a2a6befe0429f287a392510b1a3e13410f117596d1632b31a45336db4deb8aa",
+    "verified": true,
+    "independentRestoreMatched": true,
+    "eArchiveThreeFileHashMatched": true
+  },
+  "postBackup": {
+    "id": "daily-20260927T052635Z-2815fb5398c9",
+    "manifestSha256": "c330d6374dbc46fbe6bd5d553ddfc6082f895a89aa940b5fefb50f2ce2c77657",
+    "contentSha256": "31503386514b1d5b40b59fc6c67537ff3520b9969280dcf51d1955431bc46e74",
+    "verified": true,
+    "eArchiveThreeFileHashMatched": true
+  },
+  "productionRead": {
+    "sourceRevision": "798:740c41394ef8",
+    "currentDates": 6,
+    "baselineDates": 6,
+    "currentRows": 61311,
+    "baselineRows": 62566,
+    "currentSpendCents": 936322,
+    "currentImpressions": 100460,
+    "currentClicks": 4591,
+    "currentAttributedOrderLines": 134,
+    "currentAttributedGmvCents": 10511875,
+    "completedSourceAndAggregateOwnership": true,
+    "sourceWarningCount": 0,
+    "comparisonAvailable": true
+  },
+  "model": {
+    "trigger": "manual once on one focused plan",
+    "defaultModel": "deepseek-v4-flash",
+    "configuredMaxOutputTokens": 65536,
+    "response": "accepted in production UI with four evidence-linked text rows",
+    "automaticAdChanges": false
+  },
+  "artifacts": {
+    "method": "Production operations-system GET responses passed through the same app report/relationship/XLSX renderer; accepted UI model text reproduced in the final report because the in-app browser did not surface Blob downloads as local files",
+    "htmlSha256": "a45672bcb06476362cb4035a1682d40fa0ccf2705a8e6a440f1e8a172fdcd3f0",
+    "xlsxSha256": "e933f1ad7f162143e736bc4f1caf0d9d0fa88cf72d257afac0d43a5dcc277488",
+    "tableCount": 13,
+    "cellsIndependentlyCompared": 651013
+  },
+  "finalHealthAt": "2026-09-27T13:26:01+08:00",
+  "finalHealth": "Running/Ready/exact_release; 12 of 12 components; VerifyStartup verified; helper ready and idle",
+  "n8n": "No business workflow manually triggered, downloaded, imported or restarted. Original hourly retry execution 4777 remained waiting for 13:42:45 Asia/Shanghai at 13:30 review.",
+  "limits": "This is a focused six-day promotion MVP. B-end sales and JD shop-overview source workflows are absent; existing SKU/SPU/ERP/market data is not yet joined into this report. Year-over-year, profit and multi-agent system analysis are deferred."
+}

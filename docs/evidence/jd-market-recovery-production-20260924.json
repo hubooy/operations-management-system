@@ -1,0 +1,147 @@
+{
+  "version": "jd-market-recovery-production-v1",
+  "checkedAt": "2026-09-24T00:51:18+08:00",
+  "status": "business_verified_2026-09-22",
+  "sourceCommits": [
+    "7a6bf59d",
+    "348f494e"
+  ],
+  "sourcePushedTo": "origin/main",
+  "worker": {
+    "predecessorReleaseId": "20260923T150151Z-55a091078c2cad99",
+    "releaseId": "20260923T160810Z-66a1c457be10d0fa",
+    "manifestSha256": "b83db9e89116b4ef204e66bcb2e61c68728e8f21f4472c13953693e866aa80e9",
+    "planSha256": "bc99b9a6b0dc426b932d7bb85a3cd2b2b4cd2fcc66e4a40af274661d391c161c",
+    "maintenanceId": "39252fee2a44430abffdff7d2b192424",
+    "postgresPreserved": true,
+    "finalState": "Running/Ready/exact_release",
+    "readyComponents": 12,
+    "startupVerified": true,
+    "helperReadyIdle": true,
+    "jdMarketBrowserPortClosed": true
+  },
+  "backups": {
+    "before": {
+      "id": "daily-20260923T161510Z-22304df710fc",
+      "manifestSha256": "c4314846a7c71b1fe04dde1b3f422405354c40ab131ab0a4a9cd85054a6835fc",
+      "verified": true,
+      "isolatedRestoreContentMatched": true,
+      "isolatedRestoreCleanup": "isolated_data_removed",
+      "eDriveArchiveFilesVerified": 3
+    },
+    "after": {
+      "id": "daily-20260923T164613Z-7b959c8e4025",
+      "manifestSha256": "cc997e2a5d719a0a960a5a25b70572e24e116bfe5e547c888fda131afdf1a776",
+      "verified": true,
+      "eDriveArchiveFilesVerified": 3
+    }
+  },
+  "n8n": {
+    "workflowId": "JdMarketSilentCopy2026",
+    "workflowVersionId": "42822146-296a-47fd-b88f-235800517072",
+    "active": true,
+    "completeExecutionId": 4145,
+    "completeExecutionStatus": "success",
+    "completedNodes": [
+      "A",
+      "B",
+      "C"
+    ],
+    "oldWait4140": "canceled",
+    "oldWait4142": "canceled",
+    "otherWorkflowWait4144": "preserved"
+  },
+  "business": {
+    "runId": "jd-market-484fdb81-1e89-4406-b70d-20c2a823d06f",
+    "planEndDate": "2026-09-22",
+    "date": "2026-09-22",
+    "categoriesVerified": 7,
+    "rowsVerified": 1400,
+    "newlyImportedIn4145": 6,
+    "previouslyImportedAndReverified": 1,
+    "items": [
+      {
+        "category": "商用净水设备",
+        "batchId": "market-pg-62620654d0952e16c9ae500b-c4036f5d1ee4",
+        "rowCount": 200,
+        "warningCount": 0,
+        "fileSha256": "72ac97d1fcc279839cb5779634ce2e8bf3d4296e40d30d533b265bf28331114e",
+        "fileVerified": true,
+        "batchCompleted": true,
+        "coverageVerified": true
+      },
+      {
+        "category": "商用开水器蒸气奶泡机",
+        "batchId": "market-pg-c819e096d7982595706bc8e9-c91e1fe4fe7f",
+        "rowCount": 200,
+        "warningCount": 0,
+        "fileSha256": "88f4970df19a36dad63b478bf59e6a31d9a06821858daab6496900167728926f",
+        "fileVerified": true,
+        "batchCompleted": true,
+        "coverageVerified": true
+      },
+      {
+        "category": "商用炒菜机",
+        "batchId": "market-pg-6ebc3f8e93cd04a2fc5e88ad-c6ec2c9c4e38",
+        "rowCount": 200,
+        "warningCount": 0,
+        "fileSha256": "9aacea656a6238e469962e6a91b3bc4f44996dcd17f1b6a79bebcefaaeef5749",
+        "fileVerified": true,
+        "batchCompleted": true,
+        "coverageVerified": true
+      },
+      {
+        "category": "商用绞肉机切肉机切片机",
+        "batchId": "market-pg-c27b2f2577c2026da8aaa26a-94ef0e8b5245",
+        "rowCount": 200,
+        "warningCount": 0,
+        "fileSha256": "66f41c14e7beb29e49001df094c807d395f6dc677f95cca39175c7298b478acb",
+        "fileVerified": true,
+        "batchCompleted": true,
+        "coverageVerified": true
+      },
+      {
+        "category": "商用切菜机",
+        "batchId": "market-pg-a1236823d4c7ee6eb1d351cb-33bd4bd5ff8e",
+        "rowCount": 200,
+        "warningCount": 0,
+        "fileSha256": "712c9af084f50fef6f7c28f2e93904873f7cc9d665279dd66ce54f4d870a0e43",
+        "fileVerified": true,
+        "batchCompleted": true,
+        "coverageVerified": true
+      },
+      {
+        "category": "商用洗碗机",
+        "batchId": "market-pg-3f664ef637e915ee89143933-5a195aa0e649",
+        "rowCount": 200,
+        "warningCount": 0,
+        "fileSha256": "c4dcfed38f32a20af50eb747ef06f5e67f46cab1c0e15382d7121dec1c1ec7b3",
+        "fileVerified": true,
+        "batchCompleted": true,
+        "coverageVerified": true
+      },
+      {
+        "category": "商用磨粉机粉碎机",
+        "batchId": "market-pg-4f52002170f0ff4f369d1c4e-63af69393070",
+        "rowCount": 200,
+        "warningCount": 0,
+        "fileSha256": "a91b50a8174b66cd13e530b6c2bb13ba842bae9c62580364f42a3a7da370f0f8",
+        "fileVerified": true,
+        "batchCompleted": true,
+        "coverageVerified": true
+      }
+    ]
+  },
+  "nextSchedule": {
+    "date": "2026-09-23",
+    "missingCategoriesAtCheck": 7,
+    "originalDailySchedule": "10:30 Asia/Shanghai"
+  },
+  "boundaries": {
+    "djangoRedeployed": false,
+    "databaseMigrated": false,
+    "n8nRestarted": false,
+    "n8nDefinitionChanged": false,
+    "nextDayBusinessVerified": false
+  }
+}

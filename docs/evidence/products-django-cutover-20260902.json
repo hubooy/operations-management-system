@@ -1,0 +1,236 @@
+{
+  "version": "products-django-production-cutover-evidence-v1",
+  "status": "completed",
+  "environment": {
+    "scope": "current Windows host",
+    "businessTimezone": "Asia/Shanghai",
+    "runtimeRoot": "D:/teruisi-runtime/django-sales"
+  },
+  "cutover": {
+    "cutoverId": "products-pg-20260901T164758Z-1c636a3a0f564bc9",
+    "authorityEpoch": "82834127-5232-41fd-8e16-fa5c02bc3e8d",
+    "migrationPlanId": "products-plan-bba00f4d1844443a85b24eea3ebaa716",
+    "migrationRunId": "products-apply-4e42b55942d54e8e99a57ff4653d4371",
+    "sourceDigest": "e44d40245ef61b8e0231fbec2a44f466cf0709eb049c75182e2fdde16d050a6e",
+    "targetDigest": "e44d40245ef61b8e0231fbec2a44f466cf0709eb049c75182e2fdde16d050a6e",
+    "activatedAt": "2026-09-02T02:09:15.734287+08:00",
+    "pointOfNoReturnCrossed": true,
+    "rollbackPolicy": "postgres_backup_wal_pitr_compatible_code_or_approved_forward_fix_only"
+  },
+  "sourceSnapshot": {
+    "path": "D:/teruisi-runtime/django-sales/audits/products-cutover/products-pg-20260901T164758Z-1c636a3a0f564bc9.source.sqlite",
+    "sha256": "7930ff3b32e79423a81acd396c000b234c7f35cfebf99906b9f39f06735df1da",
+    "bytes": 9586368512,
+    "quickCheck": "ok"
+  },
+  "migration": {
+    "status": "verified",
+    "sourceCounts": {
+      "attempts": 1,
+      "batches": 1,
+      "fingerprints": 1,
+      "rates": 3630,
+      "inventory": 6461
+    },
+    "targetCounts": {
+      "attempts": 1,
+      "batches": 1,
+      "fingerprints": 1,
+      "rates": 3630,
+      "inventory": 6461
+    }
+  },
+  "services": {
+    "reader": "127.0.0.1:8041",
+    "writer": "127.0.0.1:8042",
+    "readerReady": true,
+    "writerReady": true,
+    "startupReceiptPath": "D:/teruisi-runtime/django-sales/products-service-enabled.json",
+    "startupReceiptSha256": "45751c2634f2ced566907fa05e32db522332d5c2614e999a76af77fa1e993726",
+    "deployedAt": "2026-09-02T03:50:38.5792440+08:00",
+    "appFingerprint": "f44373fb288701f90a88d2a3c89cf367443a34060fe283f4b0655d6baf73b40a",
+    "deploymentReceiptSha256": "be0643978ca4921ff49d39f40090a9e7d28e8d81800feb69192fbb7118e71280"
+  },
+  "connectionCapacity": {
+    "preChangeMaxConnections": 50,
+    "configuredMaxConnections": 100,
+    "superuserReservedConnections": 3,
+    "normalConnectionCapacity": 97,
+    "productsStartupMinimum": 80,
+    "postChangeObservedBusinessConnections": 28,
+    "preChangePostgresqlConfigSha256": "f55e377fb8da9cf4d178d3f11fe8611cac50463fafa4cce1e65c468e07c6b02c",
+    "postgresqlConfigSha256": "e791c971cff8f2051d8522d8e15d2b413a534faee61dccb863a001ea1e459794",
+    "startupFailsClosedBelowMinimum": true
+  },
+  "workerRelease": {
+    "releaseId": "20260901T192658Z-765c43c274a681d2",
+    "rotationPlanSha256": "6454de8a7733bb8ac131026b111c8e22e74f028eb3bbad09442558394a555873",
+    "manifestSha256": "994ab0ebe7459aa3806b4182e4d8337e7f4b5e0922a960d7911b31b3b7c3573b",
+    "predecessorGuardReceiptSha256": "2b15a303d70da09649eec46045ab3e3e5d8952226d4e5b1edef841936ed83f81",
+    "successorSha256": "a01cb5d7dc2e651a64ea1fdbd8ca4f50c2043a5eb88d26be699e8bb2108f2903",
+    "consumptionSha256": "85b21fc37b2026d8cdcaa1fa28b8da931831affe023e9d0ecb30b76db172bc06",
+    "startupBindingSha256": "bc6c3f45d7d1548494f033d9a8bb82ef3bbe0a47d448d397e342bca61d8e186f",
+    "successorCount": 16,
+    "chainSha256": "8ad4659c9a33b0a3ac3a444281eba647d1d5718fbbcad2d0b21d9b7183060464",
+    "predecessorFenced": true
+  },
+  "systemTest": {
+    "receiptPath": "D:/teruisi-runtime/django-sales/audits/products-cutover/products-pg-20260901T164758Z-1c636a3a0f564bc9.system-test-receipt.json",
+    "receiptSha256": "f8ac4b34cddd80296ee255821091079d2a710608a19684550d18b5a13609891b",
+    "receiptWorkerBuildSha256": "f6b2708ad41a6f4629d38582d2f58c054d81fed070fcbc742799a132d7065002",
+    "checksPassed": 10,
+    "checksFailed": 0,
+    "checks": [
+      "djangoReader",
+      "djangoWriterNegative",
+      "publicSummary",
+      "publicShippingImport",
+      "publicChunkUpload",
+      "inventoryProjection",
+      "aiConsumer",
+      "globalSearchConsumer",
+      "legacyD1Rejected",
+      "inventoryD1Preserved"
+    ],
+    "postReleasePositiveValidation": {
+      "fixtureSha256": "75718e5b7e48dc50f3538f2ce8df8e5018398686f835febcd28ea342f9a801cd",
+      "fixtureBytes": 96062,
+      "parsedRows": 3630,
+      "directImportStatus": "duplicate",
+      "chunkImportStatus": "duplicate",
+      "chunkSizeBytes": 1048576,
+      "chunkCount": 1,
+      "uploadId": "835dae77-cfcd-4421-94e3-f1035d4051f2",
+      "completedUploadPayloadRemoved": true,
+      "authoritativeFactsChanged": false,
+      "publicSummaryProductTotal": 1259,
+      "publicSummarySnapshotToken": "131221ef9e81cc242b53140dc675f724bca2bc65f7a56b1947f4ef9fa5c21db2"
+    }
+  },
+  "postgresReadback": {
+    "authorityStatus": "postgres",
+    "revision": 1,
+    "revisionSourceDigest": "e44d40245ef61b8e0231fbec2a44f466cf0709eb049c75182e2fdde16d050a6e",
+    "scopeStatus": "ready",
+    "scopeStateToken": "edaad9226b1d039ce7c1cf8b18d0030b0cd70cde95ba3305020d01f7bf4298a4",
+    "scopeOwnerEmpty": true,
+    "batches": 1,
+    "completedBatches": 1,
+    "rates": 3630,
+    "fingerprints": 1,
+    "attempts": 3,
+    "importedAttempts": 1,
+    "duplicateAttempts": 2,
+    "uploadSessions": 1,
+    "completedUploadSessions": 1,
+    "storedUploadChunks": 0,
+    "activeInventoryRows": 6461,
+    "activeInventoryDeclaredTotal": 6461,
+    "inventorySnapshotDate": "2026-08-31",
+    "syncInProgress": false
+  },
+  "d1Retirement": {
+    "planId": "7b73be65424c19e3d9bcf3d601b9790bab4b7fe84b1ff20ea76c7898854372f8",
+    "auditId": "14940950135afd3ba162ed5b636e5a4d753d089318436710c4f3167e4305a402",
+    "migrationSha256": "42a0beb1f0c9e93564e38976d435cffc4a0c75cfe3d0e981b07f52525b1a755b",
+    "attestationSha256": "42cc3bd3153efad1b87c6e207f375c4e56f487e9e9b99318c83249fbfe9d9a72",
+    "preflightEvidenceSha256": "535b7e23fda4596df598aab615efce7050b28a9693a9538163fbddc8d2804e01",
+    "preservedEvidenceSha256": "e53a3d46b63dfee29a541531bdc639abd328edce9dfba8b16dfca016d3be988d",
+    "auditPath": "D:/teruisi-runtime/django-sales/audits/products-cutover/products-pg-20260901T164758Z-1c636a3a0f564bc9.d1-retirement.json",
+    "auditFileSha256": "8c915fec9b317b1a404b9aeb9c97ce4ec8d62ff2cd54773c0974d5f1ad07dea5",
+    "tombstoneViews": 3,
+    "sharedTableGuards": 18,
+    "quickCheck": "ok",
+    "otherDomainSharedDigest": "277a73c006c72a0014efe7734ad73f104f0d77eb60cabb9046f598da8b5de6aa",
+    "otherDomainCounts": {
+      "attempts": 109,
+      "fingerprints": 75,
+      "heads": 5,
+      "retirementReceipts": 3,
+      "uploads": 4,
+      "uploadResults": 4,
+      "uploadChunks": 0
+    },
+    "legacyWriteRejected": true,
+    "productR2FallbackReachable": false,
+    "globalD1AndR2BindingsRetainedForOtherDomains": true
+  },
+  "backups": {
+    "preCutover": {
+      "backupId": "daily-20260901T164602Z-c30def07f3f4",
+      "manifestSha256": "9f82d5f696f1405f331aee280010c1c7c0128d86f70846cc77742f8c0428fb4f",
+      "dumpSha256": "041062fd76fe34b21851a06c8898bf2e46c88ffa20a9afd434f4cbe09e75cd29",
+      "contentSha256": "ef618b698a5bb598b9b68a8b62b5f85ad65adf779de63edc451eb2df430faead"
+    },
+    "migratedPrePnr": {
+      "backupId": "daily-20260901T180231Z-253e052e6731",
+      "manifestSha256": "8db96c00f950783bfa308c0070cf800a32364cf13776fc2119cb4987d0ff5057",
+      "dumpSha256": "624f99e65a66199e4854c3c7387f0855dd53cfa4a3125347e1c35d36874232c4",
+      "contentSha256": "0232dce0d5ed8a8e128dda6ece54a118724f61fd92230f4d0399c27e93d56ff0"
+    },
+    "postCutover": {
+      "backupId": "daily-20260901T200551Z-0087e9194573",
+      "directory": "D:/teruisi-runtime/django-sales/backups/postgres-daily/daily-20260901T200551Z-0087e9194573",
+      "manifestSha256": "91981131be29aaa2844b26bd8c2db976ca265e510ab801b2624b87c502c615ea",
+      "dumpSha256": "75dc72ec94a1066855b1e2e8d4e0ec7b570037c8fb463a8db19b6a72f1d3bed8",
+      "contentSha256": "e540009458e9f1704d1de2b0e07ef0c3f01e1379196aa383909088363082c1ee",
+      "verified": true,
+      "serviceStateChanged": false
+    }
+  },
+  "restoreRehearsals": {
+    "migratedPrePnr": {
+      "rehearsalId": "c7a1e4b29f60",
+      "isolatedPort": 55442,
+      "contentSha256Matched": true,
+      "productionDatabaseTouched": false,
+      "cleanupStatus": "isolated_data_removed"
+    },
+    "postCutover": {
+      "rehearsalId": "2db116c73f84",
+      "isolatedPort": 55443,
+      "expectedContentSha256": "e540009458e9f1704d1de2b0e07ef0c3f01e1379196aa383909088363082c1ee",
+      "restoredContentSha256": "e540009458e9f1704d1de2b0e07ef0c3f01e1379196aa383909088363082c1ee",
+      "resultPath": "D:/teruisi-runtime/django-sales/rehearsals/postgres-restore/restore-2db116c73f84/rehearsal-result.json",
+      "resultSha256": "7c1cb373d3e1c410c9164556db1207659708ef15db49dd404ab32b3a99e15b0b",
+      "productionDatabaseTouched": false,
+      "serviceStateChanged": false,
+      "cleanupStatus": "isolated_data_removed"
+    }
+  },
+  "verification": {
+    "djangoProductsTests": {
+      "passed": 13,
+      "failed": 0
+    },
+    "focusedNodeTests": {
+      "passed": 30,
+      "failed": 0
+    },
+    "fullNodeUnit": {
+      "total": 1722,
+      "passed": 1718,
+      "skipped": 4,
+      "failed": 0
+    },
+    "renderedHtml": {
+      "passed": 19,
+      "failed": 0
+    },
+    "productionBuild": "passed",
+    "lint": {
+      "errors": 0,
+      "warnings": 8
+    },
+    "xlsxNamespaceCompatibility": "passed",
+    "staticD1R2FallbackReachability": "passed",
+    "gitDiffCheck": "passed"
+  },
+  "implementationCommits": [
+    "80e91b8b",
+    "23c41b74",
+    "75b3dabe",
+    "7acacf32",
+    "4423e99b"
+  ]
+}

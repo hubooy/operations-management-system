@@ -1,0 +1,127 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-16T09:39:30+08:00",
+  "scope": "Production n8n morning schedule alignment and Codex ten-minute monitoring",
+  "authorization": "User explicitly requested Jackyun remain at 00:10, monitoring every 10 minutes, and JD/Tmall workflows move to morning starts.",
+  "monitor": {
+    "automationId": "automation-5",
+    "name": "数据工作流统一监控",
+    "kind": "heartbeat",
+    "status": "ACTIVE",
+    "rrule": "FREQ=HOURLY;BYMINUTE=5,15,25,35,45,55;BYSECOND=0",
+    "notificationPolicy": "failed_runs_only",
+    "behavior": "Checks each workflow only after its planned start is at least five minutes past; tracks existing n8n executions and the documented shared retry chain until terminal state; stays quiet without a state change; does not bypass n8n or call business helpers/import APIs directly."
+  },
+  "workflows": [
+    {
+      "id": "J8kY2mQ5vR7sT4pN",
+      "label": "吉客云五表",
+      "previous": "00:10",
+      "current": "00:10",
+      "cron": "10 0 * * *",
+      "versionId": "e11b4c5e-dcd7-4517-b3ea-5f3cb4b8f2d7"
+    },
+    {
+      "id": "JdN8nSilentCopy2026",
+      "label": "京东四店",
+      "previous": "10:00",
+      "current": "10:00",
+      "cron": "0 10 * * *",
+      "versionId": "a441654e-eca1-4294-a15e-2f521549f0b4"
+    },
+    {
+      "id": "JdMarketSilentCopy2026",
+      "label": "京东市场",
+      "previous": "10:30",
+      "current": "10:30",
+      "cron": "30 10 * * *",
+      "versionId": "42822146-296a-47fd-b88f-235800517072"
+    },
+    {
+      "id": "JdPromotionDaily2026",
+      "label": "京准通商用设备",
+      "previous": "13:00",
+      "current": "10:40",
+      "cron": "40 10 * * *",
+      "versionId": "8b43b538-8a96-4361-b40b-ce1aaa772abf"
+    },
+    {
+      "id": "JdPromotionCutMeat2026",
+      "label": "京准通切肉机",
+      "previous": "13:10",
+      "current": "10:50",
+      "cron": "50 10 * * *",
+      "versionId": "a93a5115-c6f4-456c-be90-a63c0b4742f6"
+    },
+    {
+      "id": "M4xY8kQ2vR6sT9pC",
+      "label": "天猫亿玖",
+      "previous": "13:30",
+      "current": "11:00",
+      "cron": "0 11 * * *",
+      "versionId": "853f2af7-0316-4d89-8a84-0cb13fbecbca"
+    },
+    {
+      "id": "TmallLiliDaily2026",
+      "label": "天猫丽力",
+      "previous": "13:40",
+      "current": "11:10",
+      "cron": "10 11 * * *",
+      "versionId": "a4cdc9e1-3aec-4ce6-8735-56835045c6b4"
+    },
+    {
+      "id": "TmallTuofengDaily2026",
+      "label": "天猫拓丰",
+      "previous": "13:50",
+      "current": "11:20",
+      "cron": "20 11 * * *",
+      "versionId": "2ca9473c-783e-4302-b3b2-af73db16ccf1"
+    },
+    {
+      "id": "TmallCuizhiwangDaily2026",
+      "label": "天猫炊之王",
+      "previous": "14:00",
+      "current": "11:30",
+      "cron": "30 11 * * *",
+      "versionId": "86d085df-a5ec-407f-a601-94d22c99fd40"
+    },
+    {
+      "id": "TmallMasituDaily2026",
+      "label": "天猫马思图",
+      "previous": "14:10",
+      "current": "11:40",
+      "cron": "40 11 * * *",
+      "versionId": "ea61deb6-3a6e-46a1-b407-df4ed3ca272d"
+    },
+    {
+      "id": "TmallYiyongDaily2026",
+      "label": "天猫亿用",
+      "previous": "14:20",
+      "current": "11:50",
+      "cron": "50 11 * * *",
+      "versionId": "aab474d8-0c35-42c0-b4b0-e28ea02e7730"
+    }
+  ],
+  "productionVerification": {
+    "n8nHealthStatus": 200,
+    "allElevenActive": true,
+    "allElevenDraftVersionEqualsActiveVersion": true,
+    "allEightChangedSchedulesLatestPublicationActivated": true,
+    "displayNamesMatchCron": true,
+    "n8nRestarted": false,
+    "djangoRestarted": false,
+    "databaseMigrated": false,
+    "businessImportTriggeredByScheduleChange": false,
+    "note": "A manual execution 2446 was created while editing the cut-meat schedule node, but it executed only that schedule-trigger node for 8 ms and never reached coordination, helper, download, or import nodes."
+  },
+  "sourceVerification": {
+    "focusedTests": {
+      "passed": 52,
+      "failed": 0
+    },
+    "gitDiffCheck": "passed",
+    "generatedCatalogRebuilt": true,
+    "jackyunDashboardScheduleCorrectedTo": "00:10"
+  },
+  "runtimeAcceptance": "The next natural scheduled morning runs are the final end-to-end proof; automation-5 will follow them every ten minutes and report only state changes, terminal failure, required user action, or first successful close."
+}

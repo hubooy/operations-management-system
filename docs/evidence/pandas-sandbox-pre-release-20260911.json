@@ -1,0 +1,44 @@
+{
+  "status": "pre_release_validation_passed",
+  "date": "2026-09-11",
+  "productionApplicationChanged": false,
+  "distro": {
+    "name": "TERUISI-Pandas",
+    "path": "D:\\teruisi-runtime\\pandas-sandbox-wsl",
+    "ubuntu": "24.04.5 LTS",
+    "officialImageUrl": "https://releases.ubuntu.com/noble/ubuntu-24.04.5-wsl-amd64.wsl",
+    "officialImageSha256": "bb415d824822c4b878125729af451a5d18fb13d1cf5cbed9a7393ad64ac6039e",
+    "kernel": "6.18.33.2-microsoft-standard-WSL2",
+    "docker": "29.8.0",
+    "rootless": true,
+    "cgroupVersion": "2",
+    "cgroupDriver": "systemd",
+    "effectiveMemorySwapPidCpuQuotasVerified": true,
+    "seccomp": true,
+    "windowsDriveAutomount": false,
+    "windowsInterop": false,
+    "rootfulDockerMasked": true
+  },
+  "image": {
+    "base": "python:3.12-slim@sha256:78387bc3881b8273120a12ebe6c1ab22b018ccc2c9adf565ae1ac9b536e184ea",
+    "id": "sha256:b3b657aa2ff87fe3d8cef0bc26872a3f4253fafe82f839980c82edb64c01cffe",
+    "pandas": "2.3.3",
+    "numpy": "2.3.5",
+    "runnerSha256": "3173042892d14e6edcf8465b8ea97e878f307e08fdb1c81d2752f82e03dcc610"
+  },
+  "verification": {
+    "isolatedPostgresAiTests": {"total": 164, "passed": 164, "skipped": 0, "port": 55447, "run": "ai-pg-9f77c1faba0d"},
+    "realDatabaseBrokerIntegration": "Synthetic ERP rows use the real domain SQL reader, real paginated export, real signed container call, receipt replay and audit readback. Only edge network transport is substituted; separate existing tests cover the PostgreSQL role contract.",
+    "linuxRunnerTests": {"total": 15, "passed": 13, "windowsOnlySkipped": 2},
+    "windowsRunnerTests": {"total": 15, "passed": 12, "linuxOnlySkipped": 3},
+    "realContainerChecks": ["pandas_join_chinese_refund", "network_none", "root_readonly", "nonroot", "no_docker_socket", "no_database_secrets", "infinite_loop_timeout", "output_flood", "memory_exhaustion", "cleanup_and_next_success"],
+    "lifecycle": {"status": "passed", "isolatedRuntime": "pandas-lifecycle-b639f42e793a4239939906f502592c97", "checks": ["owned_process", "idempotent_start", "graceful_stop", "zero_orphan_containers", "stopped_fail_closed", "restart"]},
+    "nodeAndPowerShellTests": {"passed": 48, "failed": 0, "skipped": 0},
+    "build": "passed",
+    "backendBoundary": {"modules": 423, "violations": 0},
+    "typescript": {"candidateDiagnostics": 146, "baselineDiagnostics": 146, "introduced": 0, "basis": "prior candidate validation; subsequent changes are Python, PowerShell, documentation and runtime test fixture only"}
+  },
+  "paidModelCalls": 0,
+  "realDingTalkMessages": 0,
+  "productionBusinessWrites": false
+}

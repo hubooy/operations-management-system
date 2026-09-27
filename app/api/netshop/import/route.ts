@@ -1,18 +1,24 @@
 import {
-  importNetshopBytes,
+  prepareNormalizedNetshopImport,
   readNetshopForm,
   TMALL_PLATFORM,
-} from "@/lib/netshop/import-service";
+} from "@/lib/netshop/normalized-import";
 import {
-  ensureNetshopSchema,
-  getNetshopDatabase,
-  listNetshopImportBatches,
-} from "@/lib/netshop/database";
+  createDjangoNetshopService,
+  NETSHOP_IMPORTS_PATH,
+} from "@/lib/django/netshop-service";
 import {
   authorizationErrorResponse,
   requireAppPrincipal,
 } from "@/lib/auth/authorization";
 import { netshopPlatformsForPrincipal } from "@/lib/netshop/access";
+import { safeApiErrorResponse } from "@/lib/http/api-error";
+import {
+  NETSHOP_QUERY_MAX_PAGE,
+  NETSHOP_QUERY_MAX_PAGE_SIZE,
+  netshopQueryErrorPayload,
+  readNetshopQueryInteger,
+} from "@/lib/netshop/query-contract";
 
 const MAX_DIRECT_FILE_BYTES = 25 * 1024 * 1024;
 
@@ -23,22 +29,27 @@ function errorResponse(status: number, message: string, details: Record<string, 
 export async function GET(request: Request) {
   try {
     const principal = await requireAppPrincipal(["admin"]);
-    const db = getNetshopDatabase();
-    await ensureNetshopSchema(db);
     const params = new URL(request.url).searchParams;
-    const requestedLimit = Number(params.get("limit") ?? 20);
-    const items = await listNetshopImportBatches(db, {
-      limit: Number.isFinite(requestedLimit) ? requestedLimit : 20,
-      sources: params.getAll("source"),
-      platforms: netshopPlatformsForPrincipal(principal, params.getAll("platform")),
-      shops: params.getAll("shop"),
-    });
-    return Response.json({ items, returned: items.length, truncated: items.length >= Math.max(1, Math.min(100, Math.trunc(requestedLimit || 20))) }, { headers: { "cache-control": "no-store" } });
+    readNetshopQueryInteger(params.get("page"), "page", 1, 1, NETSHOP_QUERY_MAX_PAGE);
+    readNetshopQueryInteger(
+      params.get("pageSize") ?? params.get("limit"),
+      "pageSize",
+      20,
+      1,
+      NETSHOP_QUERY_MAX_PAGE_SIZE,
+    );
+    netshopPlatformsForPrincipal(principal, params.getAll("platform"));
+    const result = await createDjangoNetshopService().request<Record<string, unknown>>(
+      principal,
+      { method: "GET", path: NETSHOP_IMPORTS_PATH, query: params, service: "reader" },
+      { signal: request.signal },
+    );
+    return Response.json(result.data, { headers: { "cache-control": "no-store" } });
   } catch (error) {
     const authResponse = authorizationErrorResponse(error);
     if (authResponse) return authResponse;
-    const message = error instanceof Error ? error.message : "读取网店导入历史失败";
-    return Response.json({ error: message }, { status: 500, headers: { "cache-control": "no-store" } });
+    const failure = netshopQueryErrorPayload(error, "读取网店导入历史失败");
+    return Response.json(failure.body, { status: failure.status, headers: { "cache-control": "no-store" } });
   }
 }
 
@@ -65,7 +76,7 @@ export async function POST(request: Request) {
     if (parsed.file.size === 0) return errorResponse(400, "上传文件为空");
     if (parsed.file.size > MAX_DIRECT_FILE_BYTES) return errorResponse(413, "文件超过 25MB，请拆分后上传");
 
-    const payload = await importNetshopBytes({
+    const normalized = await prepareNormalizedNetshopImport({
       bytes: new Uint8Array(await parsed.file.arrayBuffer()),
       fileName: parsed.file.name,
       fileSizeBytes: parsed.file.size,
@@ -78,11 +89,26 @@ export async function POST(request: Request) {
       expectedStartDate: parsed.expectedStartDate,
       expectedEndDate: parsed.expectedEndDate,
     });
-    return Response.json(payload, { status: payload.ok ? (payload.status === "imported" ? 201 : 200) : 422, headers: { "cache-control": "no-store" } });
+    const result = await createDjangoNetshopService().request<Record<string, unknown>>(
+      principal,
+      {
+        method: "POST",
+        path: NETSHOP_IMPORTS_PATH,
+        payload: normalized as unknown as Record<string, unknown>,
+        service: "writer",
+        acceptedErrorStatuses: [422],
+      },
+      { signal: request.signal },
+    );
+    const headers = new Headers({ "cache-control": "no-store" });
+    if (result.replayed) headers.set("x-teruisi-write-replay", "1");
+    return Response.json(result.data, { status: result.status, headers });
   } catch (error) {
     const authResponse = authorizationErrorResponse(error);
     if (authResponse) return authResponse;
-    const message = error instanceof Error ? error.message : "网店数据导入失败";
-    return Response.json({ ok: false, status: "rejected", message }, { status: 500, headers: { "cache-control": "no-store" } });
+    return safeApiErrorResponse(error, "网店数据导入失败", {
+      shape: "import",
+      headers: { "cache-control": "no-store" },
+    });
   }
 }

@@ -1,0 +1,60 @@
+{
+  "version": "teruisi-scheduled-single-message-production-v1",
+  "date": "2026-09-15",
+  "sourceCommit": "4d0757c",
+  "databaseMigration": false,
+  "scope": "One bot-authored sampleMarkdown message containing literal caption and full internal-media image",
+  "officialReference": "https://opensource.dingtalk.com/developerpedia/docs/learn/bot/overview/",
+  "validation": {
+    "postgres": {
+      "tests": 232,
+      "passed": 230,
+      "skipped": 2
+    },
+    "renderedHtml": 20,
+    "lintErrors": 0,
+    "lintExistingWarnings": 11,
+    "backendBoundaryModules": 444,
+    "node": {
+      "passed": 2167,
+      "failed": 0,
+      "skipped": 20,
+      "cancelled": 0
+    }
+  },
+  "preBackup": {
+    "id": "daily-20260915T024446Z-dce4329838ad",
+    "manifestSha256": "33ae7c7209b44fce20aaf42a5d33355ce63defd52862c443dfe773675f94e2be",
+    "contentSha256": "71046b8b91fdf59525095eed1a1b392ef0116a8b76b7539abb79990f7e58529d",
+    "rehearsalId": "ab150926c002",
+    "port": 55470,
+    "restoredContentMatched": true,
+    "productionDatabaseTouched": false
+  },
+  "task": {
+    "id": "ding-schedule-16eb85c3-b092-4629-a168-74ff335885c2",
+    "prompt": "新品周销量趋势数据",
+    "sourceRef": "workflow:launch-followup"
+  },
+  "liveSendTriggered": false,
+  "maintenance": {
+    "activeCloudRuns": 0,
+    "completedCloudRuns": 38,
+    "activeScheduleRuns": 0,
+    "helperBusy": false
+  },
+  "status": "candidate_verified_production_deployment_blocked",
+  "production": {
+    "releaseId": "20260915T022221Z-62869892e2c72ed9",
+    "behavior": "separate_caption_and_image",
+    "taskVersion": 3,
+    "taskChanged": false,
+    "serviceStopExecuted": false
+  },
+  "approvalReview": {
+    "action": "Stop production Worker and Django services, deploy the verified app, harden ACL and start services",
+    "result": "rejected",
+    "reason": "blocked by policy",
+    "commandExecuted": false
+  }
+}

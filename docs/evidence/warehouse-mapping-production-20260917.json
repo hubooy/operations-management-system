@@ -1,0 +1,152 @@
+{
+  "version": "teruisi-warehouse-mapping-production-v1",
+  "checkedAt": "2026-09-17T23:05:40+08:00",
+  "authorization": "用户明确要求发布上线",
+  "source": {
+    "commit": "410be5ffef0c2d911d91fb0f7e052c9be2b4f93b",
+    "branch": "main",
+    "originMainMatched": true,
+    "releaseSource": "D:\\运营管理系统-sales-django-release"
+  },
+  "scope": {
+    "settingsSection": "系统设置/仓库映射",
+    "mappingRows": 284,
+    "features": [
+      "逐仓编辑",
+      "Excel 导入导出",
+      "库存 PostgreSQL 运行时权威",
+      "库存总览、库龄、滞销、备货与京东入仓共用映射",
+      "成功导入首次发现新仓库后自动加入并标记待确认"
+    ]
+  },
+  "candidateValidation": {
+    "nodeTargeted": { "passed": 44, "failed": 0 },
+    "nodeInventoryAndFrontend": { "passed": 145, "failed": 0 },
+    "djangoTargeted": { "passed": 29, "failed": 0 },
+    "djangoCheck": "passed",
+    "makemigrationsCheckDryRun": "passed",
+    "eslintTargeted": "passed",
+    "pythonCompileAll": "passed",
+    "previewRoutes": "passed",
+    "knownUnrelatedBaseline": "宽范围 SQLite 库存测试仍有 3 个既有 schema_editor/表锁失败；本次 PostgreSQL 路径与定向测试通过"
+  },
+  "preflight": {
+    "systemState": "Running/Ready/exact_release",
+    "componentsReady": 12,
+    "helper": { "stage": "ready", "busy": false, "activeWorkflow": null },
+    "n8nActiveExecutions": 0,
+    "inventoryMarketAiActiveLeaseTotal": 0
+  },
+  "backups": {
+    "before": {
+      "backupId": "daily-20260917T143126Z-e790571e7257",
+      "backupDirectory": "D:\\teruisi-runtime\\django-sales\\backups\\postgres-daily\\daily-20260917T143126Z-e790571e7257",
+      "manifestSha256": "bec13294fbd0b29220b1b0a4661ad36651aec413dcb2c8ece863cbabccc3e05b",
+      "dumpSha256": "f143642f6c4c65d7cd88aac2cc93991774fcc5e005aa102114fc2668ab063eb7",
+      "contentSha256": "ffdd7fa841490ce96bc3728c3f968069249058aefd403240ddfae4373668b4fe",
+      "serviceStateChanged": false,
+      "archiveDirectory": "E:\\运营管理系统业务数据\\daily-20260917T143126Z-e790571e7257",
+      "archiveFilesVerified": 3
+    },
+    "independentRestore": {
+      "status": "completed",
+      "rehearsalId": "410be5ff917b",
+      "isolatedPort": 55483,
+      "expectedContentSha256": "ffdd7fa841490ce96bc3728c3f968069249058aefd403240ddfae4373668b4fe",
+      "restoredContentSha256": "ffdd7fa841490ce96bc3728c3f968069249058aefd403240ddfae4373668b4fe",
+      "productionDatabaseTouched": false,
+      "serviceStateChanged": false,
+      "cleanupStatus": "isolated_data_removed"
+    },
+    "after": {
+      "backupId": "daily-20260917T150242Z-9adf93f3bbcf",
+      "backupDirectory": "D:\\teruisi-runtime\\django-sales\\backups\\postgres-daily\\daily-20260917T150242Z-9adf93f3bbcf",
+      "manifestSha256": "b64c4747e5b591370eb08c3bd2a5d912feeb670b4ee4cc7d5925ccc5b8251218",
+      "dumpSha256": "d7b57d2655f0614c66616b486b92688b780858e9e5477d1e8f275fca546b3ee2",
+      "contentSha256": "715c2faf63314c958f82b625382dc3c1b270ebb42f5869a3b3aee29ffd0228b1",
+      "serviceStateChanged": false,
+      "archiveDirectory": "E:\\运营管理系统业务数据\\daily-20260917T150242Z-9adf93f3bbcf",
+      "archiveFilesVerified": 3
+    }
+  },
+  "maintenance": {
+    "maintenanceId": "410be5ff917b4e87b140e1d9a75c2f61",
+    "enteredWithActiveWork": false,
+    "djangoDeployment": {
+      "appFingerprint": "337030b85ad590e04aaf29cd378b6012368318547af0868dd36f9289014174cf",
+      "fileCount": 2047,
+      "runtimeAcl": "root_hardened"
+    },
+    "wranglerSmokeRecovery": {
+      "initialFailures": 2,
+      "failure": "local R2 put 完成后进程未在 30 秒门槛内退出",
+      "productionRuntimeChangedByFailures": false,
+      "resolution": "正常停止本任务隔离预览服务后，使用原受保护烟测完整通过；未放宽超时或绕过门禁",
+      "verifiedElapsedMilliseconds": 9151
+    },
+    "workerRotation": {
+      "planSha256": "862817f67b878c54b792c970368638cce175dff05b008be20d4dfdab8c1650a4",
+      "predecessorReleaseId": "20260916T194114Z-df8da4ea6ac81cf6",
+      "releaseId": "20260917T145034Z-ecd2f00bb0c113b5",
+      "manifestSha256": "4b6f2ef8e37d5cb47bbfa43fa6ebc02d88e8a570a713e57aaa97c753316ac228",
+      "successorSha256": "a3d2e1b1a86fb4281a4bb1547095117315142c70f58ba2ec74b9101376802899",
+      "consumptionSha256": "8e99225de7f4afd5c9bd74a4b7c97a381582c29c8cb780db162a51a38a18c136",
+      "startupBindingSha256": "6b51dff5b6b8694e81ca8331a6245069d5dbf6b7a122544517d6753a6f31dee7"
+    },
+    "maintenanceEnded": true
+  },
+  "database": {
+    "migration": "inventory.0011_inventory_warehouse_mapping_settings",
+    "migrationApplied": true,
+    "columns": [
+      "warehouse_mapping_json",
+      "warehouse_mapping_updated_at",
+      "warehouse_mapping_updated_by"
+    ],
+    "storedMappingCount": 0,
+    "meaning": "首次上线沿用受版本控制的 284 条默认映射；只有管理员编辑、映射表导入或成功业务导入发现新仓后才写入运行时覆盖"
+  },
+  "productionVerification": {
+    "system": {
+      "state": "Running",
+      "backendState": "Ready",
+      "workerState": "exact_release",
+      "componentsReady": 12,
+      "startupVerified": true,
+      "maintenance": null
+    },
+    "warehouseMappingApi": {
+      "status": 200,
+      "rowCount": 284,
+      "included": 66,
+      "excluded": 218,
+      "pendingConfirmationCount": 0,
+      "mappingRevision": "16a3e5e8a3ece76354fa19290eba9c4c8dfbd22279ba24f03945f23cb6af51b3"
+    },
+    "inventoryOverview": {
+      "status": 200,
+      "mappingMatchedCount": 852,
+      "mappingUnmatchedCount": 14093,
+      "warehouseFilterCount": 39,
+      "itemsExposeWarehouseCategory": true,
+      "itemsExposeIncludedInInventory": true
+    },
+    "inventoryAgeAnalysis": {
+      "status": 200,
+      "warehouseFilterCount": 157,
+      "itemsExposeWarehouseCategory": true,
+      "itemsExposeWarehouseLabel": true,
+      "itemsExposeIncludedInInventory": true
+    },
+    "helper": { "stage": "ready", "busy": false, "activeWorkflow": null },
+    "n8nActiveExecutions": 0,
+    "dingTalk": { "startup": "enabled", "receiver": "running", "stream": "connected" }
+  },
+  "businessEffects": {
+    "warehouseMappingsModifiedByRelease": false,
+    "inventoryImportTriggered": false,
+    "n8nRestarted": false,
+    "externalMessageSent": false,
+    "nextNewWarehouseBehavior": "成功库存或库龄导入首次发现后自动加入映射并标记待确认；失败导入不留记录，随后由管理员手动选择并确认"
+  }
+}

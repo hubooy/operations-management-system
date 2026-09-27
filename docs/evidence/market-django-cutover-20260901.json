@@ -1,0 +1,131 @@
+{
+  "version": "market-django-production-cutover-evidence-v1",
+  "status": "completed",
+  "environment": {
+    "scope": "current Windows host",
+    "businessTimezone": "Asia/Shanghai"
+  },
+  "cutover": {
+    "cutoverId": "market-pg-20260901T112221Z-a687294e320f",
+    "authorityEpoch": "c69ee84e-836d-40f6-b7b8-875ecca6f8c6",
+    "migrationRunId": "market-4302d65ae56c1c17acb7e8c8",
+    "sourceDigest": "4302d65ae56c1c17acb7e8c8d770c777b53aefdf650f3a5bc05a36534fc1c147",
+    "targetDigest": "4302d65ae56c1c17acb7e8c8d770c777b53aefdf650f3a5bc05a36534fc1c147",
+    "pointOfNoReturnCrossed": true,
+    "rollbackPolicy": "postgres_backup_wal_pitr_or_approved_forward_fix_only"
+  },
+  "staleBatchRemediation": {
+    "batchIds": [
+      "market-64066136c488c1d97a9cd3d90edf68fcae7e87017bfe685237a73cc966897476",
+      "market-ef27630ab07d0e60c56260e1bb4e563297e49b5781a2cc55060c84b8efa2237e"
+    ],
+    "removedBatchRows": 2,
+    "removedUnpublishedStagingRows": 8000,
+    "publishedReferences": 0,
+    "failedAttemptsRetained": true,
+    "auditPath": "D:/teruisi-runtime/django-sales/audits/market-cutover/stale-batch-remediation-20260901T105741Z.json"
+  },
+  "sourceSnapshot": {
+    "path": "D:/teruisi-runtime/django-sales/audits/market-cutover/pending-resume-20260901T131409Z-0b09e1abf8c8.sqlite",
+    "sha256": "829d96fe551f9b1be968f2ac367cf41ec49ff3c0520b5be9d8e514eb18fd69fd",
+    "bytes": 9586368512,
+    "quickCheck": "ok",
+    "walOrShmPresent": false
+  },
+  "workerRelease": {
+    "releaseId": "20260901T125642Z-a80fe1339791d44c",
+    "rotationPlanSha256": "743eaaa811393830eddb2e69337ab476f2e1f480083657e9192c55903a909d9f",
+    "manifestSha256": "4ecb210b9ab39eda039cab975205087828a428b66082d85d43ebf064369a5ecb",
+    "successorSha256": "b2928e402e2ab32d6d1fb3135646ef54657bd4ef351d260fc853f4b59cdf61bc",
+    "consumptionSha256": "8ba1c2324c8d3c3bb1b420b031c8c5305a25f8517787acf43b4f9f8686d50d83",
+    "startupBindingSha256": "f48f5b8add88248c8928e5e2b4a4ff6887623f34935945a94bac12cec7eec0f0",
+    "predecessorFenced": true
+  },
+  "services": {
+    "reader": "127.0.0.1:8031",
+    "writer": "127.0.0.1:8032",
+    "readerReady": true,
+    "writerReady": true,
+    "startupReceiptPath": "D:/teruisi-runtime/django-sales/market-service-enabled.json",
+    "startupReceiptSha256": "d5c4cec4ca0a68b22a6354ce63664c6e332434bba8c24f0f192a9a94f9d078b4"
+  },
+  "systemTest": {
+    "receiptPath": "D:/teruisi-runtime/django-sales/audits/market-cutover/market-system-test-20260901T134121Z-685f954a5708.json",
+    "receiptSha256": "7da4d15c4226034a47a79cc758d1f4f0c0f5900f628018e8649f663226146b2f",
+    "checksPassed": 9,
+    "checksFailed": 0,
+    "checks": [
+      "djangoReader",
+      "djangoWriterNegative",
+      "publicOverview",
+      "publicTrend",
+      "publicAnnotations",
+      "publicMaster",
+      "publicImage",
+      "scheduledMaintenance",
+      "legacyD1Rejected"
+    ]
+  },
+  "d1Retirement": {
+    "planId": "5666b254519d94172f1bbccb9c14417e1943d2de36e5e2c7d8831feeabdee611",
+    "auditId": "2db568875d81032c8d0bb82e00aa56013fff4e73c7b03b21f7c50d27c30731ad",
+    "migrationSha256": "a17f6522bf6fa462b98e962bb5489e83a4bea2daf05406bae00d003e82fe561d",
+    "auditPath": "D:/teruisi-runtime/django-sales/audits/market-cutover/market-retirement-5666b254519d9417.json",
+    "auditFileSha256": "fdb9930e95bf593f0e035e52ad26cada88498ba898d80c187895ae08948e30ec",
+    "tombstoneViews": 49,
+    "sharedTableGuards": 9,
+    "otherDomainSharedDigest": "8f6b3be1bbee94b12beebd2a7261327e557845154fa8261c4f31916d04108145",
+    "otherDomainCounts": {
+      "attempts": 110,
+      "fingerprints": 76,
+      "heads": 6
+    },
+    "idempotentReplayStatus": "duplicate",
+    "guardProbe": {
+      "operation": "update shared import_content_fingerprints domain from erp-reference to market",
+      "rejectedWith": "market_domain_retired",
+      "rolledBack": true
+    }
+  },
+  "postCutoverBackup": {
+    "backupId": "daily-20260901T141558Z-a68cc9120c95",
+    "directory": "D:/teruisi-runtime/django-sales/backups/postgres-daily/daily-20260901T141558Z-a68cc9120c95",
+    "manifestSha256": "05cbd1d1534cd223ca5315d96eb51517d85a28c1110f9b48a208981db37a2eb9",
+    "dumpSha256": "dabe0317820b449627f054611575e23fd1cbfc0e25770202ef2d68d9e3637021",
+    "contentSha256": "6e04c466804c70865afc49344b07daea4f5a762e1c4f3bab3a9c6be1c51d8dc3",
+    "verified": true,
+    "serviceStateChanged": false
+  },
+  "restoreRehearsal": {
+    "rehearsalId": "c47a9e2d618f",
+    "isolatedPort": 55439,
+    "expectedContentSha256": "6e04c466804c70865afc49344b07daea4f5a762e1c4f3bab3a9c6be1c51d8dc3",
+    "restoredContentSha256": "6e04c466804c70865afc49344b07daea4f5a762e1c4f3bab3a9c6be1c51d8dc3",
+    "resultPath": "D:/teruisi-runtime/django-sales/rehearsals/postgres-restore/restore-c47a9e2d618f/rehearsal-result.json",
+    "resultSha256": "d2927c643a75633f788002eee97ee771ce06ce3890bb67e442314949e9e75c37",
+    "productionDatabaseTouched": false,
+    "serviceStateChanged": false,
+    "cleanupStatus": "isolated_data_removed"
+  },
+  "verification": {
+    "djangoMarketTests": {
+      "passed": 16,
+      "failed": 0
+    },
+    "retirementRegressionTests": {
+      "passed": 1,
+      "failed": 0
+    },
+    "staticRoutingAndSafetyTests": {
+      "passed": 9,
+      "failed": 0
+    },
+    "browserReadback": {
+      "existingReactPagePreserved": true,
+      "marketIdentityCount": 44402,
+      "generatedAiResultCount": 39488,
+      "warningOrErrorLogs": 0,
+      "alerts": 0
+    }
+  }
+}

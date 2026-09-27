@@ -1,0 +1,73 @@
+{
+  "version": "2026-09-06.export-first.1",
+  "timeZone": "Asia/Shanghai",
+  "moduleOrder": [
+    "products",
+    "inventory",
+    "inventory_age",
+    "sales",
+    "combos"
+  ],
+  "browser": {
+    "pageTimeoutMs": 60000,
+    "pollIntervalMs": 500,
+    "fastPollIntervalMs": 200,
+    "actionTimeoutMs": 15000,
+    "tableStableTimeoutMs": 20000,
+    "exportTimeoutMs": 300000,
+    "stableSamples": 2,
+    "downloadDirectory": "D:\\谷歌浏览器",
+    "allowedDownloadHosts": [
+      "jackyun-shortterm.oss-cn-zhangjiakou.aliyuncs.com"
+    ],
+    "controller": {
+      "chromePath": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+      "profileDirectory": "D:\\运营管理系统\\.runtime\\jackyun-chrome-profile",
+      "debuggingPort": 9223,
+      "startUrl": "https://web.jackyun.com/home/mainframe_web_horizontal.html"
+    },
+    "eventTimeoutMs": 900000
+  },
+  "audit": {
+    "maxSamples": 20,
+    "compactStdout": true
+  },
+  "modules": {
+    "products": {
+      "pageName": "货品查询",
+      "requiresQuery": true,
+      "minimumRows": 5000
+    },
+    "inventory": {
+      "pageName": "分仓库存查询",
+      "requiresQuery": true,
+      "minimumRows": 20000,
+      "minimumSelectedWarehouses": 200
+    },
+    "inventory_age": {
+      "pageName": "库龄分析",
+      "requiresQuery": true,
+      "minimumRows": 4000
+    },
+    "combos": {
+      "pageName": "组合装查询",
+      "requiresQuery": true,
+      "minimumRows": 1000,
+      "exportConfirmation": {
+        "required": true,
+        "promptIncludes": [
+          "导出列中存在图片列",
+          "最多只能导出2000条",
+          "确定导出"
+        ],
+        "button": "确定",
+        "maxRows": 2000
+      }
+    },
+    "sales": {
+      "pageName": "销售单明细账",
+      "requiresQuery": true,
+      "minimumRows": 1
+    }
+  }
+}

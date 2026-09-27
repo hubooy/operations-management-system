@@ -1,8 +1,8 @@
-import { mkdir, open, readFile, rm } from "node:fs/promises";
+import { mkdir, readFile, rm } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import type { Page } from "playwright-core";
-import { launchDedicatedChrome, waitForChrome } from "../lib/jackyun/cdp-client";
+import { closeChromeBrowser, launchDedicatedChrome, waitForChrome } from "../lib/jackyun/cdp-client";
 import { connectPlaywrightBrowser, connectPlaywrightJackyunTarget } from "../lib/jackyun/playwright-client";
 import {
   acquireJdProductDetailDownload,
@@ -10,7 +10,22 @@ import {
   findRecentJdProductDetailDownload,
   JD_PRODUCT_DETAIL_REUSE_WINDOW_MS,
 } from "../lib/jd/product-detail-download";
-import { jdDateRangeEchoMatches } from "../lib/jd/product-detail-selection";
+import {
+  isVerifiedJdDateRangeEcho,
+  jdCalendarCellState,
+  jdCalendarDateDispatchDecision,
+  jdCalendarEndSelectionDecision,
+  jdDateRangeSelectionPlan,
+} from "../lib/jd/calendar-range-selection";
+export {
+  isJdCalendarEndSelected,
+  isStaticCurrentTimestamp,
+  isVerifiedJdDateRangeEcho,
+  jdCalendarCellState,
+  jdCalendarDateDispatchDecision,
+  jdCalendarEndSelectionDecision,
+  jdDateRangeSelectionPlan,
+} from "../lib/jd/calendar-range-selection";
 import {
   assertJdProductDetailTaskManifest,
   jdProductDetailTaskFingerprint,
@@ -19,6 +34,11 @@ import {
 } from "../lib/jd/product-detail-task-manifest";
 import { readJsonFileOr, writeJsonAtomic } from "../lib/jackyun/json-file";
 import { getJdStore } from "../lib/jd/store-registry";
+import { assertJdNaturalDateRange } from "../lib/jd/date-range";
+import { withJdChromiumRunLock } from "../lib/jd/chromium-run-lock";
+import { hasJdInteractivePageGate, isJdInteractiveBrowserFailure, jdBrowserLaunchMode, revealJdBrowserForInteractiveFailure } from "../lib/jd/browser-mode";
+import { assertJdProductDetailStoreIdentity, parseJdProductDetailStoreIdentity } from "../lib/jd/product-detail-store-identity";
+import { ensureJdStoreAuthenticatedSession } from "./jd-saved-login";
 
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const artifactDir = path.join(projectRoot, "outputs", "jdsz-product-detail-export");
@@ -26,26 +46,29 @@ const targetUrl = "https://jdsz.jd.com/szweb/view/product/productDetail.html";
 const downloadCenterUrl = "https://jdsz.jd.com/szweb/view/reports-center/download-center.html";
 
 async function withJdProductDetailRunLock<T>(task: () => Promise<T>) {
-  await mkdir(artifactDir, { recursive: true });
-  const lockPath = path.join(artifactDir, "jdsz-product-detail-export.lock");
-  const handle = await open(lockPath, "wx").catch(() => null);
-  if (!handle) throw new Error("Another JD product-detail export is already running; shared Chrome/profile access is locked.");
-  await handle.writeFile(JSON.stringify({ pid: process.pid, startedAt: new Date().toISOString() }));
-  await handle.close();
-  try { return await task(); } finally { await rm(lockPath, { force: true }); }
+  return withJdChromiumRunLock(
+    "product-detail-script",
+    task,
+    path.join(artifactDir, "jdsz-product-detail-export.run-lock"),
+  );
 }
 
 type CliOptions = {
-  chromePath: string;
-  profileDirectory: string;
+  executablePath: string;
+  userDataDirectory: string;
+  profileName: string;
   port: number;
   downloadDirectory: string;
+  storeKey: string;
   shopId: string;
   shopName: string;
+  loginMode?: "manual" | "windows_dpapi_credentials";
   startDate: string;
   endDate: string;
   dimension: "SKU" | "SPU";
   debug: boolean;
+  interactiveLogin: boolean;
+  visibleRecovery: boolean;
   autoImport: boolean;
   baseUrl: string;
 };
@@ -81,16 +104,20 @@ async function parseArgs(argv: string[]): Promise<CliOptions> {
       flags.add(key);
     }
   }
-
-  const yesterday = addDays(shanghaiToday(), -1);
-  const startDate = values.get("--start-date") ?? `${yesterday.slice(0, 8)}01`;
-  const endDate = values.get("--end-date") ?? yesterday;
-  for (const [name, value] of [["--start-date", startDate], ["--end-date", endDate]] as const) {
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(value) || Number.isNaN(Date.parse(`${value}T00:00:00Z`))) {
-      throw new Error(`${name} 必须是 YYYY-MM-DD 日期。`);
-    }
+  if (flags.has("--interactive-login") && flags.has("--no-visible-recovery")) {
+    throw new Error("--interactive-login 不能与 --no-visible-recovery 同时使用。");
   }
-  if (startDate > endDate) throw new Error("--start-date 不能晚于 --end-date。");
+
+  const hasStartDate = values.has("--start-date");
+  const hasEndDate = values.has("--end-date");
+  if (flags.has("--start-date") || flags.has("--end-date") || hasStartDate !== hasEndDate) {
+    throw new Error("--start-date 与 --end-date 必须成对提供有效值。");
+  }
+  const yesterday = addDays(shanghaiToday(), -1);
+  const range = hasStartDate
+    ? assertJdNaturalDateRange(values.get("--start-date")!, values.get("--end-date")!)
+    : { startDate: `${yesterday.slice(0, 8)}01`, endDate: yesterday };
+  const { startDate, endDate } = range;
   const dimension = (values.get("--dimension") ?? "SKU").toUpperCase();
   if (dimension !== "SKU" && dimension !== "SPU") {
     throw new Error("--dimension 必须是 SKU 或 SPU。");
@@ -99,17 +126,33 @@ async function parseArgs(argv: string[]): Promise<CliOptions> {
   const store = await getJdStore(values.get("--store-key") ?? "jd-yiyong-director");
   const shopId = values.get("--shop-id") ?? store.shopId;
   if (!/^\d+$/.test(shopId)) throw new Error("--shop-id 必须是纯数字。");
+  if (shopId !== store.shopId) throw new Error("--shop-id 与受控店铺注册表不一致。");
+  const executablePath = path.resolve(values.get("--chrome-path") ?? store.browser.executablePath);
+  const requestedProfileDirectory = path.resolve(values.get("--profile-dir") ?? store.browser.profileDir);
+  const port = Number(values.get("--port") ?? store.browser.debugPort);
+  const downloadDirectory = path.resolve(values.get("--download-dir") ?? store.browser.downloadDir);
+  if (executablePath !== path.resolve(store.browser.executablePath)
+    || requestedProfileDirectory !== path.resolve(store.browser.profileDir)
+    || port !== store.browser.debugPort
+    || downloadDirectory !== path.resolve(store.browser.downloadDir)) {
+    throw new Error("京东商智 Chromium、profile、调试端口或下载目录与受控店铺注册表不一致。");
+  }
   return {
-    chromePath: values.get("--chrome-path") ?? "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
-    profileDirectory: path.resolve(values.get("--profile-dir") ?? store.browser.profileDir),
-    port: Number(values.get("--port") ?? store.browser.debugPort),
-    downloadDirectory: path.resolve(values.get("--download-dir") ?? store.browser.downloadDir),
+    executablePath,
+    userDataDirectory: store.browser.userDataDir,
+    profileName: store.browser.profileName,
+    port,
+    downloadDirectory,
+    storeKey: store.storeKey,
     shopId,
     shopName: store.shopName,
+    loginMode: store.loginMode,
     startDate,
     endDate,
     dimension,
     debug: flags.has("--debug"),
+    interactiveLogin: flags.has("--interactive-login"),
+    visibleRecovery: !flags.has("--no-visible-recovery"),
     autoImport: !flags.has("--no-auto-import"),
     baseUrl: (values.get("--base-url") ?? process.env.OPERATIONS_SYSTEM_URL ?? "http://localhost:3000").replace(/\/$/, ""),
   };
@@ -126,6 +169,20 @@ export function taskManifestPath(options: Pick<CliOptions, "dimension" | "shopId
   return file;
 }
 
+export async function readAndAssertJdProductDetailStoreIdentity(
+  page: Page,
+  expected: Pick<CliOptions, "shopId" | "shopName">,
+) {
+  const links = page.locator('a[href*="mall.jd.com/index-"]').filter({ visible: true });
+  await links.first().waitFor({ state: "visible", timeout: 15_000 });
+  const candidates: Array<{ href: string | null; text: string }> = [];
+  for (let index = 0; index < await links.count(); index += 1) {
+    const link = links.nth(index);
+    candidates.push({ href: await link.getAttribute("href"), text: await link.innerText() });
+  }
+  return assertJdProductDetailStoreIdentity(parseJdProductDetailStoreIdentity(candidates), expected);
+}
+
 async function saveFailureScreenshot(page: Page, name: string) {
   await mkdir(artifactDir, { recursive: true });
   await page.screenshot({ path: path.join(artifactDir, `${name}-${Date.now()}.png`), fullPage: true }).catch(() => undefined);
@@ -135,21 +192,6 @@ async function currentDateEcho(page: Page) {
   const echo = page.locator(".jmt-combo-date-picker-echo-wrap").filter({ visible: true });
   if (await echo.count() !== 1) throw new Error("无法唯一识别京东商智当前日期显示区域。");
   return echo.innerText();
-}
-
-export function jdDateRangeSelectionPlan(startDate: string, endDate: string) {
-  // JD's range picker requires two endpoint clicks even when both endpoints
-  // are the same day.  Returning both entries intentionally preserves that
-  // second click instead of collapsing the range to one interaction.
-  return [startDate, endDate] as const;
-}
-
-export function isStaticCurrentTimestamp(echoText: string) {
-  return /^\s*当前[：:]\s*\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2}\s*$/.test(echoText);
-}
-
-export function isVerifiedJdDateRangeEcho(echoText: string, startDate: string, endDate: string) {
-  return !isStaticCurrentTimestamp(echoText) && jdDateRangeEchoMatches(echoText, startDate, endDate);
 }
 
 async function waitForSelectedDateRange(page: Page, startDate: string, endDate: string, timeoutMs = 10_000) {
@@ -171,19 +213,50 @@ async function assertDimensionAndDateSelection(page: Page, dimension: CliOptions
   return waitForSelectedDateRange(page, startDate, endDate, 1_000);
 }
 
+export function isJdNpsSurveyPointerInterception(error: unknown) {
+  const message = error instanceof Error ? error.message : String(error);
+  return /intercepts pointer events/i.test(message) && /ux-scene-research/i.test(message);
+}
+
+export async function clickWithJdNpsSurveyRecovery(
+  click: () => Promise<void>,
+  dismissSurvey: () => Promise<void>,
+) {
+  try {
+    await click();
+    return false;
+  } catch (error) {
+    // The survey is lazy-mounted and can appear after the initial bounded
+    // observation. Recover only from Playwright's exact pointer-interception
+    // evidence, revalidate the known opt-out, then replay this reversible UI
+    // action once. Any other overlay or second failure remains fail-closed.
+    if (!isJdNpsSurveyPointerInterception(error)) throw error;
+    await dismissSurvey();
+    await click();
+    return true;
+  }
+}
+
 async function selectDateRange(page: Page, startDate: string, endDate: string) {
+  await dismissJdNpsSurveyModal(page);
   // New JD sessions keep the custom-range item inside the collapsed date menu.
   // Open the menu first; this is a no-op when it is already expanded.
   const echo = page.locator(".jmt-combo-date-picker-echo-wrap").filter({ visible: true });
   if (await echo.count() !== 1) throw new Error("无法唯一识别京东商智当前时间入口。");
   const customSelector = '[data-event-content="当前时间_自定义"]';
   if (await page.locator(customSelector).filter({ visible: true }).count() === 0) {
-    await echo.click();
+    await clickWithJdNpsSurveyRecovery(
+      () => echo.click(),
+      () => dismissJdNpsSurveyModal(page),
+    );
     await page.waitForTimeout(200);
   }
   const custom = page.locator(customSelector).filter({ visible: true });
   if (await custom.count() !== 1) throw new Error("无法唯一识别自定义时间入口。");
-  await custom.click();
+  await clickWithJdNpsSurveyRecovery(
+    () => custom.click(),
+    () => dismissJdNpsSurveyModal(page),
+  );
   await page.waitForTimeout(300);
 
   const monthKey = (date: string) => date.slice(0, 7);
@@ -245,17 +318,21 @@ async function selectDateRange(page: Page, startDate: string, endDate: string) {
     const cell = page.locator(cellSelector(date)).filter({ visible: true });
     await cell.waitFor({ state: "visible", timeout: 10_000 });
     if (await cell.count() !== 1) throw new Error(`日期 ${date} 的可选单元格不是唯一元素。`);
+    if (jdCalendarDateDispatchDecision(await cell.getAttribute("class")) === "blocked_disabled") {
+      throw new Error(`日期 ${date} 尚未开放，已禁止点击日历单元格。`);
+    }
     // A browser translation extension can intercept pointer events above the
     // calendar. Dispatching the native click on this unique validated cell
     // reaches JD's date-picker handler without relying on pointer hit-testing.
     await cell.dispatchEvent("click");
   };
-  const waitForCellState = async (date: string, stateClass: string, timeoutMs: number) => {
+  const waitForStartSelected = async (date: string, timeoutMs: number) => {
     const deadline = Date.now() + timeoutMs;
     const cell = page.locator(cellSelector(date)).filter({ visible: true });
     while (Date.now() < deadline) {
       try {
-        if ((await cell.getAttribute("class"))?.includes(stateClass)) return true;
+        const state = jdCalendarCellState(await cell.getAttribute("class"));
+        if (!state.disabled && state.start && state.selected) return true;
       } catch {
         // JD may replace the calendar cell during the date-picker re-render.
         // Treat that frame as an unconfirmed state and let the caller retry.
@@ -264,18 +341,45 @@ async function selectDateRange(page: Page, startDate: string, endDate: string) {
     }
     return false;
   };
+  const waitForEndSelectionOrEcho = async (timeoutMs: number) => {
+    const deadline = Date.now() + timeoutMs;
+    let lastClassName: string | null = null;
+    let lastEcho = "";
+    let observed = false;
+    const cell = page.locator(cellSelector(endDate)).filter({ visible: true });
+    while (Date.now() < deadline) {
+      try {
+        lastClassName = await cell.getAttribute("class");
+        lastEcho = await currentDateEcho(page);
+        observed = true;
+        const decision = jdCalendarEndSelectionDecision({ className: lastClassName, echoText: lastEcho, startDate, endDate });
+        if (decision === "confirmed_echo" || decision === "blocked_disabled") return decision;
+      } catch {
+        // JD may replace the cell during re-render.  Missing observation never
+        // authorizes another endpoint dispatch.
+      }
+      await page.waitForTimeout(50);
+    }
+    if (!observed) return "unconfirmed";
+    return jdCalendarEndSelectionDecision({ className: lastClassName, echoText: lastEcho, startDate, endDate });
+  };
   const [startSelectionDate, endSelectionDate] = jdDateRangeSelectionPlan(startDate, endDate);
   await selectDay(startSelectionDate);
-  if (!await waitForCellState(startDate, "jmt-date-picker-calendar-cell-start", 1_000)) await selectDay(startDate);
-  if (!await waitForCellState(startDate, "jmt-date-picker-calendar-cell-start", 5_000)) {
+  if (!await waitForStartSelected(startDate, 1_000)) await selectDay(startDate);
+  if (!await waitForStartSelected(startDate, 5_000)) {
     throw new Error(`起始日期 ${startDate} 点击后未进入区间起点状态。`);
   }
   // A single-day range still needs a second click: the first establishes the
   // start, while the second closes the range as its end.
   await selectDay(endSelectionDate);
-  if (!await waitForCellState(endDate, "jmt-date-picker-calendar-cell-end", 1_000)) await selectDay(endSelectionDate);
-  if (!await waitForCellState(endDate, "jmt-date-picker-calendar-cell-end", 5_000)) {
-    throw new Error(`结束日期 ${endDate} 点击后未进入区间终点状态。`);
+  const firstEndDecision = await waitForEndSelectionOrEcho(1_000);
+  if (firstEndDecision === "blocked_disabled") throw new Error(`结束日期 ${endDate} 尚未开放，已禁止再次点击。`);
+  if (firstEndDecision !== "confirmed_echo") {
+    // `end+selected` can be a hover-only secondDate decoration.  Re-clicking
+    // can turn an ambiguous range into a different range, so strict echo is
+    // the only submit gate and failure stays side-effect free after the first
+    // validated endpoint dispatch.
+    throw new Error(`结束日期 ${endDate} 点击后未获得严格日期回显，已禁止重试点击。`);
   }
   // The picker itself applies the custom range.  Clicking the page-level
   // Query action switches this JD page back to a realtime-summary flow, so it
@@ -305,19 +409,114 @@ export function isSafeJdNoticeCloseLabel(label: string) {
   return /^(close|关闭|忽略|×|✕)$/i.test(label.trim());
 }
 
-async function dismissJdNoticeModal(page: Page) {
-  const notice = page.locator('.jd-modal-wrap').filter({ visible: true }).filter({ has: page.locator('img[alt="公告图片"]') });
-  if (await notice.count() === 0) return;
-  if (await notice.count() !== 1) throw new Error("京东公告弹窗不唯一，已停止避免误点");
-  const closeButton = notice.locator('button[aria-label="Close"]').filter({ visible: true });
-  if (await closeButton.count() === 1) {
-    await closeButton.click();
-  } else {
-    const closeIcon = notice.locator('.close-modal').filter({ visible: true });
-    if (await closeIcon.count() !== 1) throw new Error("京东公告弹窗缺少唯一关闭按钮，已停止避免误点");
-    await closeIcon.click();
+export function isJdProductOverviewNpsSurveyText(text: string) {
+  const normalized = text.replace(/\s+/g, "");
+  return normalized.includes("请您对商品概览整体使用感受打分")
+    && normalized.includes("您在使用商品概览时有什么建议")
+    && normalized.includes("我不愿作答")
+    && normalized.includes("提交");
+}
+
+export function isSafeJdNpsSurveySkipLabel(label: string) {
+  return label.trim() === "我不愿作答";
+}
+
+export type JdNoticeDismissSnapshot = {
+  noticeCount: number;
+  noticeKey?: string;
+  closeControlCount: number;
+};
+
+export async function dismissJdNoticeWithBoundedRetry(
+  readSnapshot: () => Promise<JdNoticeDismissSnapshot>,
+  clickClose: () => Promise<void>,
+  sleep: (ms: number) => Promise<void>,
+  options: { readinessAttempts?: number; hiddenAttempts?: number; intervalMs?: number; maxClicks?: number } = {},
+) {
+  const readinessAttempts = options.readinessAttempts ?? 30;
+  const hiddenAttempts = options.hiddenAttempts ?? 20;
+  const intervalMs = options.intervalMs ?? 100;
+  const maxClicks = options.maxClicks ?? 2;
+  let originalNoticeKey: string | undefined;
+  let clicks = 0;
+
+  while (clicks < maxClicks) {
+    let stableReadySamples = 0;
+    for (let attempt = 0; attempt < readinessAttempts; attempt += 1) {
+      const snapshot = await readSnapshot();
+      if (snapshot.noticeCount === 0) return clicks;
+      if (snapshot.noticeCount !== 1) throw new Error("京东公告弹窗不唯一，已停止避免误点");
+      if (!snapshot.noticeKey) throw new Error("京东公告弹窗缺少稳定身份，已停止避免误点");
+      if (originalNoticeKey && snapshot.noticeKey !== originalNoticeKey) {
+        throw new Error("京东公告在关闭过程中发生变化，已停止避免连续误点");
+      }
+      originalNoticeKey ??= snapshot.noticeKey;
+      if (snapshot.closeControlCount > 1) throw new Error("京东公告弹窗关闭按钮不唯一，已停止避免误点");
+      stableReadySamples = snapshot.closeControlCount === 1 ? stableReadySamples + 1 : 0;
+      if (stableReadySamples >= 2) break;
+      await sleep(intervalMs);
+    }
+    if (stableReadySamples < 2) throw new Error("京东公告弹窗关闭按钮未达到稳定可用状态");
+
+    await clickClose();
+    clicks += 1;
+    for (let attempt = 0; attempt < hiddenAttempts; attempt += 1) {
+      const snapshot = await readSnapshot();
+      if (snapshot.noticeCount === 0) return clicks;
+      if (snapshot.noticeCount !== 1 || snapshot.noticeKey !== originalNoticeKey) {
+        throw new Error("京东公告在关闭过程中发生变化，已停止避免连续误点");
+      }
+      await sleep(intervalMs);
+    }
   }
-  await notice.waitFor({ state: "hidden", timeout: 5_000 });
+  throw new Error("京东公告弹窗在两次受控关闭后仍然可见");
+}
+
+async function dismissJdNoticeModal(page: Page) {
+  const notice = () => page.locator('.jd-modal-wrap').filter({ visible: true }).filter({ has: page.locator('img[alt="公告图片"]') });
+  const closeControls = () => notice().locator('button[aria-label="Close"], .close-modal').filter({ visible: true });
+  // The announcement is lazy-mounted a few seconds after the product page
+  // becomes interactive. Observe that bounded window before concluding that
+  // no notice exists, otherwise it can appear over the next business click.
+  await notice().first().waitFor({ state: "visible", timeout: 5_000 }).catch(() => undefined);
+  await dismissJdNoticeWithBoundedRetry(async () => {
+    const current = notice();
+    const noticeCount = await current.count();
+    const noticeKey = noticeCount === 1
+      ? await current.locator('img[alt="公告图片"]').getAttribute("src") ?? undefined
+      : undefined;
+    return { noticeCount, noticeKey, closeControlCount: noticeCount === 1 ? await closeControls().count() : 0 };
+  }, async () => {
+    const current = notice();
+    if (await current.count() !== 1) throw new Error("京东公告弹窗不唯一，已停止避免误点");
+    const close = closeControls();
+    if (await close.count() !== 1) throw new Error("京东公告弹窗缺少唯一关闭按钮，已停止避免误点");
+    await close.click();
+  }, (ms) => page.waitForTimeout(ms));
+}
+
+async function dismissJdNpsSurveyModal(page: Page) {
+  const survey = () => page.locator('#ux-scene-research').filter({ visible: true }).filter({ hasText: /请您对商品概览整体使用感受打分/ });
+  const skipControls = () => survey().getByText("我不愿作答", { exact: true }).filter({ visible: true });
+  await survey().first().waitFor({ state: "visible", timeout: 5_000 }).catch(() => undefined);
+  await dismissJdNoticeWithBoundedRetry(async () => {
+    const current = survey();
+    const noticeCount = await current.count();
+    const text = noticeCount === 1 ? await current.innerText().catch(() => "") : "";
+    const noticeKey = noticeCount === 1 && isJdProductOverviewNpsSurveyText(text)
+      ? "jd-product-overview-nps-survey"
+      : undefined;
+    const closeControlCount = noticeKey ? await skipControls().count() : 0;
+    return { noticeCount, noticeKey, closeControlCount };
+  }, async () => {
+    const current = survey();
+    if (await current.count() !== 1) throw new Error("京东商品概览评价弹层不唯一，已停止避免误点");
+    const skip = skipControls();
+    if (await skip.count() !== 1 || !isSafeJdNpsSurveySkipLabel(await skip.innerText())) {
+      throw new Error("京东商品概览评价弹层缺少唯一安全退出项，已停止避免误点");
+    }
+    await skip.click();
+  }, (ms) => page.waitForTimeout(ms), { maxClicks: 1 });
 }
 
 async function selectDimensionAndWait(page: Page, dimension: CliOptions["dimension"]) {
@@ -417,9 +616,13 @@ async function prepareExport(page: Page, options: CliOptions, beforeConfirm?: ()
   await page.goto(targetUrl, { waitUntil: "domcontentloaded", timeout: 30_000 });
   await page.waitForLoadState("networkidle", { timeout: 10_000 }).catch(() => undefined);
   const bodyText = await page.locator("body").innerText().catch(() => "");
-  if (/登录|账号|密码|验证码/.test(bodyText) && !/商品明细/.test(bodyText)) {
-    throw new Error("京东商智登录状态无效；请先在弹出的专用 Chrome 中登录，再重新运行。");
+  if (hasJdInteractivePageGate(bodyText)) {
+    throw new Error("京东商智需要人工完成验证码或安全验证。");
   }
+  if (/登录|账号|密码|验证码/.test(bodyText) && !/商品明细/.test(bodyText)) {
+    throw new Error("京东商智登录状态无效；请先在已打开的专用 Chrome 中登录，再重新运行。");
+  }
+  await readAndAssertJdProductDetailStoreIdentity(page, options);
 
   try {
     await selectDimensionAndWait(page, options.dimension);
@@ -507,8 +710,9 @@ export async function waitForStableTaskBaseline<T extends { fingerprint: string 
   throw new Error("JD download-center task table did not reach a stable baseline; refusing to submit a new task.");
 }
 
-async function readReadyTaskBaseline(page: Page, expectedPrefix: string) {
+async function readReadyTaskBaseline(page: Page, expectedPrefix: string, options: Pick<CliOptions, "shopId" | "shopName">) {
   await page.goto(downloadCenterUrl, { waitUntil: "domcontentloaded", timeout: 30_000 });
+  await readAndAssertJdProductDetailStoreIdentity(page, options);
   await waitForDataRefresh(page);
   const refresh = page.getByText("刷新", { exact: true }).filter({ visible: true }).first();
   if (await refresh.count().catch(() => 0) === 1) {
@@ -551,7 +755,8 @@ export async function importJdProductDetailFile(options: Pick<CliOptions, "baseU
   if (response.status !== expectedHttpStatus || !payload?.ok || (payload.status !== "imported" && payload.status !== "duplicate")
     || batch?.dataset !== expectedDataset || batch.status !== "completed" || batch.warningCount !== 0
     || batch.source !== "jd_sku_daily" || batch.platform !== "京东" || batch.shopName !== options.shopName
-    || batch.dateMin !== options.startDate || batch.dateMax !== options.endDate || !batch.id || !Number.isFinite(batch.rowCount)) {
+    || batch.dateMin !== options.startDate || batch.dateMax !== options.endDate || !batch.id
+    || !Number.isSafeInteger(batch.rowCount) || batch.rowCount! <= 0) {
     throw new Error(payload?.message ?? `JD ${options.dimension} daily import failed validation (HTTP ${response.status}).`);
   }
   return { status: payload.status, batchId: batch.id, rowCount: batch.rowCount!, warningCount: batch.warningCount, dateMin: batch.dateMin, dateMax: batch.dateMax, source: "jd_sku_daily", dataset: expectedDataset, platform: "京东", shopName: options.shopName, batchStatus: "completed" };
@@ -563,11 +768,11 @@ function emitPipelineResult(result: Record<string, unknown>) {
 }
 
 export function createSubmittingTaskManifest(
-  options: Pick<CliOptions, "dimension" | "shopId" | "startDate" | "endDate">,
+  options: Pick<CliOptions, "dimension" | "storeKey" | "shopId" | "shopName" | "startDate" | "endDate">,
   baseline: Array<{ fingerprint: string }>,
   now = new Date(),
 ): JdProductDetailTaskManifest {
-  return { version: 1, status: "submitting", dimension: options.dimension, shopId: options.shopId, startDate: options.startDate, endDate: options.endDate, baseline: baseline.map((row) => row.fingerprint), createdAt: now.toISOString() };
+  return { version: 2, status: "submitting", dimension: options.dimension, storeKey: options.storeKey, shopId: options.shopId, shopName: options.shopName, startDate: options.startDate, endDate: options.endDate, baseline: baseline.map((row) => row.fingerprint), createdAt: now.toISOString() };
 }
 
 async function waitForManifestTaskRow(
@@ -660,21 +865,30 @@ async function run() {
   }
 
   if (options.debug) await mkdir(artifactDir, { recursive: true });
-  await launchDedicatedChrome({
-    executablePath: options.chromePath,
-    profileDirectory: options.profileDirectory,
-    port: options.port,
-    startUrl: targetUrl,
-    headless: false,
-  });
-  await waitForChrome(options.port);
-  const browser = await connectPlaywrightBrowser(options.port);
+  let browser: Awaited<ReturnType<typeof connectPlaywrightBrowser>> | null = null;
+  let ownsBrowser = false;
+  let revealInteractiveBrowser = false;
   try {
+    const launched = await launchDedicatedChrome({
+      executablePath: options.executablePath,
+      profileDirectory: options.userDataDirectory,
+      profileName: options.profileName,
+      port: options.port,
+      startUrl: targetUrl,
+      ...jdBrowserLaunchMode(options.interactiveLogin),
+    });
+    ownsBrowser = Boolean(launched);
+    if (!options.interactiveLogin && !options.visibleRecovery && !ownsBrowser) {
+      throw new Error("京东商智静默模式拒绝复用未受本次执行所有权控制的 Chromium 实例。");
+    }
+    await waitForChrome(options.port);
+    browser = await connectPlaywrightBrowser(options.port);
     const { page, client } = await connectPlaywrightJackyunTarget(browser, {
       startUrl: targetUrl,
       workerName: "codex-jdsz-product-detail-worker",
       targetUrlPattern: /jdsz\.jd\.com/i,
     });
+    await ensureJdStoreAuthenticatedSession(page, options);
     await client.send("Browser.setDownloadBehavior", {
       behavior: "allow",
       downloadPath: options.downloadDirectory,
@@ -690,8 +904,9 @@ async function run() {
     let taskReused = false;
     const manifest = await readJsonFileOr<JdProductDetailTaskManifest | null>(manifestPath, null);
     if (manifest) {
-      assertJdProductDetailTaskManifest(manifest, { dimension: options.dimension, shopId: options.shopId, startDate: options.startDate, endDate: options.endDate });
+      assertJdProductDetailTaskManifest(manifest, options);
       await page.goto(downloadCenterUrl, { waitUntil: "domcontentloaded", timeout: 30_000 });
+      await readAndAssertJdProductDetailStoreIdentity(page, options);
       const matched = await waitForManifestTaskRow(page, expectedPrefix, manifest);
       if (matched) {
         const rowText = await (await taskRowByFingerprint(page, expectedPrefix, matched.fingerprint)).innerText();
@@ -708,21 +923,24 @@ async function run() {
     }
     let downloadPage = page;
     if (!taskReused) {
-      const baseline = await readReadyTaskBaseline(page, expectedPrefix);
+      const baseline = await readReadyTaskBaseline(page, expectedPrefix, options);
       let submitting: JdProductDetailTaskManifest | undefined;
       // Persist only after every selection/dialog gate has passed and directly
       // before the irreversible remote confirmation click.
       await prepareExport(page, options, async () => {
+        await readAndAssertJdProductDetailStoreIdentity(page, options);
         submitting = createSubmittingTaskManifest(options, baseline);
         await writeJsonAtomic(manifestPath, submitting);
       });
       if (!submitting) throw new Error("JD submitting manifest was not persisted before confirmation click.");
       downloadPage = await openDownloadCenter(page);
+      await readAndAssertJdProductDetailStoreIdentity(downloadPage, options);
       const created = await waitForManifestTaskRow(downloadPage, expectedPrefix, submitting);
       if (!created) throw new Error("Submitted JD product-detail task is not uniquely visible in download center; manifest retained and no replacement task will be created.");
       taskFingerprint = created.fingerprint;
       await writeJsonAtomic(manifestPath, { ...submitting, status: "pending", rowFingerprint: created.fingerprint, taskId: created.taskId });
     }
+    await readAndAssertJdProductDetailStoreIdentity(downloadPage, options);
     await waitForTaskDownload(downloadPage, expectedPrefix, taskFingerprint);
     const result = await acquireJdProductDetailDownload({
       downloadDirectory: options.downloadDirectory,
@@ -734,7 +952,10 @@ async function run() {
       dimension: options.dimension,
       startDate: options.startDate,
       endDate: options.endDate,
-      triggerDownload: () => clickTaskDownload(downloadPage, expectedPrefix, taskFingerprint),
+      triggerDownload: async () => {
+        await readAndAssertJdProductDetailStoreIdentity(downloadPage, options);
+        await clickTaskDownload(downloadPage, expectedPrefix, taskFingerprint);
+      },
     });
     const importResult = options.autoImport ? await importJdProductDetailFile(options, result.filePath) : undefined;
     await rm(manifestPath, { force: true });
@@ -749,12 +970,31 @@ async function run() {
       downloadClicks: result.downloadClicks,
     });
     client.close();
+  } catch (error) {
+    revealInteractiveBrowser = options.visibleRecovery && !options.interactiveLogin && isJdInteractiveBrowserFailure(error);
+    throw error;
   } finally {
-    await browser.close();
+    await browser?.close().catch(() => undefined);
+    if (ownsBrowser && !options.interactiveLogin) await closeChromeBrowser(options.port);
+    if (revealInteractiveBrowser) {
+      try {
+        await revealJdBrowserForInteractiveFailure({
+          executablePath: options.executablePath,
+          profileDirectory: options.userDataDirectory,
+          profileName: options.profileName,
+          port: options.port,
+          startUrl: targetUrl,
+        });
+        console.error(`京东交互异常：已打开 ${options.shopName} 对应的 Chromium profile，请完成人工验证后从原任务清单续跑。`);
+      } catch (revealError) {
+        const bounded = revealError instanceof Error ? revealError.message.slice(0, 500) : String(revealError).slice(0, 500);
+        console.error(`京东交互异常，但可见 Chromium 打开失败：${bounded}`);
+      }
+    }
   }
 }
 
-async function main() { return withJdProductDetailRunLock(run); }
+async function main() { return withJdChromiumRunLock("product-detail", () => withJdProductDetailRunLock(run)); }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   void main().catch((error: unknown) => {

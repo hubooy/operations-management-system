@@ -1,0 +1,73 @@
+{
+  "date": "2026-09-10",
+  "status": "verified_not_deployed",
+  "baseMain": "90eebbf0",
+  "branch": "codex/guangdong-replenishment-health",
+  "scope": [
+    "广东监控备货至首次实物库存增加的健康跟进周期",
+    "库存总览精确广东仓复用同一风险规则"
+  ],
+  "validation": {
+    "postgresTests": {
+      "passed": 74,
+      "includes": "两种库存/备货并发交错、事务回滚、重复导入、跨仓跨规格、基线迁移及重复执行"
+    },
+    "unitTests": {
+      "passed": 2071,
+      "skipped": 23,
+      "failed": 0
+    },
+    "lint": {
+      "errors": 0,
+      "existingWarnings": 9
+    },
+    "isolatedBuild": "passed",
+    "backendBoundary": {
+      "modules": 418,
+      "violations": 0
+    },
+    "diffCheck": "passed",
+    "postgres": {
+      "status": "passed",
+      "postgresPort": 55458,
+      "syntheticDataOnly": true,
+      "migration": "0010_replenishment_health",
+      "tables": {
+        "inventory_guangdong_monitor_items": {
+          "rows": 1,
+          "sha256": "fb06ffe5db2ac495511cc27f4909c26623f46ec6ccca4f9f86e496582058a8f1"
+        },
+        "inventory_guangdong_supplier_cycles": {
+          "rows": 1,
+          "sha256": "347cb2c413326c86ba2594229d8e2360efdad2bee7e16631715c65e371036139"
+        },
+        "inventory_guangdong_monitor_audits": {
+          "rows": 3,
+          "sha256": "a09bb9400434f64ec0f6f6db4e03dad185b87167a36cb37699ccea016f417587"
+        },
+        "replenishment_plan_items": {
+          "rows": 1,
+          "sha256": "80761e502d83c6dafd4db85a24b5839935fa8e258dd9a914979b90d0cf657e2e"
+        },
+        "inventory_data_revisions": {
+          "rows": 1,
+          "sha256": "dc24ea065c5d0c07bc1422fb9a9faa8aba16547b3539c00f5ead1209eb871a2b"
+        }
+      },
+      "minimumRoleChecks": "passed",
+      "restoreMatches": true
+    }
+  },
+  "production": {
+    "migrationApplied": false,
+    "deployed": false,
+    "servicesRestarted": false,
+    "externalMessagesSent": false
+  },
+  "releaseRequirements": [
+    "用户明确授权本机生产迁移与受控发布",
+    "受控发布前备份及独立恢复验证；核验当前 successor 容量门禁",
+    "采用 inventory.0010_replenishment_health，现有计划以采用时库存建立基线",
+    "reader/writer schema、同源 API、两处风险分布和明细回读；只允许前向兼容修复"
+  ]
+}

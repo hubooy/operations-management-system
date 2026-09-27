@@ -1,0 +1,146 @@
+{
+  "date": "2026-09-14",
+  "status": "adopted_on_local_production",
+  "sourceCommit": "cda760a",
+  "integrationCommit": "6abf234c",
+  "authorization": "User explicitly requested 3 GB workerd heap adjustment; controlled Worker restart within this adoption",
+  "policy": {
+    "adapterSha256": "2b2a89fb96a270e678b4aa87e65aa1282049b18d28a1e30ff7fe7f2736b648c7",
+    "evidence": "isolated test captured binary workerd config and served synthetic request; deployed adapter hash and startup log matched",
+    "totalProcessMemoryCap": false,
+    "runtime": "workerd",
+    "oldSpaceMiB": 3072
+  },
+  "plan": {
+    "status": "planned",
+    "version": "teruisi-local-worker-release-rotation-plan-v1",
+    "planSha256": "51f97e768574bb064ce3dcef93eb65adaaf7cdaf53a951d7ec58a36747827c2a",
+    "planPath": "D:\\teruisi-runtime\\teruisi-worker-sales\\state\\worker-release-rotation-plans\\51f97e768574bb064ce3dcef93eb65adaaf7cdaf53a951d7ec58a36747827c2a.json",
+    "predecessorReleaseId": "20260914T094506Z-81d2b9e6d317f82b",
+    "candidateReleaseId": "20260914T100626Z-4462809b1aa7a958",
+    "candidateManifestSha256": "0e0b52c8ef93d71eee880c0f0711b83068a3b934e57fca19d04f67d7b8b5896b",
+    "candidateGuardReceiptSha256": "bd85abc08fe06ed1b0102bbdaf27e4148f027f1bd00268832b9df6d147d2b723",
+    "cutoverId": "sales-pg-20260829T204417Z-d9896e904d8092cb"
+  },
+  "apply": {
+    "status": "activated",
+    "version": "teruisi-local-worker-release-successor-v1",
+    "planSha256": "51f97e768574bb064ce3dcef93eb65adaaf7cdaf53a951d7ec58a36747827c2a",
+    "predecessorReleaseId": "20260914T094506Z-81d2b9e6d317f82b",
+    "releaseId": "20260914T100626Z-4462809b1aa7a958",
+    "manifestPath": "D:\\teruisi-runtime\\teruisi-worker-sales\\releases\\20260914T100626Z-4462809b1aa7a958\\deployment-manifest.json",
+    "manifestSha256": "0e0b52c8ef93d71eee880c0f0711b83068a3b934e57fca19d04f67d7b8b5896b",
+    "successorSha256": "f01965a826e44a2699fe9c374c9c85c1504171f9d25515b1503642ca14d6036b",
+    "consumptionSha256": "830037cda8d856349a207e9b3a94b459355f132d94fd2a864aa44a6e26459f3d",
+    "startupBindingSha256": "9da4bdbe03b767dc4c854acb65c0035c20f72ac13de2e658309bbfc5d8e09676"
+  },
+  "system": {
+    "version": "teruisi-operations-system-control-v2",
+    "state": "Running",
+    "backendState": "Ready",
+    "workerState": "exact_release",
+    "releaseId": "20260914T100626Z-4462809b1aa7a958",
+    "supervisorProcessId": 40832,
+    "portProcessId": 32476,
+    "url": "http://localhost:3000/",
+    "reason": null,
+    "components": {
+      "core": true,
+      "finance": true,
+      "netshop": true,
+      "market": true,
+      "products": true,
+      "workflow": true,
+      "inventory": true,
+      "customerService": true,
+      "accessControl": true,
+      "erpReference": true,
+      "bi": true,
+      "ai": true
+    },
+    "checkedAt": "2026-09-14T18:15:46.1694483+08:00"
+  },
+  "health": [
+    {
+      "path": "/",
+      "httpStatus": 200,
+      "body": "homepage verified"
+    },
+    {
+      "path": "/_teruisi/local/health/live",
+      "httpStatus": 200,
+      "body": {
+        "ok": true,
+        "status": "live"
+      }
+    },
+    {
+      "path": "/_teruisi/local/health/ready",
+      "httpStatus": 200,
+      "body": {
+        "ok": true,
+        "backend": "django-postgresql",
+        "unavailableServices": [],
+        "status": "ready"
+      }
+    }
+  ],
+  "validation": "workerd-heap-3gb-validation-20260914.json",
+  "maintenance": {
+    "firstDrain": "2026-09-14T18:05:31.685189+08:00",
+    "backendRestarted": false,
+    "quarantineDigestsUnchanged": true,
+    "invocationShell": "Exact completed caller PID 43660 retained output pipe after service controller exit; no children, command/start identity checked before closing only caller. Independent Running/Ready/exact_release passed.",
+    "plans": "Original active plan completed naturally before maintenance; no plans required pause or resume",
+    "n8nRestarted": false,
+    "stopTime": "2026-09-14T18:06:15+08:00",
+    "inFlightIncludingExpired": 0,
+    "startCompletedTime": "2026-09-14T18:14:50+08:00",
+    "secondDrain": "2026-09-14T18:06:07.1477723+08:00",
+    "helperBusy": false
+  },
+  "postBackup": {
+    "backup": {
+      "status": "completed",
+      "backupId": "daily-20260914T101517Z-436991c678e1",
+      "backupDirectory": "D:\\teruisi-runtime\\django-sales\\backups\\postgres-daily\\daily-20260914T101517Z-436991c678e1",
+      "manifestSha256": "1069c39fcd22e1e8eec1cc2e37337ac08bde683db7fbf9c69ed6e06494e86e7b",
+      "dumpSha256": "73c805ca8bc0c0c1446d9f2e93231780dbce6faa46e83d8ab618b9d2f09835cc",
+      "contentSha256": "2f71ab50dc4c41ba1367b7c954fe47420d3c335cc2dfbc804eeb7d919c19b6ae",
+      "completedAt": "09/14/2026 18:16:57",
+      "serviceStateChanged": false
+    },
+    "verify": {
+      "status": "completed",
+      "backupId": "daily-20260914T101517Z-436991c678e1",
+      "manifestSha256": "1069c39fcd22e1e8eec1cc2e37337ac08bde683db7fbf9c69ed6e06494e86e7b",
+      "dumpSha256": "73c805ca8bc0c0c1446d9f2e93231780dbce6faa46e83d8ab618b9d2f09835cc",
+      "contentSha256": "2f71ab50dc4c41ba1367b7c954fe47420d3c335cc2dfbc804eeb7d919c19b6ae",
+      "serviceStateChanged": false
+    },
+    "eDriveArchive": {
+      "directory": "E:\\运营管理系统业务数据\\daily-20260914T101517Z-436991c678e1",
+      "files": [
+        {
+          "file": "teruisi-sales.dump",
+          "sha256": "73c805ca8bc0c0c1446d9f2e93231780dbce6faa46e83d8ab618b9d2f09835cc"
+        },
+        {
+          "file": "backup-manifest.json",
+          "sha256": "1069c39fcd22e1e8eec1cc2e37337ac08bde683db7fbf9c69ed6e06494e86e7b"
+        },
+        {
+          "file": "backup-manifest.json.sha256",
+          "sha256": "81eaf1264ecf4c18fa0e85c42168b23be99f52ec1c0139ab604f50930747812f"
+        }
+      ],
+      "verifiedAt": "2026-09-14T18:18:14.3713168+08:00"
+    },
+    "repeatedRestore": false
+  },
+  "limitations": [
+    "V8 old-space cap, not RSS or shared total budget",
+    "Memory growth root cause and recovery gap remain unresolved",
+    "No production debugger, heap dump, forced GC or model test"
+  ]
+}

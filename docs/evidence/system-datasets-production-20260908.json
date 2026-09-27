@@ -1,0 +1,1548 @@
+{
+  "version": "teruisi-system-datasets-production-v1",
+  "adoptedAt": "2026-09-08T23:16:23.0866841+08:00",
+  "scope": "current Windows host only",
+  "source": {
+    "commit": "b47342d78e5ad441deef06239ddbe4d0f0a81239",
+    "pullRequests": [
+      39,
+      40
+    ]
+  },
+  "datasets": {
+    "total": 243,
+    "records": 219,
+    "analytics": 24,
+    "domains": 12,
+    "columns": 2644,
+    "excludedColumns": 182,
+    "modelsAccounted": 221
+  },
+  "runtime": {
+    "version": "teruisi-operations-system-control-v2",
+    "state": "Running",
+    "backendState": "Ready",
+    "workerState": "exact_release",
+    "releaseId": "20260908T150015Z-f5e22e45a3fab5b0",
+    "supervisorProcessId": 53956,
+    "portProcessId": 6896,
+    "url": "http://localhost:3000/",
+    "reason": null,
+    "components": {
+      "core": true,
+      "finance": true,
+      "netshop": true,
+      "market": true,
+      "products": true,
+      "workflow": true,
+      "inventory": true,
+      "customerService": true,
+      "accessControl": true,
+      "erpReference": true,
+      "bi": true,
+      "ai": true
+    },
+    "checkedAt": "2026-09-08T23:16:23.0866841+08:00",
+    "startup": {
+      "status": "verified",
+      "version": "teruisi-local-worker-status-v1",
+      "releaseId": "20260908T150015Z-f5e22e45a3fab5b0",
+      "manifestSha256": "d80f4b2b6ac27543920fa4c0497f9d74cfcfc3209feaf37a531ff28e1edad145",
+      "startupVerified": true
+    },
+    "supervisor": {
+      "status": "completed",
+      "desiredState": "running",
+      "supervisorProcess": "running",
+      "health": "healthy",
+      "code": "all_components_ready",
+      "lastHealthyAt": "09/08/2026 23:12:52",
+      "restartAttemptsInWindow": 1,
+      "pendingAlertCount": 19,
+      "serviceStateChanged": false
+    },
+    "workerActivation": {
+      "status": "activated",
+      "version": "teruisi-local-worker-release-successor-v1",
+      "planSha256": "dbbb47cd551153bcd4d361dd051fe73f31869f747a3a25d0be137e7b4bb47d22",
+      "predecessorReleaseId": "20260908T143756Z-fd64783ed0e0d484",
+      "releaseId": "20260908T150015Z-f5e22e45a3fab5b0",
+      "manifestPath": "D:\\teruisi-runtime\\teruisi-worker-sales\\releases\\20260908T150015Z-f5e22e45a3fab5b0\\deployment-manifest.json",
+      "manifestSha256": "d80f4b2b6ac27543920fa4c0497f9d74cfcfc3209feaf37a531ff28e1edad145",
+      "successorSha256": "4da73564535df29c452b7898bb2ed2422b83f79dbf426e1ce50abe7d6f308a36",
+      "consumptionSha256": "760cd0aedb48065b346e8194dd17434453357a599fcace8df6f8d89d53248c34",
+      "startupBindingSha256": "8206f48999676a2243c5c5c9b724e7c1db3445051fcbbfcb2b575b5efe321584"
+    },
+    "django": {
+      "manifestSha256": "e82aed632fd9cc24fb8c5f53b33c893ec1b037fbae5caa6e29f3138402b5134a",
+      "appFingerprint": "80b9cd8459e6b4bb030cc625da215d196074ce07a4c40026ea74f58c4b74681c",
+      "deployedAt": "2026-09-08T22:59:34.5248917+08:00",
+      "sourceRoot": "D:\\运营管理系统-sales-django-release",
+      "healthyServices": 23
+    }
+  },
+  "initialActivation": {
+    "status": "activated",
+    "version": "teruisi-local-worker-release-successor-v1",
+    "planSha256": "64ece3dabc60205c86d755d12f1f9b0214a9e7e4f3eee150ac4f9eb74525e7e6",
+    "predecessorReleaseId": "20260908T103235Z-6e9bfb8baea02174",
+    "releaseId": "20260908T143756Z-fd64783ed0e0d484",
+    "manifestPath": "D:\\teruisi-runtime\\teruisi-worker-sales\\releases\\20260908T143756Z-fd64783ed0e0d484\\deployment-manifest.json",
+    "manifestSha256": "dabd3166331ff2b8fd96e8807b9bfb5b79990009f87a3a0cc07b57980eba50da",
+    "successorSha256": "e765d1ad23fded69742ba6108b896b8844b5c0303452a806d81856fb5947e2f9",
+    "consumptionSha256": "20804572e08f648df3e3a03d0368b3032dbd371b89bc6036493ef555fbac39a9",
+    "startupBindingSha256": "df2d999a756384d1f93f27b746db2040f4e54066516a1f9c5f6882dd70bf8d2f"
+  },
+  "validation": {
+    "node": {
+      "passed": 2022,
+      "skipped": 20,
+      "failed": 0
+    },
+    "djangoDatasetsAndChat": {
+      "passed": 28,
+      "failed": 0
+    },
+    "priorDjangoSuite": {
+      "passed": 59,
+      "skipped": 1,
+      "failed": 0
+    },
+    "build": "passed",
+    "changedFileLint": "passed",
+    "backendBoundaryViolations": 0,
+    "typescript": {
+      "newErrors": 0,
+      "baselineErrors": 142,
+      "comparisonBaseline": "f35d6789",
+      "note": "Existing full TypeScript diagnostics equal unchanged main baseline; typecheck is not clean."
+    },
+    "isolatedPostgres": {
+      "datasetsQueried": 219,
+      "fieldsQueried": 2644,
+      "readerRoles": 12,
+      "columnGrantsIdempotent": true,
+      "protectedColumnsAndWritesDenied": true
+    },
+    "production": {
+      "startedAt": "2026-09-08T15:07:04.122Z",
+      "completedAt": "2026-09-08T15:07:46.356Z",
+      "catalogCount": 243,
+      "recordQueries": 219,
+      "sourceDomains": 12,
+      "freshnessVerified": true,
+      "readbackSha256": "6377ca6b4fc5792dd57ebd66be52fd91ffd3f6f7645c3ed77882550d1044facc",
+      "negativeRequests": [
+        {
+          "path": "/api/ai/datasets/rows_erp_product_master/query",
+          "status": 400,
+          "bytes": 74,
+          "sha256": "d098de140b01bb87788ac8a666fa11737dd8a477f783f1adba251f093bcab84a"
+        },
+        {
+          "path": "/api/ai/datasets/rows_erp_product_master/query",
+          "status": 400,
+          "bytes": 74,
+          "sha256": "d098de140b01bb87788ac8a666fa11737dd8a477f783f1adba251f093bcab84a"
+        },
+        {
+          "path": "/api/ai/datasets/not_a_real_dataset",
+          "status": 404,
+          "bytes": 76,
+          "sha256": "4293d9c618160c3808bea62caa754f34f6dde758d6754ec08683dbc7c0f9d258"
+        }
+      ],
+      "chat": {
+        "outcome": "help",
+        "conversationId": "ai-conversation-8109e943-0a9b-4de6-9f0e-7c60cfb2a2e5",
+        "modelCalled": false
+      },
+      "models": {
+        "enabledTextModels": 1,
+        "defaultTextConfigured": true
+      },
+      "records": [
+        {
+          "dataset": "rows_ai_data_revisions",
+          "domain": "ai_assistant",
+          "returned": 1,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_ai_write_authority",
+          "domain": "ai_assistant",
+          "returned": 1,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_ai_write_request_receipts",
+          "domain": "ai_assistant",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_ai_mutation_audits",
+          "domain": "ai_assistant",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_ai_migration_runs",
+          "domain": "ai_assistant",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_ai_agent_checkpoints",
+          "domain": "ai_assistant",
+          "returned": 0,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_ai_agent_events",
+          "domain": "ai_assistant",
+          "returned": 0,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_ai_agent_jobs",
+          "domain": "ai_assistant",
+          "returned": 0,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_ai_agent_provider_dispatches",
+          "domain": "ai_assistant",
+          "returned": 0,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_ai_agent_provider_results",
+          "domain": "ai_assistant",
+          "returned": 0,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_ai_agent_tool_dispatches",
+          "domain": "ai_assistant",
+          "returned": 0,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_ai_agent_tool_results",
+          "domain": "ai_assistant",
+          "returned": 0,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_ai_analysis_runs",
+          "domain": "ai_assistant",
+          "returned": 0,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_ai_artifact_deliveries",
+          "domain": "ai_assistant",
+          "returned": 0,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_ai_artifacts",
+          "domain": "ai_assistant",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_ai_channel_callback_events",
+          "domain": "ai_assistant",
+          "returned": 0,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_ai_channels",
+          "domain": "ai_assistant",
+          "returned": 0,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_ai_chat_provider_dispatches",
+          "domain": "ai_assistant",
+          "returned": 0,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_ai_chat_request_receipts",
+          "domain": "ai_assistant",
+          "returned": 1,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_ai_conversation_deletion_audits",
+          "domain": "ai_assistant",
+          "returned": 1,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_ai_conversation_messages",
+          "domain": "ai_assistant",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_ai_conversation_scopes",
+          "domain": "ai_assistant",
+          "returned": 1,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_ai_conversations",
+          "domain": "ai_assistant",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_ai_knowledge_entries",
+          "domain": "ai_assistant",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_ai_memory_audit_logs",
+          "domain": "ai_assistant",
+          "returned": 0,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_ai_memory_commit_guards",
+          "domain": "ai_assistant",
+          "returned": 0,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_ai_memory_entries",
+          "domain": "ai_assistant",
+          "returned": 0,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_ai_models",
+          "domain": "ai_assistant",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_ai_space_admin_audits",
+          "domain": "ai_assistant",
+          "returned": 0,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_ai_space_asset_cleanup_queue",
+          "domain": "ai_assistant",
+          "returned": 0,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_ai_space_asset_favorites",
+          "domain": "ai_assistant",
+          "returned": 0,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_ai_space_asset_payloads",
+          "domain": "ai_assistant",
+          "returned": 0,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_ai_space_assets",
+          "domain": "ai_assistant",
+          "returned": 0,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_ai_space_dispatch_receipts",
+          "domain": "ai_assistant",
+          "returned": 0,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_ai_space_dispatch_results",
+          "domain": "ai_assistant",
+          "returned": 0,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_ai_space_job_items",
+          "domain": "ai_assistant",
+          "returned": 0,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_ai_space_jobs",
+          "domain": "ai_assistant",
+          "returned": 0,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_ai_space_model_profiles",
+          "domain": "ai_assistant",
+          "returned": 0,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_ai_space_schema_upgrades",
+          "domain": "ai_assistant",
+          "returned": 1,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_ai_space_templates",
+          "domain": "ai_assistant",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_ai_system_settings",
+          "domain": "ai_assistant",
+          "returned": 1,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_ai_tool_audit_logs",
+          "domain": "ai_assistant",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_ai_workflow_events",
+          "domain": "ai_assistant",
+          "returned": 0,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_ai_workflow_node_runs",
+          "domain": "ai_assistant",
+          "returned": 0,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_ai_workflow_runs",
+          "domain": "ai_assistant",
+          "returned": 0,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_access_control_roles",
+          "domain": "access_control",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_access_control_users",
+          "domain": "access_control",
+          "returned": 1,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_access_control_permission_audits",
+          "domain": "access_control",
+          "returned": 1,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_access_control_data_revisions",
+          "domain": "access_control",
+          "returned": 1,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_access_control_write_authority",
+          "domain": "access_control",
+          "returned": 1,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_access_control_write_request_receipts",
+          "domain": "access_control",
+          "returned": 0,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_access_control_migration_runs",
+          "domain": "access_control",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_sales_import_batches",
+          "domain": "sales",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_sales_order_lines",
+          "domain": "sales",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_sales_data_revisions",
+          "domain": "sales",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_sales_migration_runs",
+          "domain": "sales",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_sales_migration_locks",
+          "domain": "sales",
+          "returned": 1,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_sales_legacy_upload_audits",
+          "domain": "sales",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_sales_import_scope_heads",
+          "domain": "sales",
+          "returned": 1,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_sales_write_authority",
+          "domain": "sales",
+          "returned": 1,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_sales_write_request_receipts",
+          "domain": "sales",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_sales_import_attempts",
+          "domain": "sales",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_sales_import_fingerprints",
+          "domain": "sales",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_sales_raw_upload_sessions",
+          "domain": "sales",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_sales_raw_upload_chunks",
+          "domain": "sales",
+          "returned": 0,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_sales_staged_import_sessions",
+          "domain": "sales",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_sales_staged_import_chunks",
+          "domain": "sales",
+          "returned": 0,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_sales_cutover_attestations",
+          "domain": "sales",
+          "returned": 1,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_erp_product_master",
+          "domain": "erp_reference",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_erp_combo_items",
+          "domain": "erp_reference",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_erp_reference_import_batches_pg",
+          "domain": "erp_reference",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_erp_reference_import_scope_heads",
+          "domain": "erp_reference",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_erp_reference_import_fingerprints",
+          "domain": "erp_reference",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_erp_reference_import_attempts",
+          "domain": "erp_reference",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_erp_reference_write_authority",
+          "domain": "erp_reference",
+          "returned": 1,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_erp_reference_write_request_receipts",
+          "domain": "erp_reference",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_erp_reference_migration_runs",
+          "domain": "erp_reference",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_erp_reference_raw_upload_sessions",
+          "domain": "erp_reference",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_erp_reference_raw_upload_chunks",
+          "domain": "erp_reference",
+          "returned": 0,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_finance_import_batches",
+          "domain": "finance",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_finance_months",
+          "domain": "finance",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_finance_lines",
+          "domain": "finance",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_finance_targets_scoped",
+          "domain": "finance",
+          "returned": 0,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_finance_target_deletion_audits",
+          "domain": "finance",
+          "returned": 0,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_finance_import_scope_heads",
+          "domain": "finance",
+          "returned": 1,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_finance_import_attempts",
+          "domain": "finance",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_finance_import_fingerprints",
+          "domain": "finance",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_finance_data_revisions",
+          "domain": "finance",
+          "returned": 1,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_finance_write_authority",
+          "domain": "finance",
+          "returned": 1,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_finance_write_request_receipts",
+          "domain": "finance",
+          "returned": 0,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_finance_migration_runs",
+          "domain": "finance",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_netshop_import_batches",
+          "domain": "netshop",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_netshop_rows",
+          "domain": "netshop",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_netshop_promotion_product_daily",
+          "domain": "netshop",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_netshop_promotion_shop_daily",
+          "domain": "netshop",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_netshop_data_revisions",
+          "domain": "netshop",
+          "returned": 1,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_netshop_product_daily_revisions",
+          "domain": "netshop",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_netshop_product_daily_scope_revisions",
+          "domain": "netshop",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_netshop_promotion_scope_revisions",
+          "domain": "netshop",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_netshop_promotion_aggregate_state",
+          "domain": "netshop",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_netshop_promotion_aggregate_manifest",
+          "domain": "netshop",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_netshop_promotion_aggregate_control",
+          "domain": "netshop",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_netshop_import_scope_heads",
+          "domain": "netshop",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_netshop_import_attempts",
+          "domain": "netshop",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_netshop_import_fingerprints",
+          "domain": "netshop",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_netshop_write_authority",
+          "domain": "netshop",
+          "returned": 1,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_netshop_write_request_receipts",
+          "domain": "netshop",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_netshop_asset_uploads",
+          "domain": "netshop",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_netshop_asset_upload_chunks",
+          "domain": "netshop",
+          "returned": 0,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_netshop_asset_upload_results",
+          "domain": "netshop",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_netshop_migration_runs",
+          "domain": "netshop",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_market_import_batches",
+          "domain": "market",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_market_ranking_entries",
+          "domain": "market",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_market_master_identities",
+          "domain": "market",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_market_sku_gmv_totals",
+          "domain": "market",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_market_price_snapshots",
+          "domain": "market",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_market_data_revisions",
+          "domain": "market",
+          "returned": 1,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_market_import_scope_heads",
+          "domain": "market",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_market_import_attempts",
+          "domain": "market",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_market_import_fingerprints",
+          "domain": "market",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_market_write_authority",
+          "domain": "market",
+          "returned": 1,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_market_write_request_receipts",
+          "domain": "market",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_market_migration_runs",
+          "domain": "market",
+          "returned": 1,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_market_image_cache",
+          "domain": "market",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_market_image_cache_jobs",
+          "domain": "market",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_market_image_cache_job_items",
+          "domain": "market",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_market_image_cache_claims",
+          "domain": "market",
+          "returned": 0,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_market_price_band_versions",
+          "domain": "market",
+          "returned": 1,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_market_price_band_items",
+          "domain": "market",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_market_master_mapping_rules",
+          "domain": "market",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_market_subcategory_taxonomy",
+          "domain": "market",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_market_brand_suggestions",
+          "domain": "market",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_market_brand_recognition_jobs",
+          "domain": "market",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_market_brand_seeds",
+          "domain": "market",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_market_download_configs",
+          "domain": "market",
+          "returned": 0,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_market_download_tasks",
+          "domain": "market",
+          "returned": 0,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_market_master_audit_logs",
+          "domain": "market",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_market_annotation_prompt_versions",
+          "domain": "market",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_market_annotation_jobs",
+          "domain": "market",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_market_annotation_items",
+          "domain": "market",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_market_sku_annotations",
+          "domain": "market",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_market_annotation_commit_receipts",
+          "domain": "market",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_market_annotation_validation_samples",
+          "domain": "market",
+          "returned": 0,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_market_annotation_validation_runs",
+          "domain": "market",
+          "returned": 0,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_market_annotation_validation_results",
+          "domain": "market",
+          "returned": 0,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_market_annotation_prompt_audits",
+          "domain": "market",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_market_annotation_local_agents",
+          "domain": "market",
+          "returned": 0,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_market_annotation_concurrency_settings",
+          "domain": "market",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_market_annotation_cloud_runs",
+          "domain": "market",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_market_netshop_projection",
+          "domain": "market",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_market_netshop_projection_control",
+          "domain": "market",
+          "returned": 1,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_product_shipping_rate_import_batches",
+          "domain": "products",
+          "returned": 1,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_product_shipping_rates",
+          "domain": "products",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_product_import_scope_heads",
+          "domain": "products",
+          "returned": 1,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_product_import_attempts",
+          "domain": "products",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_product_import_fingerprints",
+          "domain": "products",
+          "returned": 1,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_product_data_revisions",
+          "domain": "products",
+          "returned": 1,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_product_write_authority",
+          "domain": "products",
+          "returned": 1,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_product_write_request_receipts",
+          "domain": "products",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_product_inventory_projection",
+          "domain": "products",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_product_inventory_projection_control",
+          "domain": "products",
+          "returned": 1,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_product_raw_upload_sessions",
+          "domain": "products",
+          "returned": 1,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_product_raw_upload_chunks",
+          "domain": "products",
+          "returned": 0,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_product_migration_runs",
+          "domain": "products",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_inventory_guangdong_monitor_items",
+          "domain": "inventory",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_inventory_guangdong_supplier_cycles",
+          "domain": "inventory",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_inventory_guangdong_monitor_audits",
+          "domain": "inventory",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_inventory_import_batches",
+          "domain": "inventory",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_inventory_stock_lines",
+          "domain": "inventory",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_inventory_age_lines",
+          "domain": "inventory",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_inventory_import_scope_heads",
+          "domain": "inventory",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_inventory_import_attempts",
+          "domain": "inventory",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_inventory_import_fingerprints",
+          "domain": "inventory",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_inventory_data_revisions",
+          "domain": "inventory",
+          "returned": 1,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_inventory_write_authority",
+          "domain": "inventory",
+          "returned": 1,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_inventory_write_request_receipts",
+          "domain": "inventory",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_inventory_raw_upload_sessions",
+          "domain": "inventory",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_inventory_raw_upload_chunks",
+          "domain": "inventory",
+          "returned": 0,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_replenishment_plan_items",
+          "domain": "inventory",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_inventory_replenishment_group_deliveries",
+          "domain": "inventory",
+          "returned": 0,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_inventory_operating_settings",
+          "domain": "inventory",
+          "returned": 1,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_inventory_migration_runs",
+          "domain": "inventory",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_workflow_data_revisions",
+          "domain": "workflow",
+          "returned": 1,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_workflow_write_authority",
+          "domain": "workflow",
+          "returned": 1,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_workflow_migration_runs",
+          "domain": "workflow",
+          "returned": 1,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_workflow_write_request_receipts",
+          "domain": "workflow",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_workflow_operations_write_authority",
+          "domain": "workflow",
+          "returned": 1,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_workflow_operations_migration_runs",
+          "domain": "workflow",
+          "returned": 1,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_workflow_tasks",
+          "domain": "workflow",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_workflow_task_comments",
+          "domain": "workflow",
+          "returned": 1,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_workflow_task_activity_logs",
+          "domain": "workflow",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_workflow_task_reminders",
+          "domain": "workflow",
+          "returned": 0,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_workflow_task_templates",
+          "domain": "workflow",
+          "returned": 0,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_workflow_task_entity_links",
+          "domain": "workflow",
+          "returned": 0,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_workflow_task_attachments",
+          "domain": "workflow",
+          "returned": 0,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_workflow_attachment_cleanup_queue",
+          "domain": "workflow",
+          "returned": 0,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_workflow_operation_records",
+          "domain": "workflow",
+          "returned": 0,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_workflow_operation_activities",
+          "domain": "workflow",
+          "returned": 0,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_workflow_new_product_projects",
+          "domain": "workflow",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_workflow_new_product_targets",
+          "domain": "workflow",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_workflow_new_product_stages",
+          "domain": "workflow",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_workflow_new_product_activities",
+          "domain": "workflow",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_workflow_new_product_lines",
+          "domain": "workflow",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_workflow_new_product_line_codes",
+          "domain": "workflow",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_workflow_new_product_weekly_report_config",
+          "domain": "workflow",
+          "returned": 1,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_workflow_new_product_weekly_deliveries",
+          "domain": "workflow",
+          "returned": 1,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_customer_service_import_batches",
+          "domain": "customer_service",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_customer_service_conversations",
+          "domain": "customer_service",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_customer_service_deletion_audits",
+          "domain": "customer_service",
+          "returned": 0,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_customer_service_import_scope_heads",
+          "domain": "customer_service",
+          "returned": 1,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_customer_service_import_fingerprints",
+          "domain": "customer_service",
+          "returned": 0,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_customer_service_import_attempts",
+          "domain": "customer_service",
+          "returned": 0,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_customer_service_data_revisions",
+          "domain": "customer_service",
+          "returned": 1,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_customer_service_write_authority",
+          "domain": "customer_service",
+          "returned": 1,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_customer_service_write_request_receipts",
+          "domain": "customer_service",
+          "returned": 0,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_customer_service_migration_runs",
+          "domain": "customer_service",
+          "returned": 1,
+          "hasMore": true
+        },
+        {
+          "dataset": "rows_customer_service_raw_upload_sessions",
+          "domain": "customer_service",
+          "returned": 0,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_customer_service_raw_upload_chunks",
+          "domain": "customer_service",
+          "returned": 0,
+          "hasMore": false
+        },
+        {
+          "dataset": "rows_bi_migration_runs",
+          "domain": "bi",
+          "returned": 1,
+          "hasMore": false
+        }
+      ]
+    },
+    "limitations": [
+      "Production model provider was not called; OpenAI-compatible and Anthropic tool round trips were tested with isolated protocol fixtures.",
+      "Restricted-role and private-owner isolation validated in fixtures; no production test accounts created.",
+      "Business data was not changed; normal query audits and one /help conversation were created."
+    ]
+  },
+  "backup": {
+    "before": {
+      "status": "completed",
+      "backupId": "daily-20260908T141717Z-26f2e94838fc",
+      "backupDirectory": "D:\\teruisi-runtime\\django-sales\\backups\\postgres-daily\\daily-20260908T141717Z-26f2e94838fc",
+      "manifestSha256": "1d4a22f2bb9b019236f3212b74443614113302521b4ae2cceb96decff36ee71c",
+      "dumpSha256": "c65de57e164a20259e8750d81ceecdb9629e47ef8a69c79145986d6d69be0d54",
+      "contentSha256": "9cdabd1583f9569fea8ff2581c9e374aad34bb02cb9fda8d6dba99b2f41bec7d",
+      "completedAt": "09/08/2026 22:18:45",
+      "serviceStateChanged": false
+    },
+    "beforeRestore": {
+      "version": "teruisi-postgres-restore-rehearsal-v1",
+      "status": "completed",
+      "rehearsalId": "d570a891c204",
+      "startedAt": "2026-09-08T14:20:09.6799603+00:00",
+      "completedAt": "2026-09-08T14:25:08.0665163+00:00",
+      "backupId": "daily-20260908T141717Z-26f2e94838fc",
+      "backupManifestSha256": "1d4a22f2bb9b019236f3212b74443614113302521b4ae2cceb96decff36ee71c",
+      "dumpSha256": "c65de57e164a20259e8750d81ceecdb9629e47ef8a69c79145986d6d69be0d54",
+      "expectedContentSha256": "9cdabd1583f9569fea8ff2581c9e374aad34bb02cb9fda8d6dba99b2f41bec7d",
+      "restoredContentSha256": "9cdabd1583f9569fea8ff2581c9e374aad34bb02cb9fda8d6dba99b2f41bec7d",
+      "isolatedPort": 55432,
+      "productionDatabaseTouched": false,
+      "serviceStateChanged": false,
+      "cleanupStatus": "isolated_data_removed"
+    },
+    "after": {
+      "status": "completed",
+      "backupId": "daily-20260908T150833Z-6cd39bcbb30e",
+      "backupDirectory": "D:\\teruisi-runtime\\django-sales\\backups\\postgres-daily\\daily-20260908T150833Z-6cd39bcbb30e",
+      "manifestSha256": "917d26bbe64786db7267c6cf6a414a224a6ad2352aea006464ac0bc4a4900a70",
+      "dumpSha256": "814bb8331eb82db03c4aefad3bb20be621136b51f809207c00fa1dd656c53ca2",
+      "contentSha256": "00056024576c4f13041080c691463a9d397190709c5911300483968bf99c3a46",
+      "completedAt": "09/08/2026 23:10:01",
+      "serviceStateChanged": false
+    },
+    "afterRestore": {
+      "version": "teruisi-postgres-restore-rehearsal-v1",
+      "status": "completed",
+      "rehearsalId": "c6049f328a1d",
+      "startedAt": "2026-09-08T15:11:01.9678358+00:00",
+      "completedAt": "2026-09-08T15:15:13.3459837+00:00",
+      "backupId": "daily-20260908T150833Z-6cd39bcbb30e",
+      "backupManifestSha256": "917d26bbe64786db7267c6cf6a414a224a6ad2352aea006464ac0bc4a4900a70",
+      "dumpSha256": "814bb8331eb82db03c4aefad3bb20be621136b51f809207c00fa1dd656c53ca2",
+      "expectedContentSha256": "00056024576c4f13041080c691463a9d397190709c5911300483968bf99c3a46",
+      "restoredContentSha256": "00056024576c4f13041080c691463a9d397190709c5911300483968bf99c3a46",
+      "isolatedPort": 55432,
+      "productionDatabaseTouched": false,
+      "serviceStateChanged": false,
+      "cleanupStatus": "isolated_data_removed"
+    }
+  },
+  "changes": "All 12 owning readers received explicit column SELECT grants. No new business tables, authority epoch changes, D1 fallback or business writes.",
+  "releaseCorrection": "Initial positive record queries all passed. Invalid column was rejected with 503; forward fix preserves 400/403/413 source codes through central tool execution. Final public rejection checks passed.",
+  "operationalNotes": [
+    "Django supervisor was re-armed after maintenance; startup shortcut verified, hidden process running and healthy. The current shell inherited an incompatible PowerShell module path; the supervisor was launched with the machine PSModulePath.",
+    "Merged feature and correction branches removed. Development and TypeScript baseline worktrees retained: prior baseline cleanup was rejected by automatic approval review (blocked by policy); baseline node_modules links to the development worktree. Detailed local release logs also remain in the development worktree."
+  ],
+  "recovery": "Use current PostgreSQL backups and compatible or controlled forward fixes only; preserve immutable release, backup, restore and retirement evidence."
+}

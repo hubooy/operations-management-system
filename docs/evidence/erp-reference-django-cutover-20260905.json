@@ -1,0 +1,224 @@
+{
+  "evidenceVersion": "teruisi-erp-reference-django-production-cutover-v1",
+  "status": "completed",
+  "environment": {
+    "scope": "current Windows host",
+    "businessTimezone": "Asia/Shanghai",
+    "runtimeRoot": "D:/teruisi-runtime/django-sales",
+    "postgresql": "127.0.0.1:5432/PostgreSQL 17.11"
+  },
+  "cutover": {
+    "cutoverId": "erp-reference-pg-20260905T102200Z-8a8dbcb59fc8",
+    "authorityEpoch": "69f7d42f-109f-43c7-9f84-c86629d8fa00",
+    "migrationPlanId": "erp-reference-plan-5680279313074ccc98b436c654b971c8",
+    "migrationRunId": "erp-reference-eb5fa9fc5cd0467ba58c9dc0a9c11b01",
+    "sourceDigest": "33b4d6032868f5d25532cc9333f09482bc2a205ee92f2cec0524a8f583f4d7fb",
+    "targetDigest": "33b4d6032868f5d25532cc9333f09482bc2a205ee92f2cec0524a8f583f4d7fb",
+    "pointOfNoReturnCrossed": true,
+    "rollbackPolicy": "postgres_backup_wal_pitr_compatible_code_or_approved_forward_fix_only"
+  },
+  "sourceSnapshot": {
+    "path": "D:/teruisi-runtime/django-sales/audits/erp-reference-cutover/20260905-101626-3c644916/erp-reference-source.sqlite",
+    "sha256": "33c30d7ac488f1dc88bba854b8435a2283f7a14dba217d4bf6484a6ddb486f29",
+    "manifestSha256": "02ca45d2e8373c011de231f73b7f34a0b542b42817c796845af7e69be10510aa"
+  },
+  "migration": {
+    "status": "verified",
+    "counts": {
+      "products": 8473,
+      "combos": 4392,
+      "batches": 83,
+      "attempts": 58,
+      "normalizedFingerprints": 83,
+      "scopeHeads": 2
+    },
+    "postgresAuthority": "postgres",
+    "d1AuthorityBeforeRetirement": "postgresql"
+  },
+  "d1AuthorityInstall": {
+    "installedAt": "2026-09-05T10:13:48+08:00",
+    "writeGuards": 39,
+    "preflightCounts": {
+      "batches": 83,
+      "products": 8473,
+      "combos": 4392,
+      "fingerprints": 27,
+      "attempts": 58,
+      "scopeHeads": 2,
+      "outbox": 5,
+      "uploads": 4
+    },
+    "preAuthorityBackupPath": "D:/teruisi-runtime/django-sales/audits/erp-reference-cutover/20260905-101258-412629da/d1-before-erp-reference-authority.sqlite",
+    "preAuthorityBackupSha256": "2e2719ee7535011f6e55e4c3602108bdea764b6de8ba6e99dc805ee231ed4bea",
+    "installReceiptSha256": "76a2f9ed6936d45ef24596c3742b70ee93c837ac64de20da0a71353ac570601b"
+  },
+  "services": {
+    "reader": "127.0.0.1:8091",
+    "writer": "127.0.0.1:8092",
+    "readerReady": true,
+    "writerReady": true,
+    "startupReceiptPath": "D:/teruisi-runtime/django-sales/erp-reference-enabled.json",
+    "startupReceiptSha256": "604d0d5a7031b0ccd6ca5ee81ef1ee42d7b773823f841aceb2f9d6ea3c5ceafe",
+    "deployedAt": "2026-09-05T11:41:23.2488393+08:00",
+    "appFingerprint": "086d4102dc00ba1ca1bc2363fcce6c2ad2d702b3400f495707cb35e4e9d2c911",
+    "deploymentReceiptSha256": "9c8763520012879f95c5f3e9ded90a4dd23a8f054c83936fa3ba30fd903ce6a2",
+    "legacyBridgeLoginDisabled": true,
+    "legacyBridgePermissionsRevoked": true
+  },
+  "connectionCapacity": {
+    "preFixMaxConnections": 100,
+    "observedResidentApplicationConnections": 97,
+    "superuserReservedConnections": 3,
+    "preFixPostgresqlConfigSha256": "e791c971cff8f2051d8522d8e15d2b413a534faee61dccb863a001ea1e459794",
+    "configuredMaxConnections": 128,
+    "postFixPostgresqlConfigSha256": "1f2741e60ce6ea612b236e61a98746c34aa7954a24e403e920959192a301ffdc",
+    "startupMinimum": 120,
+    "reason": "ERP reader/writer raised the full Django/BI Waitress thread ceiling to about 98 persistent database connections",
+    "postFixWarmRequests": 294,
+    "postFixWarmRequestsPassed": 294,
+    "postFixResidentApplicationConnections": 98,
+    "postFixNormalRoleHeadroom": 27,
+    "postFixWarmStackVerified": true
+  },
+  "workerRelease": {
+    "releaseId": "20260905T024235Z-8ab8213dadf5407c",
+    "rotationPlanSha256": "104fbf5f7b902642ee192cc68e636da1543b7f5ff0be5c1fd4d291c0c67dff7c",
+    "manifestSha256": "7c09ca48b2ca754b9d03594be9108ad6667aed9472c9afb4c2ad990ed51271ab",
+    "predecessorGuardReceiptSha256": "7098ff39d71facb199adbb7a90860419898cf2c222434a561d018075826eddcb",
+    "buildFingerprint": "022f28100d2cc604ffde7fe81256da4c289b23b52152b332f489e17c49effce9",
+    "successorSha256": "bd900b008d29de6d01c1946d9d155b5407e3d535b631cd71e8bd7755320d4185",
+    "consumptionSha256": "0f19fc5038c4a9546d559be98e84be5f767ac928bb26c83c0e3113eaf4fa375d",
+    "startupBindingSha256": "d2d2fb75e8a5e98806a0f13b46f9e46cb008ae4623eccbaccfa7b745a566c85f",
+    "successorCount": 66,
+    "chainSha256": "b8d869e8be4b48e407a7fefa6427e9d396681f0e02e880e4d02d5073174988b9",
+    "state": "exact_release"
+  },
+  "systemTest": {
+    "receiptPath": "D:/teruisi-runtime/django-sales/audits/erp-reference-cutover/erp-reference-pg-20260905T102200Z-8a8dbcb59fc8-system-test/erp-reference-system-test-receipt.json",
+    "receiptSha256": "af84be9c66453d517ed4262f53028d3f7914106a347710b2b999992eecc4b28a",
+    "checksPassed": 10,
+    "checksFailed": 0,
+    "checks": [
+      "djangoReader",
+      "djangoWriterNegative",
+      "publicImportHistory",
+      "publicDirectImport",
+      "publicChunkUpload",
+      "globalSearchConsumer",
+      "aiConsumer",
+      "legacyD1Rejected",
+      "legacyR2Rejected",
+      "otherDomainsPreserved"
+    ],
+    "postCapacityFixPublicReadback": {
+      "productsStatuses": [200, 200],
+      "combosStatuses": [200, 200],
+      "cacheControl": "no-store"
+    }
+  },
+  "d1Retirement": {
+    "planId": "85d276dbc69f9269410783a7cc2fe63208305f0bdfa9fe60320343b398f75442",
+    "auditId": "a8c57d0b2953ac3c5ec3034fe08e112963effbbf8915f8e6f2d27cc292e5b651",
+    "migrationSha256": "ca20485f79ad2b434a12d14072fd744a8b33fe450b5ffddc35979925cb20a97f",
+    "preflightEvidenceSha256": "6231ed21f816df47c64d27e5ae996914b6fe21c41c4cff990783e5c613af0c80",
+    "preservedEvidenceSha256": "4540595387025a906d7beb4de8d18e055e121eb6602f8ac8aed1f719f029e47b",
+    "auditPath": "D:/teruisi-runtime/django-sales/audits/erp-reference-cutover/20260905-110112-0aa2557c/erp-reference-retirement-audit.json",
+    "auditFileSha256": "6335a034671d403dd51886cde5cb62290405110715d794fe64f4f19d8a75fb24",
+    "tombstoneViews": 7,
+    "sharedTableGuards": 18,
+    "allTombstoneViewsEmpty": true,
+    "retirementReceiptStatus": "completed",
+    "otherDomainSharedDigestBefore": "a96b788d96decef8a63e19e8ee9a590413bff5cff5687c53e8a75cffad0102fa",
+    "otherDomainSharedDigestAfter": "a96b788d96decef8a63e19e8ee9a590413bff5cff5687c53e8a75cffad0102fa",
+    "otherDomainCounts": {
+      "attempts": 1,
+      "fingerprints": 1,
+      "scopeHeads": 1,
+      "retirementReceipts": 8,
+      "uploadChunks": 0,
+      "uploadResults": 0,
+      "uploads": 0
+    }
+  },
+  "r2Retirement": {
+    "prefix": "inventory-upload/",
+    "evidencePath": "D:/teruisi-runtime/django-sales/audits/erp-reference-cutover/20260905-110019-e7c38f49/erp-reference-r2-retirement-evidence.json",
+    "evidenceSha256": "cf297a0f8399ce3bc3d914b16e70d3378dccda9afbaa3a59fc10f2b9482f6a5f",
+    "objects": 0,
+    "bytes": 0,
+    "multipartUploads": 0,
+    "multipartParts": 0,
+    "globalBindingRetainedForOtherDomains": true
+  },
+  "postCutoverBackup": {
+    "backupId": "daily-20260905T030501Z-66b58028ef30",
+    "directory": "D:/teruisi-runtime/django-sales/backups/postgres-daily/daily-20260905T030501Z-66b58028ef30",
+    "manifestSha256": "2b6f35d20430432dc3a7e2b0bc89614115715e65138f3d80f3f5bee8962429e4",
+    "dumpSha256": "aade174d433f06f74d61f9bff9243fcd9171fae9e4d2fa6653a77e7785041cad",
+    "contentSha256": "1faa8b07e95c82e144144f117b936f794fba12deaf51bfc448e378719901c661",
+    "independentlyVerified": true,
+    "serviceStateChanged": false
+  },
+  "restoreRehearsal": {
+    "rehearsalId": "c45ed90af731",
+    "isolatedPort": 55444,
+    "expectedContentSha256": "1faa8b07e95c82e144144f117b936f794fba12deaf51bfc448e378719901c661",
+    "restoredContentSha256": "1faa8b07e95c82e144144f117b936f794fba12deaf51bfc448e378719901c661",
+    "resultPath": "D:/teruisi-runtime/django-sales/rehearsals/postgres-restore/restore-c45ed90af731/rehearsal-result.json",
+    "resultSha256": "b14a0d15a75f713d0d732c93cbc8d65e08b4710ea921c59a7b75fdf49b45e760",
+    "productionDatabaseTouched": false,
+    "serviceStateChanged": false,
+    "cleanupStatus": "isolated_data_removed"
+  },
+  "verification": {
+    "djangoAllDomainTests": {
+      "passed": 316,
+      "failed": 0
+    },
+    "fullNodeSuite": {
+      "total": 1843,
+      "passed": 1823,
+      "skipped": 20,
+      "failed": 0
+    },
+    "focusedRuntimeTests": {
+      "initialRegressionRunPassed": 40,
+      "productionSmokeRegressionRunPassed": 5,
+      "failed": 0
+    },
+    "renderedHtml": {
+      "passed": 19,
+      "failed": 0
+    },
+    "productionBuild": "passed",
+    "djangoCheck": "passed",
+    "djangoMigrationsCheck": "passed",
+    "powershellSyntax": "passed",
+    "connectionCapacityRegression": {
+      "localServiceTestsPassed": 2,
+      "erpRuntimeTestsPassed": 5,
+      "productsRuntimeTestsPassed": 4,
+      "failed": 0
+    },
+    "standaloneTypecheck": {
+      "status": "pre_existing_baseline_failures",
+      "errors": 235,
+      "erpMigrationRegressionsIdentified": 0
+    },
+    "gitDiffCheck": "passed"
+  },
+  "finalRuntime": {
+    "systemState": "Running",
+    "backendState": "Ready",
+    "workerState": "exact_release",
+    "allConfiguredDomainsReady": true,
+    "warmStackStatusCheckedAt": "2026-09-05T11:47:07.5052563+08:00"
+  },
+  "implementationCommits": [
+    "0aafeba2",
+    "8a8dbcb5",
+    "12a7eb0c",
+    "b4cccfce",
+    "4ba674a7"
+  ]
+}

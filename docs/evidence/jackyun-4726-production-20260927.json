@@ -1,0 +1,314 @@
+{
+  "status": "verified_success",
+  "businessDateShanghai": "2026-09-27",
+  "authorization": "User explicitly approved this Worker/helper stop/start, candidate adoption, exact 4726 closure and one complete original n8n test.",
+  "source": {
+    "deployedCommit": "e03d77a5",
+    "implementationCommit": "04f0f193",
+    "classifierCommit": "4dc612ac"
+  },
+  "release": {
+    "status": "activated",
+    "version": "teruisi-local-worker-release-successor-v1",
+    "planSha256": "0f62d4b5648e22fefcb0bfedf066b862aad42d2bd4646b1929e7fce17d1a7d89",
+    "predecessorReleaseId": "20260926T151320Z-78a1701b451cdc4a",
+    "releaseId": "20260927T020512Z-816d717d5e1b615c",
+    "manifestPath": "D:\\teruisi-runtime\\teruisi-worker-sales\\releases\\20260927T020512Z-816d717d5e1b615c\\deployment-manifest.json",
+    "manifestSha256": "25d26d881708a3c97ce45adfe12d87f20839715b627c2a19796298f806cdc02e",
+    "successorSha256": "ed8cf4c138ada439e49dbbec3741f4a78be61927b017894964048405dd5df4d2",
+    "consumptionSha256": "060eac9fe57d9e106c7af695a4f490f2cebff3edc91db5e0d53fcbc8e1bf2cdb",
+    "startupBindingSha256": "f7204fa9c35b550586daa343a830054361d5d01870aca584499eca6f9dc197be",
+    "helperSha256": "b12a2cb1f68622e757953fff8bd873c8aad3b79fb68851763e80b52a5aaeb5cc",
+    "startupVerified": true
+  },
+  "closure4726": {
+    "status": "closed_before_business",
+    "runId": "n8n-export-first-4726",
+    "closureSha256": "bcec8a57541724f1b6031888e71386a6a0b5e35c2026044631b2e34b82455bc5",
+    "approvedProposalSha256": "1b8a30acbb62a235733cc1417d496115563e03074415564f6a6e3e92610d8b59",
+    "formalReadbackPassed": true,
+    "originalEvidencePreserved": true
+  },
+  "businessRun": {
+    "ok": true,
+    "checkedAt": "2026-09-27T02:30:06.250Z",
+    "execution": {
+      "id": 4737,
+      "workflowId": "J8kY2mQ5vR7sT4pN",
+      "status": "success",
+      "mode": "manual",
+      "startedAt": "2026-09-27 02:25:40.547",
+      "stoppedAt": "2026-09-27 02:29:53.951"
+    },
+    "runId": "n8n-export-first-4737",
+    "planSha256": "f76c98f07f01ea5f8265dc795a525eedc1a1163caaeb6d9abbe369a0fda6025d",
+    "manifestSha256": "b9a55213d9ae384d1f0fe6fa466d772ecd3153b9462500b8bf9bca3cf2703d35",
+    "salesStartDate": "2026-08-13",
+    "asOfDate": "2026-09-26",
+    "snapshotDate": "2026-09-27",
+    "modules": [
+      {
+        "module": "products",
+        "status": "completed",
+        "batchId": "products:c5f2c0d91aa905c6c4aded28bc989544c99756b1124ed0f87753b1ff9b705755",
+        "rowCount": 8523,
+        "warningCount": 0,
+        "outputSha256": "016fd7bda0737fbc339d8c13167bff8ab696b25ea54c7aa8e925e4022915e3e1",
+        "djangoReceipt": {
+          "status": "duplicate",
+          "inputSha256": "016fd7bda0737fbc339d8c13167bff8ab696b25ea54c7aa8e925e4022915e3e1",
+          "batchId": "products:c5f2c0d91aa905c6c4aded28bc989544c99756b1124ed0f87753b1ff9b705755",
+          "sourceKey": "products",
+          "contentHash": "e947295da6636204cd2958394ee156c727671d9e1589932d386ba1ce28d4328a",
+          "rawFileHash": "739186c8903d8f1857e22579c99e0863613e17e17d41ae28295ee0035c5150bb"
+        }
+      },
+      {
+        "module": "inventory",
+        "status": "completed",
+        "batchId": "fd6152218f2122bb270e149125f03dd65427acb2ca5100821639b0b8b3bac644",
+        "rowCount": 23969,
+        "warningCount": 6,
+        "outputSha256": "2041a085af8da60c4918235934a8890bf5c52eb797ae89be3e3ad13a7cff6753",
+        "djangoReceipt": {
+          "status": "imported",
+          "inputSha256": "2041a085af8da60c4918235934a8890bf5c52eb797ae89be3e3ad13a7cff6753",
+          "batchId": "fd6152218f2122bb270e149125f03dd65427acb2ca5100821639b0b8b3bac644",
+          "sourceKey": "inventory_stock",
+          "contentHash": "9f3e462a7648690af29f84f89364f39f31b3433d8b2c6c8b2798b4354db4d39a",
+          "rawFileHash": "2041a085af8da60c4918235934a8890bf5c52eb797ae89be3e3ad13a7cff6753"
+        }
+      },
+      {
+        "module": "inventory_age",
+        "status": "completed",
+        "batchId": "inventory_age:42bc34a04e0ffe69271d4ea0d7f4fd99cb72000bfaa46cc52e591a56c4dcabee",
+        "rowCount": 5741,
+        "warningCount": 0,
+        "outputSha256": "97b1de411a31fefb5c1ad84dc135912e55de565934c5cf5a68834e055fe5043e",
+        "djangoReceipt": {
+          "status": "imported",
+          "inputSha256": "97b1de411a31fefb5c1ad84dc135912e55de565934c5cf5a68834e055fe5043e",
+          "batchId": "inventory_age:42bc34a04e0ffe69271d4ea0d7f4fd99cb72000bfaa46cc52e591a56c4dcabee",
+          "sourceKey": "inventory_age",
+          "contentHash": "da58a7d50663651c796e3aa214eb03ae11b5f5e9cadd99b5bb59ffb33ff69ef3",
+          "rawFileHash": "97b1de411a31fefb5c1ad84dc135912e55de565934c5cf5a68834e055fe5043e"
+        }
+      },
+      {
+        "module": "sales",
+        "status": "completed",
+        "batchId": "32c0d36b93c21a4dd958d67de9864354b31e71c74a12a2c46f1c65a429045cdd",
+        "rowCount": 39471,
+        "warningCount": 115,
+        "outputSha256": "9d5cf754f2f1b7c14cac9604852f74b55e05ffbba303d2eb52b8fcbfe45739c5"
+      },
+      {
+        "module": "combos",
+        "status": "completed",
+        "batchId": "combos:544a352d7fb3c44496a195ea198bc38541fb0602b93cdcdd8f8853227ade4d54",
+        "rowCount": 4454,
+        "warningCount": 2,
+        "outputSha256": "c4ad45abc3266841f68f04c9b4eaf0b97aafae07ce10500240745dff51f39793",
+        "djangoReceipt": {
+          "status": "duplicate",
+          "inputSha256": "c4ad45abc3266841f68f04c9b4eaf0b97aafae07ce10500240745dff51f39793",
+          "batchId": "combos:544a352d7fb3c44496a195ea198bc38541fb0602b93cdcdd8f8853227ade4d54",
+          "sourceKey": "combos",
+          "contentHash": "ba872f9258641f1296408a3dd8fd74b904c87bbcfde957f18c9dbb1e17d7672a",
+          "rawFileHash": "6649618db4e229dc8fe0654765de49c78d83126ae2a3c9a0fd1ed9bddb6736c5"
+        }
+      }
+    ],
+    "freshness": {
+      "status": "available",
+      "source": "django_postgresql",
+      "authority": "sales_single_write",
+      "revision": "40:39",
+      "timeZone": "Asia/Shanghai",
+      "currentBusinessDate": "2026-09-27",
+      "expectedThroughDate": "2026-09-26",
+      "checkedAt": "2026-09-27T02:30:06.181Z",
+      "coverage": {
+        "startDate": "2025-01-01",
+        "cutoffDate": "2026-09-26",
+        "coveredDayCount": 634,
+        "lagDaysToCurrentBusinessDate": 1,
+        "throughYesterday": true
+      },
+      "latestBatch": {
+        "id": "32c0d36b93c21a4dd958d67de9864354b31e71c74a12a2c46f1c65a429045cdd",
+        "fileName": "销售单明细账_2026-08-13_2026-09-26_已筛选并匹配成本.xlsx",
+        "completedAt": "2026-09-27T02:29:41.630003+00:00",
+        "rowCount": 39471
+      }
+    },
+    "workflowDefinitionsUnchanged": 18
+  },
+  "serviceVerification": {
+    "system": {
+      "version": "teruisi-operations-system-control-v2",
+      "state": "Running",
+      "backendState": "Ready",
+      "workerState": "exact_release",
+      "releaseId": "20260927T020512Z-816d717d5e1b615c",
+      "supervisorProcessId": 35284,
+      "portProcessId": 28188,
+      "url": "http://localhost:3000/",
+      "reason": null,
+      "components": {
+        "core": true,
+        "finance": true,
+        "netshop": true,
+        "market": true,
+        "products": true,
+        "workflow": true,
+        "inventory": true,
+        "customerService": true,
+        "accessControl": true,
+        "erpReference": true,
+        "bi": true,
+        "ai": true
+      },
+      "checkedAt": "2026-09-27T10:31:05.4874089+08:00"
+    },
+    "workflowDefinitionsUnchanged": 18,
+    "djangoManifestUnchanged": true,
+    "helper": {
+      "ok": true,
+      "busy": false,
+      "activeWorkflow": null,
+      "storeExecutions": []
+    },
+    "jackyunNonterminal": [],
+    "preservedRetry": {
+      "id": 4732,
+      "workflowId": "TeruisiHourlyRetry2026",
+      "status": "waiting",
+      "waitTill": "2026-09-27 03:06:46.553"
+    },
+    "weeklyNaturalExecutions": [
+      {
+        "id": 4734,
+        "status": "success",
+        "startedAt": "2026-09-27 02:15:00.602",
+        "stoppedAt": "2026-09-27 02:17:06.667"
+      },
+      {
+        "id": 4735,
+        "status": "success",
+        "startedAt": "2026-09-27 02:20:00.019",
+        "stoppedAt": "2026-09-27 02:21:11.407"
+      },
+      {
+        "id": 4736,
+        "status": "success",
+        "startedAt": "2026-09-27 02:25:00.030",
+        "stoppedAt": "2026-09-27 02:25:16.508"
+      },
+      {
+        "id": 4738,
+        "status": "success",
+        "startedAt": "2026-09-27 02:30:00.064",
+        "stoppedAt": "2026-09-27 02:30:30.480"
+      }
+    ],
+    "djangoSupervisor": {
+      "health": "healthy",
+      "desiredState": "running",
+      "code": "all_components_ready",
+      "consecutiveFailures": 0,
+      "lastHealthyAt": "2026-09-27T02:31:50.2105294+00:00"
+    },
+    "postgresPidUnchanged": 11332,
+    "n8nPidUnchanged": 17868,
+    "migrationCount": 62,
+    "migrationListUnchanged": true,
+    "jackyunPort9223Closed": true,
+    "jackyunLockAbsent": true,
+    "workerHelperRestarted": true,
+    "djangoRedeployed": false,
+    "databaseRestarted": false,
+    "n8nRestarted": false
+  },
+  "backups": {
+    "before": {
+      "status": "completed",
+      "backupId": "daily-20260927T020535Z-e4fa48d94e59",
+      "backupDirectory": "D:\\teruisi-runtime\\django-sales\\backups\\postgres-daily\\daily-20260927T020535Z-e4fa48d94e59",
+      "manifestSha256": "eb28dceaa5eabeb766b99f655164fbbda63eb577a1b0f513f94574ac2624ad7e",
+      "dumpSha256": "8b33a10046f06ad4feaa7449beb39c1c901a121f6010cad89594af7bd096544d",
+      "contentSha256": "dc50d6ad8b99467e4f96d0d46f67d1a28a9e7c26a66d4c3ac473dba11855c86f",
+      "completedAt": "2026-09-27T02:08:03.0334022+00:00",
+      "serviceStateChanged": false
+    },
+    "independentRestore": {
+      "version": "teruisi-postgres-restore-rehearsal-v1",
+      "status": "completed",
+      "rehearsalId": "9f7c14e3ccac",
+      "startedAt": "2026-09-27T02:11:55.2517585+00:00",
+      "completedAt": "2026-09-27T02:18:29.0163680+00:00",
+      "backupId": "daily-20260927T020535Z-e4fa48d94e59",
+      "backupManifestSha256": "eb28dceaa5eabeb766b99f655164fbbda63eb577a1b0f513f94574ac2624ad7e",
+      "dumpSha256": "8b33a10046f06ad4feaa7449beb39c1c901a121f6010cad89594af7bd096544d",
+      "expectedContentSha256": "dc50d6ad8b99467e4f96d0d46f67d1a28a9e7c26a66d4c3ac473dba11855c86f",
+      "restoredContentSha256": "dc50d6ad8b99467e4f96d0d46f67d1a28a9e7c26a66d4c3ac473dba11855c86f",
+      "isolatedPort": 55474,
+      "productionDatabaseTouched": false,
+      "serviceStateChanged": false,
+      "cleanupStatus": "isolated_data_removed"
+    },
+    "after": {
+      "status": "completed",
+      "backupId": "daily-20260927T023048Z-63a3fde10638",
+      "backupDirectory": "D:\\teruisi-runtime\\django-sales\\backups\\postgres-daily\\daily-20260927T023048Z-63a3fde10638",
+      "manifestSha256": "4481d9ac3036e50f9657deb759d49f5887c934b0ce66eee8ce00dea9317fa034",
+      "dumpSha256": "84611053f14b344b89e79aff305e245d1d438661a6027d2c307163130a172c1b",
+      "contentSha256": "9e9f9630bd759afce1c2a26c93919610df99940715eed7620a8eb8a956e2ef96",
+      "completedAt": "2026-09-27T02:33:09.1827394+00:00",
+      "serviceStateChanged": false
+    },
+    "beforeArchivedToE": "E:\\运营管理系统业务数据\\daily-20260927T020535Z-e4fa48d94e59",
+    "afterArchivedToE": "E:\\运营管理系统业务数据\\daily-20260927T023048Z-63a3fde10638",
+    "allSixArchiveFilesVerifiedBySha256": true
+  },
+  "storage": {
+    "originalBackupDirectoriesMoved": 20,
+    "files": 60,
+    "bytes": 13352247222,
+    "mirrorRoot": "E:/运营管理系统业务数据",
+    "originalsArchiveRoot": "E:/TERUISI-candidate-artifacts/jackyun-login-recovery-20260927/archived-D-postgres-backups",
+    "sourceManifestSidecarAndDumpVerified": true,
+    "mirrorsVerifiedBeforeMove": true,
+    "originalsReverifiedAfterMove": true,
+    "backupDataDeleted": false
+  },
+  "naturalWatchdogRounds": [
+    {
+      "at": "2026-09-27T02:27:24.8500712+00:00",
+      "healthy": true,
+      "releaseId": "20260927T020512Z-816d717d5e1b615c"
+    },
+    {
+      "at": "2026-09-27T02:29:24.9062872+00:00",
+      "healthy": true,
+      "releaseId": "20260927T020512Z-816d717d5e1b615c"
+    }
+  ],
+  "validation": {
+    "focusedTestsPassed": 48,
+    "focusedTestsFailed": 0,
+    "focusedLintErrors": 0,
+    "isolatedHelperBuildAndSyntaxPassed": true,
+    "formalOnlineCandidatePreparationPassed": true
+  },
+  "executionNotes": [
+    "The first task wrapper failed parsing a UTF-8-without-BOM Chinese path before any service action. The wrapper was encoded correctly and rerun.",
+    "The Stop/apply/Start controllers returned valid stopped/activated/started receipts. An outer pwsh wrapper remained childless with inherited handles; only its exact PID 2300, creation time and task command were matched and terminated after independent full-stack health verification. Business processes were preserved."
+  ],
+  "limitations": [
+    "The intermittent DPAPI missing lookup cause remains unconfirmed; 4737 did not reproduce it or exercise the new missing-diagnostic branch.",
+    "Inventory/sales/combos retained 6/115/2 non-blocking source warnings. Successful synchronization does not resolve underlying source data or cost warnings.",
+    "This authorization is limited to the completed maintenance and single test; it grants no future replay, credential or profile changes."
+  ]
+}

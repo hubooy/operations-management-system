@@ -4,6 +4,7 @@ import {
   type XlsxCellValue,
   type XlsxRow,
 } from "./xlsx";
+import { inferInventoryWarehouseType } from "@/lib/inventory/warehouse-classification";
 
 export const ERP_REFERENCE_SOURCE_KEYS = ["products", "inventory_age", "combos"] as const;
 export type ErpReferenceSourceKey = (typeof ERP_REFERENCE_SOURCE_KEYS)[number];
@@ -87,7 +88,7 @@ const AGE_ALIASES = {
   specification: ["规格", "规格名称", "规格型号", "商品规格", "货品规格"],
   category: ["分类", "货品分类", "商品分类", "末级分类", "类目"],
   availableQuantity: ["可用库存", "可售库存", "可用数量", "可售数量", "库存数量", "实盘数量", "库存"],
-  inventoryAgeDays: ["库龄天数", "库存天数", "库龄", "最长库龄", "平均库龄"],
+  inventoryAgeDays: ["库龄天数", "库龄(天)", "库存天数", "库龄", "最长库龄", "平均库龄"],
   sales7dQuantity: ["前7天销量", "近7天销量", "7天销量", "最近7天销量"],
   sales30dQuantity: ["前30天销量", "近30天销量", "30天销量", "最近30天销量"],
   unitCost: ["固定成本价", "成本价", "单位成本", "含税成本价"],
@@ -201,13 +202,6 @@ function requiredText(value: string, field: string, label: string, row: XlsxRow,
   return value;
 }
 
-function inferWarehouseType(warehouse: string): InventoryAgeImportRow["warehouseType"] {
-  const normalized = warehouse.toLowerCase();
-  if (/京东|rdc|dc仓|配送中心/.test(normalized)) return "jd_rdc";
-  if (/仓|库/.test(normalized)) return "owned";
-  return "other";
-}
-
 function pushDuplicateWarnings(
   values: string[],
   label: string,
@@ -267,7 +261,7 @@ function parseInventoryAge(rows: XlsxRow[]) {
     parsed.push({
       sourceRowNumber: row.rowNumber,
       warehouse,
-      warehouseType: inferWarehouseType(warehouse),
+      warehouseType: inferInventoryWarehouseType(warehouse),
       productCode,
       productName: read(row, fields, "productName"),
       specification: read(row, fields, "specification"),
@@ -409,6 +403,21 @@ export function isErpReferenceSourceKey(value: unknown): value is ErpReferenceSo
   return typeof value === "string" && (ERP_REFERENCE_SOURCE_KEYS as readonly string[]).includes(value);
 }
 
+function normalizeComboDisplayNames<T extends { rows: ComboItemImportRow[]; warnings: ErpReferenceIssue[] }>(parsed: T): T {
+  let changedFields = 0;
+  for (const row of parsed.rows) {
+    for (const field of ["parentName", "childName"] as const) {
+      if (/[\t\r\n]/.test(row[field])) {
+        row[field] = row[field].replace(/[ \t\r\n]+/g, " ").trim();
+        changedFields += 1;
+      }
+    }
+  }
+  if (changedFields) parsed.warnings.push({ code: "NORMALIZED_DISPLAY_WHITESPACE",
+    message: `组合装名称中 ${changedFields} 个字段的制表或换行空白已规范为空格，编号和子件数量保持原值` });
+  return parsed;
+}
+
 export function parseErpReferenceXlsx(
   source: ErpReferenceSourceKey,
   input: ArrayBuffer | Uint8Array,
@@ -423,11 +432,11 @@ export function parseErpReferenceXlsx(
       && hasHeader(parentSheet.rows, JKY_COMBO_PARENT_ALIASES, ["parentCode"])
       && hasHeader(childSheet.rows, JKY_COMBO_CHILD_ALIASES, ["parentCode", "childCode", "childQuantity"])
     ) {
-      const parsed = parseJkyComboWorkbook(parentSheet.rows, childSheet.rows);
+      const parsed = normalizeComboDisplayNames(parseJkyComboWorkbook(parentSheet.rows, childSheet.rows));
       return { source, sheetName: `${parentSheet.sheetName} + ${childSheet.sheetName}`, ...parsed };
     }
     const fallbackSheet = parseXlsxFirstSheet(input, { maxRows: MAX_REFERENCE_ROWS + 1 });
-    return { source, sheetName: fallbackSheet.sheetName, ...parseCombos(fallbackSheet.rows) };
+    return { source, sheetName: fallbackSheet.sheetName, ...normalizeComboDisplayNames(parseCombos(fallbackSheet.rows)) };
   }
 
   const sheet = parseXlsxFirstSheet(input, { maxRows: MAX_REFERENCE_ROWS + 1 });

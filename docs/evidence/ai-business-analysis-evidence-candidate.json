@@ -1,0 +1,66 @@
+{
+  "status": "phase_1_second_batch_candidate_not_deployed",
+  "date": "2026-09-16",
+  "baseMain": "5904d690",
+  "previousBatch": "5450b1b6037ab03381f868d12f5592f1cf9945da",
+  "branch": "codex/ai-business-analysis-stages",
+  "scope": [
+    "Exact platform/shop/channel ERP sales pages with positive/refund/net/cost controls",
+    "Online specification code to current netshop merchant code reconciliation without ambiguous fanout",
+    "Owner-bound durable source pages, checkpoint CAS, cancellation, sealing and read-only evidence tool",
+    "AI 0014 migration, 58-table permissions/health/backup contract and isolated upgrade rehearsal"
+  ],
+  "validation": {
+    "isolatedPostgresqlRegression": {
+      "tests": 294, "passed": 292, "skipped": 2, "failed": 0,
+      "log": ".runtime/ai-pg-51d817d2cbf0/tests.log",
+      "scope": "ai_assistant, business_analysis, sales.tests.test_analysis, sales.tests.test_consumers_api, netshop"
+    },
+    "isolatedPostgresqlFinalFocused": {
+      "tests": 13, "passed": 13, "failed": 0,
+      "log": ".runtime/ai-pg-b48426c1d3d9/tests.log",
+      "includes": ["empty-source identity hints", "invalid actions", "atomic audit failure rollback", "cross-domain persisted mapping", "owner/role/cancellation/version guards"]
+    },
+    "upgradeRehearsal": {
+      "log": ".runtime/ai-pg-49ded770b346/business-evidence-upgrade.json",
+      "upgrade": "0013->0014", "tables": 58,
+      "old56TablesDigestPreserved": "2b89ee1ac2e2e1c4398e7efb67047910616b3f0dff46bfb870459841185e53a8",
+      "dumpRestoreDigest": "aaa9f62547fd925d9807faa15c54f59e3ce4c89c1a3942d271d9f43af9fb97e1",
+      "secondApplyNoop": true, "migrationDryRun": true, "realRoleHealth": true,
+      "fencesAndAppendOnly": true, "ownerAndTerminalGuards": true, "businessWritesDenied": true,
+      "note": "Initial fixture lacked a valid AI source digest; corrected the isolated fixture. Upgrade then passed. Following existing browser tests initially lacked websockets in the test venv; installed declared requirements-dingtalk dependencies and the subsequent full relevant PostgreSQL regression passed."
+    },
+    "nodeFullRun": {
+      "tests": 2216, "passed": 2194, "failed": 2, "skipped": 20,
+      "log": ".runtime/batch2-unit.log",
+      "failureResolution": "Both failures were historical backup fixtures assuming the pre-0014 table inventory. Kept historical fixtures at 56 tables, added explicit 58-table and invalid-predecessor coverage, updated the Python test count assertion. Entire affected Node file and its 8 Python fixtures subsequently passed. The full run was not repeated and is not represented as zero failures."
+    },
+    "nodeFocused": {"passed": 15, "failed": 0, "log": ".runtime/batch2-focused-final.log"},
+    "backupFinalFocused": {"passed": 12, "failed": 0, "nestedPythonPassed": 8, "log": ".runtime/batch2-backup-recheck-final.log"},
+    "build": {"status": "passed", "log": ".runtime/batch2-build-final.log"},
+    "eslintChangedTypescript": {"status": "passed", "log": ".runtime/batch2-lint.log"},
+    "backendBoundary": {"checkedModules": 460, "violations": 0},
+    "typescript": {
+      "status": "existing_repository_errors", "errorLines": 153,
+      "candidateOnlyErrorLinesComparedWithPreviousBatch": 0,
+      "log": ".runtime/batch2-typecheck-final.log",
+      "note": "Full typecheck remains unsuccessful. No diagnostics in changed production files; also corrected the previous batch's custom PublicApiErrorCode to the existing payload_too_large code."
+    }
+  },
+  "production": {
+    "writes": false, "deployment": false, "migration": false, "serviceRestart": false,
+    "paidModelCalls": false, "notifications": false, "realDataScaleAcceptance": false
+  },
+  "limits": {
+    "sourcesPerRun": 12, "pagesPerRun": 2000, "pageSize": 10,
+    "bytesPerRun": 67108864, "bytesPerOwner": 268435456, "globalBytes": 2147483648,
+    "activeRunsPerOwner": 4, "globalRuns": 10000, "mappingRowsPerSource": 5000,
+    "crossDomainAtomicSnapshot": false, "autonomousRunner": false, "retentionCleanup": false
+  },
+  "remaining": [
+    "Shop-level overview including true deduplicated UV and cross-source metric semantics",
+    "Real market/B2B/history coverage, identity mapping and production-scale read-only acceptance",
+    "Shared diagnosis/recommendation/report result schema and larger partition execution",
+    "Multi-agent runtime integration, reviewed diagnosis, engineered HTML/XLSX and workbench"
+  ]
+}

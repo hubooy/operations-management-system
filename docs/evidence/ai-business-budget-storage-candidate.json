@@ -1,0 +1,36 @@
+{
+  "date": "2026-09-17",
+  "branch": "codex/ai-business-analysis-stages",
+  "baseCommit": "59d66aab",
+  "batch": 22,
+  "status": "candidate_not_production_adopted",
+  "changes": [
+    "Immutable budget parameter table and unique nullable protected report reference, migration 0021",
+    "Database identity, evidence binding, byte limits, serialized quotas and deferred no-orphan guards",
+    "Trusted internal preparation, insertion and full sealed-reader recalculation with bounded UTF-8 pages",
+    "Fail closed for missing parameters, mixed profiles and incomplete references",
+    "Migration-aware 63-table backup/health/restore coverage preserving older generations"
+  ],
+  "verification": {
+    "legacyBudgetAndVolumePostgres": {"tests": 27, "passed": 27, "log": ".runtime/ai-pg-436c80fc1002/tests.log"},
+    "initialBudgetPostgres": {"tests": 26, "passed": 17, "errors": 9, "log": ".runtime/ai-pg-17bdad228d59/failure.log", "fixed": "TransactionTestCase owns its netshop revision seed after flush"},
+    "upgradeAndFullAiPostgres": {"tests": 434, "passed": 431, "errors": 1, "skipped": 2, "log": ".runtime/ai-pg-6433ae7dd49c/failure.log", "remainingFixtureFailure": "Full-catalog acceptance also needed an explicit netshop revision seed", "allElevenNewStorageTestsPassed": true, "upgradeEvidence": ".runtime/ai-pg-6433ae7dd49c/business-evidence-upgrade.json"},
+    "fixedCatalogAndPurePostgres": {"tests": 12, "passed": 12, "log": ".runtime/ai-pg-691a97848ca6/tests.log", "sequence": "Transaction storage test then full-catalog acceptance, plus pure reference contracts"},
+    "databaseBoundaries": {"ownerBytes": 8388608, "globalBytes": 67108864, "ownerRows": 200, "globalRows": 2000, "actualBytesAndRowsTested": true, "twoConnectionsObserveLockThenRejectCommittedOverage": true, "repeatableReadRejected": true, "planExact48000AndPlusOne": true, "bindingExact4096AndPlusOne": true},
+    "upgradeRestore": {"ownTables": 63, "old62OriginalColumnsPreserved": true, "oldReportBudgetFkNull": true, "realRoleHealthAndGuards": true, "restoredParameters": 1, "restoredPlanBytes": 912, "restoredBindingBytes": 809, "restoredFullReaderResultHashMatches": true, "directoryVolumeAndBudgetReverseGuardsSeparate": true, "roleParameterPositiveInsert": "Owner through real mutation; restricted writer insert privilege and negative guards checked separately"},
+    "pureBudgetContracts": {"tests": 14, "passed": 14, "widePlanBytes": 34587, "wideResultBytes": 662550, "targets": 100, "scenarios": 5, "completePages": 6, "pageBytes": [36601, 36632, 36632, 36632, 36632, 32788]},
+    "backupRegression": {"tests": 16, "passed": 16, "log": ".runtime/batch22-backup-node.log"},
+    "fullNode": {"tests": 2275, "passed": 2255, "failed": 0, "skipped": 20, "log": ".runtime/batch22-full-node.log"},
+    "lint": {"errors": 0, "existingWarnings": 11, "log": ".runtime/batch22-lint.log"},
+    "backendBoundary": {"passed": true, "log": ".runtime/batch22-boundary.log"},
+    "independentReview": {"remainingStaticBlockers": 0, "fixed": ["Missing targets could yield SQL NULL check", "Missing-reference downgrade guard", "Workflow identity recheck", "Explicit source revision fixtures"]}
+  },
+  "limits": [
+    "New budget Agent profile, tools, execution receipts and public budget report creation remain disabled",
+    "100 stored targets and six complete pages do not establish model admission",
+    "Database wide-byte fixtures prove storage limits, not semantic budget acceptance",
+    "Real-store, paid-provider and production acceptance remain outstanding",
+    "No entire phase declared complete"
+  ],
+  "operations": {"productionReads": false, "productionWrites": false, "newMigration": "0021_business_budget_plans", "productionMigration": false, "deployment": false, "serviceRestart": false, "paidModelCalls": false, "externalMessages": false}
+}

@@ -1,0 +1,1427 @@
+{
+  "version": "2026-09-17",
+  "sourceFile": "仓库类型映射.xlsx",
+  "sourceSha256": "bb1cee9899e2a7c4f1d4c2aaa6a92fa3f1fc9253c9134c1be8ca62d617fdb923",
+  "warehouses": {
+    "ZA菜鸟华中武汉黄陂标准03仓": {
+      "category": "cainiao",
+      "label": "菜鸟仓",
+      "includeInInventory": true
+    },
+    "ZA菜鸟华南佛山三水标准仓": {
+      "category": "cainiao",
+      "label": "菜鸟仓",
+      "includeInInventory": true
+    },
+    "ZA菜鸟苏皖南京空港标准仓": {
+      "category": "cainiao",
+      "label": "菜鸟仓",
+      "includeInInventory": true
+    },
+    "一个小太阳仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "三合仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "三的仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "上海亚一生活小电仓2号库-京东": {
+      "category": "jd",
+      "label": "京东仓",
+      "includeInInventory": true
+    },
+    "上海公共平台仓28号库-京东": {
+      "category": "jd",
+      "label": "京东仓",
+      "includeInInventory": true
+    },
+    "上海商超A休闲食品仓3号库-京东仓": {
+      "category": "jd",
+      "label": "京东仓",
+      "includeInInventory": true
+    },
+    "上海大件平台仓1号库-CHN": {
+      "category": "jd",
+      "label": "京东仓",
+      "includeInInventory": true
+    },
+    "上海常温C平台仓9号库-CHN": {
+      "category": "jd",
+      "label": "京东仓",
+      "includeInInventory": true
+    },
+    "东南汇盈仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "东森仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "中寒仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "中山大件平台仓1号库-CHN": {
+      "category": "jd",
+      "label": "京东仓",
+      "includeInInventory": true
+    },
+    "中山常温C平台仓3号库-CHN": {
+      "category": "jd",
+      "label": "京东仓",
+      "includeInInventory": true
+    },
+    "中邦仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "中阔仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "丰华元仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "丽祥仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "丽祥发货仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "久旺仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "义乌锦瑟仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "乐之康仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "乐尚仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "乖致仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "乘心仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "亚马逊欧洲站": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "亚马逊美国站": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "亚马逊美国站2": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "亚马逊英国站": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "京东自营实物仓": {
+      "category": "guangdong",
+      "label": "广东仓",
+      "includeInInventory": true
+    },
+    "亿邦仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "亿阳仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "伊德星仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "众从": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": true
+    },
+    "众从仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "众佳仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "优希客仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "伟博仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "传成仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "佛山常温C平台仓13号库-CHN": {
+      "category": "jd",
+      "label": "京东仓",
+      "includeInInventory": true
+    },
+    "佛山旗达云仓1号库-京东": {
+      "category": "jd",
+      "label": "京东仓",
+      "includeInInventory": true
+    },
+    "元芳仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "冰傲仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "冰道仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "冰雪尔仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "凤美奔逸仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "凯丽雅仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "凯凯仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "刀锋仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "创事达仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "创得仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "创欧仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "创的仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "刷刷仓": {
+      "category": "virtual",
+      "label": "虚拟仓",
+      "includeInInventory": false
+    },
+    "功匠仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "加一科技仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "加承仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "北京公共平台仓23号库-京东": {
+      "category": "jd",
+      "label": "京东仓",
+      "includeInInventory": true
+    },
+    "北京公共平台仓33号库-京东": {
+      "category": "jd",
+      "label": "京东仓",
+      "includeInInventory": true
+    },
+    "北京公共平台仓35号库-京东": {
+      "category": "jd",
+      "label": "京东仓",
+      "includeInInventory": true
+    },
+    "北京大件平台仓1号库-CHN": {
+      "category": "jd",
+      "label": "京东仓",
+      "includeInInventory": true
+    },
+    "北京常温C平台仓35号库-CHN": {
+      "category": "jd",
+      "label": "京东仓",
+      "includeInInventory": true
+    },
+    "北京常温C平台仓45号库-CHN": {
+      "category": "jd",
+      "label": "京东仓",
+      "includeInInventory": true
+    },
+    "千寿仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "华厨仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "卓冠晟仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "南菱仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "博思特仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "卡杰森仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "厨坊仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "友业仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "友祥仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "名幸仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "君利雪仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "售后退货仓": {
+      "category": "afterSales",
+      "label": "售后仓",
+      "includeInInventory": true
+    },
+    "团星仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "圣恒仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "在途仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "多蒙仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "多辉仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "大满贯仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": true
+    },
+    "天思仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "天遂仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "奥滤仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "奥然仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "威尔顿仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "威旻仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "威正仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "安麦仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "宏泰科": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "宫品仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "展会用品仓": {
+      "category": "sample",
+      "label": "样品仓",
+      "includeInInventory": true
+    },
+    "川粤仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "巨人仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "巨发仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "广东仓": {
+      "category": "guangdong",
+      "label": "广东仓",
+      "includeInInventory": true
+    },
+    "广东仓-欧洲站": {
+      "category": "guangdong",
+      "label": "广东仓",
+      "includeInInventory": true
+    },
+    "广东仓-沃尔玛": {
+      "category": "guangdong",
+      "label": "广东仓",
+      "includeInInventory": true
+    },
+    "广东仓-美国站1": {
+      "category": "guangdong",
+      "label": "广东仓",
+      "includeInInventory": true
+    },
+    "广东仓-美国站2": {
+      "category": "guangdong",
+      "label": "广东仓",
+      "includeInInventory": true
+    },
+    "广东仓-英国站": {
+      "category": "guangdong",
+      "label": "广东仓",
+      "includeInInventory": true
+    },
+    "广东仓-虾皮": {
+      "category": "guangdong",
+      "label": "广东仓",
+      "includeInInventory": true
+    },
+    "广兴仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "广坤仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "广州三鼎": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "广州公共平台仓13号库(京东)": {
+      "category": "jd",
+      "label": "京东仓",
+      "includeInInventory": true
+    },
+    "广州公共平台仓13号库-京东": {
+      "category": "jd",
+      "label": "京东仓",
+      "includeInInventory": true
+    },
+    "广州公共平台仓28号库-京东": {
+      "category": "jd",
+      "label": "京东仓",
+      "includeInInventory": true
+    },
+    "广州大件平台仓1号库-CHN": {
+      "category": "jd",
+      "label": "京东仓",
+      "includeInInventory": true
+    },
+    "广州广绅": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "广开（帝洋）仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "广淳仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "广鑫仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "库可仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": true
+    },
+    "御厨仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "御宝仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "御斯特仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "御都仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "德州常温C中件消费品11号库-CHN": {
+      "category": "jd",
+      "label": "京东仓",
+      "includeInInventory": true
+    },
+    "德州常温C中件消费品16号库-CHN": {
+      "category": "jd",
+      "label": "京东仓",
+      "includeInInventory": true
+    },
+    "德州常温C中件消费品N16号库-CHN": {
+      "category": "jd",
+      "label": "京东仓",
+      "includeInInventory": true
+    },
+    "德润仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "心星雨仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "志亿仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "忠臣仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "思达盛仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "恒辉仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "愉升仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "慧厨仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "戈普仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "成都亚一公共平台仓15号库-京东": {
+      "category": "jd",
+      "label": "京东仓",
+      "includeInInventory": true
+    },
+    "成都亚一商超B米面粮油仓1号库-京东": {
+      "category": "jd",
+      "label": "京东仓",
+      "includeInInventory": true
+    },
+    "成都商超B米面粮油仓2号库-京东": {
+      "category": "jd",
+      "label": "京东仓",
+      "includeInInventory": true
+    },
+    "成都大件平台仓1号库-CHN": {
+      "category": "jd",
+      "label": "京东仓",
+      "includeInInventory": true
+    },
+    "成都常温C平台仓15号库-CHN": {
+      "category": "jd",
+      "label": "京东仓",
+      "includeInInventory": true
+    },
+    "成都常温C平台仓7号库-CHN": {
+      "category": "jd",
+      "label": "京东仓",
+      "includeInInventory": true
+    },
+    "执盛亮仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "执盛亮厨仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "新创展仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "新广华仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "方道仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "旭力仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "旻盈仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "昆山常温C平台仓18号库-CHN": {
+      "category": "jd",
+      "label": "京东仓",
+      "includeInInventory": true
+    },
+    "昊昕仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "明磁仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "杰威士仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "杰孚仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "杰诺仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "松奇仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "极晟仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "柚米仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "柯淇仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "柯达仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "样品仓": {
+      "category": "sample",
+      "label": "样品仓",
+      "includeInInventory": true
+    },
+    "样品仓（仓库）": {
+      "category": "sample",
+      "label": "样品仓",
+      "includeInInventory": true
+    },
+    "样品室（海骏达）": {
+      "category": "sample",
+      "label": "样品仓",
+      "includeInInventory": true
+    },
+    "格福美仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "梦飞扬代发仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "樱杰仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "欣加特仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "欧乐德仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "歌罗西仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "正康仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "正迈仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "武汉亚一公共平台仓24号库-京东": {
+      "category": "jd",
+      "label": "京东仓",
+      "includeInInventory": true
+    },
+    "武汉亚一公共平台仓24号库（京东）": {
+      "category": "jd",
+      "label": "京东仓",
+      "includeInInventory": true
+    },
+    "武汉亚一生活小电仓1号库-京东": {
+      "category": "jd",
+      "label": "京东仓",
+      "includeInInventory": true
+    },
+    "武汉大件平台仓1号库-CHN": {
+      "category": "jd",
+      "label": "京东仓",
+      "includeInInventory": true
+    },
+    "武汉常温C中件3号库-CHN": {
+      "category": "jd",
+      "label": "京东仓",
+      "includeInInventory": true
+    },
+    "武汉常温C中件消费品15号库-CHN": {
+      "category": "jd",
+      "label": "京东仓",
+      "includeInInventory": true
+    },
+    "武汉常温C中件消费品21号库-CHN": {
+      "category": "jd",
+      "label": "京东仓",
+      "includeInInventory": true
+    },
+    "民奥仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "永兴仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "永基仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "永延仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "江苏冰泓仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "沃尔玛美国": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "沃尔玛美国2": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "沃尔雅仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "沈阳公共平台仓17号库-京东": {
+      "category": "jd",
+      "label": "京东仓",
+      "includeInInventory": true
+    },
+    "沈阳厨房小电仓1号库-京东仓": {
+      "category": "jd",
+      "label": "京东仓",
+      "includeInInventory": true
+    },
+    "沈阳大件平台仓1号库-CHN": {
+      "category": "jd",
+      "label": "京东仓",
+      "includeInInventory": true
+    },
+    "沈阳实际仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "沈阳常温C平台仓17号库-CHN": {
+      "category": "jd",
+      "label": "京东仓",
+      "includeInInventory": true
+    },
+    "洛贝仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "洪辰仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "浙汇仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "浩龙仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "浩龙-节能灶仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "海外仓-美国站": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "海欣仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "海花仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "添翊仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "湖海仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "澳特莱斯仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "炊事机械仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "熙雅仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "爱诗琦仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "牧朗仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "特权链接仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "特萌仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "猎鹰仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "王牌仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "王牌志高仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "王牌特睿思仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "百信仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "百轮仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "皓晶仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "硕高仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "神州仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "福泽宇仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "福满灶仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "科嘉霖仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "笔芯仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "筱筱优仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "米诺仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "红太阳仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "纯美发货仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "维修仓-美国站": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "维修仓-英国站": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "缺货仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "美菱总部": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "羽泰仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "羽骏仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "羽骏发货仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "聚力仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "胜泉仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "膳师傅仓库": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": true
+    },
+    "自营异常仓（不要审核发货）": {
+      "category": "exception",
+      "label": "异常仓",
+      "includeInInventory": false
+    },
+    "舜康仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "舟泽仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "良君仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "艾凯仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "艾帝仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "英国站金色海外仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "莱宝仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "菜鸟廊坊消电1322": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "蒙得仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "蒙达仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "虾皮海外仓": {
+      "category": "overseas",
+      "label": "海外仓",
+      "includeInInventory": true
+    },
+    "虾皮-马来站": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "袋袋熊仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "裕特仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "裕特发货仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "西安亚一3CB仓1号库-京东仓": {
+      "category": "jd",
+      "label": "京东仓",
+      "includeInInventory": true
+    },
+    "西安公共平台仓3号库": {
+      "category": "jd",
+      "label": "京东仓",
+      "includeInInventory": true
+    },
+    "西安公共平台仓3号库-京东": {
+      "category": "jd",
+      "label": "京东仓",
+      "includeInInventory": true
+    },
+    "西安大件平台仓1号库-CHN": {
+      "category": "jd",
+      "label": "京东仓",
+      "includeInInventory": true
+    },
+    "西安常温C平台仓3号库-CHN": {
+      "category": "jd",
+      "label": "京东仓",
+      "includeInInventory": true
+    },
+    "订制仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "贝童仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "赛吉仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "赵记仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "辉亚仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "迈德仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "远芳仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "迪加仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "速纯仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "邦乐仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "酷比奇仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "酷福仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "酷釜仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "金樵仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "鑫冰仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "鑫博仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "钰麦仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "铂欧仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "铎川（金杰）仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "长程仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "闽达仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "隆粤仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "雅信仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "零散购买仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "顺邦仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "领驱仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "飞利达仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "飞龙仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "鹏宇仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "鼎发仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "鼎润仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    },
+    "鼎龙仓": {
+      "category": "dropship",
+      "label": "代发仓",
+      "includeInInventory": false
+    }
+  }
+}

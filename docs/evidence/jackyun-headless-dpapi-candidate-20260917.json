@@ -1,0 +1,58 @@
+{
+  "version": "teruisi-jackyun-headless-dpapi-candidate-v1",
+  "date": "2026-09-17",
+  "status": "candidate_verified_not_deployed",
+  "baseCommit": "5904d690",
+  "failure": {
+    "executionId": "2621",
+    "startedAt": "2026-09-17T00:10:01.909+08:00",
+    "stoppedAt": "2026-09-17T00:10:12.384+08:00",
+    "stage": "B·接口校验与五表下载",
+    "error": "waiting_login：吉客云 DPAPI 凭据配置或解密未完成（initialize）。",
+    "executionDataSha256": "27aac9dd30454319f2158b7b9428549e026762f9701c9a0d98c9b6e71064f24f",
+    "planSha256": "aaf9ffe080605d152213aab8e3225fc4b164fbd1d0f92c8ff2a31fa38d694b7c",
+    "exportIntentPresent": false,
+    "exportReceipts": 0,
+    "controllerEventsDownloadsAndValidationAbsent": true,
+    "retryExecutionId": "2622",
+    "retryDisposition": "Credential/DPAPI failure was filtered out before the one-hour wait; no automatic retry was scheduled."
+  },
+  "diagnosis": {
+    "reproduced": "Console.InputEncoding throws System.IO.IOException with an invalid console handle after FreeConsole in a disposable Windows PowerShell child with redirected pipes.",
+    "productionInnerExceptionAvailable": false,
+    "fix": "Use strict UTF-8 standard streams for credential metadata, responses and process identity; decode Node stdout as a UTF-8 stream. Preserve CurrentUser, entropy binding, ACL validation and login failure policy.",
+    "diagnosticStages": ["initialize", "binding", "read"],
+    "testsUseSyntheticCredentialsOnly": true
+  },
+  "recovery": {
+    "type": "Exact 2621 create-only pre-business closure",
+    "proposalValidatedAgainstLiveReadOnlyEvidence": true,
+    "proposalSha256": "fd6b4399a8f11ef8aa3e54dc49f2692756b3dcbb4b95f68d20f7e7d09e1bf475",
+    "proposalPublished": false,
+    "originalPlanAndActiveUnchanged": true,
+    "newExecutionStarted": false,
+    "scope": "Only the pinned 2621 execution, error, node sequence, time and plan bytes with no business artifacts. A new full n8n plan must revalidate the closure before advancing active."
+  },
+  "validation": {
+    "focusedTests": { "passed": 216, "failed": 0 },
+    "fullNodeTests": { "passed": 2192, "failed": 0, "cancelled": 1, "skipped": 21 },
+    "fullNodeException": "jackyun-export-menu.test.ts browser fixture timed out after 30 seconds during the full parallel run.",
+    "isolatedRerun": { "file": "tests/jackyun-export-menu.test.ts", "passed": 7, "failed": 0 },
+    "renderedHtml": { "passed": 20, "failed": 0 },
+    "build": "passed in isolated worktree",
+    "helperBuild": "passed outside isolated source tree",
+    "helperSha256": "f5c8b6b8c25994dc50061c9b74b332d9fc5fb0c2fff6d40f02effc4c7980aa54",
+    "eslint": { "errors": 0, "warnings": 11 },
+    "backendBoundary": { "checkedModules": 450, "violations": 0 },
+    "diffCheck": "passed"
+  },
+  "productionChanges": {
+    "deployed": false,
+    "servicesStoppedOrRestarted": false,
+    "migrations": false,
+    "credentialsChanged": false,
+    "n8nDefinitionsChanged": false,
+    "businessDownloadOrImport": false
+  },
+  "nextStep": "Obtain explicit service-maintenance and production-recovery authorization under AGENTS.md sections 1.1 and 10; verify backups and drain work, publish through the controlled immutable release path, revalidate and publish the closure, then run the original full n8n workflow and verify all five exact batches."
+}

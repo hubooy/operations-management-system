@@ -1,0 +1,70 @@
+{
+  "date": "2026-09-08",
+  "kind": "development-verification",
+  "testedSource": "d57216e6c96ea8f2c2d1a0652b37cfe16f266189",
+  "mainBaseline": "75226326f37786b9ee0f7e87b62c65c04b8b2844",
+  "productionChanged": false,
+  "productionMigrationApplied": false,
+  "unitTests": {
+    "passed": 2007,
+    "failed": 0,
+    "cancelled": 0,
+    "skipped": 21,
+    "concurrency": 4
+  },
+  "afterMainMergeTests": {
+    "passed": 80,
+    "failed": 0
+  },
+  "postgresTests": {
+    "passed": 56,
+    "failed": 0
+  },
+  "postgresMirror": {
+    "status": "passed",
+    "postgresPort": 55458,
+    "syntheticDataOnly": true,
+    "migration": "0007_guangdong_monitor",
+    "tables": {
+      "inventory_guangdong_monitor_items": {
+        "rows": 1,
+        "sha256": "52a013b4a4d6d83e7d4181a884fbab0378c8a9b02dcaa9d9d225cf922ee14f51"
+      },
+      "inventory_guangdong_supplier_cycles": {
+        "rows": 1,
+        "sha256": "427ff3cab2d3d41cbd25f7999e92104baf4aca79b7b2a615789515be083e911c"
+      },
+      "inventory_guangdong_monitor_audits": {
+        "rows": 2,
+        "sha256": "e68147d8e1d7468458dd910cdf24847493c57c53abfcc286bf99e883f3b48523"
+      }
+    },
+    "minimumRoleChecks": "passed",
+    "restoreMatches": true
+  },
+  "biConfigurationReadPermissionAdded": false,
+  "browser": {
+    "status": "passed",
+    "mockedApi": true,
+    "requests": 15,
+    "checks": [
+      "fixed-warehouse",
+      "risk-url",
+      "paste-preview-commit",
+      "supplier-cycle",
+      "versioned-export",
+      "viewer-read-only",
+      "desktop-mobile-render"
+    ]
+  },
+  "build": "passed",
+  "backendBoundary": "passed",
+  "applicationTypecheck": "passed",
+  "lint": {
+    "errors": 0,
+    "existingWarnings": 9
+  },
+  "fullRepositoryTypecheck": "Existing errors in unrelated tests and automation tools; application dependency closure passes.",
+  "initialParallelUnitRun": "Two existing browser tests timed out under concurrent load; complete suite passed at concurrency 4.",
+  "releaseRequirement": "Apply inventory 0007 and updated grants/readiness/backup contracts through the controlled release process; no production restart or deployment performed."
+}

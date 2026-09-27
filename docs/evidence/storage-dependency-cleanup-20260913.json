@@ -1,0 +1,71 @@
+{
+  "version": "teruisi-storage-dependency-cleanup-v1",
+  "status": "completed",
+  "checkedAt": "2026-09-13T04:06:28.3171752+08:00",
+  "toolCommit": "0abb10b85349669d308eb485345d5f2462d3dbba",
+  "approvedPlanSha256": "f15074c305cb8ada3155d2de385e93230d1ba7aff376daf0a03f25c1fe70e73c",
+  "candidateCount": 137,
+  "deletedCount": 137,
+  "logicalDependencyBytes": 100597258103,
+  "initialFreeDBytes": 28751572992,
+  "finalFreeDBytes": 136016805888,
+  "netFreeIncreaseGiB": 99.899,
+  "remainingCandidateDirectories": 0,
+  "releaseDirectoriesPreserved": 151,
+  "dependencyDirectoriesRemaining": 14,
+  "retained": [
+    {
+      "releaseId": "20260912T093226Z-588560ad2bfc1239",
+      "nodeModulesPresent": true
+    },
+    {
+      "releaseId": "20260912T095027Z-43c06ff99569edfa",
+      "nodeModulesPresent": true
+    },
+    {
+      "releaseId": "20260912T143827Z-79e971ff2b5bce03",
+      "nodeModulesPresent": true
+    }
+  ],
+  "postflight": {
+    "headReleaseId": "20260912T143827Z-79e971ff2b5bce03",
+    "chainStateSha256": "6b895a273abefcf0f49f665edd01f7b2ec88a7ab79c2c46f300db7cc8b5baab3",
+    "fullHeadVerified": true
+  },
+  "systemState": "Running",
+  "backendState": "Ready",
+  "workerState": "exact_release",
+  "allComponentsReady": true,
+  "businessDatabaseFilesChanged": false,
+  "serviceLifecycleChanged": false,
+  "sourceReleaseChanged": false,
+  "businessBackupSha256": "85d617a3ff7d6baa919498e0b599ef529c3f01c21b2e3fee97f06afe60c4bc7b",
+  "audits": [
+    {
+      "path": "E:\\运营系统旧依赖清理校验\\run-20260913-first\\cleanup-audit-7fda632fd4464580bdeaa01e3d5e9709.jsonl",
+      "sha256": "f07c573383f2fa3c15527be3e9ea17a81a16ddb48b7995e8cd9d0c5f67fef478"
+    },
+    {
+      "path": "E:\\运营系统旧依赖清理校验\\run-20260913-first\\cleanup-audit-d1a1abab7c80449d9a4e68158e6b8a84.jsonl",
+      "sha256": "cd0d812a16fe69beacb87ef969dc9a8e3291a1c321cc90ffeb48af391c9c1865"
+    },
+    {
+      "path": "E:\\运营系统旧依赖清理校验\\run-20260913-batch\\cleanup-audit-b81ab32a56f44a38afba0e94ceeee17d.jsonl",
+      "sha256": "e2774218ed979a2a6b709cbe1abb10d721f1460f9ea93e24b3f6c85b5cb12d75"
+    },
+    {
+      "path": "E:\\运营系统旧依赖清理校验\\run-20260913-batch\\cleanup-audit-f3769a5f972d4ebdb9909fe05bd72704.jsonl",
+      "sha256": "01b393158e2fe60e03edd5ba8c4bbc6845fa57d0960f713ffc393238477114d4"
+    }
+  ],
+  "controlledStops": [
+    "First attempt rejected a task-owned read-only observer process reference before deletion; retried only after the observer exited and full preflight was repeated.",
+    "After 12 successful deletions, only the task-owned read-only candidate checker was stopped to set UV_THREADPOOL_SIZE=32. Full preflight was repeated before the remaining 125 deletions."
+  ],
+  "remainingScopeNotes": [
+    "Current and two predecessor dependencies remain; 11 out-of-chain releases were not cleaned.",
+    "Old database backups, audit material, source, dist, helper, manifests and version-chain records were retained.",
+    "Previously policy-blocked D-drive archive scratch was not deleted or retried."
+  ],
+  "worktreeStatus": "Standalone operators and records remain on unmerged codex/storage-retention-cloud-archive; worktree retained."
+}

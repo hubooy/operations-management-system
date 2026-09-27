@@ -1,0 +1,160 @@
+{
+  "id": "TeruisiHourlyRetry2026",
+  "name": "数据下载导入工作流每小时安全重试",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "24290b62-2475-4bc1-8fa0-d416e2db0b47",
+      "name": "数据下载导入工作流失败",
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        -540,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "const targets = {\"J8kY2mQ5vR7sT4pN\":\"http://127.0.0.1:5678/webhook/teruisi-hourly-retry-fc753414409a49c05026b800c1eced5bf3875b69\",\"JdN8nM3uL7tI2026\":\"http://127.0.0.1:5678/webhook/teruisi-hourly-retry-e969f078b6dbc21dfc397fe88f7eb69d065305cd\",\"JdN8nSilentCopy2026\":\"http://127.0.0.1:5678/webhook/teruisi-hourly-retry-b12ca72b424761db1f0c7f165bab115ab54fac22\",\"JdMarketDaily2026\":\"http://127.0.0.1:5678/webhook/teruisi-hourly-retry-c0b07cd7f8532051c80a289258c4c497686fa880\",\"JdMarketSilentCopy2026\":\"http://127.0.0.1:5678/webhook/teruisi-hourly-retry-433789cd0a25c6daf93a4dfcc83d1ef227236957\",\"JdPromotionDaily2026\":\"http://127.0.0.1:5678/webhook/teruisi-hourly-retry-e30f35b5bcbba9b6372a866c8d8ba9c05d0be4c5\",\"JdPromotionCutMeat2026\":\"http://127.0.0.1:5678/webhook/teruisi-hourly-retry-c299587c4711e52824c319f192a6429ca61eb55f\",\"M4xY8kQ2vR6sT9pC\":\"http://127.0.0.1:5678/webhook/teruisi-hourly-retry-46892fbc3a30a11922bfa53523d5af695645e453\",\"TmallLiliDaily2026\":\"http://127.0.0.1:5678/webhook/teruisi-hourly-retry-5bf5673970f4b8262809dd8f152d1603dc03c133\",\"TmallTuofengDaily2026\":\"http://127.0.0.1:5678/webhook/teruisi-hourly-retry-16548ad67bffa402d516bbe87fbd2143fbd4d1be\",\"TmallCuizhiwangDaily2026\":\"http://127.0.0.1:5678/webhook/teruisi-hourly-retry-d14bda4ec9c13c68832c6cc82e7465ad3ce90817\",\"TmallMasituDaily2026\":\"http://127.0.0.1:5678/webhook/teruisi-hourly-retry-699bf7e42f83386073c4d5b40b5222c4a93b65ea\",\"TmallYiyongDaily2026\":\"http://127.0.0.1:5678/webhook/teruisi-hourly-retry-1311a7e06af8415e5080650e1668871676ddebb1\"};\nconst terminalPatterns = [\"challenge_present|waiting_login\",\"captcha|验证码|滑块|短信验证|安全验证|security verification|risk control|风控|\\\\b601\\\\b\",\"credential|credentials|凭据|dpapi|密码.*(?:缺失|损坏|错误)|授权失效|unauthori[sz]ed|authentication failed|http 40[13]\",\"JACKYUN_PREFLIGHT_RETRY_READY\",\"API_LOGIN_PAGE_NOT_UNIQUE|原运行 n8n-export-first-[1-9]\\\\d{0,19} 尚未闭合\",\"店铺身份|账号身份|identity(?: mismatch| invalid)|cross[- ]store|跨店|wrong store\",\"登录失效|需要登录|登录.*(?:失败|异常|拒绝|未就绪)|login (?:required|failed|failure)|not authenticated|session invalid|cookie invalid|passport\\\\.jd\\\\.com|login\\\\.taobao\\\\.com\",\"多个候选|候选.*不唯一|任务.*歧义|ambiguous|multiple candidates\",\"点击结果未决|提交结果未决|result unknown|dispatch unknown|click unknown\",\"export_submitting|report_submitting|page_export_submitting|task_click_invoked\",\"source[_ -]?not[_ -]?ready|来源数据未就绪|数据源未就绪|日期.*disabled\",\"活动清单.*无法证明|manifest.*(?:mismatch|ambiguous|invalid)|owner.*conflict|owner.*冲突\",\"唯一商品数.*出售中总数|内容完整性错误|content completeness|内容校验失败|validation failed|日期覆盖.*(?:缺失|不一致)|date coverage.*(?:missing|mismatch)|空文件|零行业务|malformed workbook|批次.*(?:不匹配|回查失败)\",\"需要人工|转人工|manual action|required human\"].map((source) => new RegExp(source, \"iu\"));\nconst collect = (value, output = []) => {\n  if (typeof value === 'string') output.push(value);\n  else if (Array.isArray(value)) for (const item of value) collect(item, output);\n  else if (value && typeof value === 'object') for (const item of Object.values(value)) collect(item, output);\n  return output.join(' ').slice(0, 32768);\n};\nconst result = [];\nfor (const item of $input.all()) {\n  const payload = item.json ?? {};\n  const workflowId = String(payload.workflow?.id ?? '');\n  const mode = String(payload.execution?.mode ?? payload.trigger?.mode ?? '');\n  if (!targets[workflowId] || !['trigger', 'webhook'].includes(mode)) continue;\n  const failureText = collect({ error: payload.execution?.error ?? payload.trigger?.error, lastNodeExecuted: payload.execution?.lastNodeExecuted });\n  if (workflowId === 'J8kY2mQ5vR7sT4pN' && payload.execution?.lastNodeExecuted === 'B·接口校验与五表下载' && payload.execution?.error?.description === 'JACKYUN_PREFLIGHT_RETRY_READY' && !terminalPatterns.some((pattern) => pattern.test(failureText.replaceAll('JACKYUN_PREFLIGHT_RETRY_READY', '')))) {\n    result.push({ json: { retryPolicy: { workflowId, retryUrl: targets[workflowId], delayMinutes: 60 }, failedExecutionId: String(payload.execution?.id ?? '') } });\n    continue;\n  }\n  if (terminalPatterns.some((pattern) => pattern.test(failureText))) continue;\n  result.push({ json: { retryPolicy: { workflowId, retryUrl: targets[workflowId], delayMinutes: 60 }, failedExecutionId: String(payload.execution?.id ?? '') } });\n}\nreturn result;"
+      },
+      "id": "0dcc9c2e-5f1b-4f91-b5cf-ae8e5381d57e",
+      "name": "仅保留可安全自动重试的失败",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -300,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "resume": "timeInterval",
+        "amount": 1,
+        "unit": "hours"
+      },
+      "id": "d1a2f3ae-5a94-49eb-9e98-f52a8e1aca8d",
+      "name": "等待一小时",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -60,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $json.retryPolicy.retryUrl }}",
+        "options": {
+          "timeout": 10000
+        }
+      },
+      "id": "d41c44f7-53f2-438c-a9a9-83fc16733519",
+      "name": "启动新的完整工作流 execution",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        180,
+        0
+      ],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "content": "## 失败后每 60 分钟安全重跑\n仅接收已登记的数据下载/导入工作流的定时或自动重试失败。等待 1 小时后，通过 127.0.0.1:5678 的专用 Webhook 创建新的完整 execution，并重新经过共享 helper 领取门禁；新 execution 再失败会重新进入本流程，成功后不会产生下一轮。吉客云仅在 DPAPI 登录前的临时失败已由 helper 核验零业务效果并 create-only 闭合时允许重试。验证码、安全验证、密码或登录被拒、凭据读取/损坏、店铺身份不符、跨店、任务歧义、业务点击或提交结果未决、来源未就绪及需要人工确认的内容完整性错误仍停止自动重试。不得改成失败节点重试，不得绕过 A 或直接调用业务 helper。发布时先发布本错误工作流，再更新当前正式目标工作流；未采用的兼容模板继续保持未激活。",
+        "height": 280,
+        "width": 760,
+        "color": 3
+      },
+      "id": "31c7608a-cb71-46f0-bccb-1b0bd5a53970",
+      "name": "每小时安全重试说明",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -540,
+        -360
+      ]
+    }
+  ],
+  "connections": {
+    "数据下载导入工作流失败": {
+      "main": [
+        [
+          {
+            "node": "仅保留可安全自动重试的失败",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "仅保留可安全自动重试的失败": {
+      "main": [
+        [
+          {
+            "node": "等待一小时",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "等待一小时": {
+      "main": [
+        [
+          {
+            "node": "启动新的完整工作流 execution",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "启动新的完整工作流 execution": {
+      "main": [
+        [],
+        [
+          {
+            "node": "等待一小时",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Asia/Shanghai",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "hourlyRetryPolicy": {
+      "version": "2026-09-10.safe-hourly-retry.1",
+      "delayMinutes": 60,
+      "targetWorkflowIds": [
+        "J8kY2mQ5vR7sT4pN",
+        "JdN8nM3uL7tI2026",
+        "JdN8nSilentCopy2026",
+        "JdMarketDaily2026",
+        "JdMarketSilentCopy2026",
+        "JdPromotionDaily2026",
+        "JdPromotionCutMeat2026",
+        "M4xY8kQ2vR6sT9pC",
+        "TmallLiliDaily2026",
+        "TmallTuofengDaily2026",
+        "TmallCuizhiwangDaily2026",
+        "TmallMasituDaily2026",
+        "TmallYiyongDaily2026"
+      ]
+    }
+  },
+  "tags": []
+}

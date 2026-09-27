@@ -1,0 +1,132 @@
+:root {
+  color-scheme: light;
+
+  /* Brand */
+  --color-brand: #396149;
+  --color-brand-hover: #293f32;
+  --color-brand-active: #24382c;
+  --color-brand-soft: #f3f7f4;
+  --color-brand-tint: #cce8d9;
+  --color-brand-border: #abc4b4;
+
+  /* Surfaces */
+  --color-bg-app: #f5f7f6;
+  --color-bg-surface: #ffffff;
+  --color-bg-subtle: #f3f7f4;
+  --color-surface-subtle: var(--color-bg-subtle);
+  --color-bg-elevated: #ffffff;
+  --color-bg-inverse: #293f32;
+
+  /* Text */
+  --color-text-primary: #33453a;
+  --color-text-secondary: #526959;
+  --color-text-muted: #7b8780;
+  --color-text-inverse: #f3f7f4;
+  --color-text-link: #396149;
+
+  /* Borders and focus */
+  --color-border-default: #e7ebe9;
+  --color-border-strong: #c9d6ce;
+  --color-focus-ring: rgba(103, 157, 131, 0.35);
+
+  /* System feedback */
+  --color-success: #16825d;
+  --color-success-soft: #eaf8f3;
+  --color-warning: #a96518;
+  --color-warning-soft: #fff5e9;
+  --color-danger: #c83e4d;
+  --color-danger-soft: #fff0f1;
+  --color-info: #315bc5;
+  --color-info-soft: #edf3ff;
+
+  /* Business movement: A-share convention, up red and down green. */
+  --color-metric-up: #c83e4d;
+  --color-metric-down: #16825d;
+  --color-metric-neutral: #6f7d91;
+
+  /* Supporting palette */
+  --color-purple: #8167d9;
+  --color-purple-soft: #f2effd;
+
+  /* Spacing and size */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-7: 30px;
+  --space-8: 40px;
+  --radius-sm: 6px;
+  --radius-md: 9px;
+  --radius-lg: 12px;
+  --radius-pill: 999px;
+  --control-height-sm: 32px;
+  --control-height-md: 38px;
+  --control-height-lg: 44px;
+  --font-size-caption: 12px;
+  --font-size-body: 14px;
+  --font-size-heading: 18px;
+  /* Unified typography scale: keep user-facing Chinese text readable and predictable. */
+  --font-size-micro: 11px;
+  --font-size-label: 13px;
+  --font-size-card-title: 16px;
+  --font-size-section: 18px;
+  --font-size-page-title: 20px;
+  --font-size-display: 24px;
+  --font-size-kpi: 24px;
+  --line-height-tight: 1.3;
+  --line-height-body: 1.6;
+  --line-height-readable: 1.75;
+
+  /* Elevation and layout */
+  --shadow-sm: 0 3px 10px rgba(34, 45, 65, 0.12);
+  --shadow-md: 0 8px 24px rgba(31, 45, 68, 0.08);
+  --shadow-overlay: 0 20px 50px rgba(31, 45, 68, 0.2);
+  --app-sidebar-width: 244px;
+  --app-sidebar-collapsed-width: 80px;
+  --app-header-height: 82px;
+  --app-header-height-mobile: 67px;
+  --app-sticky-offset: var(--app-header-height);
+  --z-sticky: 25;
+  --z-sidebar: 40;
+  --z-overlay: 80;
+  --z-tooltip: 90;
+
+  /* Legacy aliases: retire only after every business module has migrated. */
+  --bg: var(--color-bg-app);
+  --surface: var(--color-bg-surface);
+  --surface-soft: var(--color-bg-subtle);
+  --text: var(--color-text-primary);
+  --muted: var(--color-text-muted);
+  --line: var(--color-border-default);
+  --nav: var(--color-bg-inverse);
+  --nav-soft: #396149;
+  --blue: var(--color-brand);
+  --blue-dark: var(--color-brand-hover);
+  --blue-soft: var(--color-brand-soft);
+  --green: #27a978;
+  --green-soft: #eaf8f3;
+  --orange: #e99436;
+  --orange-soft: #fff5e9;
+  --purple: var(--color-purple);
+  --purple-soft: var(--color-purple-soft);
+  --red: #e45e67;
+  --red-soft: #fff0f1;
+  --shadow: 0 8px 24px rgba(31, 45, 68, 0.05);
+  --sidebar-width: var(--app-sidebar-width);
+
+  /* Existing late stylesheet sections already consume these names. */
+  --card: var(--color-bg-surface);
+  --ink: var(--color-text-primary);
+  --ink-2: var(--color-text-secondary);
+  --accent: var(--color-brand);
+  --accent-soft: var(--color-brand-soft);
+  --code-bg: #111827;
+}
+
+@media (max-width: 860px) {
+  :root {
+    --app-sticky-offset: var(--app-header-height-mobile);
+  }
+}

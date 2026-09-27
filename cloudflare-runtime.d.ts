@@ -25,7 +25,19 @@ interface D1Database {
   ): Promise<Array<D1Result<T>>>;
 }
 
-interface R2ObjectBody {
+interface R2HttpMetadata {
+  contentType?: string;
+  cacheControl?: string;
+}
+
+interface R2Object {
+  key: string;
+  size: number;
+  httpMetadata?: R2HttpMetadata;
+  customMetadata?: Record<string, string>;
+}
+
+interface R2ObjectBody extends R2Object {
   body: ReadableStream;
   httpEtag: string;
   arrayBuffer(): Promise<ArrayBuffer>;
@@ -33,12 +45,18 @@ interface R2ObjectBody {
 
 interface R2Bucket {
   put(key: string, value: ArrayBuffer | Uint8Array, options?: {
-    httpMetadata?: { contentType?: string; cacheControl?: string };
+    onlyIf?: { etagDoesNotMatch: string };
+    httpMetadata?: R2HttpMetadata;
     customMetadata?: Record<string, string>;
   }): Promise<unknown>;
-  head(key: string): Promise<unknown | null>;
+  head(key: string): Promise<R2Object | null>;
   get(key: string): Promise<R2ObjectBody | null>;
   delete(keys: string | string[]): Promise<void>;
+  list(options?: { prefix?: string; limit?: number; cursor?: string }): Promise<{
+    objects: R2Object[];
+    truncated: boolean;
+    cursor?: string;
+  }>;
 }
 
 interface ImagesBinding {
@@ -56,6 +74,8 @@ declare module "cloudflare:workers" {
     SALES_IMPORT_FILES?: R2Bucket;
     IMAGES?: ImagesBinding;
     AI_SECRET_ENCRYPTION_KEY?: string;
+    AI_MODEL_ENDPOINT_ORIGIN_ALLOWLIST?: string;
+    AI_ALLOW_LOCAL_MODEL_ENDPOINTS?: string;
     TERUISI_LOCAL_DIRECT_ACCESS?: string;
     TERUISI_RUNTIME_ENV?: string;
     [binding: string]: unknown;

@@ -1,0 +1,272 @@
+{
+  "version": "teruisi-global-d1-control-mirror-evidence-v1",
+  "verifiedDate": "2026-09-06",
+  "scope": "isolated Windows mirror; production adoption is separate",
+  "mirror": {
+    "version": "teruisi-global-d1-postgres-mirror-v1",
+    "runId": "b83d740e16fa",
+    "status": "completed",
+    "backupManifestSha256": "83794c2267a744f1cf689ceef36567aa9603e325186a805946d618cd4a89f48c",
+    "postgresPort": 55444,
+    "servicePorts": [
+      18001,
+      18002,
+      18011,
+      18012,
+      18021,
+      18022,
+      18031,
+      18032,
+      18041,
+      18042,
+      18051,
+      18052,
+      18061,
+      18062,
+      18071,
+      18072,
+      18081,
+      18091,
+      18092,
+      18101,
+      18102,
+      18111,
+      18112
+    ],
+    "aclSnapshotSha256": "f40d2302f7e58fad88c5bd580618300b43e103824c5ec18c651bd764e82e0f8d",
+    "resumedPrivateCluster": true,
+    "sourceFiles": {
+      "global-d1-postgres-mirror.py": "a285a22a60168ff1f71e7fcf90114451f21dccb7a5d6c10620d5c8e3616908a4",
+      "global-d1-mirror-service.py": "93de648754f04359564aa52a15ec70599c1f5173530a93612b7244e4f2906ba0",
+      "global-d1-mirror-worker.mjs": "6d4bc231bcb6c1d2af49752537c40f667a3a1472534d446f184f91460c8ef0d9"
+    },
+    "productionDatabaseTouched": false,
+    "productionServiceStateChanged": false,
+    "externalActionsEnabled": false,
+    "restoredContentSha256": "d61a14870416a36f88e5f9d50ff58bf32758d815c68fecac200a548d8df249b5",
+    "coldStartReady": [
+      "sales.reader",
+      "sales.writer",
+      "finance.reader",
+      "finance.writer",
+      "netshop.reader",
+      "netshop.writer",
+      "market.reader",
+      "market.writer",
+      "products.reader",
+      "products.writer",
+      "inventory.reader",
+      "inventory.writer",
+      "workflow.reader",
+      "workflow.writer",
+      "customer_service.reader",
+      "customer_service.writer",
+      "bi.reader",
+      "erp_reference.reader",
+      "erp_reference.writer",
+      "access_control.reader",
+      "access_control.writer",
+      "ai.reader",
+      "ai.writer"
+    ],
+    "d1FileCount": 0,
+    "worker": {
+      "version": "teruisi-global-d1-mirror-worker-v1",
+      "builtWorkerSha256": "cf6c0705cbafa7c254e92ebb5b014ea162809757d5487dd4f36f1333d996b0b7",
+      "d1Bindings": 0,
+      "privateR2": true,
+      "externalEgressBlocked": true,
+      "checks": [
+        {
+          "route": "/_teruisi/local/health/live",
+          "status": 200,
+          "elapsedMs": 468,
+          "responseBytes": 27,
+          "responseSha256": "6191c1f860b8a0225c697e46ebce756193dfb18c189218cfe742037501da05eb"
+        },
+        {
+          "route": "/_teruisi/local/health/ready",
+          "status": 200,
+          "elapsedMs": 2102,
+          "responseBytes": 83,
+          "responseSha256": "fcf5dce03d916e101db4a3c420027b93d65df5f2bf6e9b136ef13088693eee21"
+        },
+        {
+          "route": "/",
+          "status": 200,
+          "elapsedMs": 55,
+          "responseBytes": 16343,
+          "responseSha256": "5fa6b299ba12d64d03832d76e68943a3fb984f34c74a00b155c63c633d84e2c4"
+        },
+        {
+          "route": "/api/sales/data-health",
+          "status": 200,
+          "elapsedMs": 23,
+          "responseBytes": 620,
+          "responseSha256": "4cf62971701d15b11326bb2c46f9e883d345eba500312a17fda1c2fefaf17683"
+        },
+        {
+          "route": "/api/finance/targets?view=items&pageSize=1",
+          "status": 200,
+          "elapsedMs": 17,
+          "responseBytes": 90,
+          "responseSha256": "3bd027447ab4da0ccb511181b12f036d076deef55a768a736d3aae76629d8225"
+        },
+        {
+          "route": "/api/finance/targets?view=options",
+          "status": 200,
+          "elapsedMs": 221,
+          "responseBytes": 6782,
+          "responseSha256": "06fa7ae9c931ce22bbde9c51ca9c2fc78d95df43169e0a070206402f0936a1a3"
+        },
+        {
+          "route": "/api/imports/finance?pageSize=1",
+          "status": 200,
+          "elapsedMs": 11,
+          "responseBytes": 5100,
+          "responseSha256": "ac8308ab66149a6fc82a859c0b5570e9c5697c196f6bdeb4513a7e8945ff4523"
+        },
+        {
+          "route": "/api/market/annotations?view=workspace_fast",
+          "status": 200,
+          "elapsedMs": 739,
+          "responseBytes": 41889,
+          "responseSha256": "7a8dda6bce07bec039326f10b83ba256b95235dc82706129c7743f13ce6beb5d"
+        },
+        {
+          "route": "/api/ai/models",
+          "status": 200,
+          "elapsedMs": 12,
+          "responseBytes": 2450,
+          "responseSha256": "669186331cac1278f79dd3a967197c357f4ad0d803f4a92377f90eaef3f12b80"
+        },
+        {
+          "route": "/api/netshop/products?pageSize=1",
+          "status": 200,
+          "elapsedMs": 2315,
+          "responseBytes": 4183,
+          "responseSha256": "5427211692085eae753706f3e0d2f1940648bccbce0ccc324fc4eab61e79da10"
+        },
+        {
+          "route": "/api/products/summary?pageSize=1",
+          "status": 200,
+          "elapsedMs": 1048,
+          "responseBytes": 5961,
+          "responseSha256": "d132ecb2f6d69942c4ab3c9e30c63926a7e97eb9a4fb587a2762e11ee57a995e"
+        },
+        {
+          "route": "/api/inventory/overview?pageSize=1",
+          "status": 200,
+          "elapsedMs": 1365,
+          "responseBytes": 138967,
+          "responseSha256": "622e856ac48f55dad9c54c2e3a279034cba388330ded6b0fa9faf5f8af7798cc"
+        },
+        {
+          "route": "/api/customer-service/conversations?pageSize=1",
+          "status": 200,
+          "elapsedMs": 593,
+          "responseBytes": 12405,
+          "responseSha256": "61afd2c41385307913e7fc9169c4288d9597721bf0ee8753529311bb7f6c131b"
+        },
+        {
+          "route": "/api/finance/targets?view=invalid",
+          "status": 400,
+          "elapsedMs": 3,
+          "responseBytes": 85,
+          "responseSha256": "a16fba39a5ed85b36315d1e6d5e7171ed528d7c9d3342dd406d83ca323c41269"
+        },
+        {
+          "route": "/api/search?q=mirror-nonexistent-sku&group=products&pageSize=1",
+          "status": 200,
+          "elapsedMs": 31,
+          "responseBytes": 995,
+          "responseSha256": "c388e69cb13d437a009a7bc81377d3e00eb226102648991f3b1fd9d7f4fb6c2b"
+        },
+        {
+          "route": "django-finance-unsigned",
+          "status": 401
+        }
+      ]
+    },
+    "restartReady": [
+      "sales.reader",
+      "sales.writer",
+      "finance.reader",
+      "finance.writer",
+      "netshop.reader",
+      "netshop.writer",
+      "market.reader",
+      "market.writer",
+      "products.reader",
+      "products.writer",
+      "inventory.reader",
+      "inventory.writer",
+      "workflow.reader",
+      "workflow.writer",
+      "customer_service.reader",
+      "customer_service.writer",
+      "bi.reader",
+      "erp_reference.reader",
+      "erp_reference.writer",
+      "access_control.reader",
+      "access_control.writer",
+      "ai.reader",
+      "ai.writer"
+    ],
+    "finalContentSha256": "d61a14870416a36f88e5f9d50ff58bf32758d815c68fecac200a548d8df249b5",
+    "clusterStopped": true
+  },
+  "protocolTests": {
+    "passed": 30,
+    "failed": 0,
+    "realChildRestartKinds": [
+      "worker",
+      "helper"
+    ],
+    "realChildFixture": "loopback HTTP process; production supervisor loops with only fixed runtime and port coordinates relocated",
+    "rejectsChangedProofAfterCrash": true
+  },
+  "unit": {
+    "total": 1871,
+    "passed": 1851,
+    "skipped": 20,
+    "failed": 0,
+    "concurrency": 2
+  },
+  "renderedWorker": {
+    "passed": 20
+  },
+  "build": "passed",
+  "typescript": {
+    "baseline": 141,
+    "current": 141,
+    "introduced": 0,
+    "fullCheckPassed": false
+  },
+  "productionBoundary": {
+    "modules": 366,
+    "violations": 0
+  },
+  "initialReadOnlyD1Audit": {
+    "effectiveReleaseId": "20260905T180043Z-7364a22437c52ae1",
+    "sourceSchemaSha256": "7b6a241ad508a86b630aa6f82b01b2f43339b92b2f9e7c529685531da47e8de5",
+    "domains": 12,
+    "sharedReceiptGuards": 3
+  },
+  "preReleaseRestore": {
+    "version": "teruisi-postgres-restore-rehearsal-v1",
+    "status": "completed",
+    "rehearsalId": "386a2f901c57",
+    "startedAt": "2026-09-06T03:41:41.6295997+00:00",
+    "completedAt": "2026-09-06T03:45:36.4152496+00:00",
+    "backupId": "daily-20260906T033825Z-b37cade931d1",
+    "backupManifestSha256": "158ec9f328064166a6a0b57aae0476e253c18cfd612ed0a2e77144ab24e67cfc",
+    "dumpSha256": "b7725639726102d9842b378056cc1ffb956c85ab2ac5562bbd12ba447f68564a",
+    "expectedContentSha256": "8aa537624ba17b1b2d5a2ad2f10dcffbfcfe570ad8a34faf82aa14efbb83dd30",
+    "restoredContentSha256": "8aa537624ba17b1b2d5a2ad2f10dcffbfcfe570ad8a34faf82aa14efbb83dd30",
+    "isolatedPort": 55432,
+    "productionDatabaseTouched": false,
+    "serviceStateChanged": false,
+    "cleanupStatus": "isolated_data_removed"
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "status": "candidate_validated_with_existing_workspace_sort_failure",
+  "productionAdopted": false,
+  "batch": 14,
+  "rendererVersion": 3,
+  "migration": "0018_business_excel_renderer",
+  "aiOwnedTableCount": 60,
+  "independentAgentReview": {
+    "blockingDefectsFound": 0,
+    "additionalBoundaryCases": 8,
+    "baselinePrecisionStatusImproved": true,
+    "finalRecalculationCases": 49,
+    "finalComparedValues": 1253,
+    "pureTestsPassed": 10,
+    "log": ".runtime/excel-baseline-precision-review/recalculate.log"
+  },
+  "validation": {
+    "independentXlsxRecalculation": {
+      "cases": 46,
+      "comparedValues": 1215,
+      "passed": true,
+      "log": ".runtime/batch14-excel-all.log",
+      "mainSheetRenderedAndInspected": true,
+      "maximumTargets": 100,
+      "maximumTotalBudgetCents": 1000000000000,
+      "nativeExcelOrWpsClient": false
+    },
+    "targetedPostgres": {"total": 66, "passed": 66, "log": ".runtime/ai-pg-93772ecab887/tests.log"},
+    "upgrade": {
+      "from": "0013", "to": "0018", "passed": true,
+      "old56TablesDigestPreserved": true,
+      "restrictedRoles": true,
+      "allThreeRenderersRestored": true,
+      "binaryRestoreBytes": 524288,
+      "aiTests": 279, "passedTests": 277, "skippedTests": 2,
+      "log": ".runtime/batch14-upgrade.log"
+    },
+    "finalPostgres": {
+      "total": 319, "passed": 316, "skipped": 2, "failed": 1,
+      "failure": "Existing test_activation_restores_older_conversation_and_delete_cascades ordering failure recurred; Excel and persisted v3 delivery tests passed. Follow-up repair tracked separately.",
+      "log": ".runtime/ai-pg-7bfaf1e379fb/failure.log"
+    },
+    "node": {"passed": 7, "failed": 0, "log": ".runtime/batch14-node.log"},
+    "changedToolLint": "passed",
+    "productionBoundary": "passed"
+  },
+  "limits": [
+    "Five stages are not fully accepted; no production deployment.",
+    "Excel scenarios use a conservative 14-digit reduced integer product bound; unsupported values remain unavailable, with HTML suggested for higher precision.",
+    "Original scenario tables retain click and order projections; added native formula pages currently recalculate budget, attributed GMV, ROAS, contribution, review spend and baseline budget comparison.",
+    "No automatic report splitting, complete source capacity acceptance, natural-language first-task workbench or real paid multi-Agent acceptance yet."
+  ],
+  "productionOperations": {"queries": false, "migration": false, "restart": false, "deployment": false, "modelCalls": false, "notifications": false}
+}

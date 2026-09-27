@@ -1,36 +1,46 @@
 import { authorizationErrorResponse, requireAppPrincipal } from "@/lib/auth/authorization";
-import { netshopPlatformsForPrincipal } from "@/lib/netshop/access";
+import { netshopOutletsForPrincipal, netshopPlatformsForPrincipal } from "@/lib/netshop/access";
 import {
-  ensureNetshopSchema,
-  getNetshopDatabase,
-  getNetshopPromotionPerformance,
-} from "@/lib/netshop/database";
-
-function positiveInteger(value: string | null, fallback: number) {
-  const parsed = Number(value);
-  return Number.isFinite(parsed) && parsed > 0 ? Math.trunc(parsed) : fallback;
-}
+  createDjangoNetshopService,
+  NETSHOP_PROMOTION_PERFORMANCE_PATH,
+} from "@/lib/django/netshop-service";
+import {
+  NETSHOP_QUERY_MAX_PAGE,
+  NETSHOP_PROMOTION_QUERY_MAX_PAGE_SIZE,
+  NetshopQueryError,
+  netshopQueryErrorPayload,
+  readNetshopOutletFilters,
+  readNetshopQueryInteger,
+  resolveNetshopQueryPeriod,
+} from "@/lib/netshop/query-contract";
 
 export async function GET(request: Request) {
   try {
     const principal = await requireAppPrincipal();
     const params = new URL(request.url).searchParams;
-    const db = getNetshopDatabase();
-    await ensureNetshopSchema(db);
-    const payload = await getNetshopPromotionPerformance(db, {
-      query: params.get("q") ?? undefined,
-      page: positiveInteger(params.get("page"), 1),
-      pageSize: positiveInteger(params.get("pageSize"), 50),
-      platformNames: netshopPlatformsForPrincipal(principal, params.getAll("platform")),
-      shopNames: [...new Set(params.getAll("shop").map((value) => value.trim()).filter(Boolean))].slice(0, 50),
-      startDate: params.get("startDate") ?? undefined,
-      endDate: params.get("endDate") ?? undefined,
-    });
-    return Response.json(payload, { headers: { "cache-control": "no-store" } });
+    readNetshopQueryInteger(params.get("page"), "page", 1, 1, NETSHOP_QUERY_MAX_PAGE);
+    readNetshopQueryInteger(params.get("pageSize"), "pageSize", 20, 1, NETSHOP_PROMOTION_QUERY_MAX_PAGE_SIZE);
+    resolveNetshopQueryPeriod(params.get("startDate"), params.get("endDate"));
+    if (params.has("shop")) {
+      throw new NetshopQueryError("invalid_outlet_filter", "店铺筛选必须使用 outlet 平台与店铺复合键");
+    }
+    const requestedPlatforms = params.getAll("platform");
+    netshopPlatformsForPrincipal(principal, requestedPlatforms);
+    netshopOutletsForPrincipal(
+      principal,
+      readNetshopOutletFilters(params.getAll("outlet")),
+      requestedPlatforms,
+    );
+    const result = await createDjangoNetshopService().request<Record<string, unknown>>(
+      principal,
+      { method: "GET", path: NETSHOP_PROMOTION_PERFORMANCE_PATH, query: params, service: "reader" },
+      { signal: request.signal },
+    );
+    return Response.json(result.data, { headers: { "cache-control": "no-store" } });
   } catch (error) {
     const authResponse = authorizationErrorResponse(error);
     if (authResponse) return authResponse;
-    const message = error instanceof Error ? error.message : "读取天猫推广数据失败";
-    return Response.json({ error: message }, { status: 500, headers: { "cache-control": "no-store" } });
+    const failure = netshopQueryErrorPayload(error, "读取网店推广数据失败");
+    return Response.json(failure.body, { status: failure.status, headers: { "cache-control": "no-store" } });
   }
 }

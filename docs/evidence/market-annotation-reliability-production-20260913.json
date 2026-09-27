@@ -1,0 +1,662 @@
+{
+  "version": "teruisi-market-annotation-reliability-production-v1",
+  "date": "2026-09-13",
+  "status": "completed",
+  "sourceCommit": "2a1867c244fc1c8d3b4cb55675b8dd71d11044a7",
+  "sourceBranch": "codex/market-annotation-throughput",
+  "sourceWorktree": "D:/运营管理系统-sales-django-release",
+  "authorization": {
+    "userInstruction": "发布上线",
+    "scope": "Controlled local production adoption of the validated market annotation scheduling, owner authorization, filtered review selection and batched commit repair."
+  },
+  "validation": {
+    "isolatedPostgresMarket": {
+      "passed": 52,
+      "failed": 0,
+      "syntheticDataOnly": true,
+      "actualReaderWriterRoleGates": "passed"
+    },
+    "finalTargeted": {
+      "passed": 76,
+      "failed": 0
+    },
+    "fullNode": {
+      "tests": 2158,
+      "passed": 2138,
+      "failed": 0,
+      "skipped": 20,
+      "durationMs": 262926.5099,
+      "status": "passed_clean_full_run",
+      "buildArtifactsStableDuringRun": true,
+      "localLog": ".runtime/market-release-20260913/final-unit-stable-build.log"
+    },
+    "renderedHtml": {
+      "passed": 20,
+      "failed": 0
+    },
+    "lint": {
+      "errors": 0,
+      "existingUnrelatedWarnings": 11
+    },
+    "build": "passed",
+    "backendBoundary": {
+      "status": "passed"
+    },
+    "dispatchRegression": {
+      "beforeFix": {
+        "failed": 2,
+        "observedLaunchCounts": [
+          0,
+          0
+        ]
+      },
+      "afterFix": {
+        "targetedDispatcherRunnerReviewPassed": 13,
+        "failed": 0
+      }
+    },
+    "independentIncrementalReview": "passed; no transaction, locking, unknown-result replay, concurrency or lease-limit regression found",
+    "typecheck": "Full tsc --noEmit retains errors in untouched historical tests and tools; it is not reported as passing."
+  },
+  "preReleaseBackup": {
+    "status": "completed",
+    "backupId": "daily-20260913T022305Z-de16e1ed9158",
+    "backupDirectory": "D:/teruisi-runtime/django-sales/backups/postgres-daily/daily-20260913T022305Z-de16e1ed9158",
+    "manifestSha256": "720273a2fc8a876e93eeb5dbbd0d639e486216cc98d3251f82da5429044319dd",
+    "dumpSha256": "d4d4c043a16e9273b5f0c168335db5a5dac6f565c0a9193e7859b5887bc2144c",
+    "contentSha256": "f1a015b1300284892a6b40940c5539febeba2b31f1b00032395b6e644e324f41",
+    "independentVerify": "completed",
+    "alsoInitialAdoptionPostReleaseBackup": true
+  },
+  "preReleaseIndependentRestore": {
+    "status": "completed",
+    "rehearsalId": "8d20534eca70",
+    "isolatedPort": 55480,
+    "backupId": "daily-20260913T022305Z-de16e1ed9158",
+    "backupManifestSha256": "720273a2fc8a876e93eeb5dbbd0d639e486216cc98d3251f82da5429044319dd",
+    "expectedContentSha256": "f1a015b1300284892a6b40940c5539febeba2b31f1b00032395b6e644e324f41",
+    "restoredContentSha256": "f1a015b1300284892a6b40940c5539febeba2b31f1b00032395b6e644e324f41",
+    "productionDatabaseTouched": false,
+    "serviceStateChanged": false,
+    "cleanupStatus": "isolated_data_removed"
+  },
+  "djangoDeployment": {
+    "status": "deployed_and_acl_hardened",
+    "sourceCommit": "2a1867c244fc1c8d3b4cb55675b8dd71d11044a7",
+    "deployedAt": "2026-09-13T10:43:18.7184773+08:00",
+    "manifestSha256": "77251eba11f4cc925e323bcafcbd52a5c05ac24ce686cf575887ce0ec66903b2",
+    "appFingerprint": "29e4d3772c4ea1b79eac02b609bea801516f28f43f8ddd3018c41284b3e3fca2",
+    "fileCount": 2023,
+    "candidateSourceDigestMatch": true,
+    "businessFileChecks": [
+      {
+        "file": "backend/market/annotations.py",
+        "sourceSha256": "499079111f450cbb45c5813560002ae57bc70ac4430b405cf8961c7eb8998b86",
+        "adoptedSha256": "499079111f450cbb45c5813560002ae57bc70ac4430b405cf8961c7eb8998b86",
+        "match": true
+      },
+      {
+        "file": "backend/market/annotation_runtime.py",
+        "sourceSha256": "3233c391da8401218922df91ba4e9adf438c11d4ebcea54cf96574781d6fb7ea",
+        "adoptedSha256": "3233c391da8401218922df91ba4e9adf438c11d4ebcea54cf96574781d6fb7ea",
+        "match": true
+      }
+    ]
+  },
+  "workerDeployment": {
+    "status": "activated",
+    "planSha256": "e76477afd95bd38880f0097b36d05089672b86a1a9bb8d7549ac50a0c216644e",
+    "predecessorReleaseId": "20260913T021310Z-a34d51daad87840c",
+    "releaseId": "20260913T024434Z-bc351d47b7209e2b",
+    "manifestSha256": "33d3c8c0e7b7d2809a2076f983ca5ff5b5016d70cd0c0f9026384e5c057b16e0",
+    "guardReceiptSha256": "6dc31256aa64cd0c0db4d9a406fea2870dda6d1fbb19c98576831896f33407d7",
+    "successorSha256": "23b0e7bf3fc5fe96152a6773e49746b3ad87a37a7d1c8ee1a014a47be250299b",
+    "consumptionSha256": "c6942ea39bfc0cf609920c6428fc59ca0838ec5ff2a5d55e70367f6e64e421d8",
+    "startupBindingSha256": "58700ed251ae979baa3552274f8f6d4ea059d82897e153d4bddaec71c900a0e9",
+    "successorCount": 142,
+    "changedSourceFilesMatch": 8
+  },
+  "preReleaseAnnotationBaseline": {
+    "observedAt": "2026-09-13T10:39:04.1433865+08:00",
+    "jobs": [
+      {
+        "jobId": "market-annotation-job-06d77104-6edd-49a3-89c3-0c81c6fe7725",
+        "category": "商用绞肉机切肉机切片机",
+        "completed": 393,
+        "failed": 0,
+        "activeClaims": 0
+      },
+      {
+        "jobId": "market-annotation-job-dbc35162-b93e-4584-b7f1-db794b1e489f",
+        "category": "商用炒菜机",
+        "completed": 381,
+        "failed": 0,
+        "activeClaims": 0
+      },
+      {
+        "jobId": "market-annotation-job-3eae2413-b0f5-481d-9d71-d4aa24f53b20",
+        "category": "商用洗碗机",
+        "completed": 125,
+        "failed": 0,
+        "activeClaims": 0
+      },
+      {
+        "jobId": "market-annotation-job-19ea5346-c3b4-4d5a-975e-2b3082e3f4f9",
+        "category": "商用净水设备",
+        "completed": 199,
+        "failed": 5488,
+        "activeClaims": 0
+      },
+      {
+        "jobId": "market-annotation-job-ec555270-03c2-45d5-9747-af7fcc331f6f",
+        "category": "商用开水器蒸气奶泡机",
+        "completed": 500,
+        "failed": 0,
+        "activeClaims": 0
+      }
+    ],
+    "source": "Local read-only public API before incremental maintenance.",
+    "allActiveClaimsZero": true,
+    "note": "Point-in-time counters before the incremental stop; not a final adoption readback or a current data-coverage statement."
+  },
+  "maintenance": {
+    "status": "completed",
+    "controlledSystemStopCompletedAt": "2026-09-13T10:41:52.9178588+08:00",
+    "n8nRestarted": false,
+    "originalHourlyRetryManuallyModified": false,
+    "djangoDeployAppCompleted": true,
+    "djangoHardenAclCompleted": true,
+    "controlledSystemStartCompletedAt": "2026-09-13T10:54:06.8091525+08:00"
+  },
+  "productionReadback": {
+    "version": "teruisi-operations-system-control-v2",
+    "state": "Running",
+    "backendState": "Ready",
+    "workerState": "exact_release",
+    "releaseId": "20260913T024434Z-bc351d47b7209e2b",
+    "supervisorProcessId": 43444,
+    "portProcessId": 55456,
+    "url": "http://localhost:3000/",
+    "reason": null,
+    "components": {
+      "core": true,
+      "finance": true,
+      "netshop": true,
+      "market": true,
+      "products": true,
+      "workflow": true,
+      "inventory": true,
+      "customerService": true,
+      "accessControl": true,
+      "erpReference": true,
+      "bi": true,
+      "ai": true
+    },
+    "checkedAt": "2026-09-13T10:56:38.1724601+08:00",
+    "allComponentsReady": true,
+    "startupShortcutVerified": true,
+    "liveAssets": {
+      "observedAt": "2026-09-13T02:55:08.077Z",
+      "releaseId": "20260913T024434Z-bc351d47b7209e2b",
+      "pageStatus": 200,
+      "assetCount": 17,
+      "allMatch": true,
+      "assets": [
+        {
+          "url": "/assets/index-BIM3aUda.css",
+          "sha256": "d88973cc5848d8a83098c44f047acf11be5bd85747cbdfccf77951e0877071c8"
+        },
+        {
+          "url": "/assets/layout-segment-context-CxHxYRpH.js",
+          "sha256": "a7c9db6adc4d84c1e02624f8858c497f526f2cfb9520b849c9e63b09451bead9"
+        },
+        {
+          "url": "/assets/rolldown-runtime-S-ySWqyJ.js",
+          "sha256": "5db5ba82eef00d1dee7e86e663098c9427d01183a88d357437daff295aec3e75"
+        },
+        {
+          "url": "/assets/index-gR6d6eYT.js",
+          "sha256": "faacc7210e8d41de607459c9c9a7a246726c0e05db056afd89ff531d4b17c83a"
+        },
+        {
+          "url": "/assets/framework-CXnKph_e.js",
+          "sha256": "73b45b606448e4dc310fbe851d8089ee752f3eb081980b3a6fec88988820ee12"
+        },
+        {
+          "url": "/assets/page-qoCyXGan.js",
+          "sha256": "fdef6f14e1db30996f5c252858a317b672e55ccb1ad6556746405e2a532daff6"
+        },
+        {
+          "url": "/assets/ai-page-context-provider-BkjMFPbM.js",
+          "sha256": "81068a87be6359e62cb5aca4183656b0fdb30f82e4dab2532fd9e2caa6753858"
+        },
+        {
+          "url": "/assets/module-view-shared-DczkaNRF.js",
+          "sha256": "62cf95ce744681846b4ecd23cddb29d80a3fbdf3c9a4b59ad61746c6b9afc985"
+        },
+        {
+          "url": "/assets/navigation-catalog-CHSwvwdC.js",
+          "sha256": "4f4c4af7bb15600e2594bdb32a528345cdda4d1c43c49d98ff3cccdb011b06d2"
+        },
+        {
+          "url": "/assets/reloadable-lazy-CTU0sTx1.js",
+          "sha256": "89877a478fb2c752b38ed3187cc3c2976f3114b25c92131f6a3da6421188a432"
+        },
+        {
+          "url": "/assets/dialog-BEcMOj6u.js",
+          "sha256": "62403b91d7d23f2e2c0f24b5941f9176e1a7ebf61f5cb8f770132bc6f8dc1ac5"
+        },
+        {
+          "url": "/assets/searchable-select-TuzqFU6k.js",
+          "sha256": "f423c656f508f5e8c08f6790e50b567b02f6e294204032fe6ba28e765310916f"
+        },
+        {
+          "url": "/assets/page-context-DyKLhm02.js",
+          "sha256": "7cda777e984f31e2e7b61b74e04ff899e4671fd9ab40c6dd637bbabf0f2b4670"
+        },
+        {
+          "url": "/assets/api-client-AmxEZHS1.js",
+          "sha256": "1668ca8a79bf454e2d7c8c8ef2783c19ca9d6640e5df6327400a57e8ccc5edbe"
+        },
+        {
+          "url": "/assets/api-error-CJCV3BJQ.js",
+          "sha256": "4efae8b1a9127677a8c80569e149000d507839d79d3fc807c2a37d490174941f"
+        },
+        {
+          "url": "/assets/market-annotation-view-Ba1VanpK.js",
+          "sha256": "fec76bc5265767042e6f0025909eb046902b2a987e68d16ba99d302f61b4ce7c"
+        },
+        {
+          "url": "/assets/market-view-DC-cZfXB.js",
+          "sha256": "7a6506dc50c7880431c1eb42a9f897bc64b3e194cdfbd3aa7a8189cd353be334"
+        }
+      ]
+    },
+    "reviewApi": {
+      "observedAt": "2026-09-13T10:55:09.1179899+08:00",
+      "itemPagination": {
+        "page": 1,
+        "pageSize": 10,
+        "total": 28620,
+        "pageCount": 2862
+      },
+      "selection": {
+        "filteredReviewableCount": 1674,
+        "filteredSelectedCount": 154,
+        "scopeSelectedCount": 154
+      },
+      "pageItems": 10,
+      "segmentsPresentOnEveryItem": true
+    },
+    "reviewUi": {
+      "selectAllFilteredEnabled": true,
+      "selectAllFilteredLabel": "全选筛选结果（跨页 1789 条）",
+      "snapshotTiming": "Observed after the reviewApi snapshot during final browser verification on 2026-09-13; the exact UI observation timestamp was not captured. Counts are dynamic while existing plans advance, so these are not simultaneous API/UI counts.",
+      "clicked": false,
+      "businessCommitTriggered": false,
+      "localRuntimeRequirementVisible": true
+    },
+    "annotationProgress": {
+      "observedAt": "2026-09-13T10:59:21.4198814+08:00",
+      "jobs": [
+        {
+          "jobId": "market-annotation-job-dbc35162-b93e-4584-b7f1-db794b1e489f",
+          "category": "商用炒菜机",
+          "state": "running",
+          "completed": 421,
+          "failed": 0,
+          "activeClaims": 0,
+          "lastFailureCode": "",
+          "lastFailureMessage": "",
+          "averageModelCallMs": 9119,
+          "measuredCount": 83,
+          "completedDeltaSinceIncrementalStop": 40,
+          "failedDeltaSinceIncrementalStop": 0
+        },
+        {
+          "jobId": "market-annotation-job-3eae2413-b0f5-481d-9d71-d4aa24f53b20",
+          "category": "商用洗碗机",
+          "state": "running",
+          "completed": 176,
+          "failed": 0,
+          "activeClaims": 0,
+          "lastFailureCode": "",
+          "lastFailureMessage": "",
+          "averageModelCallMs": 9048,
+          "measuredCount": 100,
+          "completedDeltaSinceIncrementalStop": 51,
+          "failedDeltaSinceIncrementalStop": 0
+        },
+        {
+          "jobId": "market-annotation-job-19ea5346-c3b4-4d5a-975e-2b3082e3f4f9",
+          "category": "商用净水设备",
+          "state": "running",
+          "completed": 257,
+          "failed": 5488,
+          "activeClaims": 0,
+          "lastFailureCode": "",
+          "lastFailureMessage": "",
+          "averageModelCallMs": 6302,
+          "measuredCount": 100,
+          "completedDeltaSinceIncrementalStop": 58,
+          "failedDeltaSinceIncrementalStop": 0
+        },
+        {
+          "jobId": "market-annotation-job-06d77104-6edd-49a3-89c3-0c81c6fe7725",
+          "category": "商用绞肉机切肉机切片机",
+          "state": "running",
+          "completed": 433,
+          "failed": 0,
+          "activeClaims": 0,
+          "lastFailureCode": "",
+          "lastFailureMessage": "",
+          "averageModelCallMs": 8868,
+          "measuredCount": 100,
+          "completedDeltaSinceIncrementalStop": 40,
+          "failedDeltaSinceIncrementalStop": 0
+        },
+        {
+          "jobId": "market-annotation-job-ec555270-03c2-45d5-9747-af7fcc331f6f",
+          "category": "商用开水器蒸气奶泡机",
+          "state": "running",
+          "completed": 566,
+          "failed": 0,
+          "activeClaims": 0,
+          "lastFailureCode": "",
+          "lastFailureMessage": "",
+          "averageModelCallMs": 9307,
+          "measuredCount": 66,
+          "completedDeltaSinceIncrementalStop": 66,
+          "failedDeltaSinceIncrementalStop": 0
+        }
+      ]
+    },
+    "allFiveExistingPlansAdvanced": true,
+    "noNewFailuresInObservedWindow": true,
+    "dingTalkStartupEnabled": true,
+    "dingTalkReceiverConnected": true,
+    "dingTalkLog": "django-ai-dingtalk.20260913-105312-3a280bed.stdout.log"
+  },
+  "postReleaseBackup": {
+    "status": "completed",
+    "backupId": "daily-20260913T025505Z-763ddfa726f5",
+    "backupDirectory": "D:/teruisi-runtime/django-sales/backups/postgres-daily/daily-20260913T025505Z-763ddfa726f5",
+    "manifestSha256": "8668534700a8dc4863f76c6d323e9390f33e052e9a1677664b7e1b400b267611",
+    "dumpSha256": "1fae2bad86e9f663e4a36d11a54f80baedccfbab57fb2351b254c0a49ca41499",
+    "contentSha256": "ef1d9502ea4e1074d1148f1d28d25a3ead46167539c6d89e1f25ca686c49499e",
+    "completedAt": "2026-09-13T02:56:42.9361753+00:00",
+    "independentVerify": "completed",
+    "serviceStateChanged": false,
+    "secondRestoreRehearsalPerformed": false
+  },
+  "boundaries": {
+    "databaseSchemaMigrationRequired": false,
+    "databaseSchemaMigrationsApplied": false,
+    "oldFailedOrUnknownItemsResetForRelease": false,
+    "n8nWorkflowDefinitionsChanged": false,
+    "realModelThroughputControlledBenchmarkPerformed": false,
+    "naturalQueueProgressObserved": true,
+    "paidModelTestManuallyTriggered": false,
+    "previouslyEnabledPlansNaturallyResumed": true,
+    "businessReviewOrCommitAcceptancePerformed": false,
+    "releaseCompleted": true
+  },
+  "limitations": [
+    "Observed natural progress is a point-in-time production check, not a controlled model throughput or rate-limit benchmark.",
+    "Production select-all and business commit were not clicked; cross-page mutation and batch commit were verified in isolated PostgreSQL with actual role contracts.",
+    "Historical failed and unknown items were retained and not reset or manually replayed.",
+    "The separate market master list still times out at 30 seconds; its unchanged query path remains an open follow-up.",
+    "Build and artifact-consuming tests must run sequentially in the same worktree; the final full suite used stable completed artifacts."
+  ],
+  "initialAdoption": {
+    "status": "activated_and_read_back_with_followup_performance_correction_required",
+    "sourceCommit": "85b6cc30865a700879fd351f7cdb4ca794069f0b",
+    "validation": {
+      "candidateEvidence": "market-annotation-reliability-validation-20260913.json",
+      "fullNode": {
+        "passed": 2129,
+        "failed": 0,
+        "skipped": 23
+      },
+      "isolatedPostgresMarket": {
+        "passed": 51,
+        "failed": 0,
+        "syntheticDataOnly": true
+      },
+      "focusedMarket": {
+        "passed": 105,
+        "failed": 0
+      },
+      "finalRunnerAndDispatch": {
+        "passed": 11,
+        "failed": 0
+      },
+      "renderedHtml": {
+        "passed": 20,
+        "failed": 0
+      },
+      "build": "passed",
+      "lint": {
+        "errors": 0,
+        "existingUnrelatedWarnings": 11
+      },
+      "backendBoundary": {
+        "checkedModules": 430,
+        "violations": 0
+      },
+      "typecheck": "Full tsc --noEmit retains errors in untouched historical tests and tools; it is not reported as passing."
+    },
+    "preReleaseBackup": {
+      "status": "completed",
+      "backupId": "daily-20260913T020130Z-bf80a88ee634",
+      "backupDirectory": "D:/teruisi-runtime/django-sales/backups/postgres-daily/daily-20260913T020130Z-bf80a88ee634",
+      "manifestSha256": "8bef79be0c0c4458af83e93ad920edcffa8e8041a1e2a2c8095aab6446f049fe",
+      "dumpSha256": "2326458325973abca03a88dd2d70656df3d75183c5bd085400f3fe13f474834e",
+      "contentSha256": "0abb20624d51c5b7ccafd75abf306e030a7c032045160ef6a66d4aae7185dbb9",
+      "independentVerify": null
+    },
+    "preReleaseIndependentRestore": {
+      "status": "completed",
+      "rehearsalId": "1c90260abd35",
+      "isolatedPort": 55480,
+      "expectedContentSha256": "0abb20624d51c5b7ccafd75abf306e030a7c032045160ef6a66d4aae7185dbb9",
+      "restoredContentSha256": "0abb20624d51c5b7ccafd75abf306e030a7c032045160ef6a66d4aae7185dbb9",
+      "productionDatabaseTouched": false,
+      "serviceStateChanged": false,
+      "cleanupStatus": "isolated_data_removed"
+    },
+    "djangoDeployment": {
+      "status": "deployed_and_acl_hardened",
+      "manifestSha256": "34ef03b2137106571635720058719256c7e9548ab4f8579ba8e93d30580eedc3",
+      "appFingerprint": "90ca77b2dd2b6e597767cc0e87acb6cd51f68373779e2bbb22eb5dd0533f537e",
+      "fileCount": 2023,
+      "sourceCommit": "85b6cc30865a700879fd351f7cdb4ca794069f0b",
+      "candidateSourceDigestMatch": true
+    },
+    "workerDeployment": {
+      "status": "activated",
+      "planSha256": "65403c4302b273a0e12b48ec9b3b79c1925ff5232d27d08b944db02ea4b6b1b3",
+      "predecessorReleaseId": "20260912T234549Z-017f8196dda91b2b",
+      "releaseId": "20260913T021310Z-a34d51daad87840c",
+      "manifestSha256": "072172f8072d59f3b23deddabd31d40c7341fe3c4e2d0c6b48e103d2d9160e3c",
+      "guardReceiptSha256": "472bbb24c3cac37ac9a4c7ef2a42a54d057942664028bff1e56737eb98943027",
+      "successorSha256": "be0abeb5feb2fea62274e7ecca4f6d5bef06a16942d55060a073a35d04090332",
+      "consumptionSha256": "e531328ee5e3459aef55df31b40dc661b2032783c20e418ebdb28e731e5c1c67",
+      "startupBindingSha256": "2b1824af74535bb0650c38303685fe7f96ce172362f3cbf4f55b79cc63790472"
+    },
+    "preReleaseAnnotationBaseline": {
+      "observedAt": "2026-09-13T10:03:12.2690446+08:00",
+      "source": "Local read-only public API; operations MCP unavailable.",
+      "jobs": [
+        {
+          "jobId": "market-annotation-job-19ea5346-c3b4-4d5a-975e-2b3082e3f4f9",
+          "category": "商用净水设备",
+          "state": "running",
+          "completed": 154,
+          "failed": 5483,
+          "activeClaims": 0
+        },
+        {
+          "jobId": "market-annotation-job-3eae2413-b0f5-481d-9d71-d4aa24f53b20",
+          "category": "商用洗碗机",
+          "state": "running",
+          "completed": 75,
+          "failed": 0,
+          "activeClaims": 0
+        },
+        {
+          "jobId": "market-annotation-job-06d77104-6edd-49a3-89c3-0c81c6fe7725",
+          "category": "商用绞肉机切肉机切片机",
+          "state": "running",
+          "completed": 311,
+          "failed": 0,
+          "activeClaims": 0
+        },
+        {
+          "jobId": "market-annotation-job-dbc35162-b93e-4584-b7f1-db794b1e489f",
+          "category": "商用炒菜机",
+          "state": "running",
+          "completed": 338,
+          "failed": 0,
+          "activeClaims": 0
+        },
+        {
+          "jobId": "market-annotation-job-ec555270-03c2-45d5-9747-af7fcc331f6f",
+          "category": "商用开水器蒸气奶泡机",
+          "state": "running",
+          "completed": 500,
+          "failed": 0,
+          "activeClaims": 0
+        }
+      ],
+      "note": "Point-in-time task counters, not a current data-coverage statement or an exhaustive failure census."
+    },
+    "maintenance": {
+      "controlledSystemStopCompletedAt": "2026-09-13T10:11:00+08:00",
+      "workerAndBackendStoppedThroughControlledEntry": true,
+      "djangoDeployAppCompleted": true,
+      "djangoHardenAclCompleted": true,
+      "n8nRestarted": false,
+      "existingHourlyRetryPreserved": {
+        "executionId": "1493",
+        "workflowId": "TeruisiHourlyRetry2026",
+        "observedAt": "2026-09-13T10:07:14.387471+08:00",
+        "status": "waiting",
+        "waitTill": "2026-09-13T11:06:29.331+08:00",
+        "originalExecutionId": "1491",
+        "originalExecutionTerminalStatus": "error",
+        "originalExecutionStoppedAt": "2026-09-13T10:06:28.688+08:00",
+        "manuallyReplayedOrModified": false
+      },
+      "weeklyReportObservation": {
+        "executionId": "1492",
+        "status": "success",
+        "resultStatus": "not_due",
+        "stoppedAt": "2026-09-13T10:05:53.236+08:00",
+        "cadenceMinutes": 5,
+        "note": "Uses the existing shared service mutex; subsequent checks must not be forcibly terminated."
+      },
+      "dingTalkScheduledObservation": {
+        "observedAt": "2026-09-13T10:03:20.4192719+08:00",
+        "activeScheduledRunCount": 0,
+        "latestScheduledRunStatus": "sent",
+        "latestScheduledRunCompletedAt": "2026-09-13T09:00:35.938497+08:00",
+        "nextScheduledAt": "2026-09-14T09:00:00+08:00",
+        "note": "Scheduled-delivery metadata does not establish absence of all interactive AI requests."
+      }
+    },
+    "productionReadback": {
+      "systemStartCompletedAt": "2026-09-13T10:22:30+08:00",
+      "checkedAt": "2026-09-13T10:24:07+08:00",
+      "state": "Running",
+      "backendState": "Ready",
+      "workerState": "exact_release",
+      "allComponentsReady": true,
+      "startupShortcutVerified": true,
+      "liveAssets": {
+        "checkedAssetCount": 17,
+        "assetBytesMatchRelease": true
+      },
+      "review": {
+        "checkboxEnabled": true,
+        "filteredCrossPageSelectionCount": 1378,
+        "selectAllFilteredResultsEnabled": true,
+        "selectAllClicked": false,
+        "businessCommitTriggered": false
+      },
+      "dingTalk": {
+        "startupEnabled": true,
+        "receiverState": "running",
+        "connected": true,
+        "connectedLog": "django-ai-dingtalk.20260913-102139-f601aed3.stdout.log"
+      },
+      "independentSourceByteVerification": {
+        "checkedAt": "2026-09-13T10:20:13.512327+08:00",
+        "workerChangedTsUiFiles": 8,
+        "djangoBusinessFiles": 2,
+        "allMatch": true
+      }
+    },
+    "postReleaseBackup": {
+      "status": "completed",
+      "backupId": "daily-20260913T022305Z-de16e1ed9158",
+      "backupDirectory": "D:/teruisi-runtime/django-sales/backups/postgres-daily/daily-20260913T022305Z-de16e1ed9158",
+      "manifestSha256": "720273a2fc8a876e93eeb5dbbd0d639e486216cc98d3251f82da5429044319dd",
+      "dumpSha256": "d4d4c043a16e9273b5f0c168335db5a5dac6f565c0a9193e7859b5887bc2144c",
+      "contentSha256": "f1a015b1300284892a6b40940c5539febeba2b31f1b00032395b6e644e324f41",
+      "independentVerify": "completed"
+    },
+    "note": "Initial adoption was real and verified; the later empty-expiry query hotspot and launch-window issue were addressed by the incremental forward adoption below.",
+    "mainFastForwardedAndPushed": true,
+    "integrationTreeSynchronized": true
+  },
+  "incrementalCorrection": {
+    "sourceCommit": "2a1867c244fc1c8d3b4cb55675b8dd71d11044a7",
+    "productionReadOnlyDiagnosis": {
+      "source": "Bounded equivalent SELECT queries using the production PostgreSQL reader role; no production mutations.",
+      "queuedCandidates": 4919,
+      "emptyExpiredCorrelatedScanMs": 6922,
+      "expiredExistenceCheckMsLessThan": 1,
+      "scope": "Query latency only; not a model throughput or speedup-factor measurement."
+    },
+    "changes": [
+      "Check whether expired inference leases exist before scanning and quarantining matching queued items; preserve the original transaction, model/job/run locks and complete unknown-result quarantine path.",
+      "Keep bounded preparation requests separate from the ten-second launch window, which now starts after preparation completes; expose preparationMs and launchCount.",
+      "Retain fifty total lanes, two hundred claims per dispatch, model/lease deadlines and exact lease release.",
+      "Correct two UI statements: closing the browser can continue work, but a local deployment requires the computer and operations system to remain running."
+    ],
+    "databaseSchemaMigrationRequired": false
+  },
+  "intermediateValidation": {
+    "fullNodeDuringConcurrentBuild": {
+      "tests": 2158,
+      "passed": 2137,
+      "failed": 1,
+      "skipped": 20,
+      "status": "completed_with_one_environment_failure",
+      "failure": "ENOENT in the chunk test while a concurrent build changed artifacts in the same worktree.",
+      "failureAfterBuildStopped": {
+        "targetedChunkTests": 2,
+        "passed": 2,
+        "failed": 0
+      },
+      "note": "At this intermediate stage only targeted recovery had passed; this historical run retains its failure count. The later complete stable-build rerun passed and is recorded in validation.fullNode."
+    },
+    "note": "Preserved historical failed attempt; superseded for final acceptance by the full suite rerun against stable build artifacts."
+  },
+  "separateReadOnlyFinding": {
+    "scope": "market master database_primary list",
+    "status": "open",
+    "request": "GET /api/market/master?view=database_primary&page=1&pageSize=30",
+    "httpStatus": 503,
+    "durationMs": 30078,
+    "code": "service_unavailable",
+    "controlSystemKpis": {
+      "httpStatus": 200,
+      "durationMs": 515
+    },
+    "relatedQueryAndAdapterFilesChangedByThisRelease": false,
+    "priorReleaseReproductionPerformed": false,
+    "note": "Independent list query timeout; no claim that it predates this release or that all market pages passed performance acceptance."
+  }
+}

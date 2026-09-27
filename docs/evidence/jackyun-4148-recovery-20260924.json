@@ -1,0 +1,73 @@
+{
+  "status": "verified_success",
+  "businessDate": "2026-09-24",
+  "authorization": "用户于本轮明确授权现在恢复吉客云 4143，复用原库存导出任务并从原 n8n 工作流启动一次完整执行。",
+  "originalExecution": {
+    "id": 4143,
+    "scheduledAtShanghai": "2026-09-24 00:10:00",
+    "status": "error",
+    "stage": "B export-all",
+    "error": "fetch failed",
+    "originalInventoryTaskId": "sys-114016113",
+    "originalInventorySourceRows": 26001,
+    "fileLandedBeforeRecovery": false
+  },
+  "automaticRetry": {
+    "executionId": 4146,
+    "status": "error",
+    "reason": "原运行尚未闭合且没有有效续跑许可；未新建重复导出"
+  },
+  "recovery": {
+    "readOnlyPreflightPassed": true,
+    "permitPublishedCreateOnly": true,
+    "permitConsumedByExecutionId": 4148,
+    "originalInventoryTaskReused": true,
+    "execution": {
+      "id": 4148,
+      "mode": "manual",
+      "status": "success",
+      "startedAtShanghai": "2026-09-24 03:37:41",
+      "stoppedAtShanghai": "2026-09-24 03:41:20"
+    },
+    "runId": "n8n-export-first-4143",
+    "planPhase": "completed",
+    "salesPeriod": {
+      "startDate": "2026-08-10",
+      "endDate": "2026-09-23",
+      "daysInclusive": 45
+    },
+    "snapshotDate": "2026-09-24"
+  },
+  "independentReadOnlyBatchVerification": {
+    "ok": true,
+    "modules": [
+      { "module": "products", "batchId": "products:ae7309243b9c2b5edfca2bb74daf9e6bc30ad83df68ffc765ed290e3f2536f7e", "rowCount": 8521, "warningCount": 0 },
+      { "module": "inventory", "batchId": "72066145085a3fe2eb2bfcb8e8ed7d6bdc2af1f61a77e18f5e9627d54c959980", "rowCount": 23961, "warningCount": 6 },
+      { "module": "inventory_age", "batchId": "inventory_age:898f3761f4797f04618b641dfb13c4da56281171c6847e4d0b4bd14556082fc7", "rowCount": 5747, "warningCount": 0 },
+      { "module": "sales", "batchId": "93a709cb5c30ef6a49ac7daa30ce651d0e3d0adf47605a0703a9a42850fbf0c0", "rowCount": 39959, "warningCount": 118 },
+      { "module": "combos", "batchId": "combos:4ec77bc293be6332d18d5be50e1a5b599a23642cfce193949ad739e58628b814", "rowCount": 4452, "warningCount": 2 }
+    ]
+  },
+  "salesFreshness": {
+    "source": "django_postgresql",
+    "revision": "37:36",
+    "cutoffDate": "2026-09-23",
+    "throughYesterday": true,
+    "latestBatchMatchesRecoveredRun": true
+  },
+  "finalState": {
+    "workflowActive": true,
+    "workflowPublishedVersionUnchanged": true,
+    "nonterminalJackyunExecutions": 0,
+    "helperReadyAndIdle": true,
+    "jackyunLockAbsent": true,
+    "dedicatedBrowserPortClosed": true,
+    "servicesRestarted": false
+  },
+  "evidenceFiles": {
+    "plan": "outputs/jackyun-export-first/n8n-export-first-4143.json",
+    "planSha256": "20048317f61ca0122dc1b1f7887e16d2213151f12dab3e0f3d1986e067f616b8",
+    "manifest": "outputs/jackyun-import-runs/n8n-export-first-4143/run-manifest.json",
+    "manifestSha256": "448dbf1d0bbab54e8569bf4c96dd0df183afd3cce9f4cccd8543da241cf1f445"
+  }
+}

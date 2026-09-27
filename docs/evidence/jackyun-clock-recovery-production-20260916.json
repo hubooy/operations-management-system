@@ -1,0 +1,111 @@
+{
+  "version": "teruisi-jackyun-clock-recovery-production-v1",
+  "date": "2026-09-16",
+  "status": "adopted_and_completed",
+  "authorization": "User explicitly requested that the Jackyun workflow be executed after the repair.",
+  "rootCause": {
+    "failedExecutionId": "2285",
+    "error": "导出任务绑定条件无效。",
+    "serverClock": "2026-09-15T16:10:14.000Z",
+    "localClockReceivedAt": "2026-09-15T16:10:13.099Z",
+    "clockOffsetMilliseconds": 901,
+    "description": "The task lower bound used the verified Jackyun server clock while the observation upper bound used the unadjusted local clock, creating a false inverted window when the server clock was ahead."
+  },
+  "source": {
+    "commit": "be2c4dff85ba80e2c8b1020dd04b1d25c158f29c",
+    "fix": "Convert task observation and download handoff upper bounds to the same verified server clock; add a create-only, single-consumer resume permit for an exact submitted API task.",
+    "validation": {
+      "focusedTests": { "passed": 24, "failed": 0 },
+      "fullNodeTests": { "total": 2210, "passed": 2190, "skipped": 20, "failed": 0 },
+      "renderedHtmlTests": { "passed": 20, "failed": 0 },
+      "build": "passed",
+      "eslint": "passed",
+      "backendBoundary": "450 modules, zero violations",
+      "typecheck": "No diagnostics in changed files; repository-wide existing diagnostics remain."
+    }
+  },
+  "release": {
+    "maintenanceId": "2501de16cb59438697f298dbca4e6982",
+    "predecessorReleaseId": "20260915T162551Z-78d9ad08f15648ec",
+    "releaseId": "20260916T004429Z-914353db1e3250b3",
+    "manifestSha256": "223db866221ab8961b8c25431b4aeba6d28ab59aaa3639c49b5883c85091822f",
+    "planSha256": "6d4ea4ada432f2534addfd16d80d5129bb2f53949c6a8bb7b703dba2b4e3cb86",
+    "successorSha256": "82c81e089e8541e5d458d268534fb5b37645f89a2e88c231a3878ece5631e863",
+    "consumptionSha256": "d62524fad88ed12eb01917b867a43d20a3518c9557c81be10a368013f5f53524",
+    "startupBindingSha256": "54ae21ec5ddfca77df610d801da9bb399a5d867d20e656c2694f954a3dcad02e",
+    "databaseMigrations": [],
+    "djangoRedeployed": false,
+    "n8nRestarted": false,
+    "n8nProcessId": 8796,
+    "n8nStartedAt": "2026-09-15T20:52:20.233088+08:00"
+  },
+  "recovery": {
+    "originalRunId": "n8n-export-first-2285",
+    "originalInventoryTaskId": "sys-113011002",
+    "originalInventorySourceRows": 25871,
+    "originalInventoryTaskReplayed": false,
+    "approvedProposalSha256": "3c22fd10c109fdec2eb61a9a1b16c204eb59def60ef8dc949fc13f4c43546225",
+    "permitSha256": "86c5a3806cc2543559556aad6a93371589a063d4ca0c3665c26fca30c0381da6",
+    "resumingExecutionId": "2437",
+    "startedAt": "2026-09-16T08:54:23.317+08:00",
+    "finishedAt": "2026-09-16T08:56:42.719+08:00",
+    "status": "success",
+    "snapshotDate": "2026-09-16",
+    "salesStartDate": "2026-09-01",
+    "salesEndDate": "2026-09-15",
+    "staleRetryExecutionsCanceledAfterSuccess": ["2431", "2433"]
+  },
+  "exports": [
+    { "module": "products", "taskId": "sys-113031110", "sourceRows": 8504, "bytes": 1441767, "sha256": "36820d9558c46ac64e27b849850491131875b03f43425e861448159c06bed8b9" },
+    { "module": "inventory", "taskId": "sys-113011002", "sourceRows": 25871, "bytes": 2944758, "sha256": "9a974c03e2e8188b77dfbb705c09d9485dc058abf87c9b06c28b65dfd0019834" },
+    { "module": "inventory_age", "taskId": "sys-113031093", "sourceRows": 5758, "bytes": 635004, "sha256": "9329826fdd643f800f1f73eef4f3101d21a9c0a11e70224b57f1f3dc51320a22" },
+    { "module": "sales", "taskId": "sys-113031046", "sourceRows": 14933, "bytes": 3340152, "sha256": "ec7c6e1c2f7e35b9d2757966279aa34f58dc3cf92cce980a25800aaa3aed32b6" },
+    { "module": "combos", "taskId": "sys-113030973", "sourceRows": 1961, "bytes": 2805238, "sha256": "5a22b9ed7f8cb47d1f205cd39c09e36890143a094258250119439d2e4c0a786c" }
+  ],
+  "imports": [
+    { "module": "products", "batchId": "products:3c4849dd2ac32c055e1829fb44ff89de300e4b061b9183a4250a3edceaece346", "rowCount": 8504, "warningCount": 0 },
+    { "module": "inventory", "batchId": "7bf57e4eb2761ad727cbb19300cc2df3e9a486df8bc09bc54b1107c29c7aa400", "rowCount": 22787, "warningCount": 5, "snapshotDate": "2026-09-16" },
+    { "module": "inventory_age", "batchId": "inventory_age:f568bd6517e436fc0dc33e54e0fb462603233d3acd46847384e24c41272494c8", "rowCount": 5683, "warningCount": 0, "snapshotDate": "2026-09-16" },
+    { "module": "sales", "batchId": "97a98867519397791aeeb478bc0c4b4f54047e02aae9abf96c358e2a6a280b43", "rowCount": 13628, "warningCount": 43, "startDate": "2026-09-01", "endDate": "2026-09-15" },
+    { "module": "combos", "batchId": "combos:b5ca97dffdc507d1e69e12e4ded097beb6d54bbedac54438fb7cfb35921f08f3", "rowCount": 4431, "warningCount": 2 }
+  ],
+  "independentVerification": {
+    "result": "passed",
+    "allFiveExactBatchesCompleted": true,
+    "currentInventoryBatch": true,
+    "salesRowsNotOwnedByBatch": 0,
+    "salesExcludedWarehouseRows": 0,
+    "nonWhitelistSalesChannels": []
+  },
+  "backups": {
+    "beforeRelease": {
+      "backupId": "daily-20260916T003337Z-0fdc4362aa16",
+      "manifestSha256": "20b0b365ae46f4db6d80df34f932b9137d6b92b3f27f76f58cb384a93f37a8c9",
+      "dumpSha256": "d061e90ad9f55fdc8303bc4d4f935c64c34fd12dc6b27a1eba923fa4934b9a4f",
+      "contentSha256": "8486b4981c9d16022c9c4762fd74f4bbc893142f30409bbfed2a20e32a01d0dd",
+      "restoreRehearsalId": "be2c4dff1616",
+      "restoredContentMatched": true,
+      "productionDatabaseTouched": false,
+      "archiveDirectory": "E:\\运营管理系统业务数据\\daily-20260916T003337Z-0fdc4362aa16"
+    },
+    "afterImport": {
+      "backupId": "daily-20260916T010205Z-321ee30fdb15",
+      "manifestSha256": "6a6a7e2a0d4aa93f13e7b5b90d48db288ca347cf918c103007262e81d8107344",
+      "dumpSha256": "d82b4084f1e1b6ff9159f9bcd47e46d3cc0f6ecf4a4e63b71aa0f6d5512c580a",
+      "contentSha256": "99a7aa2e7bc4822d044bf420ec95212b0085a0f86d72518da40a672feff0378a",
+      "archiveDirectory": "E:\\运营管理系统业务数据\\daily-20260916T010205Z-321ee30fdb15",
+      "originalOnDRetained": true
+    }
+  },
+  "finalRuntime": {
+    "checkedAt": "2026-09-16T09:05:29.3519970+08:00",
+    "state": "Running",
+    "backendState": "Ready",
+    "workerState": "exact_release",
+    "allTwelveComponentsReady": true,
+    "helperReadyAndIdle": true,
+    "startupVerified": true,
+    "maintenanceMarker": null,
+    "nonterminalN8nExecutionsAfterCleanup": 0
+  }
+}

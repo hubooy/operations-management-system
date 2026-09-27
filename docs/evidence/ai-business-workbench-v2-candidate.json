@@ -1,0 +1,36 @@
+{
+  "date": "2026-09-17",
+  "branch": "codex/ai-business-analysis-stages",
+  "baseCommit": "007d5723",
+  "batch": 21,
+  "status": "candidate_not_production_adopted",
+  "changes": [
+    "Explicit v2 first-task preview with complete requested coverage and separate measured capacity",
+    "Legacy requests and pending raw bodies preserve their original protocol",
+    "Strict browser preview validation and server-flagged manual analysis after sealing",
+    "Synthetic full catalog acceptance through real source readers, five Agent services, human-review API and persistent volumes"
+  ],
+  "verification": {
+    "targetedPostgres": {"tests": 36, "passed": 36, "log": ".runtime/ai-pg-237e0b8383b6/tests.log"},
+    "initialFullAiPostgres": {"tests": 415, "passed": 411, "failed": 1, "errors": 1, "skipped": 2, "log": ".runtime/ai-pg-0302a746e23c/failure.log", "causes": ["TransactionTestCase flush removed the market revision seed", "Existing listing test assumed distinct Windows timestamps"]},
+    "fixedAffectedPostgres": {"tests": 11, "passed": 11, "log": ".runtime/ai-pg-5e359f7fc479/tests.log", "fixes": ["Own synthetic market revision seed", "Deterministic creation timestamps for sorting fixture"]},
+    "environmentAttempt": {"log": ".runtime/ai-pg-fc8de42fe1fb/failure.log", "cause": "Default Python had no Django; all actual tests ran with isolated test-venv"},
+    "fullCatalogAcceptance": {"sources": 19, "tables": 156, "volumes": 2, "htmlXlsxFiles": 4, "completeManifestFiles": 1, "professionalAgentPeak": 3, "agentRoles": 5, "allOwnDirectoriesRead": true, "downloadHashesVerified": true, "modelProse": "fixture", "productionFacts": false},
+    "browser": {"checks": 25, "passed": 25, "evidence": [".runtime/batch21-workbench-ui/evidence.json", ".runtime/batch21-workbench-v2-ui/evidence.json"], "scopeCases": ["19 sources accepted", "52 sources retained and blocked", "malformed responses blocked", "old pending body preserved", "account and task switching", "manual analysis gates"]},
+    "independentReview": {"remainingBlockers": 0, "pureTests": 34, "previewMutationsRejected": 7, "fixed": "Preview validator must run before storing or submitting response"},
+    "fullNode": {"tests": 2275, "passed": 2255, "failed": 0, "skipped": 20, "log": ".runtime/batch21-full-node.log"},
+    "build": {"passed": true, "log": ".runtime/batch21-build.log"},
+    "renderedHtml": {"tests": 20, "passed": 20, "log": ".runtime/batch21-rendered-html.log"},
+    "lint": {"errors": 0, "existingWarnings": 11, "log": ".runtime/batch21-lint.log"},
+    "typecheck": {"existingDiagnostics": 153, "changedPathDiagnostics": 0, "log": ".runtime/batch21-typecheck.log"},
+    "backendBoundary": {"passed": true, "log": ".runtime/batch21-boundary.log"}
+  },
+  "limits": [
+    "48-source catalog does not raise the 64 MiB / 2000-page fact limit or guarantee model admission",
+    "Fixed v2 budget profile remains disabled",
+    "Natural-language automatic identity resolution and larger matching/caching/cursor capacities remain pending",
+    "Real-shop historical coverage and paid model quality remain unaccepted",
+    "No whole phase declared complete"
+  ],
+  "operations": {"productionReads": false, "productionWrites": false, "newMigration": false, "deployment": false, "serviceRestart": false, "paidModelCalls": false, "externalMessages": false}
+}

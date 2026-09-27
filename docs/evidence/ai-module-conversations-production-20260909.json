@@ -1,0 +1,500 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-09-09",
+  "status": "deployed-with-documented-limitations",
+  "scope": "First delivery: per-module owner-only persistent conversations, page context and read-only receipt recovery; recurring monitoring and deeper cross-domain analysis are future work.",
+  "authorization": {
+    "userRequest": "发布上线",
+    "candidateScopeAndBaselineFailuresPreviouslyDisclosed": true
+  },
+  "sourceCommit": "5a688f6ac3bdb3fa20a093117ede4be5c99ec67b",
+  "initialCandidateCommit": "9b60df4b8c0efa29a4b4949b8697aab3a3cf1af9",
+  "baseMainCommit": "c84afdd9558efe40a9b5a8e69206c12d9d79290e",
+  "branch": "codex/ai-module-conversations-20260909",
+  "sourceMergedIntoMain": true,
+  "django": {
+    "manifestSha256": "cf1eda87c1e821a6bf3b6ffec20ec8df09ab528d86e2fb1c36866e8c78fa0610",
+    "migration": "ai_assistant.0006_conversation_workspaces",
+    "aiOwnedTables": 46,
+    "provisionRoles": "completed",
+    "existingAuthorityPreserved": true
+  },
+  "workerPlan": {
+    "status": "planned",
+    "version": "teruisi-local-worker-release-rotation-plan-v1",
+    "planSha256": "ee24a2893457fc23bddcbf2fedac3453d1d5bc63a0a4c4e5c8500b432073e11c",
+    "planPath": "D:\\teruisi-runtime\\teruisi-worker-sales\\state\\worker-release-rotation-plans\\ee24a2893457fc23bddcbf2fedac3453d1d5bc63a0a4c4e5c8500b432073e11c.json",
+    "predecessorReleaseId": "20260909T082314Z-77039002a8332b1d",
+    "candidateReleaseId": "20260909T112853Z-668b2a7c9f0f6fa3",
+    "candidateManifestSha256": "80a954f2b62a1b7a6414dd896f93af2366bfa4162ec156c2b5d8017413782fd9",
+    "candidateGuardReceiptSha256": "a869de22e4106501e78d07942f361397cf9589c832b65b7fe25e830323fd7aeb",
+    "cutoverId": "sales-pg-20260829T204417Z-d9896e904d8092cb"
+  },
+  "workerActivation": {
+    "status": "activated",
+    "version": "teruisi-local-worker-release-successor-v1",
+    "planSha256": "ee24a2893457fc23bddcbf2fedac3453d1d5bc63a0a4c4e5c8500b432073e11c",
+    "predecessorReleaseId": "20260909T082314Z-77039002a8332b1d",
+    "releaseId": "20260909T112853Z-668b2a7c9f0f6fa3",
+    "manifestPath": "D:\\teruisi-runtime\\teruisi-worker-sales\\releases\\20260909T112853Z-668b2a7c9f0f6fa3\\deployment-manifest.json",
+    "manifestSha256": "80a954f2b62a1b7a6414dd896f93af2366bfa4162ec156c2b5d8017413782fd9",
+    "successorSha256": "5ca6a02d765ea1245ccdc400efb79de5276187cf7ca51c4314d90d470f30c808",
+    "consumptionSha256": "5b9cadd97d4686cdc80e990105beabf09c15c5edacd2d87a307f4f9d10380a05",
+    "startupBindingSha256": "fbc654706af8ea6ad0b43291704bd400a192b9fdcd89fafce313f46be3d2f8a5"
+  },
+  "effectiveHead": {
+    "status": "resolved",
+    "version": "teruisi-local-worker-effective-release-v1",
+    "releaseId": "20260909T112853Z-668b2a7c9f0f6fa3",
+    "manifestPath": "D:\\teruisi-runtime\\teruisi-worker-sales\\releases\\20260909T112853Z-668b2a7c9f0f6fa3\\deployment-manifest.json",
+    "manifestSha256": "80a954f2b62a1b7a6414dd896f93af2366bfa4162ec156c2b5d8017413782fd9",
+    "guardReceiptSha256": "a869de22e4106501e78d07942f361397cf9589c832b65b7fe25e830323fd7aeb",
+    "successorCount": 116,
+    "chainStateSha256": "6de1f16c286ce77f86257107ba8f9e1414bd6bc4a8b7afb490aa6ee2d3e5993e"
+  },
+  "controlledStop": {
+    "version": "teruisi-operations-system-service-v1",
+    "action": "Stop",
+    "status": "stopped",
+    "workerStatus": "stopped",
+    "backendStopped": true,
+    "message": "运营管理系统已完整停止：Worker（stopped）、各域 Django 服务与 PostgreSQL。",
+    "checkedAt": "2026-09-09T19:28:33.8072132+08:00"
+  },
+  "controlledStart": {
+    "version": "teruisi-operations-system-control-v2",
+    "status": "started",
+    "state": "Running",
+    "backendState": "Ready",
+    "workerState": "exact_release",
+    "releaseId": "20260909T112853Z-668b2a7c9f0f6fa3",
+    "supervisorProcessId": 35432,
+    "portProcessId": 38944,
+    "url": "http://localhost:3000/",
+    "message": "运营管理系统已由唯一总控完成启动与回查。访问地址：http://localhost:3000/",
+    "checkedAt": "2026-09-09T19:41:54.1451735+08:00"
+  },
+  "combinedStatus": {
+    "version": "teruisi-operations-system-control-v2",
+    "state": "Running",
+    "backendState": "Ready",
+    "workerState": "exact_release",
+    "releaseId": "20260909T112853Z-668b2a7c9f0f6fa3",
+    "supervisorProcessId": 35432,
+    "portProcessId": 38944,
+    "url": "http://localhost:3000/",
+    "reason": null,
+    "components": {
+      "core": true,
+      "finance": true,
+      "netshop": true,
+      "market": true,
+      "products": true,
+      "workflow": true,
+      "inventory": true,
+      "customerService": true,
+      "accessControl": true,
+      "erpReference": true,
+      "bi": true,
+      "ai": true
+    },
+    "checkedAt": "2026-09-09T19:50:39.3894188+08:00"
+  },
+  "preStopWorkload": {
+    "status": "passed",
+    "checkedAt": "2026-09-09T11:26:52.929Z",
+    "helper": {
+      "ok": true,
+      "stage": "ready",
+      "busy": false,
+      "activeWorkflow": null
+    },
+    "n8nNonterminalCount": 0,
+    "aiScope": "current-authenticated-principal-only",
+    "ai": [
+      {
+        "dataset": "rows_ai_chat_request_receipts",
+        "count": 0,
+        "hasMore": false,
+        "queriedAt": "2026-09-09T11:26:51.652806+00:00"
+      },
+      {
+        "dataset": "rows_ai_agent_jobs",
+        "count": 0,
+        "hasMore": false,
+        "queriedAt": "2026-09-09T11:26:51.951836+00:00"
+      },
+      {
+        "dataset": "rows_ai_workflow_runs",
+        "count": 0,
+        "hasMore": false,
+        "queriedAt": "2026-09-09T11:26:52.152415+00:00"
+      },
+      {
+        "dataset": "rows_ai_space_jobs",
+        "count": 0,
+        "hasMore": false,
+        "queriedAt": "2026-09-09T11:26:52.353911+00:00"
+      },
+      {
+        "dataset": "rows_ai_space_job_items",
+        "count": 0,
+        "hasMore": false,
+        "queriedAt": "2026-09-09T11:26:52.557092+00:00"
+      },
+      {
+        "dataset": "rows_ai_agent_provider_dispatches",
+        "count": 0,
+        "hasMore": false,
+        "queriedAt": "2026-09-09T11:26:52.736299+00:00"
+      },
+      {
+        "dataset": "rows_ai_agent_tool_dispatches",
+        "count": 0,
+        "hasMore": false,
+        "queriedAt": "2026-09-09T11:26:52.924454+00:00"
+      }
+    ]
+  },
+  "preStopWorkloadNote": "AI queries are current-principal-only and produce normal AI tool audit records; n8n global nonterminal count and helper workflow occupancy were zero.",
+  "backups": {
+    "before": {
+      "status": "completed",
+      "backupId": "daily-20260909T110351Z-3bd73cb4ebb8",
+      "backupDirectory": "D:\\teruisi-runtime\\django-sales\\backups\\postgres-daily\\daily-20260909T110351Z-3bd73cb4ebb8",
+      "manifestSha256": "e78e261223d479f379b7f501b11dcc77ff31710daf235fafa60a7b132f68ba57",
+      "dumpSha256": "7952a3c8fdba2beab10a6c51da00b94fa3420e173893dc58fae19efa3085b0cb",
+      "contentSha256": "8d5c7c1bff9c7d3fe291c73f2e5fd1b0b8351acc6125472299e314e5ddaa73c6",
+      "completedAt": "09/09/2026 19:05:20",
+      "serviceStateChanged": false
+    },
+    "beforeRestore": {
+      "version": "teruisi-postgres-restore-rehearsal-v1",
+      "status": "completed",
+      "rehearsalId": "9bc630a47e51",
+      "startedAt": "2026-09-09T11:08:06.7438525+00:00",
+      "completedAt": "2026-09-09T11:12:22.6668206+00:00",
+      "backupId": "daily-20260909T110351Z-3bd73cb4ebb8",
+      "backupManifestSha256": "e78e261223d479f379b7f501b11dcc77ff31710daf235fafa60a7b132f68ba57",
+      "dumpSha256": "7952a3c8fdba2beab10a6c51da00b94fa3420e173893dc58fae19efa3085b0cb",
+      "expectedContentSha256": "8d5c7c1bff9c7d3fe291c73f2e5fd1b0b8351acc6125472299e314e5ddaa73c6",
+      "restoredContentSha256": "8d5c7c1bff9c7d3fe291c73f2e5fd1b0b8351acc6125472299e314e5ddaa73c6",
+      "isolatedPort": 55478,
+      "productionDatabaseTouched": false,
+      "serviceStateChanged": false,
+      "cleanupStatus": "isolated_data_removed"
+    },
+    "after": {
+      "status": "completed",
+      "backupId": "daily-20260909T114955Z-776ef4bd4148",
+      "backupDirectory": "D:\\teruisi-runtime\\django-sales\\backups\\postgres-daily\\daily-20260909T114955Z-776ef4bd4148",
+      "manifestSha256": "732ed96ec17635e1ad8a4a4c71d845a79d9034f98f3403351b5780ef0a06fac7",
+      "dumpSha256": "7a6a75400eb41021a605dd66ce10879747d32fa802b15bb94d11c06bf6260b7d",
+      "contentSha256": "9d41a132daa10eb6aea28ccf72c4e59dc0e25d09c5817565684e887cecfa9d68",
+      "completedAt": "09/09/2026 19:51:24",
+      "serviceStateChanged": false
+    },
+    "afterRestore": {
+      "version": "teruisi-postgres-restore-rehearsal-v1",
+      "status": "completed",
+      "rehearsalId": "d093ce61b8a4",
+      "startedAt": "2026-09-09T11:52:47.9902365+00:00",
+      "completedAt": "2026-09-09T11:56:51.6869163+00:00",
+      "backupId": "daily-20260909T114955Z-776ef4bd4148",
+      "backupManifestSha256": "732ed96ec17635e1ad8a4a4c71d845a79d9034f98f3403351b5780ef0a06fac7",
+      "dumpSha256": "7a6a75400eb41021a605dd66ce10879747d32fa802b15bb94d11c06bf6260b7d",
+      "expectedContentSha256": "9d41a132daa10eb6aea28ccf72c4e59dc0e25d09c5817565684e887cecfa9d68",
+      "restoredContentSha256": "9d41a132daa10eb6aea28ccf72c4e59dc0e25d09c5817565684e887cecfa9d68",
+      "isolatedPort": 55479,
+      "productionDatabaseTouched": false,
+      "serviceStateChanged": false,
+      "cleanupStatus": "isolated_data_removed"
+    },
+    "oldBackupAcceptedByNewRuntime": {
+      "status": "completed",
+      "backupId": "daily-20260909T110351Z-3bd73cb4ebb8",
+      "manifestSha256": "e78e261223d479f379b7f501b11dcc77ff31710daf235fafa60a7b132f68ba57",
+      "dumpSha256": "7952a3c8fdba2beab10a6c51da00b94fa3420e173893dc58fae19efa3085b0cb",
+      "contentSha256": "8d5c7c1bff9c7d3fe291c73f2e5fd1b0b8351acc6125472299e314e5ddaa73c6",
+      "serviceStateChanged": false
+    }
+  },
+  "upgradeMirror": {
+    "status": "passed",
+    "productionDatabaseTouched": false,
+    "backupManifestSha256": "e78e261223d479f379b7f501b11dcc77ff31710daf235fafa60a7b132f68ba57",
+    "previousContentSha256": "8d5c7c1bff9c7d3fe291c73f2e5fd1b0b8351acc6125472299e314e5ddaa73c6",
+    "upgradedContentSha256": "a9c5f29e498e044ced9bcf951259b9cccddf2f5601fa033f2045b56ccb3a5208",
+    "restoredContentSha256": "a9c5f29e498e044ced9bcf951259b9cccddf2f5601fa033f2045b56ccb3a5208",
+    "pendingMigrations": [
+      [
+        "ai_assistant",
+        "0006_conversation_workspaces",
+        false
+      ]
+    ],
+    "beforeAiTables": 45,
+    "afterAiTables": 46,
+    "otherRowCountsUnchanged": true,
+    "revisionsAndAuthorityUnchanged": true,
+    "realReaderWriterReadiness": "ready",
+    "mirrorDirectory": "D:\\codex-worktrees\\ai-module-conversations-20260909\\tmp\\ai-release-mirror-f9cc3a2a1e744e719d16fd2312e44f0b",
+    "mirrorPort": 15478
+  },
+  "beforeAfterMetadataComparison": {
+    "nonAiTableCountDifferences": [
+      {
+        "table": "market_write_request_receipts",
+        "before": 32410,
+        "after": 32528
+      }
+    ],
+    "nonAiRevisionAuthorityDifferences": [],
+    "allOtherNonAiTableCountsUnchanged": true,
+    "aiTableCount": 46,
+    "workspaceRows": 3,
+    "newMigrations": [
+      {
+        "app": "ai_assistant",
+        "name": "0006_conversation_workspaces"
+      }
+    ],
+    "aiAuthorityAndHistoricalDigestUnchanged": true,
+    "conversationDelta": 3,
+    "messageDelta": 8
+  },
+  "marketReceiptNote": "Only non-AI count difference: market_write_request_receipts +118. Existing empty market polling can persist receipts without bumping business revisions; this is compatible with the observation, not a row-by-row attribution. No receipt payloads were examined.",
+  "apiAcceptance": {
+    "status": "passed-with-known-proxy-boundary",
+    "checkedAt": "2026-09-09T11:49:48.319Z",
+    "home": 200,
+    "moduleLists": 12,
+    "legacyConversationsPreserved": 16,
+    "createdConversations": [
+      {
+        "module": "sales",
+        "requestId": "release-workspace-30857e0b-53c4-45cc-a762-0a9dbeeac2cf-A",
+        "conversationId": "ai-conversation-5d937184-4037-42ab-ab2a-ca7af96495e7",
+        "assistantMessageId": "ai-msg-9d98456e-1cf0-4028-a251-8f9e1be95cff"
+      },
+      {
+        "module": "inventory",
+        "requestId": "release-workspace-30857e0b-53c4-45cc-a762-0a9dbeeac2cf-B",
+        "conversationId": "ai-conversation-f34c2299-bd3d-4e8c-a8e0-fe5d7452b1b0",
+        "assistantMessageId": "ai-msg-1bdef2e7-df02-49b6-88a2-d4e8e7609af3"
+      },
+      {
+        "module": "sales",
+        "requestId": "release-workspace-30857e0b-53c4-45cc-a762-0a9dbeeac2cf-C",
+        "conversationId": "ai-conversation-0d450ea6-edfd-456e-b575-5dcfac0743f4",
+        "assistantMessageId": "ai-msg-c99d87e6-1514-4caf-ba13-0300ffe05a98"
+      }
+    ],
+    "receiptRecovery": true,
+    "exactMessageReadback": true,
+    "idempotentReplay": true,
+    "serverRecentSelection": true,
+    "crossModuleDenial": true,
+    "invalidContextDenial": true,
+    "crossSiteDenial": true,
+    "clearContextPersisted": true,
+    "paidModelCalls": 0,
+    "externalNotifications": 0,
+    "browserInteractionPerformed": false,
+    "checks": [
+      {
+        "method": "GET",
+        "path": "/api/auth/me",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/ai/conversations",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/ai/conversations",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/ai/conversations",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/ai/conversations",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/ai/conversations",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/ai/conversations",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/ai/conversations",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/ai/conversations",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/ai/conversations",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/ai/conversations",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/ai/conversations",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/ai/conversations",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/ai/chat",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/ai/chat",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/ai/chat",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/ai/chat",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/ai/chat",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/ai/chat",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/ai/chat",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/ai/chat",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/ai/chat",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/ai/conversations",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/ai/conversations",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/ai/chat",
+        "status": 404
+      },
+      {
+        "method": "GET",
+        "path": "/api/ai/chat",
+        "status": 200
+      }
+    ],
+    "earlierSequentialSmoke": {
+      "allAssertionsBeforeLine77PassedTwice": true,
+      "clearResponse": "503 plain-text local-proxy failure",
+      "receiptBeforeRecovery": 404,
+      "recovery": "same original clear request ID sent after GET proved it was not accepted; succeeded; exact reply recovered"
+    },
+    "knownLimitation": "Immediately after a deliberately rejected cross-origin POST, this local Wrangler proxy may return a misleading restarted-mid-request 503 to the next POST. The server PID remained unchanged. GET receipt recovery and subsequent same-origin writes pass. Connection: close alone did not resolve the boundary; it is not claimed fixed."
+  },
+  "postRestoreReadiness": [
+    {
+      "url": "http://127.0.0.1:3000/api/ai/conversations?workspaceModule=ai&pageSize=1",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8111/health/ready",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8112/health/ready",
+      "status": 200
+    }
+  ],
+  "additionalValidation": {
+    "backupPythonBehaviorTests": 7,
+    "maintenanceTests": 12,
+    "runtimeControlTests": 58,
+    "failures": 0,
+    "independentReview": "passed",
+    "deployedBackendAndControlFilesMatched": 16,
+    "deployedFrontendSnapshotFilesMatched": 21,
+    "backendBoundary": "passed"
+  },
+  "candidateValidation": "ai-module-conversations-candidate-20260909.json",
+  "remainingBaselineIssues": {
+    "typecheckDiagnostics": 142,
+    "newTypecheckDiagnostics": 0,
+    "sixInventoryOverrideDatasetFieldsNotRegistered": true
+  },
+  "temporaryWrapperHandling": {
+    "reason": "Native outer PowerShell invocation did not exit after successful controlled child script result; completed outer wrappers were stopped only after exact identity and zero-direct-child verification.",
+    "stoppedOuterWrapperPids": [
+      4240,
+      43964
+    ],
+    "postgresOrWorkerTerminatedByThisHandling": false
+  },
+  "temporaryCleanup": {
+    "status": "blocked-by-automatic-approval-review",
+    "message": "blocked by policy",
+    "noBypassAttempted": true,
+    "mirrorProcessesStopped": true,
+    "mirrorAcl": "current Windows user and SYSTEM only",
+    "retainedPaths": [
+      "D:\\codex-worktrees\\ai-module-conversations-20260909\\tmp\\ai-release-mirror-ba2d83dc8d01401f8edeac3dbb12d149",
+      "D:\\codex-worktrees\\ai-module-conversations-20260909\\tmp\\ai-release-mirror-f9cc3a2a1e744e719d16fd2312e44f0b",
+      "D:/codex-worktrees/ai-baseline-review-20260909-audit"
+    ],
+    "worktreeAndBranchRetained": true,
+    "reason": "Removing the worktree would remove the same contained paths whose cleanup was rejected; code is already merged into main."
+  },
+  "realModelCalls": 0,
+  "externalNotifications": 0,
+  "newAutomationSchedulesEnabled": 0,
+  "browserInteractionPerformed": false
+}

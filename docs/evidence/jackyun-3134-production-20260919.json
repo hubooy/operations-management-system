@@ -1,0 +1,214 @@
+{
+  "version": "teruisi-jackyun-3134-production-v1",
+  "checkedAt": "2026-09-19T01:25:11.793664+08:00",
+  "status": "adopted_and_failure_closed_no_business_rerun",
+  "authorization": "用户在本任务明确要求关闭 3134，并在说明需维护发布后回复“好的，发布调整”。本次发布已验证的精确闭合候选；不扩展为新去重策略、自动重试次数上限或真实业务补跑。",
+  "source": {
+    "commit": "676527bf3a0b69c0f0e1a7b0ecdaa72b5b380cfa",
+    "mergedAndPushedMain": true,
+    "closureSourceMatchesDeployedSnapshot": true,
+    "validation": {
+      "focusedTestsPassed": 53,
+      "releaseTestsPassed": 65,
+      "renderTestsPassed": 20,
+      "isolatedBuildPassed": true,
+      "helperBuildPassed": true,
+      "targetedLintPassed": true,
+      "backendBoundaryViolations": 0
+    }
+  },
+  "release": {
+    "status": "activated",
+    "version": "teruisi-local-worker-release-successor-v1",
+    "planSha256": "3d394de0478fb53912aaa1f494210f590cdde3a6ee632f93170916027d049f18",
+    "predecessorReleaseId": "20260917T175957Z-94a4e718fdfb027f",
+    "releaseId": "20260918T170839Z-56c91d9b2f70bdb5",
+    "manifestPath": "D:\\teruisi-runtime\\teruisi-worker-sales\\releases\\20260918T170839Z-56c91d9b2f70bdb5\\deployment-manifest.json",
+    "manifestSha256": "5a4aed16e31e506e38112a6dcf0675c402624a734910ddffb2b90e3ace7ed46e",
+    "successorSha256": "d0ada7e2c97180dd6ec4525844c2086930aa9dceda3c01875767cea6350f4bdf",
+    "consumptionSha256": "144e09a317bad30e4be37e92ac491a315a11958b97ae481e9f513579e8363825",
+    "startupBindingSha256": "a9703d3dfbde99bdd84e0f76378baa6296b5c3bf9056031e6424a84d015fc241"
+  },
+  "maintenance": {
+    "maintenanceId": "0f0756fc791c439aba1732d3553bb89c",
+    "entered": true,
+    "ended": true,
+    "workerHelperAndBackendRestarted": true,
+    "djangoRedeployed": false,
+    "migrations": [],
+    "n8nRestarted": false,
+    "weeklyChecksFailed": [
+      "3147",
+      "3148"
+    ],
+    "nextNaturalWeeklyCheckSucceeded": "3149",
+    "manualResend": false
+  },
+  "closure": {
+    "executionId": "3134",
+    "status": "closed_before_business",
+    "reason": "audited_3134_dpapi_before_api_exports",
+    "proposalSha256": "5a8b36c61ad7dd14cdeaa7c1c999bb5a491f02d50782785dd43eab84a5045299",
+    "closureSha256": "da1cb0de9365beea9ee44c8b083414540d0e37b2260a707b8eeffd4a1fbe3afc",
+    "executionDataSha256": "5141ae5b5afe83128a086725db70b3cc12fde4d460c5f14305e4662d6b9832f7",
+    "planSha256": "9741967ab88f4e78fec77842132a4d769b17d8ca18b91978873f48c9c3a845db",
+    "activeSha256": "0d382edd41e454b2c0bb35ac836a326b49937d5ff705a754cc32a45aef3a04a0",
+    "originalPlanAndActiveUnchanged": true,
+    "originalN8nErrorRetained": true,
+    "businessEffectPathsAbsent": 4,
+    "revalidatedAfterPublish": true
+  },
+  "workflow": {
+    "workflowId": "J8kY2mQ5vR7sT4pN",
+    "active": 1,
+    "versionId": "e11b4c5e-dcd7-4517-b3ea-5f3cb4b8f2d7",
+    "activeVersionId": "e11b4c5e-dcd7-4517-b3ea-5f3cb4b8f2d7",
+    "definitionUnchanged": true,
+    "nonterminalExecutions": [],
+    "newBusinessExecutionStarted": false,
+    "automaticRetryPolicyChanged": false
+  },
+  "backups": {
+    "before": {
+      "status": "completed",
+      "backupId": "daily-20260918T165721Z-49aa1e9b54bb",
+      "backupDirectory": "D:\\teruisi-runtime\\django-sales\\backups\\postgres-daily\\daily-20260918T165721Z-49aa1e9b54bb",
+      "manifestSha256": "093c3e4346810cfd7eb270410ae9a6157f361081074a1f0b868b33e29b471ab7",
+      "dumpSha256": "3dd233432fa59d147b569ea6dfd1ba3647a650ed9f4ba28280ef751c415a2111",
+      "contentSha256": "825e0052631c83b3a2915afabcaf3615a2cb511836bc8521da0765e7945b6591",
+      "completedAt": "09/19/2026 00:59:14",
+      "serviceStateChanged": false
+    },
+    "isolatedRestore": {
+      "version": "teruisi-postgres-restore-rehearsal-v1",
+      "status": "completed",
+      "rehearsalId": "676527bf0919",
+      "startedAt": "2026-09-18T16:59:58.4611250+00:00",
+      "completedAt": "2026-09-18T17:05:02.9382921+00:00",
+      "backupId": "daily-20260918T165721Z-49aa1e9b54bb",
+      "backupManifestSha256": "093c3e4346810cfd7eb270410ae9a6157f361081074a1f0b868b33e29b471ab7",
+      "dumpSha256": "3dd233432fa59d147b569ea6dfd1ba3647a650ed9f4ba28280ef751c415a2111",
+      "expectedContentSha256": "825e0052631c83b3a2915afabcaf3615a2cb511836bc8521da0765e7945b6591",
+      "restoredContentSha256": "825e0052631c83b3a2915afabcaf3615a2cb511836bc8521da0765e7945b6591",
+      "isolatedPort": 55643,
+      "productionDatabaseTouched": false,
+      "serviceStateChanged": false,
+      "cleanupStatus": "isolated_data_removed"
+    },
+    "beforeArchive": {
+      "Directory": "E:\\运营管理系统业务数据\\daily-20260918T165721Z-49aa1e9b54bb",
+      "Files": [
+        {
+          "Name": "backup-manifest.json",
+          "Sha256": "093C3E4346810CFD7EB270410AE9A6157F361081074A1F0B868B33E29B471AB7",
+          "Verified": true
+        },
+        {
+          "Name": "backup-manifest.json.sha256",
+          "Sha256": "26A4DBECEA54C0093EF008AADE12CACD24427FC0149EBEF38FAED6E2E655657A",
+          "Verified": true
+        },
+        {
+          "Name": "teruisi-sales.dump",
+          "Sha256": "3DD233432FA59D147B569EA6DFD1BA3647A650ED9F4BA28280EF751C415A2111",
+          "Verified": true
+        }
+      ]
+    },
+    "after": {
+      "status": "completed",
+      "backupId": "daily-20260918T172108Z-fd5655521894",
+      "backupDirectory": "D:\\teruisi-runtime\\django-sales\\backups\\postgres-daily\\daily-20260918T172108Z-fd5655521894",
+      "manifestSha256": "e6481a5e9c50a576e526308a96e28f4f71bf373c3a079638f7dbba2e22f1b21b",
+      "dumpSha256": "f2725ec9f5902c05a709491862184d058f909cf8c55750a3a92b2a6aaf5ea019",
+      "contentSha256": "0ef22ee254b252ddee8168f2bce1d45ebdb751ca355dcb2ade1705da2b41aba6",
+      "completedAt": "09/19/2026 01:23:22",
+      "serviceStateChanged": false
+    },
+    "afterVerify": {
+      "status": "completed",
+      "backupId": "daily-20260918T172108Z-fd5655521894",
+      "manifestSha256": "e6481a5e9c50a576e526308a96e28f4f71bf373c3a079638f7dbba2e22f1b21b",
+      "dumpSha256": "f2725ec9f5902c05a709491862184d058f909cf8c55750a3a92b2a6aaf5ea019",
+      "contentSha256": "0ef22ee254b252ddee8168f2bce1d45ebdb751ca355dcb2ade1705da2b41aba6",
+      "serviceStateChanged": false
+    },
+    "afterArchive": {
+      "Directory": "E:\\运营管理系统业务数据\\daily-20260918T172108Z-fd5655521894",
+      "Files": [
+        {
+          "Name": "backup-manifest.json",
+          "Sha256": "E6481A5E9C50A576E526308A96E28F4F71BF373C3A079638F7DBBA2E22F1B21B",
+          "Verified": true
+        },
+        {
+          "Name": "backup-manifest.json.sha256",
+          "Sha256": "C442B387390F56F3FD4015D23A7988F61805C07CBB5868606F7DFE7694B1BEDA",
+          "Verified": true
+        },
+        {
+          "Name": "teruisi-sales.dump",
+          "Sha256": "F2725EC9F5902C05A709491862184D058F909CF8C55750A3A92B2A6AAF5EA019",
+          "Verified": true
+        }
+      ]
+    }
+  },
+  "finalRuntime": {
+    "state": "Running",
+    "backendState": "Ready",
+    "workerState": "exact_release",
+    "releaseId": "20260918T170839Z-56c91d9b2f70bdb5",
+    "components": {
+      "core": true,
+      "finance": true,
+      "netshop": true,
+      "market": true,
+      "products": true,
+      "workflow": true,
+      "inventory": true,
+      "customerService": true,
+      "accessControl": true,
+      "erpReference": true,
+      "bi": true,
+      "ai": true
+    },
+    "startupVerified": true,
+    "supervisor": {
+      "status": "completed",
+      "desiredState": "running",
+      "supervisorProcess": "running",
+      "health": "healthy",
+      "code": "all_components_ready",
+      "lastHealthyAt": "09/19/2026 01:22:03",
+      "restartAttemptsInWindow": 1,
+      "pendingAlertCount": 34,
+      "serviceStateChanged": false
+    },
+    "dingTalkConnected": true,
+    "httpChecks": [
+      {
+        "url": "http://127.0.0.1:3000/_teruisi/local/health/live",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:3000/_teruisi/local/health/ready",
+        "status": 200
+      },
+      {
+        "url": "http://localhost:3000/",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:5791/health",
+        "status": 200
+      }
+    ]
+  },
+  "limitations": [
+    "This exact closure does not fix the unidentified DPAPI binding root cause.",
+    "A new full n8n execution may proceed after the closure; no actual login, export or import was triggered to validate it.",
+    "General automatic zero-effect recovery, retry caps and source-time latest-file fencing remain future work."
+  ],
+  "localArtifacts": "D:\\codex-artifacts\\jackyun-3134-20260919"
+}

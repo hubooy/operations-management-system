@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "status": "candidate_not_deployed",
+  "baselineCommit": "ece0d8eaa80e3b7ad8ed3f496985f4ff684ad27b",
+  "branch": "codex/pandas-analysis-sandbox",
+  "tool": "run_pandas_analysis",
+  "validation": {
+    "djangoAndBrokerTests": { "total": 83, "passed": 79, "skipped": 4, "failed": 0 },
+    "typescriptToolTests": { "passed": 41, "failed": 0 },
+    "builtArtifactTests": { "passed": 20, "failed": 0 },
+    "build": "passed",
+    "changedTypescriptEslint": "passed",
+    "backendBoundary": { "modulesChecked": 423, "violations": 0 },
+    "migrationCheck": "no_changes_detected",
+    "typescriptDiagnostics": { "baseline": 146, "candidate": 146, "new": 0, "fullTypecheckPassed": false },
+    "windowsDpapiSyntheticRoundtrip": "passed",
+    "gitDiffCheck": "passed"
+  },
+  "skippedTests": [
+    "RealContainerTests.test_pandas_join_refunds_chinese_and_transient_files",
+    "RealContainerTests.test_network_filesystem_no_secrets_and_no_root",
+    "RealContainerTests.test_timeout_output_flood_memory_and_cleanup",
+    "existing_ai_postgresql_only_test"
+  ],
+  "dataSources": "synthetic fixtures, temporary SQLite and mocked model/source responses only",
+  "notPerformed": [
+    "real Linux rootless Docker container execution",
+    "real PostgreSQL mirror integration",
+    "production data query or write",
+    "production deployment or service lifecycle changes",
+    "paid model call or real DingTalk message"
+  ],
+  "remainingGates": [
+    "provision independent Linux/rootless Docker runtime with effective cgroup v2 controls",
+    "build and approve pinned pandas image",
+    "run actual isolation, crash and cleanup tests",
+    "verify mirror PostgreSQL roles, scopes, receipts and audits",
+    "integrate broker lifecycle and protected configuration before authorized production adoption"
+  ]
+}

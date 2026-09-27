@@ -1,0 +1,28 @@
+{
+  "scope": "AI chat workbench and request-scoped SSE candidate",
+  "date": "2026-09-10",
+  "branch": "codex/ai-chat-workbench",
+  "base": "d5154418",
+  "productionAdopted": false,
+  "productionWrites": false,
+  "migrationChanges": false,
+  "verification": {
+    "build": "passed; Markdown renderer split into its own lazy chunk, existing chunk budgets preserved",
+    "unitSuite": { "tests": 2083, "passed": 2062, "failed": 0, "cancelled": 1, "skipped": 20 },
+    "unitCancellation": "Existing jackyun-combo-recovery test exceeded 30 seconds under concurrent full-suite load; no source changes made to that module",
+    "isolatedRerun": { "file": "tests/jackyun-combo-recovery.test.ts", "passed": 3, "failed": 0, "cancelled": 0 },
+    "builtWorkerTests": { "passed": 20, "failed": 0 },
+    "postgresAiSuite": { "passed": 138, "failed": 0, "isolatedPort": 55443, "clusterStopped": true },
+    "lint": { "errors": 0, "existingWarnings": 9 },
+    "typescript": { "baseDiagnostics": 142, "candidateDiagnostics": 142, "addedDiagnostics": 0, "method": "Same TypeScript compiler options and dependencies; baseline overlays HEAD versions of changed TypeScript files and excludes new candidate roots" },
+    "backendBoundary": { "checkedModules": 413, "violations": 0 },
+    "providerFixture": "Real local HTTP SSE proves first text arrives before provider fixture is permitted to finish",
+    "databaseThreadFixture": "Signed Django streaming request commits assistant message and succeeded receipt in real producer DB connection before done"
+  },
+  "limits": [
+    "No paid provider call or production endpoint acceptance was performed",
+    "Full application preview uses isolated synthetic data and blocks business writes",
+    "Production adoption requires coordinated Worker and Django AI release plus real SSE/tool/stop/persistence checks",
+    "No browser visual QA was performed"
+  ]
+}

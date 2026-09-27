@@ -1,0 +1,122 @@
+{
+  "version": "teruisi-jackyun-zero-effect-recovery-production-v1",
+  "checkedAt": "2026-09-18T02:15:00+08:00",
+  "status": "adopted_and_completed",
+  "authorization": "用户明确授权一次短暂 Worker/helper 维护、补上严格零业务效果闭合校验、闭合 2879 并重新运行原 n8n 完整工作流。",
+  "source": {
+    "commit": "12211061b0d418adcc2db62ea8a9efdf45cc8bc3",
+    "originMainMatched": true,
+    "changes": [
+      "API 登录安全验证仅在精确 execution、空 API 计划、四类业务副作用路径均不存在时允许 create-only 闭合",
+      "手工登录浏览器占用端口仅在同样严格的零业务效果证据下允许 create-only 闭合",
+      "已绑定任务下载 fetch 失败时，只允许一个新 execution 复用原任务；禁止重发原导出 POST"
+    ],
+    "validation": {
+      "focusedPreflightTests": { "passed": 20, "failed": 0 },
+      "focusedBoundResumeTests": { "passed": 33, "failed": 0 },
+      "finalJackyunRegressionTests": { "passed": 91, "failed": 0 },
+      "eslint": "passed",
+      "diffCheck": "passed"
+    }
+  },
+  "closures": [
+    {
+      "executionId": "2879",
+      "reason": "verified_api_login_challenge_without_business_effects",
+      "proposalSha256": "518d0323b7e831007de14f5d40061bed554571d820b14ca3a675ae84c795a8be",
+      "closureSha256": "01afe7df83dad4637b37277e5aa74c778db45e39cae089cccc94b3bff24f0711",
+      "businessEffectPathsAbsent": 4,
+      "originalExecutionAndPlanRetained": true
+    },
+    {
+      "executionId": "2902",
+      "reason": "verified_api_browser_occupied_without_business_effects",
+      "proposalSha256": "40ec0c8910e2decd8d879394386c7ccbd8f8d6cb855a06c3eb723cc52846a2e2",
+      "closureSha256": "32ad07548a5142cf3ff4ec6e8ff4805107436e0856677405fdc3b3222d472fdd",
+      "businessEffectPathsAbsent": 4,
+      "originalExecutionAndPlanRetained": true
+    }
+  ],
+  "boundTaskRecovery": {
+    "failedExecutionId": "2906",
+    "error": "fetch failed",
+    "originalInventoryTaskId": "sys-113277891",
+    "originalInventorySourceRows": 25911,
+    "originalInventoryTaskReplayed": false,
+    "emptyDownloadDirectoryOnly": true,
+    "permitSha256": "3f03dfa251796d31ef9a749f2c9fef8dae23ccfc0128907e731e5f14811f1bea",
+    "consumingExecutionId": "2910",
+    "singleConsumerVerified": true
+  },
+  "release": {
+    "predecessorReleaseId": "20260917T145034Z-ecd2f00bb0c113b5",
+    "releaseId": "20260917T175957Z-94a4e718fdfb027f",
+    "manifestSha256": "044ce49e17130ed496645c942d4e36fad89199a1eceaa0e6f2164cd9a4bfbf4b",
+    "planSha256": "5eccc46b1b11c4dde3932913465992d6f19d3ac6a40f54a60ef6e974df88bc93",
+    "successorSha256": "447cc20c9fd5c2af0c8ffe8b86c03a0a49b8fd9fc44b7bdec1adc8acfb328df6",
+    "consumptionSha256": "3e912722e580e76c166c0803bf5005236d2acb7fe95acb5b115f14ea852fbb20",
+    "startupBindingSha256": "2cc83b12f87e1f41016e34e234819d371177c8af153e2206d634df6549ab1f4e",
+    "djangoRedeployed": false,
+    "databaseMigrations": [],
+    "n8nRestarted": false
+  },
+  "workflow": {
+    "workflowId": "J8kY2mQ5vR7sT4pN",
+    "successfulExecutionId": "2910",
+    "startedAt": "2026-09-18T02:06:06.470+08:00",
+    "stoppedAt": "2026-09-18T02:08:37.572+08:00",
+    "status": "success",
+    "snapshotDate": "2026-09-18",
+    "salesStartDate": "2026-09-01",
+    "salesEndDate": "2026-09-17",
+    "staleRetryExecutionsCanceled": ["2894", "2903", "2907"]
+  },
+  "imports": [
+    { "module": "products", "batchId": "products:240ab970eb3be69913a9c70eb67bacfc699023b4aad51eefce8cd3ed6dc18592", "rowCount": 8508, "warningCount": 0, "status": "completed" },
+    { "module": "inventory", "batchId": "0a5a787ac936141fc7bc50efd7add5bbf03d5ef1d4795ffea747987cbaed1942", "rowCount": 22807, "warningCount": 5, "snapshotDate": "2026-09-18", "status": "completed", "isCurrent": true },
+    { "module": "inventory_age", "batchId": "inventory_age:95103a222ad3d787a067df311945af7d490417ef59c48864afec04902708a9ae", "rowCount": 5684, "warningCount": 0, "snapshotDate": "2026-09-18", "status": "completed" },
+    { "module": "sales", "batchId": "d97dd88ef5d5813cfc382fc593b0461d739a5af212a8d5eb0bc5168270ab8045", "rowCount": 15567, "insertedCount": 1106, "warningCount": 51, "startDate": "2026-09-01", "endDate": "2026-09-17", "status": "completed" },
+    { "module": "combos", "batchId": "combos:770c6cf39d5a685a2a5684b1a7768f1160ee698c96b84739db000f4dfe40a5b7", "rowCount": 4434, "insertedCount": 3, "updatedCount": 4431, "warningCount": 2, "status": "completed" }
+  ],
+  "independentVerification": {
+    "allFiveExactBatchesCompleted": true,
+    "allOwnedRowCountsMatched": true,
+    "inventoryCurrent": true,
+    "salesRowsNotOwnedByBatch": 0,
+    "salesExcludedWarehouseRows": 0,
+    "salesNonWhitelistChannels": 0,
+    "salesSystemCostSourceBatchMatchedInventory": true
+  },
+  "backups": {
+    "before": {
+      "backupId": "daily-20260917T173101Z-0e4d289c4d3d",
+      "manifestSha256": "94630506d6f8eedbcbd4a8d0c27d5da47ff5842e0755c938103ecddee1fbf2f4",
+      "dumpSha256": "c200266a62f1f5ba1c555e59ee5972b4283331d7df8b95d3600d9e9a427e8ee1",
+      "contentSha256": "43878b47f3bfb89e87ee6a3cb35717c5dd427d54771dc9c042d77703e3c745c6",
+      "restoreRehearsalId": "88598d617318",
+      "restoredContentMatched": true,
+      "productionDatabaseTouched": false,
+      "archiveDirectory": "E:\\运营管理系统业务数据\\daily-20260917T173101Z-0e4d289c4d3d",
+      "archivedFilesVerified": 3
+    },
+    "after": {
+      "backupId": "daily-20260917T181253Z-626a35319e61",
+      "manifestSha256": "03430f27ea8abcf23ebc4d9eacd40704c50b0c85583523244ebebee0cdab9845",
+      "dumpSha256": "8fd55fe1c8711a8ae9794892707682fb2f9fc31a5a087d9f4b2041cddb881905",
+      "contentSha256": "744267dcc1555ca5dc5a92173d753f8d6faa49ce95bf884040bb575a6c228992",
+      "verifyCompleted": true,
+      "archiveDirectory": "E:\\运营管理系统业务数据\\daily-20260917T181253Z-626a35319e61",
+      "archivedFilesVerified": 3
+    }
+  },
+  "finalRuntime": {
+    "state": "Running",
+    "backendState": "Ready",
+    "workerState": "exact_release",
+    "allTwelveComponentsReady": true,
+    "startupVerified": true,
+    "helperReadyAndIdle": true,
+    "dingTalkReceiverRunningAndConnected": true,
+    "nonterminalN8nExecutions": 0
+  }
+}

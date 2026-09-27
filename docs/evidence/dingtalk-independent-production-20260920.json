@@ -1,0 +1,123 @@
+{
+  "status": "adopted",
+  "sourceCommit": "243927e08b8af3a8a37748ac7b707a26d266ff53",
+  "django": {
+    "manifestSha256": "4261aa9f4618d0f67809dbcaf5f6f5bfbc6c7eedd71e4cf6562fe4ef4d481523",
+    "appFingerprint": "89df0589ddbb138bc47ac327c1e7720cf9726a197ba6932cd5ce26604afc9c24",
+    "verifiedSourceFiles": 7
+  },
+  "worker": {
+    "releaseId": "20260919T054421Z-8396938e0c741f6c",
+    "manifestSha256": "7b0f2ee2989bdb7c28b94df6aa018a7afee085ee30fde17cdcd8da4746a1327e",
+    "releaseUnchanged": true,
+    "startupVerified": true
+  },
+  "permission": {
+    "scope": "qyapi_chat_manage",
+    "description": "钉钉群基础信息管理权限",
+    "userAuthorized": true,
+    "authed": true,
+    "approvedGroupsVerified": 3,
+    "applicationTokenVerified": true,
+    "otherScopesAdded": []
+  },
+  "credentials": {
+    "provisioned": true,
+    "storage": "Windows CurrentUser DPAPI under protected runtime secrets",
+    "identityBindingVerified": true,
+    "runtimePersonalDwsCallsRequired": false,
+    "plaintextCredentialsSavedInEvidence": false
+  },
+  "maintenance": {
+    "id": "9768e9879ca64b77b6485c8a1f60fc50",
+    "enteredAt": "2026-09-20T11:33:52+08:00",
+    "backendStoppedAt": "2026-09-20T11:35:54+08:00",
+    "endedAt": "2026-09-20T11:37:27+08:00",
+    "webReadyAt": "2026-09-20T11:41:20+08:00",
+    "djangoRedeployed": true,
+    "workerHelperAndBackendRestarted": true,
+    "n8nRestarted": false,
+    "migrationCount": 61,
+    "migrationsChanged": false,
+    "startupApprovalTemporarilyDisabled": true,
+    "originalStartupApprovalRestoredExactly": true
+  },
+  "acceptance": {
+    "systemState": "Running",
+    "backendState": "Ready",
+    "workerState": "exact_release",
+    "readyComponents": 12,
+    "scheduler": "running",
+    "receiver": "running",
+    "connection": "connected",
+    "checkedAt": "2026-09-20T03:51:38.4340188+00:00",
+    "separateProcessReceiptsVerified": true,
+    "singletonLocks": {
+      "1909": 1,
+      "1910": 1
+    },
+    "definitionHashUnchanged": true,
+    "preservedHistoricalTerminalRows": 20,
+    "historicalRowsHashUnchanged": true,
+    "sentCountUnchanged": true,
+    "oldManualRun": "denied/missed_window",
+    "bothNextRunAt": "2026-09-21T09:00:00+08:00",
+    "http": [
+      {
+        "path": "/",
+        "status": 200
+      },
+      {
+        "path": "/?module=ai&view=scheduled",
+        "status": 200
+      },
+      {
+        "path": "/_teruisi/local/health/live",
+        "status": 200
+      },
+      {
+        "path": "/_teruisi/local/health/ready",
+        "status": 200
+      }
+    ],
+    "djangoSupervisor": "running/healthy/all_components_ready",
+    "existingOperationsWatchdog": "healthy; incident closed; policy unchanged"
+  },
+  "backups": {
+    "beforeId": "daily-20260920T030251Z-6691537d4593",
+    "beforeManifestSha256": "08d21a81b3315772361ee73a0ee20f3a5eefd3924d33e4518136533ae6c0de23",
+    "restoreId": "243927e20260",
+    "isolatedPort": 55663,
+    "restoreContentMatched": true,
+    "afterId": "daily-20260920T034836Z-6786c613dca7",
+    "afterManifestSha256": "1470d3c5e279f63b8671e2edb0a223c77b477dd03dc5114f7aca5f42f5a626ab",
+    "afterVerified": true,
+    "beforeAndAfterEArchiveFilesVerified": true
+  },
+  "maintenanceEffects": {
+    "weeklyCheckFailed": [
+      3586
+    ],
+    "followingNaturalWeeklyChecksSucceeded": [
+      3587,
+      3590
+    ],
+    "tmallMasituFailedInWindow": 3588,
+    "existingSafetyRetryWaiting": 3589,
+    "manualBusinessRerun": false,
+    "preexistingTmallLiliFailure": 3575
+  },
+  "rolloutNotes": [
+    "Initial one-time publisher argument binding was rejected before disabling startup or stopping services; corrected the publisher, repeated drain gates and used the normal operators.",
+    "Outer operations-system-control Start short-circuits when already Running. After restoring channel startup approval, the existing watchdog used the original Worker Start engine to start both channels; an explicit subsequent Worker Start returned already_running and preserved both process identities. No new monitoring or recovery policy was added."
+  ],
+  "notPerformed": [
+    "paid model call",
+    "manual task enqueue",
+    "test message or media send",
+    "historical replay",
+    "new watchdog, heartbeat, alerting or crash recovery"
+  ],
+  "remainingAcceptance": "Real new-version text/media delivery and client presentation are not manually exercised; next natural scheduled slots retain their original authorization.",
+  "localEvidenceDirectory": "D:/codex-artifacts/dingtalk-independent-release-20260920"
+}

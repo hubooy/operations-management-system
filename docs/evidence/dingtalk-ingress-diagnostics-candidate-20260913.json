@@ -1,0 +1,38 @@
+{
+  "date": "2026-09-13",
+  "status": "candidate_not_deployed",
+  "baseCommit": "9e84fb46f590206fc498f40e99ac9c20f996a0ec",
+  "finding": "Platform DM metadata confirms three messages at 12:39-12:41 Asia/Shanghai. No chat receipt was persisted today. Scheduled runs at 08:11 and 09:00 are sent. Existing logs cannot distinguish absent callbacks from rejected callbacks; root cause remains unconfirmed.",
+  "productionInspection": {
+    "database": "local PostgreSQL fallback, explicit read-only transactions, metadata only",
+    "robot": "published, ONLINE, STREAM, configured identity matches",
+    "guardedDingTalkCheck": "verified; sent=0",
+    "servicesRestarted": false,
+    "configurationChanged": false,
+    "messagesSent": 0,
+    "modelCalls": 0
+  },
+  "candidate": {
+    "changes": "Fixed-label timestamped callback diagnostics and distinct rejection codes; no payloads, identifiers, credentials, raw errors or automatic replay",
+    "targetedTests": {"run": 75, "passed": 74, "skipped": 1, "failed": 0},
+    "realSdkSyntheticCallback": "passed, network and storage mocked; threaded acceptance and wire ACK verified",
+    "isolatedPostgres": {
+      "port": 55457,
+      "testsRun": 185,
+      "passed": 183,
+      "skipped": 2,
+      "failed": 0,
+      "aiTables": 51,
+      "negativePermissions": true,
+      "immutableIdentities": true,
+      "receiverSingleton": true,
+      "oldConversationRetained": true,
+      "dumpRestoreDigest": "71a1d3ec5397c51a3413d5ebad1e27433fcd695d5a3929e33426dbd0f3b401ba",
+      "clusterStopped": true
+    },
+    "diffCheck": "passed",
+    "frontendChanges": false,
+    "databaseMigrationChanges": false
+  },
+  "remaining": "Review and controlled production adoption require service maintenance authorization. Then observe a new user-originated DM and approved group mention. This candidate does not establish that the reported chat fault is fixed."
+}

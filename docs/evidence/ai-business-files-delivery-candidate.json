@@ -1,0 +1,55 @@
+{
+  "status": "candidate-only",
+  "batch": 11,
+  "migration": "ai_assistant.0016_business_files",
+  "aiOwnedTables": 60,
+  "capabilities": [
+    "durable paired file queue with independent PostgreSQL mutex",
+    "versioned pause, resume, rebuild and cancel",
+    "immutable binary chunks and audited atomic byte accounting",
+    "resume complete staged files without rebuilding or calling a model",
+    "report detail progress and verified browser download"
+  ],
+  "verification": {
+    "postgresAiAndCalculation": {"total": 300, "passed": 298, "skipped": 2, "log": ".runtime/ai-pg-4a41bfa281ad/tests.log"},
+    "finalFileTests": {"passed": 7, "log": ".runtime/ai-pg-e1f43b3c3ced/tests.log"},
+    "targetedNode": {"passed": 31, "log": ".runtime/batch11-node-final.log"},
+    "correctedSchedulerContractAndDownload": {"passed": 24, "log": ".runtime/batch11-node-corrected.log"},
+    "fullNodeInitial": {"total": 2232, "passed": 2211, "skipped": 20, "failed": 1, "failure": "old scheduler return-shape assertion; corrected and focused retest passed", "log": ".runtime/batch11-all-node.log"},
+    "backupManifestTests": {"passed": 8, "log": ".runtime/batch11-backup.log"},
+    "upgrade": {
+      "path": "0013->0014->0015->0016",
+      "old56TableDigestPreserved": true,
+      "restrictedRoleHealthAndWriteFences": true,
+      "independentDumpRestore": true,
+      "binaryFixtureBytes": 524288,
+      "binaryFixtureSha256": "33bc8aab40703678c3ebe94d2dd8f2afff285dd901f9234e841e4679f8204fd5",
+      "log": ".runtime/batch11-upgrade.log"
+    },
+    "chromeSyntheticComponent": {"checks": 5, "log": ".runtime/batch11-ui3.log"},
+    "build": "passed",
+    "changedFileLint": "passed",
+    "fullRepositoryLint": "passed",
+    "productionBoundary": "passed",
+    "typecheck": {"existingErrors": 153, "newErrorsInChangedPaths": 0, "log": ".runtime/batch11-types-final.log"}
+  },
+  "limits": {
+    "fileBytes": 268435456,
+    "chunkBytes": 524288,
+    "runBytesIncludingOldAttempts": 1073741824,
+    "ownerBytes": 2147483648,
+    "globalBytes": 8589934592,
+    "buildSeconds": 600,
+    "attempts": 5,
+    "automaticRetentionCleanup": false,
+    "partialFileAttemptResume": "rebuild; old chunks retained",
+    "browserMemory": "whole file plus bounded processing copies"
+  },
+  "notValidated": ["real paid multi-agent run", "production file delivery", "full 30-sheet reference equivalence", "low-memory client at maximum file size"],
+  "productionWrites": false,
+  "productionMigrations": false,
+  "serviceRestarts": false,
+  "paidModelCalls": false,
+  "externalMessages": false,
+  "allFivePhasesComplete": false
+}

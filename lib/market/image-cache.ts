@@ -4,15 +4,55 @@ import { encodeAnnotationImageBase64, fetchAnnotationImage, resolveAnnotationIma
 import { optimizeAnnotationImageWithRuntime } from "@/lib/market/annotation-image-runtime";
 import { annotationModelImageObjectKey, cachedAnnotationModelImage, repairAnnotationModelImageVariant } from "@/lib/market/annotation-model-image";
 import { ensureMarketSchema, getMarketDatabase, type MarketDatabase } from "@/lib/market/database";
-import { claimMarketImageCache, completeMarketImageCacheClaim, failMarketImageCacheClaim } from "@/lib/market/image-cache-state";
+import {
+  acquireMarketImageCacheJobLease,
+  discoverMarketImageCacheJobItems,
+  failMarketImageCacheJobLease,
+  finishMarketImageCacheJobLease,
+  heartbeatMarketImageCacheJobLease,
+  listMarketImageCacheJobItems,
+  markMarketImageCacheJobItemReady,
+  markMarketImageCacheJobItemTerminalFailure,
+  quarantineTimedOutMarketImageCacheJobLease,
+  terminateTimedOutMarketImageCacheJobLease,
+  type MarketImageCacheJobLease,
+} from "@/lib/market/image-cache-job";
+import {
+  claimMarketImageCache,
+  completeMarketImageCacheClaim,
+  failMarketImageCacheClaim,
+  propagateMarketImageCacheBatch,
+  recoverExpiredMarketImageCacheClaims,
+} from "@/lib/market/image-cache-state";
 
-const MAX_CACHE_BATCH = 24;
+const MAX_CACHE_BATCH = 8;
 const CACHE_CONCURRENCY = 4;
 const CACHE_MAX_BYTES = 6 * 1024 * 1024;
 const CACHE_TIMEOUT_MS = 8_000;
+const CACHE_EXTERNAL_DEADLINE_MS = 30_000;
 
-type CacheCandidate = { source_url: string };
-type CacheResult = { cached: boolean; skipped?: boolean; reason?: string; contentHash?: string };
+type CacheResult = { sourceUrl: string; cached: boolean; skipped?: boolean; reason?: string; contentHash?: string };
+
+class MarketImageCacheDeadlineError extends Error {
+  constructor() {
+    super("图片缓存外部阶段超过 30 秒时间片，任务已安全释放并等待重试");
+    this.name = "MarketImageCacheDeadlineError";
+  }
+}
+
+async function withinCacheExternalDeadline<T>(promise: Promise<T>): Promise<T> {
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  try {
+    return await Promise.race([
+      promise,
+      new Promise<never>((_resolve, reject) => {
+        timer = setTimeout(() => reject(new MarketImageCacheDeadlineError()), CACHE_EXTERNAL_DEADLINE_MS);
+      }),
+    ]);
+  } finally {
+    if (timer) clearTimeout(timer);
+  }
+}
 
 function bucket() {
   if (!env.SALES_IMPORT_FILES) throw new Error("R2 图片缓存未配置");
@@ -31,15 +71,16 @@ async function sha256(bytes: Uint8Array) {
   return Array.from(new Uint8Array(digest), (byte) => byte.toString(16).padStart(2, "0")).join("");
 }
 
-async function cacheOne(db: MarketDatabase, sourceUrl: string): Promise<CacheResult> {
-  const attemptCount = await claimMarketImageCache(db, sourceUrl);
-  if (attemptCount === null) return { cached: false, skipped: true, reason: "already_claimed" };
+async function cacheOne(db: MarketDatabase, sourceUrl: string, lease: MarketImageCacheJobLease): Promise<CacheResult> {
+  const fence = { jobId: lease.id, leaseToken: lease.leaseToken, jobEpoch: lease.leaseEpoch };
+  const claim = await claimMarketImageCache(db, { ...fence, sourceUrl });
+  if (claim === null) return { sourceUrl, cached: false, skipped: true, reason: "already_claimed" };
   try {
     const result = await fetchAnnotationImage(sourceUrl, { maxBytes: CACHE_MAX_BYTES, timeoutMs: CACHE_TIMEOUT_MS });
     if (result.kind !== "image") {
-      const failed = await failMarketImageCacheClaim(db, { sourceUrl, attemptCount, errorCode: result.reason, errorMessage: result.message });
-      if (!failed) return { cached: false, skipped: true, reason: "lost_claim" };
-      return { cached: false, reason: result.reason };
+      const failed = await failMarketImageCacheClaim(db, { ...fence, ...claim, sourceUrl, errorCode: result.reason, errorMessage: result.message });
+      if (!failed) return { sourceUrl, cached: false, skipped: true, reason: "lost_claim" };
+      return { sourceUrl, cached: false, reason: result.reason };
     }
     const contentHash = await sha256(result.bytes);
     const objectKey = `market-images/v1/${contentHash}.${extension(result.mimeType)}`;
@@ -52,16 +93,18 @@ async function cacheOne(db: MarketDatabase, sourceUrl: string): Promise<CacheRes
     }
     await cacheAnnotationModelVariant(contentHash, result).catch(() => undefined);
     const completed = await completeMarketImageCacheClaim(db, {
-      sourceUrl, attemptCount, objectKey, contentHash, mimeType: result.mimeType,
+      ...fence, ...claim, sourceUrl, objectKey, contentHash, mimeType: result.mimeType,
       sizeBytes: result.bytes.byteLength, imageSource: result.source,
     });
-    if (!completed.completed) return { cached: false, skipped: true, reason: "lost_claim" };
-    return { cached: true, contentHash };
+    if (!completed.completed) return { sourceUrl, cached: false, skipped: true, reason: "lost_claim" };
+    return { sourceUrl, cached: true, contentHash };
   } catch (error) {
     const message = error instanceof Error ? error.message : "图片缓存失败";
-    const failed = await failMarketImageCacheClaim(db, { sourceUrl, attemptCount, errorCode: "cache_failed", errorMessage: message }).catch(() => false);
-    if (!failed) return { cached: false, skipped: true, reason: "lost_claim" };
-    return { cached: false, reason: "cache_failed" };
+    const failed = await failMarketImageCacheClaim(db, {
+      ...fence, ...claim, sourceUrl, errorCode: "cache_failed", errorMessage: message,
+    }).catch(() => false);
+    if (!failed) return { sourceUrl, cached: false, skipped: true, reason: "lost_claim" };
+    return { sourceUrl, cached: false, reason: "cache_failed" };
   }
 }
 
@@ -76,49 +119,82 @@ async function cacheAnnotationModelVariant(contentHash: string, image: Extract<A
   });
 }
 
-async function cacheStats(db: MarketDatabase, batchId?: string) {
-  const batchClause = batchId ? "AND m.last_import_batch_id=?" : "";
-  const row = await db.prepare(`WITH urls AS (
-      SELECT DISTINCT m.image_url source_url FROM market_ranking_entries m
-      WHERE m.image_url<>'' ${batchClause}
-    )
-    SELECT COUNT(*) total,
-      SUM(CASE WHEN c.status='ready' THEN 1 ELSE 0 END) cached,
-      SUM(CASE WHEN c.status='failed' AND c.attempt_count>=3 THEN 1 ELSE 0 END) failed,
-      SUM(CASE WHEN c.status IS NULL OR c.status IN ('pending','fetching') OR (c.status='failed' AND c.attempt_count<3) THEN 1 ELSE 0 END) pending
-    FROM urls u LEFT JOIN market_image_cache c ON c.source_url=u.source_url`)
-    .bind(...(batchId ? [batchId] : [])).first<{ total: number; cached: number; failed: number; pending: number }>();
-  return { total: Number(row?.total ?? 0), cached: Number(row?.cached ?? 0), failed: Number(row?.failed ?? 0), pending: Number(row?.pending ?? 0) };
-}
-
-export async function cacheMarketImages(input: { db?: MarketDatabase; batchId?: string; limit?: number } = {}) {
+export async function runScheduledMarketImageCacheBatch(
+  input: { db?: MarketDatabase; jobId?: string; limit?: number } = {},
+) {
   const db = input.db ?? getMarketDatabase();
   await ensureMarketSchema(db);
-  await db.prepare("UPDATE market_image_cache SET status='failed', error_code='stale_fetch', error_message='缓存任务超时，可安全重试', updated_at=CURRENT_TIMESTAMP WHERE status='fetching' AND datetime(updated_at)<datetime('now','-10 minutes')").run();
-  const limit = Math.max(1, Math.min(MAX_CACHE_BATCH, Math.trunc(input.limit ?? 12)));
-  const batchClause = input.batchId ? "AND m.last_import_batch_id=?" : "";
-  const candidates = await db.prepare(`SELECT DISTINCT m.image_url source_url
-    FROM market_ranking_entries m LEFT JOIN market_image_cache c ON c.source_url=m.image_url
-    WHERE m.image_url<>'' ${batchClause}
-      AND (c.source_url IS NULL OR c.status='pending' OR (c.status='failed' AND c.attempt_count<3))
-    ORDER BY CASE WHEN m.rank IS NULL THEN 1 ELSE 0 END, m.rank, m.period_end DESC LIMIT ?`)
-    .bind(...(input.batchId ? [input.batchId, limit] : [limit])).all<CacheCandidate>();
-  const queue = [...(candidates.results ?? [])];
-  const results: CacheResult[] = [];
-  const worker = async () => {
-    while (queue.length) {
-      const candidate = queue.shift();
-      if (candidate) results.push(await cacheOne(db, candidate.source_url));
+  const lease = await acquireMarketImageCacheJobLease(db, { jobId: input.jobId });
+  if (!lease) return { status: "idle" as const, processed: 0, cachedThisRun: 0, failedThisRun: 0, skippedThisRun: 0 };
+  const fence = { jobId: lease.id, leaseToken: lease.leaseToken, jobEpoch: lease.leaseEpoch };
+  const limit = Math.max(1, Math.min(MAX_CACHE_BATCH, Math.trunc(input.limit ?? MAX_CACHE_BATCH)));
+  try {
+    await recoverExpiredMarketImageCacheClaims(db, fence);
+    if (lease.failureCount >= 3) {
+      await terminateTimedOutMarketImageCacheJobLease(db, lease);
+      return { status: "failed" as const, jobId: lease.id, processed: 0, cachedThisRun: 0, failedThisRun: 0, skippedThisRun: 0 };
     }
-  };
-  await Promise.all(Array.from({ length: Math.min(CACHE_CONCURRENCY, queue.length) }, worker));
-  return {
-    processed: results.filter((item) => !item.skipped).length,
-    cachedThisRun: results.filter((item) => item.cached).length,
-    failedThisRun: results.filter((item) => !item.cached && !item.skipped).length,
-    skippedThisRun: results.filter((item) => item.skipped).length,
-    ...(await cacheStats(db, input.batchId)),
-  };
+    const discovery = await discoverMarketImageCacheJobItems(db, lease);
+    if (discovery.lostLease) {
+      return { status: "lost_lease" as const, jobId: lease.id, processed: 0, cachedThisRun: 0, failedThisRun: 0, skippedThisRun: 0 };
+    }
+    const items = await listMarketImageCacheJobItems(db, lease, limit);
+    const readyForPropagation: Array<{ sourceUrl: string; contentHash: string }> = [];
+    const fetchQueue: string[] = [];
+    let terminalThisRun = 0;
+    for (const item of items) {
+      if (item.status === "ready" && /^[a-f0-9]{64}$/.test(item.contentHash)) {
+        readyForPropagation.push({ sourceUrl: item.sourceUrl, contentHash: item.contentHash });
+      } else if (item.cacheStatus === "ready" && /^[a-f0-9]{64}$/.test(item.cacheContentHash)) {
+        if (await markMarketImageCacheJobItemReady(db, lease, item.sourceUrl, item.cacheContentHash)) {
+          readyForPropagation.push({ sourceUrl: item.sourceUrl, contentHash: item.cacheContentHash });
+        }
+      } else if (item.cacheStatus === "failed" && item.cacheAttemptCount >= 3) {
+        if (await markMarketImageCacheJobItemTerminalFailure(db, lease, item.sourceUrl)) terminalThisRun += 1;
+      } else {
+        fetchQueue.push(item.sourceUrl);
+      }
+    }
+    const results: CacheResult[] = [];
+    const workers = Array.from({ length: Math.min(CACHE_CONCURRENCY, fetchQueue.length) }, async () => {
+      while (fetchQueue.length) {
+        const sourceUrl = fetchQueue.shift();
+        if (sourceUrl) results.push(await cacheOne(db, sourceUrl, lease));
+      }
+    });
+    await withinCacheExternalDeadline(Promise.all(workers));
+    if (!await heartbeatMarketImageCacheJobLease(db, lease)) {
+      return { status: "lost_lease" as const, jobId: lease.id, processed: 0, cachedThisRun: 0, failedThisRun: 0, skippedThisRun: results.length };
+    }
+    const newlyCached = results.filter((item): item is CacheResult & { contentHash: string } => item.cached && Boolean(item.contentHash));
+    const images = [...readyForPropagation, ...newlyCached.map((item) => ({ sourceUrl: item.sourceUrl, contentHash: item.contentHash }))];
+    const propagation = await propagateMarketImageCacheBatch(db, { ...fence, images });
+    const processed = results.filter((item) => !item.skipped).length;
+    const finished = await finishMarketImageCacheJobLease(db, lease);
+    return {
+      status: finished ? finished.status : "lost_lease" as const,
+      jobId: lease.id,
+      processed,
+      cachedThisRun: newlyCached.length,
+      failedThisRun: terminalThisRun + results.filter((item) => !item.cached && !item.skipped).length,
+      skippedThisRun: results.filter((item) => item.skipped).length,
+      discovery,
+      propagation,
+      ...(finished ?? {}),
+    };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "图片缓存后台批次失败";
+    if (error instanceof MarketImageCacheDeadlineError) {
+      await quarantineTimedOutMarketImageCacheJobLease(db, lease).catch(() => false);
+    } else {
+      await failMarketImageCacheJobLease(db, {
+        lease,
+        errorCode: "cache_batch_failed",
+        errorMessage: message,
+      }).catch(() => false);
+    }
+    throw error;
+  }
 }
 
 export async function getCachedMarketImage(contentHash: string, db: MarketDatabase = getMarketDatabase()) {

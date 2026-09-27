@@ -1,5 +1,7 @@
 import type { env } from "cloudflare:workers";
 
+import { PublicApiError } from "../http/api-error";
+
 export type ImportFingerprintDatabase = NonNullable<typeof env.DB>;
 
 export type ImportContentFingerprint = {
@@ -23,6 +25,8 @@ export type ImportAttemptMetadata = {
   fileSizeBytes?: number;
   actor?: string;
   warnings?: readonly unknown[];
+  warningTotalCount?: number;
+  warningsTruncated?: boolean;
 };
 
 export type ImportReservationFence = {
@@ -583,7 +587,11 @@ export async function recordImportFingerprint(
   }
   const results = await db.batch(statements);
   if (requiresOwner && Number(results.at(-1)?.meta?.changes ?? 0) !== 1) {
-    throw new Error("IMPORT_SCOPE_OWNERSHIP_LOST");
+    throw new PublicApiError(
+      409,
+      "conflict",
+      "导入范围已被其他任务接管，请刷新后重试。",
+    );
   }
   return {
     attemptId,
@@ -730,7 +738,11 @@ export async function renewImportFingerprintReservation(
        AND owner_token = ? AND current_batch_id = ?`,
   ).bind(input.domain, input.scopeKey, input.attemptId, input.batchId).run();
   if (Number(result.meta?.changes ?? 0) !== 1) {
-    throw new Error("IMPORT_SCOPE_OWNERSHIP_LOST");
+    throw new PublicApiError(
+      409,
+      "conflict",
+      "导入范围已被其他任务接管，请刷新后重试。",
+    );
   }
 }
 
@@ -755,6 +767,33 @@ export function importReservationCommitFence<
          AND owner_token = ? AND current_batch_id = ?
      )`,
   ).bind(input.domain, input.scopeKey, input.attemptId, input.batchId);
+}
+
+/**
+ * D1 rolls a publish batch back when the commit fence loses ownership. After
+ * that rollback, read the current head and translate only the proven takeover
+ * case to a stable 409; unrelated constraint/SQL failures stay internal.
+ */
+export async function rethrowImportPublishError(
+  db: ImportFingerprintDatabase,
+  fence: ImportReservationFence,
+  error: unknown,
+): Promise<never> {
+  const head = await db.prepare(`SELECT status, owner_token, current_batch_id
+    FROM import_scope_heads WHERE domain = ? AND scope_key = ? LIMIT 1`)
+    .bind(fence.domain, fence.scopeKey)
+    .first<{ status: string; owner_token: string | null; current_batch_id: string | null }>();
+  if (!head
+    || head.status !== "processing"
+    || head.owner_token !== fence.attemptId
+    || head.current_batch_id !== fence.batchId) {
+    throw new PublicApiError(
+      409,
+      "conflict",
+      "导入范围已被其他任务接管，请刷新后重试。",
+    );
+  }
+  throw error;
 }
 
 export async function failImportFingerprint(
@@ -831,10 +870,15 @@ export async function failImportFingerprint(
 
 function normalizeAttemptMetadata(metadata?: ImportAttemptMetadata) {
   const fileSizeBytes = Number(metadata?.fileSizeBytes ?? 0);
+  const warnings = (metadata?.warnings ?? []).slice(0, 200);
+  const warningTotalCount = Number(metadata?.warningTotalCount);
+  const hasWarningSummary = Number.isSafeInteger(warningTotalCount) && warningTotalCount >= warnings.length;
   return {
     fileName: String(metadata?.fileName ?? "").replace(/[\u0000-\u001f\u007f]/g, "").slice(0, 255),
     fileSizeBytes: Number.isSafeInteger(fileSizeBytes) && fileSizeBytes >= 0 ? fileSizeBytes : 0,
     actor: String(metadata?.actor ?? "").trim().slice(0, 200),
-    warningsJson: JSON.stringify((metadata?.warnings ?? []).slice(0, 200)).slice(0, 50_000),
+    warningsJson: JSON.stringify(hasWarningSummary
+      ? { items: warnings, totalCount: warningTotalCount, truncated: metadata?.warningsTruncated === true || warningTotalCount > warnings.length }
+      : warnings).slice(0, 50_000),
   };
 }

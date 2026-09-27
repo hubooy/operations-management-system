@@ -18,9 +18,14 @@ export const GEEKCLOUD_SALES_LEDGER_REQUIRED_HEADERS = Object.freeze([
   "货品成本",
   "分摊后单价",
   "分摊后金额",
-  "费用分摊",
   "毛利",
 ] as const);
+
+/**
+ * 可选表头：吉客云 v4 导出自 2026-08-27 起不再包含"费用分摊"列（用户确认今后也不再补充）。
+ * 列缺失时费用分摊按 0 解析；毛利恒等式校验会退化为 分摊后金额 − 货品成本，仅产生警告。
+ */
+export const GEEKCLOUD_SALES_LEDGER_OPTIONAL_HEADERS = Object.freeze(["费用分摊"] as const);
 
 /** 吉客云导出中"网店订单号"的已知别名；按优先级排列，第一个为规范名。 */
 const ONLINE_ORDER_NO_ALIASES = ["网店订单号", "订单编号"] as const;
@@ -426,7 +431,7 @@ function parseSalesRow(
     sourceRowNumber,
     errors,
   );
-  const feeAllocationCents = requiredMoney(
+  const feeAllocationCents = optionalMoney(
     reader.raw("费用分摊"),
     "feeAllocationCents",
     "费用分摊",

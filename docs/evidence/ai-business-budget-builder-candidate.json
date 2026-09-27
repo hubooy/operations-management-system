@@ -1,0 +1,35 @@
+{
+  "date": "2026-09-17",
+  "branch": "codex/ai-business-analysis-stages",
+  "baseCommit": "d02b23bb",
+  "batch": 24,
+  "status": "candidate_not_production_adopted",
+  "changes": [
+    "Read-only sealed-v2 target selection and complete budget preview, strict owner and source binding",
+    "First-budget workbench selecting authoritative row identities with explicit blank business inputs",
+    "Preview invalidation, parameter digest verification and late-response/account isolation",
+    "Existing durable workbench request identity and raw-body recovery reused for budget reports"
+  ],
+  "verification": {
+    "targetedPostgres": {"tests": 33, "passed": 33, "log": ".runtime/ai-pg-27bd561a5190/tests.log", "includes": ["New targets and preview services and real reader-only routes", "Zero SQL DML and no model/source calls during preview", "Choice and preview through actual five-Agent services, review and persistent files", "Existing evidence-v2 and planning-v2"]},
+    "newPureUi": {"tests": 14, "passed": 14},
+    "newRoutesAndExistingForwarding": {"tests": 18, "passed": 18},
+    "componentChrome": {"tests": 7, "passed": 7, "evidence": ".runtime/batch24-budget-builder-ui/evidence.json", "mobileScreenshot": ".runtime/batch24-budget-builder-ui/builder-mobile.png"},
+    "parentChrome": {"tests": 7, "passed": 7, "evidence": ".runtime/business-budget-workbench-ui-review-final/evidence.json", "reportPosts": 5, "uniqueReports": 3, "extraPostsAreExplicitSameRequestRetries": true, "externalRequests": 0, "consoleErrors": 0},
+    "legacyWorkbenchChrome": {"tests": 25, "passed": 25, "logs": [".runtime/batch24-workbench-v2-ui.log", ".runtime/batch24-workbench-legacy-ui.log"]},
+    "pendingCapacity": {"planNormalizedByActualBackend": true, "planBytes": 48000, "targets": 100, "scenarios": 5, "quoteAndBackslashPendingCharacters": 74078, "conservativeControlCharacterQuestionPendingCharacters": 81078, "existingCharacterLimit": 100000, "limitUnchanged": true, "evidence": ".runtime/business-budget-workbench-ui-review/pending-capacity.json"},
+    "fullNode": {"tests": 2306, "passed": 2286, "failed": 0, "skipped": 20, "log": ".runtime/batch24-full-node.log"},
+    "build": {"passed": true, "log": ".runtime/batch24-build.log"},
+    "renderedPages": {"tests": 20, "passed": 20, "log": ".runtime/batch24-rendered.log"},
+    "lint": {"errors": 0, "existingWarnings": 11, "log": ".runtime/batch24-lint.log"},
+    "typecheck": {"existingErrors": 153, "changedPathsErrors": 0, "log": ".runtime/batch24-types-final.log"},
+    "backendBoundary": {"passed": true, "log": ".runtime/batch24-boundary.log"}
+  },
+  "limits": [
+    "Source planning still requires explicit shop and time scope",
+    "Free calculation is a conditional scenario, not guaranteed performance or model-context admission",
+    "Large product mapping, derived reuse and cursor renewal remain separate follow-up work",
+    "Real-store, paid-provider and production acceptance remain outstanding; no entire phase declared complete"
+  ],
+  "operations": {"productionBusinessReads": false, "productionWrites": false, "newMigration": false, "productionMigration": false, "deployment": false, "serviceRestart": false, "paidModelCalls": false, "externalMessages": false}
+}

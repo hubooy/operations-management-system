@@ -1,0 +1,37 @@
+{
+  "date": "2026-09-17",
+  "branch": "codex/ai-business-analysis-stages",
+  "baseCommit": "0942d6f7",
+  "batch": 23,
+  "status": "candidate_not_production_adopted",
+  "changes": [
+    "Atomic v2 fixed-budget report creation, immutable parameter references, idempotent replay and explicit new versions",
+    "Independent budget execution profile, surface and three tools, preserving legacy catalogs",
+    "Per-Agent directory and fixed-budget receipt reconstruction with live authorization and known-result preservation",
+    "Actual protocol, page, dependency-escaping, round, call and model-context admission without dropping pages",
+    "Renderer-4 budget delivery and trusted publication/resume checks with lightweight chunk authorization"
+  ],
+  "verification": {
+    "firstTargetedPostgres": {"tests": 42, "passed": 40, "failures": 1, "errors": 1, "log": ".runtime/ai-pg-1aa556fd76cc/failure.log", "fixedFixtureIssues": ["GET test signature must include the query in the signing query field", "Volume creation test must pass expectedPrincipalKey"]},
+    "fixedFiveAgentAcceptance": {"tests": 4, "passed": 4, "log": ".runtime/ai-pg-cd6fb7497d8d/tests.log", "realSealedSourceReader": true, "actualRuntimeServices": true, "specialistsConcurrentPeak": 3, "agents": 5, "agentsWithBudgetReceipts": 3, "allocatedCents": 9000, "reviewAndPersistentFiles": true, "downloadHashesVerified": true},
+    "fullAiAndPurePostgres": {"tests": 595, "passed": 593, "skipped": 2, "seconds": 264.415, "log": ".runtime/ai-pg-9faed92f35b2/tests.log", "note": "Test discovery also ran four imported fixture tests a second time; the import was changed to a module after discovery to avoid duplication in future runs"},
+    "runtimeFailures": {"tests": 4, "includedInFullRun": true, "cases": ["Early final without budget proof preserves known provider result and cannot resume/replay", "Sibling directory cannot authorize this Agent", "Owner revocation prevents further external calls", "Missing immutable parameter refuses legacy fallback"]},
+    "pureReceiptsPreflightReference": {"tests": 25, "passed": 25, "protocols": ["openai_compatible", "anthropic"], "wide100TargetContextRefused": true},
+    "fullNode": {"tests": 2286, "passed": 2266, "failed": 0, "skipped": 20, "log": ".runtime/batch23-full-node.log"},
+    "build": {"passed": true, "log": ".runtime/batch23-build.log"},
+    "renderedPages": {"tests": 20, "passed": 20, "log": ".runtime/batch23-rendered.log"},
+    "lint": {"errors": 0, "existingWarnings": 11, "log": ".runtime/batch23-lint.log"},
+    "typecheck": {"existingErrors": 153, "changedPathsErrors": 0, "log": ".runtime/batch23-types.log"},
+    "backendBoundary": {"passed": true, "checkedModules": 480},
+    "legacyCatalogs": {"tools": 41, "catalogHashes": 80, "unchanged": true},
+    "independentReview": {"remainingStaticBlockers": 0, "consumerAuditRequiresNoSurfaceExpansion": true}
+  },
+  "limits": [
+    "First-budget target selection and preview workbench UI remains the next batch",
+    "Synthetic provider replies establish engineering flow, not real-model business quality",
+    "100 stored targets do not guarantee model-context admission",
+    "Large ERP-to-shop identity mapping, derived reuse, cursor renewal and automatic identity planning remain outstanding",
+    "Real-store, paid-provider and production acceptance remain outstanding; no entire phase declared complete"
+  ],
+  "operations": {"productionBusinessReads": false, "productionWrites": false, "newMigration": false, "productionMigration": false, "deployment": false, "serviceRestart": false, "paidModelCalls": false, "externalMessages": false}
+}

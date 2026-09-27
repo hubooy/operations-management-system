@@ -1,0 +1,60 @@
+{
+  "date": "2026-09-12",
+  "scope": "Data Import → Chain Rules binds the active JD multi-store silent Chromium workflow and distinguishes scheduled completion from automatic retry completion.",
+  "source": {
+    "branch": "codex/fix-import-chain-rules",
+    "changeCommit": "44548f5d077d7ba5df5c8b3f2d3c4ac0ab4eb01c",
+    "mainMergeCommit": "e92f050bffa259174b26dbdb5714069481ced017",
+    "releaseWorktree": "D:\\运营管理系统-sales-django-release"
+  },
+  "verification": {
+    "fullNodeTests": { "total": 2137, "passed": 2117, "skipped": 20, "failed": 0 },
+    "renderedHtmlTests": { "passed": 20, "failed": 0 },
+    "djangoImportChainStatusTests": { "passed": 8, "failed": 0 },
+    "productionBuild": "passed",
+    "backendBoundary": { "checkedModules": 427, "violations": 0 },
+    "lint": { "errors": 0, "warnings": 11, "warningOrigin": "pre-existing unrelated files" },
+    "diffCheck": "passed",
+    "jdSingleStoreDryRun": { "planned": 3, "completed": 0, "realDownloadOrImport": false }
+  },
+  "preDeploymentRecovery": {
+    "backupId": "daily-20260912T092050Z-37e25d6c6379",
+    "manifestSha256": "c41eab1bc911af34743c39470711a1eabfa3d7c9fe587bf1443567d68530b4f2",
+    "contentSha256": "799111c89dad9d8e89fee3664d5ec67a9be9902b95e89256bf75ff6a5a545af9",
+    "isolatedRestorePort": 55471,
+    "restoredContentSha256": "799111c89dad9d8e89fee3664d5ec67a9be9902b95e89256bf75ff6a5a545af9",
+    "cleanup": "isolated_data_removed"
+  },
+  "deployment": {
+    "status": "completed",
+    "djangoManifestSha256": "c5dea3021039645a650ff1c8a469d1eda6a5f64a071ba0f619717c4fd1a5cb3f",
+    "djangoAppFingerprint": "1b25ec54114da5e63bb08efa467f28c86399e85d27e625c09f4771214c33513b",
+    "djangoFileCount": 2022,
+    "databaseMigrationApplied": false,
+    "n8nWorkflowChanged": false,
+    "predecessorReleaseId": "20260912T085820Z-cde69efbfa6cb274",
+    "workerReleaseId": "20260912T093226Z-588560ad2bfc1239",
+    "workerManifestSha256": "1a2a691e2f065219dc63794f1529b29c38e87fc2a3c67f397864ff232307bbf5",
+    "planSha256": "f3d123943da45ea8bb7a607bca584a38ec4cac57c5a01a0dfb3a6c4c7de140b2",
+    "successorCount": 137
+  },
+  "productionReadback": {
+    "system": "Running / Ready / exact_release",
+    "homeHttpStatus": 200,
+    "chainRulesDate": "2026-09-12",
+    "chainRulesCheckedAtLocal": "2026-09-12 17:42 Asia/Shanghai",
+    "jdWorkflowId": "JdN8nSilentCopy2026",
+    "jdExecutionId": "1243",
+    "jdState": "今天重试已完成",
+    "jdCompletedAtLocal": "2026-09-12 11:07 Asia/Shanghai",
+    "jdShopRowsWithSharedStatus": 4,
+    "businessImportTriggeredForAcceptance": false
+  },
+  "postDeploymentBackup": {
+    "backupId": "daily-20260912T094108Z-1ad6a80d63bf",
+    "manifestSha256": "7beb7482ebfc34361c0d1979c4e04126f0b6c1a9791b06637eaf04ae1dab3693",
+    "contentSha256": "09ac3ee31a419aa4eea623f7a2e91dd3febf91263b6a0838e2bebf074b5dcb33",
+    "verified": true,
+    "note": "A concurrent navigation release task created this backup after the import-chain release; it was independently verified for this release before that task changed the Worker."
+  }
+}

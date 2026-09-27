@@ -2,6 +2,9 @@
 
 # dependencies
 /node_modules
+__pycache__/
+*.py[cod]
+/.venv/
 /.pnp
 .pnp.*
 .yarn/*
@@ -12,6 +15,7 @@
 
 # testing
 /coverage
+/.promotion-backfill-test-*/
 
 # next.js
 /.next/
@@ -37,6 +41,7 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+!/backend/.env.example
 .dev.vars
 
 # vercel

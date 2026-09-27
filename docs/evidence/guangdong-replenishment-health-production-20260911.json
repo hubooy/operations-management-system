@@ -1,0 +1,350 @@
+{
+  "version": "teruisi-guangdong-health-unified-production-v1",
+  "status": "adopted",
+  "recordedAt": "2026-09-10T16:28:37.994Z",
+  "authorization": "用户授权检查所有分支合并 main 并发布上线；本机受控部署。",
+  "deployedCommit": "56d76ce632801e0e15047fc0829f6ae4906a5541",
+  "mergedBranches": {
+    "codex/guangdong-replenishment-health": "56d76ce632801e0e15047fc0829f6ae4906a5541",
+    "codex/import-runs-chains": "01a0962bac5c4982aad47237180e1d704410a093",
+    "codex/ai-workbench-demo": "64a361f3a0a6c8b10d516cc2d50d12b44ddfb788"
+  },
+  "worker": {
+    "plan": {
+      "status": "planned",
+      "version": "teruisi-local-worker-release-rotation-plan-v1",
+      "planSha256": "f994bdc3a8b40212def83f1cab5455f8c9a8a88bf63a770a0cc46ff6bf2db966",
+      "planPath": "D:\\teruisi-runtime\\teruisi-worker-sales\\state\\worker-release-rotation-plans\\f994bdc3a8b40212def83f1cab5455f8c9a8a88bf63a770a0cc46ff6bf2db966.json",
+      "predecessorReleaseId": "20260910T140701Z-0194554bc4bcead5",
+      "candidateReleaseId": "20260910T161236Z-c0ab8ed9ff663df9",
+      "candidateManifestSha256": "d3fc11fe60e6148842135a48622231741e686f249481e28900e0d8b4ab1ef4ca",
+      "candidateGuardReceiptSha256": "60df9cf85167703c0ff8fd3e48fa4f4ff8ca165f444499206dd5d525cf1ee2c0",
+      "cutoverId": "sales-pg-20260829T204417Z-d9896e904d8092cb"
+    },
+    "apply": {
+      "status": "activated",
+      "version": "teruisi-local-worker-release-successor-v1",
+      "planSha256": "f994bdc3a8b40212def83f1cab5455f8c9a8a88bf63a770a0cc46ff6bf2db966",
+      "predecessorReleaseId": "20260910T140701Z-0194554bc4bcead5",
+      "releaseId": "20260910T161236Z-c0ab8ed9ff663df9",
+      "manifestPath": "D:\\teruisi-runtime\\teruisi-worker-sales\\releases\\20260910T161236Z-c0ab8ed9ff663df9\\deployment-manifest.json",
+      "manifestSha256": "d3fc11fe60e6148842135a48622231741e686f249481e28900e0d8b4ab1ef4ca",
+      "successorSha256": "fe6fee277e7c679108fab3dd6145c5b45416ff0ab75c7b5b1f7b4eade8956f21",
+      "consumptionSha256": "00d56b1f416d6173d9be94c942c2a6c9a120b3ae1131d67e8a3cec668f2924f9",
+      "startupBindingSha256": "4fa0743ceffa2d982a3d0c13ea60ff7e889b6e6b46cdfdeb5dd19ddfd34ac4a9"
+    },
+    "effectiveChain": {
+      "status": "resolved",
+      "version": "teruisi-local-worker-effective-release-v1",
+      "releaseId": "20260910T161236Z-c0ab8ed9ff663df9",
+      "manifestPath": "D:\\teruisi-runtime\\teruisi-worker-sales\\releases\\20260910T161236Z-c0ab8ed9ff663df9\\deployment-manifest.json",
+      "manifestSha256": "d3fc11fe60e6148842135a48622231741e686f249481e28900e0d8b4ab1ef4ca",
+      "guardReceiptSha256": "60df9cf85167703c0ff8fd3e48fa4f4ff8ca165f444499206dd5d525cf1ee2c0",
+      "successorCount": 129,
+      "chainStateSha256": "f316f646f21d3c4013619fe5d253ea15433c37bedfdbdfbeb5b786e6a1485bb1"
+    },
+    "maximumSuccessors": 256
+  },
+  "django": {
+    "deploymentManifestPath": "D:/teruisi-runtime/django-sales/app/deployment.json",
+    "deploymentManifestSha256": "36de10c5e0ad5c401c9c9bc14179476dfafdd6ee4d24c254e314a531680fb188",
+    "version": 2,
+    "deployedAt": "2026-09-11T00:06:02.7705823+08:00",
+    "sourceRoot": "D:\\运营管理系统-worktrees\\guangdong-replenishment-health",
+    "fingerprintAlgorithm": "relative-path-file-sha256-ordinal-v2",
+    "fileCount": 2006,
+    "appFingerprint": "adfd0ab5fe9642ecf691369ea1832710389d30955f77f88e79a5972299bfae95",
+    "migration": "inventory.0010_replenishment_health",
+    "migrationAndGrantsLog": {
+      "path": "D:/teruisi-runtime/django-sales/logs/django-migrate.teruisi_sales.20260911-001726-358c5c95.log",
+      "sha256": "44a5097bf7508a22af3c012ea704edaaadf9157c7495e9653d8b9fe6f22094d2",
+      "summary": "operation=django_migrate; exitCode=0; launchFailed=False; outputRecordCount=4; capturedRecordCount=4; outputTruncated=False; outputSha256=3cc7feee094ecdae1f5928063a595f96d8b4d243eaa9fa295dd295f9e3e809bc\r\noperation=django_runtime_grants; exitCode=0; launchFailed=False; outputRecordCount=2; capturedRecordCount=2; outputTruncated=False; outputSha256=9f5675a8bbd579ddf7d5327ae328dbf6a2306f331598f160c3e87b154eff3bf2"
+    }
+  },
+  "verification": {
+    "status": {
+      "version": "teruisi-operations-system-control-v2",
+      "state": "Running",
+      "backendState": "Ready",
+      "workerState": "exact_release",
+      "releaseId": "20260910T161236Z-c0ab8ed9ff663df9",
+      "supervisorProcessId": 39548,
+      "portProcessId": 41172,
+      "url": "http://localhost:3000/",
+      "reason": null,
+      "components": {
+        "core": true,
+        "finance": true,
+        "netshop": true,
+        "market": true,
+        "products": true,
+        "workflow": true,
+        "inventory": true,
+        "customerService": true,
+        "accessControl": true,
+        "erpReference": true,
+        "bi": true,
+        "ai": true
+      },
+      "checkedAt": "2026-09-11T00:28:37.3755445+08:00"
+    },
+    "supervisor": {
+      "status": "completed",
+      "desiredState": "running",
+      "supervisorProcess": "running",
+      "health": "healthy",
+      "code": "all_components_ready",
+      "lastHealthyAt": "09/11/2026 00:23:51",
+      "restartAttemptsInWindow": 1,
+      "pendingAlertCount": 21,
+      "serviceStateChanged": false
+    },
+    "plans": {
+      "before": {
+        "count": 53,
+        "legacyPayloadSha256": "8f7f6f4d7a9f580d434a7d5de3e36a0e6f609dcf271a2cfad8dcb0a9046fc264"
+      },
+      "after": {
+        "count": 53,
+        "legacyPayloadSha256": "8f7f6f4d7a9f580d434a7d5de3e36a0e6f609dcf271a2cfad8dcb0a9046fc264"
+      },
+      "originalBusinessFieldsUnchanged": true
+    },
+    "guangdong": {
+      "inventoryAsOf": "2026-09-10",
+      "salesThrough": "2026-09-09",
+      "watchCount": 45,
+      "waitingHealthyCount": 13,
+      "overviewComparison": {
+        "checkedAt": "2026-09-10T16:22:16.456Z",
+        "watchCount": 45,
+        "matched": 44,
+        "missing": 1,
+        "waitingMatched": 13,
+        "allMatchedRisksEqual": true
+      }
+    },
+    "importChains": {
+      "source": "n8n_execution_metadata",
+      "date": "2026-09-11",
+      "count": 11,
+      "states": [
+        "failed",
+        "no_record",
+        "no_record",
+        "no_record",
+        "no_record",
+        "no_record",
+        "no_record",
+        "no_record",
+        "no_record",
+        "no_record",
+        "no_record"
+      ]
+    },
+    "source": "本机只读公开 API；teruisi_operations MCP 不可用时的授权替代来源",
+    "mirror": {
+      "status": "passed",
+      "postgresPort": 55458,
+      "syntheticDataOnly": true,
+      "migration": "0010_replenishment_health",
+      "tables": {
+        "inventory_guangdong_monitor_items": {
+          "rows": 1,
+          "sha256": "bd2af1775949ff7254774e059795da4035ac7a7a55c7dd386e610d09e9dd9082"
+        },
+        "inventory_guangdong_supplier_cycles": {
+          "rows": 1,
+          "sha256": "75984cc1889373cf9484670df337363d5caafcdbd7527f04e8a8549d741a9e4f"
+        },
+        "inventory_guangdong_monitor_audits": {
+          "rows": 3,
+          "sha256": "cfd5f498afd4f53925828dec34051a89b338fbf40ef5b9518ba124e1f1fb332d"
+        },
+        "replenishment_plan_items": {
+          "rows": 1,
+          "sha256": "0253e83701662d210b5aec2e8f6888c4b4e4252e889011df86e5cbae36852040"
+        },
+        "inventory_data_revisions": {
+          "rows": 1,
+          "sha256": "aa3367f3e70064eb6bc7dd71e22f4359a2c5892fb9049235a036d724b51f7d41"
+        }
+      },
+      "minimumRoleChecks": "passed",
+      "restoreMatches": true
+    },
+    "postgresTestsPassed": 81,
+    "unitTests": {
+      "total": 2103,
+      "passed": 2083,
+      "skipped": 20,
+      "failed": 0
+    },
+    "testLogs": {
+      "integration-unit-final.log": {
+        "sha256": "8ad0d914245813821fe5f645fe8bfe77a6399ad5e5c07f8e1df21557910046cd",
+        "tail": [
+          "✔ filters work items by category, shop and source and returns reusable facets (21.0567ms)",
+          "✔ rejects stale and non-integer optimistic versions (8.3889ms)",
+          "✔ self-closing blank cells do not consume the following text cell (30.7256ms)",
+          "✔ value-only XLSX writer round-trips multiple sheets and XML-sensitive values (25.3661ms)",
+          "✔ value-only XLSX writer requires at least one worksheet (0.7354ms)",
+          "✔ value-only XLSX writer is byte-deterministic across wall-clock changes (3.7474ms)",
+          "ℹ tests 2103",
+          "ℹ suites 0",
+          "ℹ pass 2083",
+          "ℹ fail 0",
+          "ℹ cancelled 0",
+          "ℹ skipped 20",
+          "ℹ todo 0",
+          "ℹ duration_ms 254184.987"
+        ]
+      },
+      "integration-build.log": {
+        "sha256": "0db7f5b388ad8987a510b67d9de2f5ad64008fc6f58e1dbc8caa1270fed2a0d3",
+        "tail": [
+          "  ├ λ /api/workflow/tasks/:taskId/collaboration                ",
+          "  ├ λ /api/workflow/tasks/:taskId/comments                     ",
+          "  ├ λ /api/workflow/tasks/:taskId/links                        ",
+          "  ├ λ /api/workflow/tasks/:taskId/reminders                    ",
+          "  ├ λ /api/workflow/templates                                  ",
+          "  └ λ /mcp                                                     ",
+          "",
+          "  λ API  ? Unknown",
+          "",
+          "  ? Some routes could not be classified. vinext currently uses static analysis",
+          "    and cannot detect dynamic API usage (headers(), cookies(), etc.) at build time.",
+          "    Automatic classification will be improved in a future release.",
+          "",
+          "  Build complete. Run `vinext start` to start the production server."
+        ]
+      },
+      "integration-lint.log": {
+        "sha256": "a98599d49a43fc2daf29812ee4176a959e9d87fc90e0557180590213965e7470",
+        "tail": [
+          "D:\\运营管理系统-worktrees\\guangdong-replenishment-health\\tests\\django-erp-reference-service.test.ts",
+          "  9:3  warning  'ERP_REFERENCE_UPLOAD_CHUNK_PATH' is defined but never used  @typescript-eslint/no-unused-vars",
+          "",
+          "D:\\运营管理系统-worktrees\\guangdong-replenishment-health\\tests\\import-content-dedup-database.test.ts",
+          "  40:34  warning  '_db' is defined but never used    @typescript-eslint/no-unused-vars",
+          "  41:35  warning  '_args' is defined but never used  @typescript-eslint/no-unused-vars",
+          "",
+          "D:\\运营管理系统-worktrees\\guangdong-replenishment-health\\tools\\erp-sales-automation.ts",
+          "  171:16  warning  'uniqueVisible' is defined but never used  @typescript-eslint/no-unused-vars",
+          "",
+          "D:\\运营管理系统-worktrees\\guangdong-replenishment-health\\tools\\jackyun-sales-export-only.ts",
+          "  352:16  warning  'findOssUrl' is defined but never used  @typescript-eslint/no-unused-vars",
+          "",
+          "✖ 9 problems (0 errors, 9 warnings)"
+        ]
+      },
+      "integration-boundary.log": {
+        "sha256": "5d7e103da5dd107ccd2fd16e766e0fecb46716ad663544222b2f6b12290db5ed",
+        "tail": [
+          "    \"tools/tmall-product-master-export.ts\",",
+          "    \"tools/generate-tmall-n8n-workflows.ts\",",
+          "    \"tools/generate-n8n-hourly-retry-workflows.mjs\",",
+          "    \"tools/market-annotation-runner.ts\",",
+          "    \"tools/market-annotation-cloud-pump.ts\",",
+          "    \"tools/jd-market-image-repair.ts\",",
+          "    \"tools/jackyun-continue-helper.ts\",",
+          "    \"tools/erp-sales-automation.ts\",",
+          "    \"tools/sales-import-runner.ts\",",
+          "    \"tools/dingtalk-custom-robot-send.ts\",",
+          "    \"tools/drizzle-generate-guard.mjs\"",
+          "  ],",
+          "  \"violations\": []",
+          "}"
+        ]
+      },
+      "deploy-diagnostic-tests.log": {
+        "sha256": "9a825f819e74608714132fc7d62f90982948ac2251541d8478ef8cddd7c5169b",
+        "tail": [
+          "✔ code-only rollback exchanges verified application manifests in powershell.exe (1748.5458ms)",
+          "✔ orchestrated lifecycle ACL evidence is bounded and fail-closed in pwsh.exe (951.4262ms)",
+          "✔ descendant ACL fallback is bounded and fail-closed in pwsh.exe (2440.2253ms)",
+          "✔ accelerated exact ACL verification stays inside its startup budget in pwsh.exe (9660.9372ms)",
+          "✔ Windows managed-process round trip accepts protected venv launchers in pwsh.exe (8671.5505ms)",
+          "✔ code-only rollback exchanges verified application manifests in pwsh.exe (2114.3197ms)",
+          "ℹ tests 37",
+          "ℹ suites 0",
+          "ℹ pass 37",
+          "ℹ fail 0",
+          "ℹ cancelled 0",
+          "ℹ skipped 0",
+          "ℹ todo 0",
+          "ℹ duration_ms 47212.4545"
+        ]
+      }
+    }
+  },
+  "backups": {
+    "before": {
+      "status": "completed",
+      "backupId": "daily-20260910T154037Z-72ee0fac8cdb",
+      "backupDirectory": "D:\\teruisi-runtime\\django-sales\\backups\\postgres-daily\\daily-20260910T154037Z-72ee0fac8cdb",
+      "manifestSha256": "16f57f6230bec5cb8be01ca73ebc1065f07d08941f7f23430e3ae894437fb781",
+      "dumpSha256": "a792445e32afdb2fd47c10d727e9f4e1156ca8c2f332a4b002dd2f7ef6bbd41c",
+      "contentSha256": "c7efde7dd38e8ddd69954e5502e2c1c99b374dbdbf5561ecc45a75fae6dee54e",
+      "completedAt": "09/10/2026 23:42:08",
+      "serviceStateChanged": false
+    },
+    "beforeRestore": {
+      "version": "teruisi-postgres-restore-rehearsal-v1",
+      "status": "completed",
+      "rehearsalId": "4d23d9ed3b70",
+      "startedAt": "2026-09-10T15:42:46.0421622+00:00",
+      "completedAt": "2026-09-10T15:48:06.8295971+00:00",
+      "backupId": "daily-20260910T154037Z-72ee0fac8cdb",
+      "backupManifestSha256": "16f57f6230bec5cb8be01ca73ebc1065f07d08941f7f23430e3ae894437fb781",
+      "dumpSha256": "a792445e32afdb2fd47c10d727e9f4e1156ca8c2f332a4b002dd2f7ef6bbd41c",
+      "expectedContentSha256": "c7efde7dd38e8ddd69954e5502e2c1c99b374dbdbf5561ecc45a75fae6dee54e",
+      "restoredContentSha256": "c7efde7dd38e8ddd69954e5502e2c1c99b374dbdbf5561ecc45a75fae6dee54e",
+      "isolatedPort": 55469,
+      "productionDatabaseTouched": false,
+      "serviceStateChanged": false,
+      "cleanupStatus": "isolated_data_removed"
+    },
+    "after": {
+      "status": "completed",
+      "backupId": "daily-20260910T162032Z-de22ae9798c9",
+      "backupDirectory": "D:\\teruisi-runtime\\django-sales\\backups\\postgres-daily\\daily-20260910T162032Z-de22ae9798c9",
+      "manifestSha256": "cd9e0c9fb75a8c693071e0c46fe1b4347d12d5b211f963e3994766d273a37b3b",
+      "dumpSha256": "ba56eb6d729586da5f454997e3bc366b2efd354f76994d141950d6b08ba2044a",
+      "contentSha256": "5f1386bd42ac0d058a6974f1c304bb10dbda1832d2106deef1a5773e6d136d25",
+      "completedAt": "09/11/2026 00:22:05",
+      "serviceStateChanged": false
+    },
+    "afterRestore": {
+      "version": "teruisi-postgres-restore-rehearsal-v1",
+      "status": "completed",
+      "rehearsalId": "9a7d341f206b",
+      "startedAt": "2026-09-10T16:22:43.8462280+00:00",
+      "completedAt": "2026-09-10T16:26:56.2209424+00:00",
+      "backupId": "daily-20260910T162032Z-de22ae9798c9",
+      "backupManifestSha256": "cd9e0c9fb75a8c693071e0c46fe1b4347d12d5b211f963e3994766d273a37b3b",
+      "dumpSha256": "ba56eb6d729586da5f454997e3bc366b2efd354f76994d141950d6b08ba2044a",
+      "expectedContentSha256": "5f1386bd42ac0d058a6974f1c304bb10dbda1832d2106deef1a5773e6d136d25",
+      "restoredContentSha256": "5f1386bd42ac0d058a6974f1c304bb10dbda1832d2106deef1a5773e6d136d25",
+      "isolatedPort": 55470,
+      "productionDatabaseTouched": false,
+      "serviceStateChanged": false,
+      "cleanupStatus": "isolated_data_removed"
+    }
+  },
+  "releaseGateObservations": [
+    "受控停止前，保护入口 package.json 的已知差异已留存；核验并原子恢复精确不可变前驱字节后才 Stop。停止后恢复 main 候选并由 plan/apply 正式采用。",
+    "Django 部署的隔离 local R2 put 自检曾超时。未跳过门禁，原有 put/get/hash/delete/missing 检查完整重试通过；仅为隔离 smoke 设置 CLOUDFLARE_CF_FETCH_ENABLED=false。Worker supervisor 仍固定清理继承值并绑定专用 cache，强制 true。",
+    "首次 Worker 候选来自尚未同步的固定集成树，被 protected entrypoint 门禁拒绝，未发布计划或激活。同步干净固定集成树到已验收 main 后重新 plan/apply。失败候选保留，旧 128 条 successor 全部保留。",
+    "Django supervisor 从 PowerShell 7 启动 Windows PowerShell 时首次因继承 PSModulePath 不能加载 Security 模块而退出；使用 Machine 模块路径仅启动该子进程并恢复父进程环境后，回读 running/healthy。"
+  ],
+  "boundaries": {
+    "noRealDingTalkMessages": true,
+    "noPaidModelCalls": true,
+    "noBusinessPlanEditsDuringVerification": true,
+    "noN8nWorkflowOrExecutionWrites": true,
+    "backupsRetained": true,
+    "releaseSourceWorktree": "D:/运营管理系统-sales-django-release",
+    "cleanup": "已合入且无运行进程的 import/demo 工作树及本地远程分支已清理；本任务分支在证据合入 main 后清理。固定发布集成树保留。"
+  }
+}

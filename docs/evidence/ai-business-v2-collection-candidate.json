@@ -1,0 +1,50 @@
+{
+  "schemaVersion": "candidate-evidence-v1",
+  "date": "2026-09-17",
+  "branch": "codex/ai-business-analysis-stages",
+  "baseCommit": "b880a68b",
+  "batch": 17,
+  "status": "candidate_not_production_adopted",
+  "changes": [
+    "Explicit v2 catalog creation, bounded collection and source checkpoint persistence",
+    "Pause/resume/cancel, atomic fact/checkpoint/parent CAS and compact verified seal",
+    "Owner-bound byte-bounded directory pages and single-source progress; optimistic read version fences",
+    "Shared fact quota includes v2 header/seal/query/checkpoint UTF-8 bytes, including legacy writes in mixed storage",
+    "Workbench compact catalog display, exact source paging and controls with v2 report creation blocked",
+    "Legacy metadata tools reject unsupported compact catalogs; existing compatible chunk/table reads remain bounded"
+  ],
+  "verification": {
+    "targetedPostgres": {"tests": 51, "passed": 51, "log": ".runtime/ai-pg-c0e69c7fb89d/tests.log"},
+    "fullAiAndBusinessPostgres": {"tests": 425, "passed": 423, "skipped": 2, "log": ".runtime/ai-pg-83031d5d48de/tests.log"},
+    "fullNode": {"tests": 2236, "passed": 2216, "failed": 0, "cancelled": 0, "skipped": 20, "testConcurrency": 4, "log": ".runtime/batch17-full-node.log", "note": "Full checkpoint before final legacy metadata guard and UI compatibility completion; subsequent changed paths covered by 11 targeted Node tests, new/legacy Chrome suites and final build."},
+    "finalRouteAndToolNode": {"tests": 11, "passed": 11, "log": ".runtime/batch17-routes-tools-final.log"},
+    "legacyChrome": {"cases": 13, "passed": 13, "pageErrors": [], "log": ".runtime/business-workbench-ui-batch17-review/evidence.json"},
+    "v2Chrome": {"cases": 8, "passed": 8, "pageErrors": [], "syntheticOnly": true, "log": ".runtime/business-workbench-v2-ui-review/evidence.json"},
+    "independentV2Chrome": {"cases": 8, "passed": 8, "pageErrors": [], "log": ".runtime/business-workbench-v2-independent-review/evidence.json"},
+    "renderedHtml": {"tests": 20, "passed": 20, "log": ".runtime/batch17-rendered-html.log"},
+    "build": {"passed": true, "log": ".runtime/batch17-build-frozen.log"},
+    "lint": {"errors": 0, "existingWarnings": 11, "fullLog": ".runtime/batch17-lint-final.log", "changedPathsLog": ".runtime/batch17-changed-lint-final.log", "note": "Full pass identified one new hook dependency warning. Replaced object closure with stable source-key signature; changed-path lint has zero warnings and v2 Chrome 8 cases reran successfully."},
+    "typecheck": {"existingDiagnostics": 153, "changedPathDiagnostics": 0, "log": ".runtime/batch17-typecheck-final.log"},
+    "backendBoundary": {"passed": true, "log": ".runtime/batch17-boundary.log"},
+    "independentReview": {
+      "remainingBlockers": 0,
+      "fixed": [
+        "Source key content was incorrectly converted to an attachment by generic route suffix matching",
+        "Concurrent collection could combine an old parent version with newer source counters",
+        "Failure auditing re-entered a corrupt directory and rolled back the required pause",
+        "Legacy metadata tool could mistake compact v2 headers for complete source listings",
+        "Shared workbench list could not display or control valid v2 tasks"
+      ]
+    }
+  },
+  "limits": [
+    "Explicit v2 API only; first-task workbench planner still creates v1 with its existing capacity gates",
+    "V2 report workflow creation is explicitly blocked before model or workflow writes; lightweight dedicated Agent surface is next",
+    "48 catalog entries retain 64 MiB facts, 2000 total pages and 32768-byte source checkpoints",
+    "Product matching retains its existing 5000-row bound",
+    "No persistent multivolume task/download integration or larger fact capacity",
+    "Synthetic isolated data and mocked model/transport only; no real-store, historical-coverage or paid-provider acceptance",
+    "No full phase or production acceptance declared"
+  ],
+  "operations": {"productionReads": false, "productionWrites": false, "newMigration": false, "productionMigration": false, "deployment": false, "serviceRestart": false, "paidModelCalls": false, "externalMessages": false}
+}

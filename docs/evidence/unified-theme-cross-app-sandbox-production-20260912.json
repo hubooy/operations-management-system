@@ -1,0 +1,195 @@
+{
+  "date": "2026-09-12",
+  "scope": "Unified green interface theme, removal of sandbox configuration UI, and cross-app pandas export repair",
+  "sourceCommit": "9237d53ebba8b06886d473f7f8236b3f8d0644ca",
+  "adoption": {
+    "status": "activated",
+    "version": "teruisi-local-worker-release-successor-v1",
+    "planSha256": "85d6cec8dc1f60250c75cb67a1615fc026eb2864feff9b9a833f9c10e0e45404",
+    "predecessorReleaseId": "20260912T095027Z-43c06ff99569edfa",
+    "releaseId": "20260912T143827Z-79e971ff2b5bce03",
+    "manifestPath": "D:\\teruisi-runtime\\teruisi-worker-sales\\releases\\20260912T143827Z-79e971ff2b5bce03\\deployment-manifest.json",
+    "manifestSha256": "35bd57a7ac3025fcafa85ae15e0062c0c244357c76bc6acd9eaa5a97921b547a",
+    "successorSha256": "d598ac3a170a348381fd466929e968c296fba173987496d88a6b9d22cdcdd9ff",
+    "consumptionSha256": "bc2bd4ccf4a7a090b0eafd93e911e09e2e967b3488520fd8ca1282abc7b359b7",
+    "startupBindingSha256": "e9b34dcc0c1d0b53015ee5a6b987bb15bae7f5727f393611ad83117889603aa1"
+  },
+  "django": {
+    "manifestSha256": "1a2e4773dc874f8303b6b1104862b3ba6806921f53fe1c8ae08a50570d3d19e1",
+    "deployment": {
+      "version": 2,
+      "deployedAt": "2026-09-12T22:37:46.0655391+08:00",
+      "sourceRoot": "D:\\运营管理系统-sales-django-release",
+      "fingerprintAlgorithm": "relative-path-file-sha256-ordinal-v2",
+      "fileCount": 2022,
+      "appFingerprint": "c0d56bc5272d81e77fd3f71c0f00079bd5b03dd444a2b138f376c51cfb0dfc83"
+    },
+    "candidateSourceDigestMatch": true
+  },
+  "verification": {
+    "candidate": "unified-theme-cross-app-sandbox-candidate-20260912.json",
+    "nodeTests": {
+      "skipped": 20,
+      "passed": 2121,
+      "failed": 0
+    },
+    "isolatedPostgresAi": {
+      "skipped": 0,
+      "passed": 179,
+      "failed": 0
+    },
+    "renderedWorkerChecks": {
+      "passed": 20,
+      "failed": 0
+    },
+    "preBackup": {
+      "status": "completed",
+      "backupId": "daily-20260912T104712Z-5f36acaefe0b",
+      "backupDirectory": "D:\\teruisi-runtime\\django-sales\\backups\\postgres-daily\\daily-20260912T104712Z-5f36acaefe0b",
+      "manifestSha256": "a892972f28c6698be740771ac136800ed1c8171b29a749fe9bbca7ced47c4870",
+      "dumpSha256": "28ee0c1f8bda753d63126c5a0994927644ef69b40140244b2e392311163aa70d",
+      "contentSha256": "36aadd0026f8e2a90750676aecb3dd507431abe595ebff69af887d126e3f4b68",
+      "completedAt": "09/12/2026 18:48:46",
+      "serviceStateChanged": false
+    },
+    "preBackupVerify": {
+      "status": "completed",
+      "backupId": "daily-20260912T104712Z-5f36acaefe0b",
+      "manifestSha256": "a892972f28c6698be740771ac136800ed1c8171b29a749fe9bbca7ced47c4870",
+      "dumpSha256": "28ee0c1f8bda753d63126c5a0994927644ef69b40140244b2e392311163aa70d",
+      "contentSha256": "36aadd0026f8e2a90750676aecb3dd507431abe595ebff69af887d126e3f4b68",
+      "serviceStateChanged": false
+    },
+    "isolatedRestore": {
+      "version": "teruisi-postgres-restore-rehearsal-v1",
+      "status": "completed",
+      "rehearsalId": "aaf038cad184",
+      "startedAt": "2026-09-12T18:49:15.7673923+08:00",
+      "completedAt": "2026-09-12T18:53:38.5988384+08:00",
+      "backupId": "daily-20260912T104712Z-5f36acaefe0b",
+      "backupManifestSha256": "a892972f28c6698be740771ac136800ed1c8171b29a749fe9bbca7ced47c4870",
+      "dumpSha256": "28ee0c1f8bda753d63126c5a0994927644ef69b40140244b2e392311163aa70d",
+      "expectedContentSha256": "36aadd0026f8e2a90750676aecb3dd507431abe595ebff69af887d126e3f4b68",
+      "restoredContentSha256": "36aadd0026f8e2a90750676aecb3dd507431abe595ebff69af887d126e3f4b68",
+      "isolatedPort": 55473,
+      "productionDatabaseTouched": false,
+      "serviceStateChanged": false,
+      "cleanupStatus": "isolated_data_removed"
+    },
+    "postBackup": {
+      "status": "completed",
+      "backupId": "daily-20260912T144930Z-5cb29f30c2b2",
+      "backupDirectory": "D:\\teruisi-runtime\\django-sales\\backups\\postgres-daily\\daily-20260912T144930Z-5cb29f30c2b2",
+      "manifestSha256": "593789776e35eda3f4646e85fdc15a4a1bdb6958fb58b870649498cec165c82b",
+      "dumpSha256": "c61a7e1f89c9f9a5b42b0f0cd7aca50486706918bef631062deac76321fdfd81",
+      "contentSha256": "6db85ec3aa06e6d02a13d92a747bc0fd6dbf750b01fa2bcace8a7d221e73c5fa",
+      "completedAt": "09/12/2026 22:51:28",
+      "serviceStateChanged": false
+    },
+    "postBackupVerify": {
+      "status": "completed",
+      "backupId": "daily-20260912T144930Z-5cb29f30c2b2",
+      "manifestSha256": "593789776e35eda3f4646e85fdc15a4a1bdb6958fb58b870649498cec165c82b",
+      "dumpSha256": "c61a7e1f89c9f9a5b42b0f0cd7aca50486706918bef631062deac76321fdfd81",
+      "contentSha256": "6db85ec3aa06e6d02a13d92a747bc0fd6dbf750b01fa2bcace8a7d221e73c5fa",
+      "serviceStateChanged": false
+    },
+    "postBackupRestoreRepeated": false
+  },
+  "readback": {
+    "system": {
+      "version": "teruisi-operations-system-control-v2",
+      "state": "Running",
+      "backendState": "Ready",
+      "workerState": "exact_release",
+      "releaseId": "20260912T143827Z-79e971ff2b5bce03",
+      "supervisorProcessId": 34972,
+      "portProcessId": 45216,
+      "url": "http://localhost:3000/",
+      "reason": null,
+      "components": {
+        "core": true,
+        "finance": true,
+        "netshop": true,
+        "market": true,
+        "products": true,
+        "workflow": true,
+        "inventory": true,
+        "customerService": true,
+        "accessControl": true,
+        "erpReference": true,
+        "bi": true,
+        "ai": true
+      },
+      "checkedAt": "2026-09-12T22:51:10.3673896+08:00"
+    },
+    "startup": {
+      "status": "verified",
+      "version": "teruisi-local-worker-status-v1",
+      "releaseId": "20260912T143827Z-79e971ff2b5bce03",
+      "manifestSha256": "35bd57a7ac3025fcafa85ae15e0062c0c244357c76bc6acd9eaa5a97921b547a",
+      "startupVerified": true
+    },
+    "liveAssets": {
+      "checkedAt": "2026-09-12T14:50:30.936Z",
+      "homepageHttp": 200,
+      "assets": [
+        {
+          "name": "ai-module-view-C-5jsUPT.js",
+          "bytes": 4777,
+          "sha256": "6a9d0d790247a91c866bb3b1437eec8b7cd486d5f314d1113b076b20af8f35c8"
+        },
+        {
+          "name": "index-BIM3aUda.css",
+          "bytes": 393531,
+          "sha256": "d88973cc5848d8a83098c44f047acf11be5bd85747cbdfccf77951e0877071c8"
+        },
+        {
+          "name": "market-annotation-view-BRss4FDI.js",
+          "bytes": 54162,
+          "sha256": "d377572a4d0627d41f7f6c17bd68227e284536411e9aec24b8bba9a1a35264fa"
+        },
+        {
+          "name": "page-BPed_uMP.js",
+          "bytes": 58475,
+          "sha256": "9591846472d9bf763118ab4d7501d319eb154f40a9a7b87d0a4ac6c6f4841d8c"
+        },
+        {
+          "name": "page-context-DyKLhm02.js",
+          "bytes": 6368,
+          "sha256": "7cda777e984f31e2e7b61b74e04ff899e4671fd9ab40c6dd637bbabf0f2b4670"
+        }
+      ],
+      "assetBytesMatchRelease": true,
+      "greenThemeMarkers": true,
+      "sandboxConfigurationChunkRemoved": true,
+      "validationMode": "HTTP and asset byte verification; no live browser interaction"
+    },
+    "pandas": {
+      "cleanupVerified": true,
+      "image": "sha256:b3b657aa2ff87fe3d8cef0bc26872a3f4253fafe82f839980c82edb64c01cffe",
+      "selfTest": false,
+      "status": "ready"
+    },
+    "pandasSyntheticContainer": {
+      "cleanupVerified": true,
+      "image": "sha256:b3b657aa2ff87fe3d8cef0bc26872a3f4253fafe82f839980c82edb64c01cffe",
+      "selfTest": true,
+      "status": "ready"
+    }
+  },
+  "maintenance": {
+    "pause": "User paused after Worker stop; backend remained online. User later explicitly resumed.",
+    "firstStart": "Existing RunWeeklyReport operation held the service mutex. First startup stopped before accessControl/AI/ERP/BI. After the owner released the mutex, the same controlled Start completed; no task was terminated or replayed."
+  },
+  "boundaries": {
+    "paidModelCalls": false,
+    "productionBusinessWritesForAcceptance": false,
+    "brokerImageChanged": false,
+    "n8nRestart": false,
+    "djangoAndPostgresRestart": true,
+    "databaseMigration": false,
+    "naturalLanguagePaidModelEndToEnd": "Not performed; protocol fixtures and actual container calculations passed.",
+    "realMessagesForAcceptance": false
+  }
+}

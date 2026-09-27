@@ -1,0 +1,589 @@
+{
+  "date": "2026-09-14",
+  "status": "adopted_on_local_production",
+  "sourceCommit": "13ad0770cb51ab3f6ae3f8c01dc34fcfd63e1db7",
+  "featureCommit": "d74678fcf905f32a26f07b913e0f06df401ed981",
+  "pullRequest": "https://github.com/dengweizhang321-droid/operations-management-system/pull/47",
+  "authorization": "User explicitly requested merge and production release on 2026-09-14",
+  "validation": {
+    "sourceCommit": "40cffed58cf3118b46599b5ec1fdf1293e0df534",
+    "node": {
+      "failed": 0,
+      "total": 2185,
+      "skipped": 20,
+      "passed": 2165
+    },
+    "postgres": {
+      "writerAppendOnlyAndFenced": true,
+      "missingReportFencesRejected": true,
+      "readerReadOnly": true,
+      "passed": 220,
+      "upgrade": "0011->0012",
+      "total": 223,
+      "backupRestoreDigest": "7e1d93e75f4510b230d500a95855ad72cfe8432412169f1aba1b766bab928e26",
+      "tables": 56,
+      "skipped": 3
+    },
+    "build": "passed",
+    "renderedHtmlPassed": 20,
+    "logs": {
+      "predeploy-rendered.log": "d5e722e8009c893664e4b52af2290543c0a30dbcf319577fd8345f6f8e697f43",
+      "predeploy-merged-build.log": "c6afded0940cd40ff675ebd1f3d9e87ca52de3668c9ba3a5e487da8017976b76",
+      "predeploy-merged-unit.log": "3acca6e1210e292d24a40dd49708922b13d6335613f4cfdaccc1a9565453b910",
+      "predeploy-guards-pg.log": "a4550d701bafb46791db4918b1dd44ddbc16f5e913f4885ad14d3683c3a00e31",
+      "release-final-unit.log": "38a7f05e9f3587bd6aef57b65990ac423ff61d66b57a5cf9238492f1795d2ea0",
+      "release-final-build.log": "273888c85ba3692b3b0fc4b9f1e08615b0c0d752de1a0f2c1edb3b1c49228265",
+      "release-final-rendered.log": "68ebb1c07b52ac5fcddce21e684091b6e5795fffe0f511c5844b517c7f16cabb",
+      "release-final-install.log": "230acc1d3c0b4634bda9e805010e44322fc7d4efab8051e7aa2ac9ce15e2ba48"
+    }
+  },
+  "django": {
+    "previousManifestSha256": "c5651c760123f4652301b3bceaa55b2e0b6ee1bb6cfd3f980bd96ca8c2943411",
+    "manifestSha256": "877bcb1060acd418bcf50bba270a076982b3a63cb602b37de3f7b01b95dec91e",
+    "supervisor": {
+      "status": "completed",
+      "desiredState": "running",
+      "supervisorProcess": "running",
+      "health": "healthy",
+      "code": "all_components_ready",
+      "lastHealthyAt": "2026-09-14T18:39:38.7336717+08:00",
+      "restartAttemptsInWindow": 1,
+      "pendingAlertCount": 23,
+      "serviceStateChanged": false
+    },
+    "preservation": {
+      "states": {
+        "ai_agent_jobs": {},
+        "ai_agent_provider_dispatches": {},
+        "ai_agent_tool_dispatches": {},
+        "ai_chat_request_receipts": {
+          "succeeded": 46,
+          "unknown": 26
+        },
+        "ai_space_jobs": {},
+        "ai_workflow_runs": {}
+      },
+      "changedTables": [],
+      "newEmptyTables": [
+        "ai_execution_guidance",
+        "ai_library_revisions",
+        "ai_report_deliveries",
+        "ai_report_runs"
+      ],
+      "noPendingMigrations": true,
+      "unchangedExistingTables": 52
+    },
+    "migration": "0012_report_library",
+    "existingTableDigests": {
+      "ai_agent_checkpoints": {
+        "count": 0,
+        "digest": "d41d8cd98f00b204e9800998ecf8427e"
+      },
+      "ai_agent_events": {
+        "count": 0,
+        "digest": "d41d8cd98f00b204e9800998ecf8427e"
+      },
+      "ai_agent_jobs": {
+        "count": 0,
+        "digest": "d41d8cd98f00b204e9800998ecf8427e"
+      },
+      "ai_agent_provider_dispatches": {
+        "count": 0,
+        "digest": "d41d8cd98f00b204e9800998ecf8427e"
+      },
+      "ai_agent_provider_results": {
+        "count": 0,
+        "digest": "d41d8cd98f00b204e9800998ecf8427e"
+      },
+      "ai_agent_tool_dispatches": {
+        "count": 0,
+        "digest": "d41d8cd98f00b204e9800998ecf8427e"
+      },
+      "ai_agent_tool_results": {
+        "count": 0,
+        "digest": "d41d8cd98f00b204e9800998ecf8427e"
+      },
+      "ai_analysis_runs": {
+        "count": 0,
+        "digest": "d41d8cd98f00b204e9800998ecf8427e"
+      },
+      "ai_artifact_deliveries": {
+        "count": 0,
+        "digest": "d41d8cd98f00b204e9800998ecf8427e"
+      },
+      "ai_artifacts": {
+        "count": 32,
+        "digest": "8924dace777285d18530ee67d756158e"
+      },
+      "ai_channel_callback_events": {
+        "count": 0,
+        "digest": "d41d8cd98f00b204e9800998ecf8427e"
+      },
+      "ai_channels": {
+        "count": 0,
+        "digest": "d41d8cd98f00b204e9800998ecf8427e"
+      },
+      "ai_chat_provider_dispatches": {
+        "count": 206,
+        "digest": "102da1ff5fc268630170855647826713"
+      },
+      "ai_chat_request_receipts": {
+        "count": 72,
+        "digest": "f8c1562d1f1bcb6a645f17dc9be77b3f"
+      },
+      "ai_conversation_deletion_audits": {
+        "count": 1,
+        "digest": "887d307ee70e378c707cbc1ade0ae7e6"
+      },
+      "ai_conversation_messages": {
+        "count": 120,
+        "digest": "129d50c1c2cf9d341c7ec275991956a7"
+      },
+      "ai_conversation_scopes": {
+        "count": 48,
+        "digest": "fbc242158a2733cfe6ab54c9e7c6818f"
+      },
+      "ai_conversation_workspaces": {
+        "count": 33,
+        "digest": "d0b7d0a4df707bbbe130d10a1ce00ef9"
+      },
+      "ai_conversations": {
+        "count": 49,
+        "digest": "45f3e069203b3de76d8cb0d8d2ff870c"
+      },
+      "ai_data_revisions": {
+        "count": 1,
+        "digest": "7675553bf8e6945edd3e2293bf1b791f"
+      },
+      "ai_dingtalk_receipts": {
+        "count": 9,
+        "digest": "84b3e346a57843bdac6bd28612916df8"
+      },
+      "ai_dingtalk_schedule_runs": {
+        "count": 4,
+        "digest": "af5376d0522bba0bdb5b8eebc10a9679"
+      },
+      "ai_dingtalk_schedules": {
+        "count": 1,
+        "digest": "f19686ea3ac4a065e0484a26fbd8bd19"
+      },
+      "ai_dingtalk_sessions": {
+        "count": 4,
+        "digest": "24943ee8c394eda78a9eace3a9a4a921"
+      },
+      "ai_dingtalk_settings": {
+        "count": 1,
+        "digest": "490b00dee038fcd08de560aaa4b9b435"
+      },
+      "ai_knowledge_entries": {
+        "count": 6,
+        "digest": "dd03553843106a3443620103d0fc74fa"
+      },
+      "ai_memory_audit_logs": {
+        "count": 0,
+        "digest": "d41d8cd98f00b204e9800998ecf8427e"
+      },
+      "ai_memory_commit_guards": {
+        "count": 0,
+        "digest": "d41d8cd98f00b204e9800998ecf8427e"
+      },
+      "ai_memory_entries": {
+        "count": 0,
+        "digest": "d41d8cd98f00b204e9800998ecf8427e"
+      },
+      "ai_migration_runs": {
+        "count": 3,
+        "digest": "4939580baa970fced256381ba8b931f2"
+      },
+      "ai_models": {
+        "count": 5,
+        "digest": "baff75f481a7cefd01b68802810175e3"
+      },
+      "ai_mutation_audits": {
+        "count": 2588,
+        "digest": "5986994f5aa779d5e6a636563753f173"
+      },
+      "ai_prompt_settings_revisions": {
+        "count": 3,
+        "digest": "2d3640251cd177b393c181c86760da64"
+      },
+      "ai_space_admin_audits": {
+        "count": 0,
+        "digest": "d41d8cd98f00b204e9800998ecf8427e"
+      },
+      "ai_space_asset_cleanup_queue": {
+        "count": 0,
+        "digest": "d41d8cd98f00b204e9800998ecf8427e"
+      },
+      "ai_space_asset_favorites": {
+        "count": 0,
+        "digest": "d41d8cd98f00b204e9800998ecf8427e"
+      },
+      "ai_space_asset_payloads": {
+        "count": 0,
+        "digest": "d41d8cd98f00b204e9800998ecf8427e"
+      },
+      "ai_space_assets": {
+        "count": 0,
+        "digest": "d41d8cd98f00b204e9800998ecf8427e"
+      },
+      "ai_space_dispatch_receipts": {
+        "count": 0,
+        "digest": "d41d8cd98f00b204e9800998ecf8427e"
+      },
+      "ai_space_dispatch_results": {
+        "count": 0,
+        "digest": "d41d8cd98f00b204e9800998ecf8427e"
+      },
+      "ai_space_job_items": {
+        "count": 0,
+        "digest": "d41d8cd98f00b204e9800998ecf8427e"
+      },
+      "ai_space_jobs": {
+        "count": 0,
+        "digest": "d41d8cd98f00b204e9800998ecf8427e"
+      },
+      "ai_space_model_profiles": {
+        "count": 0,
+        "digest": "d41d8cd98f00b204e9800998ecf8427e"
+      },
+      "ai_space_schema_upgrades": {
+        "count": 1,
+        "digest": "1a483c403b646e4d1a14f3e0439f2bae"
+      },
+      "ai_space_templates": {
+        "count": 3,
+        "digest": "6f56123fbda01d0052652d0e8584378b"
+      },
+      "ai_system_settings": {
+        "count": 1,
+        "digest": "d831a93cc223e8eab376e5d289da4b38"
+      },
+      "ai_tool_audit_logs": {
+        "count": 3520,
+        "digest": "e674138e26a93676386d9eb26d1295c8"
+      },
+      "ai_workflow_events": {
+        "count": 0,
+        "digest": "d41d8cd98f00b204e9800998ecf8427e"
+      },
+      "ai_workflow_node_runs": {
+        "count": 0,
+        "digest": "d41d8cd98f00b204e9800998ecf8427e"
+      },
+      "ai_workflow_runs": {
+        "count": 0,
+        "digest": "d41d8cd98f00b204e9800998ecf8427e"
+      },
+      "ai_write_authority": {
+        "count": 1,
+        "digest": "7c163e8ba9fe4a9edbbfdc88128934d9"
+      },
+      "ai_write_request_receipts": {
+        "count": 2596,
+        "digest": "e51a15882e33598dde037411de238f13"
+      }
+    },
+    "deployment": {
+      "version": 2,
+      "deployedAt": "2026-09-14T18:26:56.7010418+08:00",
+      "sourceRoot": "D:\\运营管理系统-sales-django-release",
+      "fingerprintAlgorithm": "relative-path-file-sha256-ordinal-v2",
+      "fileCount": 2033,
+      "appFingerprint": "b037c7a151451fd70f44d4f8eb0ed99896f560f1922d8912509489142c773ab6"
+    },
+    "runtime": {
+      "AiReader": "running",
+      "AiWriter": "running",
+      "ReaderReadiness": "ready",
+      "WriterReadiness": "ready",
+      "CheckedAt": "2026-09-14T18:43:57.3976902+08:00",
+      "PandasReadiness": "ready",
+      "DingTalkStartup": "enabled",
+      "DingTalkReceiver": "running"
+    }
+  },
+  "worker": {
+    "startup": {
+      "status": "verified",
+      "version": "teruisi-local-worker-status-v1",
+      "releaseId": "20260914T103055Z-476613e9da6a6b1d",
+      "manifestSha256": "31d59a8a5c188309f10cfec4e670855a46747914a891dfb08ed0b170e66b4292",
+      "startupVerified": true
+    },
+    "resolved": {
+      "status": "resolved",
+      "version": "teruisi-local-worker-effective-release-v1",
+      "releaseId": "20260914T103055Z-476613e9da6a6b1d",
+      "manifestPath": "D:\\teruisi-runtime\\teruisi-worker-sales\\releases\\20260914T103055Z-476613e9da6a6b1d\\deployment-manifest.json",
+      "manifestSha256": "31d59a8a5c188309f10cfec4e670855a46747914a891dfb08ed0b170e66b4292",
+      "guardReceiptSha256": "c46a9e9b6af76ad209816fd5d09595372400427593182da3ae1ef3ccdedf1ffc",
+      "successorCount": 148,
+      "chainStateSha256": "532b9dc4a1445b2f32b5d3c1b0635c1e91b90726759bd80d0b594de0be1e2d13"
+    },
+    "plan": {
+      "status": "planned",
+      "version": "teruisi-local-worker-release-rotation-plan-v1",
+      "planSha256": "5f9d417ab8fe816c32b8103931a6f46f929ed3b66e04c99b2381adedb2bfcf7e",
+      "planPath": "D:\\teruisi-runtime\\teruisi-worker-sales\\state\\worker-release-rotation-plans\\5f9d417ab8fe816c32b8103931a6f46f929ed3b66e04c99b2381adedb2bfcf7e.json",
+      "predecessorReleaseId": "20260914T100626Z-4462809b1aa7a958",
+      "candidateReleaseId": "20260914T103055Z-476613e9da6a6b1d",
+      "candidateManifestSha256": "31d59a8a5c188309f10cfec4e670855a46747914a891dfb08ed0b170e66b4292",
+      "candidateGuardReceiptSha256": "c46a9e9b6af76ad209816fd5d09595372400427593182da3ae1ef3ccdedf1ffc",
+      "cutoverId": "sales-pg-20260829T204417Z-d9896e904d8092cb"
+    },
+    "apply": {
+      "status": "activated",
+      "version": "teruisi-local-worker-release-successor-v1",
+      "planSha256": "5f9d417ab8fe816c32b8103931a6f46f929ed3b66e04c99b2381adedb2bfcf7e",
+      "predecessorReleaseId": "20260914T100626Z-4462809b1aa7a958",
+      "releaseId": "20260914T103055Z-476613e9da6a6b1d",
+      "manifestPath": "D:\\teruisi-runtime\\teruisi-worker-sales\\releases\\20260914T103055Z-476613e9da6a6b1d\\deployment-manifest.json",
+      "manifestSha256": "31d59a8a5c188309f10cfec4e670855a46747914a891dfb08ed0b170e66b4292",
+      "successorSha256": "4321c98271313de56e8719775633883362559b4d0a1a61ec9cf2cdd7d1104aab",
+      "consumptionSha256": "a6d899cc9ba32c7d5e011dc526e1074758b096cb82ba75a243916d6a55479a3b",
+      "startupBindingSha256": "2f7a991f394632911bf40a67d63bbdd5fffc210ebd9c291a68245c7ea4bec1c2"
+    },
+    "heap": {
+      "verifiedInNewStartupLog": true,
+      "adapterSha256": "2b2a89fb96a270e678b4aa87e65aa1282049b18d28a1e30ff7fe7f2736b648c7",
+      "oldSpaceMiB": 3072
+    }
+  },
+  "system": {
+    "version": "teruisi-operations-system-control-v2",
+    "state": "Running",
+    "backendState": "Ready",
+    "workerState": "exact_release",
+    "releaseId": "20260914T103055Z-476613e9da6a6b1d",
+    "supervisorProcessId": 41652,
+    "portProcessId": 46296,
+    "url": "http://localhost:3000/",
+    "reason": null,
+    "components": {
+      "core": true,
+      "finance": true,
+      "netshop": true,
+      "market": true,
+      "products": true,
+      "workflow": true,
+      "inventory": true,
+      "customerService": true,
+      "accessControl": true,
+      "erpReference": true,
+      "bi": true,
+      "ai": true
+    },
+    "checkedAt": "2026-09-14T18:38:50.2086158+08:00"
+  },
+  "maintenance": {
+    "callerCleanup": [
+      {
+        "serviceStopped": false,
+        "reason": "Completed invoking shell retained output pipe; migration operator exited successfully and caller has no children",
+        "pid": 16316
+      },
+      {
+        "serviceStopped": false,
+        "reason": "Completed background-launch caller retained its pipe; exact release verified and caller has no children",
+        "pid": 2320
+      }
+    ],
+    "preservedConfig": {
+      "config/dingtalk-startup.json": "b2b36b75ac9efe8448b6233a12dd0f29b19eef41ea0e8291780818c8b4174710",
+      "ai-enabled.json": "39ee433fb3b3fa775297cb88826fec69cd221a349c05a27ccc765d484ba7fc42",
+      "n8nUnchanged": true
+    },
+    "secondDrain": {
+      "progress": [
+        {
+          "jobId": "market-annotation-job-ec555270-03c2-45d5-9747-af7fcc331f6f",
+          "remainingInferenceUnits": 0,
+          "activeClaims": 0
+        },
+        {
+          "jobId": "market-annotation-job-3eae2413-b0f5-481d-9d71-d4aa24f53b20",
+          "remainingInferenceUnits": 0,
+          "activeClaims": 0
+        }
+      ],
+      "activeCloud": 0,
+      "at": "2026-09-14T18:22:04.6948223+08:00",
+      "helperIdle": true
+    },
+    "reason": "Existing market plans completed naturally before maintenance",
+    "plansPaused": 0,
+    "deploymentGuard": "First deploy waited for the existing Django supervisor to exit normally; status confirmed stopped before retry. No guard bypass.",
+    "firstDrain": {
+      "at": "2026-09-14T18:21:21.9754003+08:00",
+      "activeCloud": 0,
+      "jobs": [
+        {
+          "id": "market-annotation-job-ec555270-03c2-45d5-9747-af7fcc331f6f",
+          "status": "review_ready",
+          "executor": "cloud"
+        },
+        {
+          "id": "market-annotation-job-3eae2413-b0f5-481d-9d71-d4aa24f53b20",
+          "status": "review_ready",
+          "executor": "cloud"
+        }
+      ],
+      "helper": {
+        "activeWorkflow": null,
+        "ok": true,
+        "busy": false,
+        "storeExecutions": []
+      }
+    }
+  },
+  "api": {
+    "at": "2026-09-14T10:39:14.579Z",
+    "checks": [
+      {
+        "url": "http://127.0.0.1:3000/api/ai/report-library",
+        "status": 200,
+        "expected": 200
+      },
+      {
+        "url": "http://127.0.0.1:3000/api/ai/reports",
+        "status": 200,
+        "expected": 200
+      },
+      {
+        "url": "http://127.0.0.1:3000/api/ai/report-library",
+        "status": 403,
+        "expected": 403
+      },
+      {
+        "url": "http://127.0.0.1:8111/api/ai/report-library",
+        "status": 401,
+        "expected": 401
+      },
+      {
+        "url": "http://127.0.0.1:3000/api/ai/reports/report-release-verification-missing",
+        "status": 404,
+        "expected": 404
+      },
+      {
+        "url": "http://127.0.0.1:3000/?module=ai&view=reports",
+        "status": 200,
+        "expected": 200
+      },
+      {
+        "url": "http://127.0.0.1:3000/?module=ai&view=skills",
+        "status": 200,
+        "expected": 200
+      },
+      {
+        "url": "http://127.0.0.1:3000/?module=ai&view=pipelines",
+        "status": 200,
+        "expected": 200
+      }
+    ],
+    "library": {
+      "version": 0,
+      "templates": 3,
+      "skills": 3,
+      "pipelines": 3
+    },
+    "reportListKeys": [
+      "items",
+      "pagination"
+    ],
+    "asset": {
+      "name": "ai-report-workbench-view-CGIyS9Fg.js",
+      "sha256": "1af182488aeb7856353dc437ed3ffbe6d25ced8caa865e8b059607cd6c64fefc",
+      "exactBytes": true
+    },
+    "paidModelCalls": 0,
+    "notificationsSent": 0
+  },
+  "browser": {
+    "initialLibraryVersion": 0,
+    "origin": "http://127.0.0.1:3000",
+    "templates": 3,
+    "checked": [
+      "reports",
+      "skills",
+      "pipelines"
+    ],
+    "skills": 3,
+    "reportJobs": 0,
+    "previewTabReplacedWithProduction": true,
+    "pipelines": 3
+  },
+  "backup": {
+    "eArchive": {
+      "directory": "E:\\运营管理系统业务数据\\daily-20260914T104104Z-8290dc81398b",
+      "sourceRetained": true,
+      "files": [
+        {
+          "sha256": "8c282b91b22aa39bfe32f5fda0ee37fadb30bbd7d9ce768513885f3d131891f4",
+          "verified": true,
+          "file": "teruisi-sales.dump"
+        },
+        {
+          "sha256": "6af2e5f7afb11a066332676acb61074d469466892e27fd73e218ee3ada0365fd",
+          "verified": true,
+          "file": "backup-manifest.json"
+        },
+        {
+          "sha256": "3a77f725020e3c87f539211d8902e313c55456b02c7b980afd24fa2598552c03",
+          "verified": true,
+          "file": "backup-manifest.json.sha256"
+        }
+      ]
+    },
+    "beforeRestore": {
+      "version": "teruisi-postgres-restore-rehearsal-v1",
+      "status": "completed",
+      "rehearsalId": "e14a3b307214",
+      "startedAt": "2026-09-14T17:57:07.1420687+08:00",
+      "completedAt": "2026-09-14T18:02:23.2635275+08:00",
+      "backupId": "daily-20260914T095432Z-1ebee0e98715",
+      "backupManifestSha256": "1ca512f5d9422c3a12c01f3760008e9ea0035ca9071f49b6c70d2b863f751f61",
+      "dumpSha256": "4e8a5bf67a14f4ecfacd644866f0d5330403ebbe32d78397b96bd382b19b3561",
+      "expectedContentSha256": "a1e5ab3406ea05af1fe25fc3e5ad22a7f1a9892164a4422e5aea699ca2ce28d3",
+      "restoredContentSha256": "a1e5ab3406ea05af1fe25fc3e5ad22a7f1a9892164a4422e5aea699ca2ce28d3",
+      "isolatedPort": 55583,
+      "productionDatabaseTouched": false,
+      "serviceStateChanged": false,
+      "cleanupStatus": "isolated_data_removed"
+    },
+    "afterVerify": {
+      "status": "completed",
+      "backupId": "daily-20260914T104104Z-8290dc81398b",
+      "manifestSha256": "6af2e5f7afb11a066332676acb61074d469466892e27fd73e218ee3ada0365fd",
+      "dumpSha256": "8c282b91b22aa39bfe32f5fda0ee37fadb30bbd7d9ce768513885f3d131891f4",
+      "contentSha256": "8ad5b2846b0cf6ddb15d1f911dc60fa4d4d81460e2530c9fdc4f774df206e1c2",
+      "serviceStateChanged": false
+    },
+    "beforeOrigin": "Reused controlled shared backup taken after the finance import, independently restored by the concurrent heap-release task, and independently verified again for AI release",
+    "postBackupRestoreRepeated": false,
+    "after": {
+      "status": "completed",
+      "backupId": "daily-20260914T104104Z-8290dc81398b",
+      "backupDirectory": "D:\\teruisi-runtime\\django-sales\\backups\\postgres-daily\\daily-20260914T104104Z-8290dc81398b",
+      "manifestSha256": "6af2e5f7afb11a066332676acb61074d469466892e27fd73e218ee3ada0365fd",
+      "dumpSha256": "8c282b91b22aa39bfe32f5fda0ee37fadb30bbd7d9ce768513885f3d131891f4",
+      "contentSha256": "8ad5b2846b0cf6ddb15d1f911dc60fa4d4d81460e2530c9fdc4f774df206e1c2",
+      "completedAt": "2026-09-14T18:42:48.7521714+08:00",
+      "serviceStateChanged": false
+    },
+    "beforeRestoreSha256": "4aed0f118f159e10f4fa3839bdc1559201269dab9f67a5c7f8381746b2de85fb",
+    "beforeVerify": {
+      "status": "completed",
+      "backupId": "daily-20260914T095432Z-1ebee0e98715",
+      "manifestSha256": "1ca512f5d9422c3a12c01f3760008e9ea0035ca9071f49b6c70d2b863f751f61",
+      "dumpSha256": "4e8a5bf67a14f4ecfacd644866f0d5330403ebbe32d78397b96bd382b19b3561",
+      "contentSha256": "a1e5ab3406ea05af1fe25fc3e5ad22a7f1a9892164a4422e5aea699ca2ce28d3",
+      "serviceStateChanged": false
+    }
+  },
+  "limitations": [
+    "Real paid report generation and actual notification delivery were not exercised in production",
+    "Manual fixed-step pipelines and text-only Skill format in this phase",
+    "Existing 3072 MiB heap setting retained; this release does not fix underlying memory growth"
+  ]
+}

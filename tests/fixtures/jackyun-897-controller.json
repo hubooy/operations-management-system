@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "runId": "n8n-export-first-897",
+  "policyVersion": "2026-09-06.export-first.1",
+  "exportTransport": "web_prepared_http_v1",
+  "updatedAt": "2026-09-08T03:51:56.947Z",
+  "modules": {
+    "inventory": {
+      "status": "navigated",
+      "navigationIntentAt": "2026-09-08T03:51:56.155Z",
+      "timings": {
+        "enterModuleMs": 790
+      }
+    }
+  }
+}

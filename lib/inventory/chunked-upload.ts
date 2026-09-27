@@ -1,13 +1,67 @@
 import { env } from "cloudflare:workers";
 import {
-  ensureInventorySchema,
   getInventoryDatabase,
   type InventoryDatabase,
 } from "@/lib/inventory/database";
+import { PublicApiError } from "@/lib/http/api-error";
 
 export const INVENTORY_UPLOAD_CHUNK_BYTES = 1024 * 1024;
 export const MAX_CHUNKED_INVENTORY_FILE_BYTES = 20 * 1024 * 1024;
 const UPLOAD_TTL_MS = 24 * 60 * 60 * 1000;
+
+const sharedUploadSchemaStatements = [
+  `CREATE TABLE IF NOT EXISTS inventory_import_uploads (
+    id TEXT PRIMARY KEY NOT NULL,
+    fingerprint TEXT NOT NULL UNIQUE,
+    file_name TEXT NOT NULL,
+    file_size_bytes INTEGER NOT NULL,
+    chunk_size_bytes INTEGER NOT NULL,
+    chunk_count INTEGER NOT NULL,
+    received_chunk_count INTEGER NOT NULL DEFAULT 0,
+    received_bytes INTEGER NOT NULL DEFAULT 0,
+    status TEXT NOT NULL DEFAULT 'uploading',
+    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    expires_at TEXT NOT NULL
+  )`,
+  `CREATE INDEX IF NOT EXISTS inventory_import_uploads_expires_at_idx
+    ON inventory_import_uploads (expires_at)`,
+  `CREATE TABLE IF NOT EXISTS inventory_import_upload_chunks (
+    upload_id TEXT NOT NULL,
+    chunk_index INTEGER NOT NULL,
+    object_key TEXT NOT NULL,
+    size_bytes INTEGER NOT NULL,
+    sha256 TEXT NOT NULL,
+    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (upload_id, chunk_index)
+  )`,
+  `CREATE INDEX IF NOT EXISTS inventory_import_upload_chunks_upload_id_idx
+    ON inventory_import_upload_chunks (upload_id)`,
+  `CREATE TABLE IF NOT EXISTS inventory_import_upload_results (
+    upload_id TEXT PRIMARY KEY NOT NULL,
+    result_json TEXT NOT NULL,
+    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+  )`,
+] as const;
+
+const sharedUploadSchemaReady = new WeakMap<object, Promise<void>>();
+
+export async function ensureSharedImportUploadSchema(db = getInventoryDatabase()) {
+  const key = db as unknown as object;
+  const existing = sharedUploadSchemaReady.get(key);
+  if (existing) return existing;
+  const setup = db.batch(sharedUploadSchemaStatements.map((sql) => db.prepare(sql))).then(() => undefined).catch((error) => {
+    sharedUploadSchemaReady.delete(key);
+    throw error;
+  });
+  sharedUploadSchemaReady.set(key, setup);
+  return setup;
+}
+
+function uploadRequestError(status: 400 | 404 | 409 | 413 | 422, message: string) {
+  const code = status === 404 ? "not_found" : status === 409 ? "conflict" : status === 413 ? "payload_too_large" : "invalid_request";
+  return new PublicApiError(status, code, message);
+}
 
 type UploadRow = {
   id: string;
@@ -126,15 +180,15 @@ export async function beginInventoryUpload(input: {
   chunkCount: number;
   fingerprint: string;
 }): Promise<InventoryUploadSession> {
-  if (!input.fileName.toLowerCase().endsWith(".xlsx")) throw new Error("仅支持 .xlsx 格式的分仓库存查询报表");
-  if (!Number.isSafeInteger(input.fileSizeBytes) || input.fileSizeBytes <= 0) throw new Error("文件大小无效");
-  if (input.fileSizeBytes > MAX_CHUNKED_INVENTORY_FILE_BYTES) throw new Error("库存快照文件最大支持 20MB");
+  if (!input.fileName.toLowerCase().endsWith(".xlsx")) throw uploadRequestError(422, "仅支持 .xlsx 格式的分仓库存查询报表");
+  if (!Number.isSafeInteger(input.fileSizeBytes) || input.fileSizeBytes <= 0) throw uploadRequestError(400, "文件大小无效");
+  if (input.fileSizeBytes > MAX_CHUNKED_INVENTORY_FILE_BYTES) throw uploadRequestError(413, "库存快照文件最大支持 20MB");
   const expectedCount = Math.ceil(input.fileSizeBytes / INVENTORY_UPLOAD_CHUNK_BYTES);
-  if (!Number.isSafeInteger(input.chunkCount) || input.chunkCount !== expectedCount) throw new Error("分片数量与文件大小不一致");
-  if (!input.fingerprint || input.fingerprint.length > 255) throw new Error("上传指纹无效");
+  if (!Number.isSafeInteger(input.chunkCount) || input.chunkCount !== expectedCount) throw uploadRequestError(400, "分片数量与文件大小不一致");
+  if (!input.fingerprint || input.fingerprint.length > 255) throw uploadRequestError(400, "上传指纹无效");
 
   const db = getInventoryDatabase();
-  await ensureInventorySchema(db);
+  await ensureSharedImportUploadSchema(db);
   await cleanupExpiredUploads(db);
   const existing = await db.prepare(`SELECT id, fingerprint, file_name, file_size_bytes, chunk_size_bytes, chunk_count,
     received_chunk_count, received_bytes, status, expires_at
@@ -172,18 +226,18 @@ export async function receiveInventoryUploadChunk(input: {
   bytes: Uint8Array;
 }): Promise<InventoryUploadSession> {
   const db = getInventoryDatabase();
-  await ensureInventorySchema(db);
+  await ensureSharedImportUploadSchema(db);
   const upload = await getUpload(db, input.uploadId);
-  if (!upload || upload.expires_at <= nowIso()) throw new Error("上传会话已过期，请重新选择文件");
-  if (upload.status === "completed") throw new Error("该上传会话已完成");
-  if (upload.status === "processing") throw new Error("库存文件正在合并处理，不能继续覆盖分片");
-  if (upload.status !== "uploading" && upload.status !== "ready") throw new Error("上传会话状态无效，请重新选择文件");
-  if (!Number.isSafeInteger(input.chunkIndex) || input.chunkIndex < 0 || input.chunkIndex >= upload.chunk_count) throw new Error("分片序号无效");
+  if (!upload || upload.expires_at <= nowIso()) throw uploadRequestError(404, "上传会话已过期，请重新选择文件");
+  if (upload.status === "completed") throw uploadRequestError(409, "该上传会话已完成");
+  if (upload.status === "processing") throw uploadRequestError(409, "库存文件正在合并处理，不能继续覆盖分片");
+  if (upload.status !== "uploading" && upload.status !== "ready") throw uploadRequestError(409, "上传会话状态无效，请重新选择文件");
+  if (!Number.isSafeInteger(input.chunkIndex) || input.chunkIndex < 0 || input.chunkIndex >= upload.chunk_count) throw uploadRequestError(400, "分片序号无效");
   const isLast = input.chunkIndex === upload.chunk_count - 1;
   const expectedBytes = isLast
     ? upload.file_size_bytes - upload.chunk_size_bytes * (upload.chunk_count - 1)
     : upload.chunk_size_bytes;
-  if (input.bytes.byteLength !== expectedBytes) throw new Error("分片大小与预期不一致");
+  if (input.bytes.byteLength !== expectedBytes) throw uploadRequestError(422, "分片大小与预期不一致");
 
   const checksum = toHex(await sha256(input.bytes));
   const previous = await db.prepare(`SELECT chunk_index, object_key, size_bytes, sha256
@@ -210,7 +264,7 @@ export async function receiveInventoryUploadChunk(input: {
   ]);
   if (Number(results[0]?.meta?.changes ?? 0) === 0) {
     await bucket().delete(objectKey).catch(() => undefined);
-    throw new Error("库存文件已开始合并，当前分片未被接收");
+    throw uploadRequestError(409, "库存文件已开始合并，当前分片未被接收");
   }
   if (previous && previous.object_key !== objectKey) {
     await bucket().delete(previous.object_key).catch(() => undefined);
@@ -234,17 +288,17 @@ async function storedResult(db: InventoryDatabase, uploadId: string): Promise<un
 
 export async function claimInventoryUpload(uploadId: string): Promise<InventoryUploadClaim> {
   const db = getInventoryDatabase();
-  await ensureInventorySchema(db);
+  await ensureSharedImportUploadSchema(db);
   let upload = await getUpload(db, uploadId);
-  if (!upload || upload.expires_at <= nowIso()) throw new Error("上传会话已过期，请重新选择文件");
+  if (!upload || upload.expires_at <= nowIso()) throw uploadRequestError(404, "上传会话已过期，请重新选择文件");
   if (upload.status === "completed") {
     const result = await storedResult(db, uploadId);
     if (!result) throw new Error("已完成的上传会话缺少处理结果，请重新选择文件");
     return { kind: "completed", session: toSession(upload, await listChunks(db, upload.id)), result };
   }
-  if (upload.status === "uploading") throw new Error("仍有分片尚未上传完成");
-  if (upload.status === "processing") throw new Error("库存文件正在处理中，请稍后重试");
-  if (upload.status !== "ready") throw new Error("上传会话状态无效，请重新选择文件");
+  if (upload.status === "uploading") throw uploadRequestError(409, "仍有分片尚未上传完成");
+  if (upload.status === "processing") throw uploadRequestError(409, "库存文件正在处理中，请稍后重试");
+  if (upload.status !== "ready") throw uploadRequestError(409, "上传会话状态无效，请重新选择文件");
 
   const claimed = await db.prepare(`UPDATE inventory_import_uploads
     SET status = 'processing', updated_at = CURRENT_TIMESTAMP
@@ -257,7 +311,7 @@ export async function claimInventoryUpload(uploadId: string): Promise<InventoryU
       const result = await storedResult(db, uploadId);
       if (result) return { kind: "completed", session: toSession(upload, await listChunks(db, upload.id)), result };
     }
-    throw new Error("库存文件已被其他请求接管处理，请稍后重试");
+    throw uploadRequestError(409, "库存文件已被其他请求接管处理，请稍后重试");
   }
   const refreshed = await getUpload(db, uploadId);
   if (!refreshed) throw new Error("无法读取已接管的库存上传会话");
@@ -270,26 +324,26 @@ export async function assembleInventoryUpload(uploadId: string): Promise<{
   objectKeys: string[];
 }> {
   const db = getInventoryDatabase();
-  await ensureInventorySchema(db);
+  await ensureSharedImportUploadSchema(db);
   const upload = await getUpload(db, uploadId);
-  if (!upload || upload.expires_at <= nowIso()) throw new Error("上传会话已过期，请重新选择文件");
-  if (upload.status !== "processing") throw new Error("库存上传会话尚未进入处理状态");
+  if (!upload || upload.expires_at <= nowIso()) throw uploadRequestError(404, "上传会话已过期，请重新选择文件");
+  if (upload.status !== "processing") throw uploadRequestError(409, "库存上传会话尚未进入处理状态");
   const chunks = await listChunks(db, uploadId);
   if (chunks.length !== upload.chunk_count || chunks.some((chunk, index) => chunk.chunk_index !== index)) {
-    throw new Error("仍有分片尚未上传完成");
+    throw uploadRequestError(409, "仍有分片尚未上传完成");
   }
   const bytes = new Uint8Array(upload.file_size_bytes);
   let offset = 0;
   for (const chunk of chunks) {
     const object = await bucket().get(chunk.object_key);
-    if (!object) throw new Error("部分上传分片已丢失，请重新上传该文件");
+    if (!object) throw uploadRequestError(422, "部分上传分片已丢失，请重新上传该文件");
     const part = new Uint8Array(await object.arrayBuffer());
-    if (part.byteLength !== chunk.size_bytes) throw new Error("分片完整性校验失败，请重新上传该文件");
-    if (toHex(await sha256(part)) !== chunk.sha256) throw new Error("分片校验码不一致，请重新上传该文件");
+    if (part.byteLength !== chunk.size_bytes) throw uploadRequestError(422, "分片完整性校验失败，请重新上传该文件");
+    if (toHex(await sha256(part)) !== chunk.sha256) throw uploadRequestError(422, "分片校验码不一致，请重新上传该文件");
     bytes.set(part, offset);
     offset += part.byteLength;
   }
-  if (offset !== bytes.byteLength) throw new Error("合并后的文件大小不正确");
+  if (offset !== bytes.byteLength) throw uploadRequestError(422, "合并后的文件大小不正确");
   return { session: toSession(upload, chunks), bytes, objectKeys: chunks.map((chunk) => chunk.object_key) };
 }
 

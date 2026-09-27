@@ -1,0 +1,3269 @@
+{
+  "syntheticOnly": true,
+  "postgresqlPort": 55453,
+  "statementTimeoutMs": 6000,
+  "transport": "Django signed Client; actual PostgreSQL sales consumer in-process (HTTP hop not measured)",
+  "data": {
+    "rankingRows": 320000,
+    "identities": 50000,
+    "snapshots": 300000,
+    "projectionRows": 150000,
+    "salesRows": 100000,
+    "imageCache": 50000,
+    "annotations": 25000
+  },
+  "records": [
+    {
+      "label": "first-process-read",
+      "kind": "master",
+      "params": {},
+      "ms": 827.2755999932997,
+      "status": 200,
+      "returned": 30,
+      "pagination": {
+        "page": 1,
+        "pageSize": 30,
+        "total": 50000,
+        "pageCount": 1667
+      },
+      "bytes": 33416,
+      "sha256": "6f690b5280f895579d9e7153a68389d97c4ef78715f807cedd966562acc74bfd",
+      "sqlCount": 12,
+      "sqlMs": 406.2800999963656,
+      "maxSqlMs": 200.22520000202348,
+      "phases": {
+        "master_page": 366.1357000019052,
+        "page_context": 40.70069999579573,
+        "json_serialization": 0.4174999994575046
+      }
+    },
+    {
+      "kind": "master",
+      "users": 1,
+      "summary": {
+        "samples": 20,
+        "errors": 0,
+        "p50Ms": 343.65305000028457,
+        "p95Ms": 390.972299996065,
+        "maxMs": 410.95510000013746,
+        "correctHashes": 1
+      },
+      "samples": [
+        {
+          "label": "1-users-0",
+          "kind": "master",
+          "params": {},
+          "ms": 359.6883999998681,
+          "status": 200,
+          "returned": 30,
+          "pagination": {
+            "page": 1,
+            "pageSize": 30,
+            "total": 50000,
+            "pageCount": 1667
+          },
+          "bytes": 33416,
+          "sha256": "6f690b5280f895579d9e7153a68389d97c4ef78715f807cedd966562acc74bfd",
+          "sqlCount": 12,
+          "sqlMs": 341.072900009749,
+          "maxSqlMs": 156.6582000014023,
+          "phases": {
+            "master_page": 310.79789999785135,
+            "page_context": 33.273799999733455,
+            "json_serialization": 0.30449999758275226
+          }
+        },
+        {
+          "label": "1-users-1",
+          "kind": "master",
+          "params": {},
+          "ms": 387.6047000012477,
+          "status": 200,
+          "returned": 30,
+          "pagination": {
+            "page": 1,
+            "pageSize": 30,
+            "total": 50000,
+            "pageCount": 1667
+          },
+          "bytes": 33416,
+          "sha256": "6f690b5280f895579d9e7153a68389d97c4ef78715f807cedd966562acc74bfd",
+          "sqlCount": 12,
+          "sqlMs": 369.27750000177184,
+          "maxSqlMs": 202.6077000045916,
+          "phases": {
+            "master_page": 339.53509999992093,
+            "page_context": 32.96070000214968,
+            "json_serialization": 0.28359999851090834
+          }
+        },
+        {
+          "label": "1-users-2",
+          "kind": "master",
+          "params": {},
+          "ms": 343.38669999851845,
+          "status": 200,
+          "returned": 30,
+          "pagination": {
+            "page": 1,
+            "pageSize": 30,
+            "total": 50000,
+            "pageCount": 1667
+          },
+          "bytes": 33416,
+          "sha256": "6f690b5280f895579d9e7153a68389d97c4ef78715f807cedd966562acc74bfd",
+          "sqlCount": 12,
+          "sqlMs": 325.50859999173554,
+          "maxSqlMs": 152.47159999853466,
+          "phases": {
+            "master_page": 297.805199996219,
+            "page_context": 31.358299995190464,
+            "json_serialization": 0.2932999996119179
+          }
+        },
+        {
+          "label": "1-users-3",
+          "kind": "master",
+          "params": {},
+          "ms": 339.68219999951543,
+          "status": 200,
+          "returned": 30,
+          "pagination": {
+            "page": 1,
+            "pageSize": 30,
+            "total": 50000,
+            "pageCount": 1667
+          },
+          "bytes": 33416,
+          "sha256": "6f690b5280f895579d9e7153a68389d97c4ef78715f807cedd966562acc74bfd",
+          "sqlCount": 12,
+          "sqlMs": 321.5152000047965,
+          "maxSqlMs": 154.3156000043382,
+          "phases": {
+            "master_page": 293.94280000269646,
+            "page_context": 29.95599999849219,
+            "json_serialization": 0.29070000164210796
+          }
+        },
+        {
+          "label": "1-users-4",
+          "kind": "master",
+          "params": {},
+          "ms": 390.972299996065,
+          "status": 200,
+          "returned": 30,
+          "pagination": {
+            "page": 1,
+            "pageSize": 30,
+            "total": 50000,
+            "pageCount": 1667
+          },
+          "bytes": 33416,
+          "sha256": "6f690b5280f895579d9e7153a68389d97c4ef78715f807cedd966562acc74bfd",
+          "sqlCount": 12,
+          "sqlMs": 371.1903000221355,
+          "maxSqlMs": 178.09320000378648,
+          "phases": {
+            "master_page": 340.0589000011678,
+            "page_context": 36.612100004276726,
+            "json_serialization": 0.3423999951337464
+          }
+        },
+        {
+          "label": "1-users-5",
+          "kind": "master",
+          "params": {},
+          "ms": 341.4790000024368,
+          "status": 200,
+          "returned": 30,
+          "pagination": {
+            "page": 1,
+            "pageSize": 30,
+            "total": 50000,
+            "pageCount": 1667
+          },
+          "bytes": 33416,
+          "sha256": "6f690b5280f895579d9e7153a68389d97c4ef78715f807cedd966562acc74bfd",
+          "sqlCount": 12,
+          "sqlMs": 323.725000002014,
+          "maxSqlMs": 153.62009999807924,
+          "phases": {
+            "master_page": 295.88580000563525,
+            "page_context": 30.9452000001329,
+            "json_serialization": 0.2762000003713183
+          }
+        },
+        {
+          "label": "1-users-6",
+          "kind": "master",
+          "params": {},
+          "ms": 321.5245999963372,
+          "status": 200,
+          "returned": 30,
+          "pagination": {
+            "page": 1,
+            "pageSize": 30,
+            "total": 50000,
+            "pageCount": 1667
+          },
+          "bytes": 33416,
+          "sha256": "6f690b5280f895579d9e7153a68389d97c4ef78715f807cedd966562acc74bfd",
+          "sqlCount": 12,
+          "sqlMs": 304.1436000057729,
+          "maxSqlMs": 146.45730000484036,
+          "phases": {
+            "master_page": 277.1576999948593,
+            "page_context": 31.380000000353903,
+            "json_serialization": 0.27910000062547624
+          }
+        },
+        {
+          "label": "1-users-7",
+          "kind": "master",
+          "params": {},
+          "ms": 346.0881999999401,
+          "status": 200,
+          "returned": 30,
+          "pagination": {
+            "page": 1,
+            "pageSize": 30,
+            "total": 50000,
+            "pageCount": 1667
+          },
+          "bytes": 33416,
+          "sha256": "6f690b5280f895579d9e7153a68389d97c4ef78715f807cedd966562acc74bfd",
+          "sqlCount": 12,
+          "sqlMs": 328.24879998952383,
+          "maxSqlMs": 161.16239999973914,
+          "phases": {
+            "master_page": 300.74449999665376,
+            "page_context": 31.419999999343418,
+            "json_serialization": 0.2836999992723577
+          }
+        },
+        {
+          "label": "1-users-8",
+          "kind": "master",
+          "params": {},
+          "ms": 341.13480000087293,
+          "status": 200,
+          "returned": 30,
+          "pagination": {
+            "page": 1,
+            "pageSize": 30,
+            "total": 50000,
+            "pageCount": 1667
+          },
+          "bytes": 33416,
+          "sha256": "6f690b5280f895579d9e7153a68389d97c4ef78715f807cedd966562acc74bfd",
+          "sqlCount": 12,
+          "sqlMs": 323.79819999914616,
+          "maxSqlMs": 163.52189999452094,
+          "phases": {
+            "master_page": 295.29019999608863,
+            "page_context": 31.97790000558598,
+            "json_serialization": 0.2680999969015829
+          }
+        },
+        {
+          "label": "1-users-9",
+          "kind": "master",
+          "params": {},
+          "ms": 327.0252000002074,
+          "status": 200,
+          "returned": 30,
+          "pagination": {
+            "page": 1,
+            "pageSize": 30,
+            "total": 50000,
+            "pageCount": 1667
+          },
+          "bytes": 33416,
+          "sha256": "6f690b5280f895579d9e7153a68389d97c4ef78715f807cedd966562acc74bfd",
+          "sqlCount": 12,
+          "sqlMs": 309.1562999834423,
+          "maxSqlMs": 149.58330000081332,
+          "phases": {
+            "master_page": 280.5492999978014,
+            "page_context": 31.062599999131635,
+            "json_serialization": 0.28200000087963417
+          }
+        },
+        {
+          "label": "1-users-10",
+          "kind": "master",
+          "params": {},
+          "ms": 334.37830000184476,
+          "status": 200,
+          "returned": 30,
+          "pagination": {
+            "page": 1,
+            "pageSize": 30,
+            "total": 50000,
+            "pageCount": 1667
+          },
+          "bytes": 33416,
+          "sha256": "6f690b5280f895579d9e7153a68389d97c4ef78715f807cedd966562acc74bfd",
+          "sqlCount": 12,
+          "sqlMs": 316.40989999868907,
+          "maxSqlMs": 152.6466000068467,
+          "phases": {
+            "master_page": 289.31740000552963,
+            "page_context": 32.04430000187131,
+            "json_serialization": 0.3090999962296337
+          }
+        },
+        {
+          "label": "1-users-11",
+          "kind": "master",
+          "params": {},
+          "ms": 356.05909999867436,
+          "status": 200,
+          "returned": 30,
+          "pagination": {
+            "page": 1,
+            "pageSize": 30,
+            "total": 50000,
+            "pageCount": 1667
+          },
+          "bytes": 33416,
+          "sha256": "6f690b5280f895579d9e7153a68389d97c4ef78715f807cedd966562acc74bfd",
+          "sqlCount": 12,
+          "sqlMs": 337.9354000062449,
+          "maxSqlMs": 154.77370000007795,
+          "phases": {
+            "master_page": 289.3938999986858,
+            "page_context": 51.00440000387607,
+            "json_serialization": 0.29350000113481656
+          }
+        },
+        {
+          "label": "1-users-12",
+          "kind": "master",
+          "params": {},
+          "ms": 331.85750000120606,
+          "status": 200,
+          "returned": 30,
+          "pagination": {
+            "page": 1,
+            "pageSize": 30,
+            "total": 50000,
+            "pageCount": 1667
+          },
+          "bytes": 33416,
+          "sha256": "6f690b5280f895579d9e7153a68389d97c4ef78715f807cedd966562acc74bfd",
+          "sqlCount": 12,
+          "sqlMs": 314.4556000115699,
+          "maxSqlMs": 148.3968000029563,
+          "phases": {
+            "master_page": 286.423300000024,
+            "page_context": 31.887600001937244,
+            "json_serialization": 0.27709999994840473
+          }
+        },
+        {
+          "label": "1-users-13",
+          "kind": "master",
+          "params": {},
+          "ms": 371.20629999844823,
+          "status": 200,
+          "returned": 30,
+          "pagination": {
+            "page": 1,
+            "pageSize": 30,
+            "total": 50000,
+            "pageCount": 1667
+          },
+          "bytes": 33416,
+          "sha256": "6f690b5280f895579d9e7153a68389d97c4ef78715f807cedd966562acc74bfd",
+          "sqlCount": 12,
+          "sqlMs": 352.543599998171,
+          "maxSqlMs": 186.96320000162814,
+          "phases": {
+            "master_page": 323.32180000230437,
+            "page_context": 34.34529999503866,
+            "json_serialization": 0.34049999521812424
+          }
+        },
+        {
+          "label": "1-users-14",
+          "kind": "master",
+          "params": {},
+          "ms": 410.95510000013746,
+          "status": 200,
+          "returned": 30,
+          "pagination": {
+            "page": 1,
+            "pageSize": 30,
+            "total": 50000,
+            "pageCount": 1667
+          },
+          "bytes": 33416,
+          "sha256": "6f690b5280f895579d9e7153a68389d97c4ef78715f807cedd966562acc74bfd",
+          "sqlCount": 12,
+          "sqlMs": 392.94280001922743,
+          "maxSqlMs": 188.9757000026293,
+          "phases": {
+            "master_page": 364.5187999936752,
+            "page_context": 32.06769999815151,
+            "json_serialization": 0.3738000013981946
+          }
+        },
+        {
+          "label": "1-users-15",
+          "kind": "master",
+          "params": {},
+          "ms": 343.01330000016605,
+          "status": 200,
+          "returned": 30,
+          "pagination": {
+            "page": 1,
+            "pageSize": 30,
+            "total": 50000,
+            "pageCount": 1667
+          },
+          "bytes": 33416,
+          "sha256": "6f690b5280f895579d9e7153a68389d97c4ef78715f807cedd966562acc74bfd",
+          "sqlCount": 12,
+          "sqlMs": 325.3054000015254,
+          "maxSqlMs": 147.53449999989243,
+          "phases": {
+            "master_page": 294.94079999858513,
+            "page_context": 33.939300003112294,
+            "json_serialization": 0.2795999971567653
+          }
+        },
+        {
+          "label": "1-users-16",
+          "kind": "master",
+          "params": {},
+          "ms": 368.0160000003525,
+          "status": 200,
+          "returned": 30,
+          "pagination": {
+            "page": 1,
+            "pageSize": 30,
+            "total": 50000,
+            "pageCount": 1667
+          },
+          "bytes": 33416,
+          "sha256": "6f690b5280f895579d9e7153a68389d97c4ef78715f807cedd966562acc74bfd",
+          "sqlCount": 12,
+          "sqlMs": 350.36110000510234,
+          "maxSqlMs": 180.62410000129603,
+          "phases": {
+            "master_page": 321.4369000052102,
+            "page_context": 31.219700002111495,
+            "json_serialization": 0.27720000070985407
+          }
+        },
+        {
+          "label": "1-users-17",
+          "kind": "master",
+          "params": {},
+          "ms": 367.4425999997766,
+          "status": 200,
+          "returned": 30,
+          "pagination": {
+            "page": 1,
+            "pageSize": 30,
+            "total": 50000,
+            "pageCount": 1667
+          },
+          "bytes": 33416,
+          "sha256": "6f690b5280f895579d9e7153a68389d97c4ef78715f807cedd966562acc74bfd",
+          "sqlCount": 12,
+          "sqlMs": 350.10229999170406,
+          "maxSqlMs": 182.57180000364315,
+          "phases": {
+            "master_page": 322.0440000004601,
+            "page_context": 31.858999995165505,
+            "json_serialization": 0.2806999982567504
+          }
+        },
+        {
+          "label": "1-users-18",
+          "kind": "master",
+          "params": {},
+          "ms": 334.4218999991426,
+          "status": 200,
+          "returned": 30,
+          "pagination": {
+            "page": 1,
+            "pageSize": 30,
+            "total": 50000,
+            "pageCount": 1667
+          },
+          "bytes": 33416,
+          "sha256": "6f690b5280f895579d9e7153a68389d97c4ef78715f807cedd966562acc74bfd",
+          "sqlCount": 12,
+          "sqlMs": 316.5473000044585,
+          "maxSqlMs": 152.04099999391474,
+          "phases": {
+            "master_page": 288.261000001512,
+            "page_context": 32.78420000424376,
+            "json_serialization": 0.4317999992053956
+          }
+        },
+        {
+          "label": "1-users-19",
+          "kind": "master",
+          "params": {},
+          "ms": 343.9194000020507,
+          "status": 200,
+          "returned": 30,
+          "pagination": {
+            "page": 1,
+            "pageSize": 30,
+            "total": 50000,
+            "pageCount": 1667
+          },
+          "bytes": 33416,
+          "sha256": "6f690b5280f895579d9e7153a68389d97c4ef78715f807cedd966562acc74bfd",
+          "sqlCount": 12,
+          "sqlMs": 325.7102000134182,
+          "maxSqlMs": 159.7542000017711,
+          "phases": {
+            "master_page": 296.6156999973464,
+            "page_context": 32.448500001919456,
+            "json_serialization": 0.28640000527957454
+          }
+        }
+      ]
+    },
+    {
+      "kind": "master",
+      "users": 4,
+      "summary": {
+        "samples": 20,
+        "errors": 0,
+        "p50Ms": 480.9194999979809,
+        "p95Ms": 563.3553000006941,
+        "maxMs": 610.1651999997557,
+        "correctHashes": 1
+      },
+      "samples": [
+        {
+          "label": "4-users-0",
+          "kind": "master",
+          "params": {},
+          "ms": 482.3309999992489,
+          "status": 200,
+          "returned": 30,
+          "pagination": {
+            "page": 1,
+            "pageSize": 30,
+            "total": 50000,
+            "pageCount": 1667
+          },
+          "bytes": 33416,
+          "sha256": "6f690b5280f895579d9e7153a68389d97c4ef78715f807cedd966562acc74bfd",
+          "sqlCount": 12,
+          "sqlMs": 463.7669000221649,
+          "maxSqlMs": 214.9215000026743,
+          "phases": {
+            "master_page": 420.8273000040208,
+            "page_context": 42.02609999629203,
+            "json_serialization": 0.2865999995265156
+          }
+        },
+        {
+          "label": "4-users-1",
+          "kind": "master",
+          "params": {},
+          "ms": 479.5079999967129,
+          "status": 200,
+          "returned": 30,
+          "pagination": {
+            "page": 1,
+            "pageSize": 30,
+            "total": 50000,
+            "pageCount": 1667
+          },
+          "bytes": 33416,
+          "sha256": "6f690b5280f895579d9e7153a68389d97c4ef78715f807cedd966562acc74bfd",
+          "sqlCount": 12,
+          "sqlMs": 461.7470000011963,
+          "maxSqlMs": 218.33289999631234,
+          "phases": {
+            "master_page": 414.48289999971166,
+            "page_context": 45.20610000326997,
+            "json_serialization": 0.29200000426499173
+          }
+        },
+        {
+          "label": "4-users-2",
+          "kind": "master",
+          "params": {},
+          "ms": 461.3309999986086,
+          "status": 200,
+          "returned": 30,
+          "pagination": {
+            "page": 1,
+            "pageSize": 30,
+            "total": 50000,
+            "pageCount": 1667
+          },
+          "bytes": 33416,
+          "sha256": "6f690b5280f895579d9e7153a68389d97c4ef78715f807cedd966562acc74bfd",
+          "sqlCount": 12,
+          "sqlMs": 444.2467999906512,
+          "maxSqlMs": 205.77139999659266,
+          "phases": {
+            "master_page": 409.9128000016208,
+            "page_context": 37.27229999640258,
+            "json_serialization": 0.3051000021514483
+          }
+        },
+        {
+          "label": "4-users-3",
+          "kind": "master",
+          "params": {},
+          "ms": 563.3553000006941,
+          "status": 200,
+          "returned": 30,
+          "pagination": {
+            "page": 1,
+            "pageSize": 30,
+            "total": 50000,
+            "pageCount": 1667
+          },
+          "bytes": 33416,
+          "sha256": "6f690b5280f895579d9e7153a68389d97c4ef78715f807cedd966562acc74bfd",
+          "sqlCount": 12,
+          "sqlMs": 537.5780000031227,
+          "maxSqlMs": 261.4828000005218,
+          "phases": {
+            "master_page": 503.18240000342485,
+            "page_context": 45.31400000269059,
+            "json_serialization": 0.3482999964035116
+          }
+        },
+        {
+          "label": "4-users-4",
+          "kind": "master",
+          "params": {},
+          "ms": 610.1651999997557,
+          "status": 200,
+          "returned": 30,
+          "pagination": {
+            "page": 1,
+            "pageSize": 30,
+            "total": 50000,
+            "pageCount": 1667
+          },
+          "bytes": 33416,
+          "sha256": "6f690b5280f895579d9e7153a68389d97c4ef78715f807cedd966562acc74bfd",
+          "sqlCount": 12,
+          "sqlMs": 589.8310999909882,
+          "maxSqlMs": 299.9788000015542,
+          "phases": {
+            "master_page": 551.9803000061074,
+            "page_context": 41.82829999626847,
+            "json_serialization": 0.29399999766610563
+          }
+        },
+        {
+          "label": "4-users-5",
+          "kind": "master",
+          "params": {},
+          "ms": 463.89949999866076,
+          "status": 200,
+          "returned": 30,
+          "pagination": {
+            "page": 1,
+            "pageSize": 30,
+            "total": 50000,
+            "pageCount": 1667
+          },
+          "bytes": 33416,
+          "sha256": "6f690b5280f895579d9e7153a68389d97c4ef78715f807cedd966562acc74bfd",
+          "sqlCount": 12,
+          "sqlMs": 444.813999994949,
+          "maxSqlMs": 222.86329999769805,
+          "phases": {
+            "master_page": 412.77800000534626,
+            "page_context": 32.78190000128234,
+            "json_serialization": 0.29569999605882913
+          }
+        },
+        {
+          "label": "4-users-6",
+          "kind": "master",
+          "params": {},
+          "ms": 508.9475999993738,
+          "status": 200,
+          "returned": 30,
+          "pagination": {
+            "page": 1,
+            "pageSize": 30,
+            "total": 50000,
+            "pageCount": 1667
+          },
+          "bytes": 33416,
+          "sha256": "6f690b5280f895579d9e7153a68389d97c4ef78715f807cedd966562acc74bfd",
+          "sqlCount": 12,
+          "sqlMs": 488.9032000064617,
+          "maxSqlMs": 263.1194999994477,
+          "phases": {
+            "master_page": 459.1616999969119,
+            "page_context": 32.77200000593439,
+            "json_serialization": 0.31399999716086313
+          }
+        },
+        {
+          "label": "4-users-7",
+          "kind": "master",
+          "params": {},
+          "ms": 505.457800005388,
+          "status": 200,
+          "returned": 30,
+          "pagination": {
+            "page": 1,
+            "pageSize": 30,
+            "total": 50000,
+            "pageCount": 1667
+          },
+          "bytes": 33416,
+          "sha256": "6f690b5280f895579d9e7153a68389d97c4ef78715f807cedd966562acc74bfd",
+          "sqlCount": 12,
+          "sqlMs": 483.662299993739,
+          "maxSqlMs": 238.9571000021533,
+          "phases": {
+            "master_page": 447.53620000119554,
+            "page_context": 40.85780000605155,
+            "json_serialization": 0.301799998851493
+          }
+        },
+        {
+          "label": "4-users-8",
+          "kind": "master",
+          "params": {},
+          "ms": 469.8701000015717,
+          "status": 200,
+          "returned": 30,
+          "pagination": {
+            "page": 1,
+            "pageSize": 30,
+            "total": 50000,
+            "pageCount": 1667
+          },
+          "bytes": 33416,
+          "sha256": "6f690b5280f895579d9e7153a68389d97c4ef78715f807cedd966562acc74bfd",
+          "sqlCount": 12,
+          "sqlMs": 450.5971999897156,
+          "maxSqlMs": 214.82109999487875,
+          "phases": {
+            "master_page": 417.29239999403944,
+            "page_context": 34.32310000061989,
+            "json_serialization": 0.3117000014754012
+          }
+        },
+        {
+          "label": "4-users-9",
+          "kind": "master",
+          "params": {},
+          "ms": 470.21479999966687,
+          "status": 200,
+          "returned": 30,
+          "pagination": {
+            "page": 1,
+            "pageSize": 30,
+            "total": 50000,
+            "pageCount": 1667
+          },
+          "bytes": 33416,
+          "sha256": "6f690b5280f895579d9e7153a68389d97c4ef78715f807cedd966562acc74bfd",
+          "sqlCount": 12,
+          "sqlMs": 450.5131999903824,
+          "maxSqlMs": 239.9587000036263,
+          "phases": {
+            "master_page": 421.27229999459814,
+            "page_context": 32.9044000027352,
+            "json_serialization": 0.5177999992156401
+          }
+        },
+        {
+          "label": "4-users-10",
+          "kind": "master",
+          "params": {},
+          "ms": 452.639300005103,
+          "status": 200,
+          "returned": 30,
+          "pagination": {
+            "page": 1,
+            "pageSize": 30,
+            "total": 50000,
+            "pageCount": 1667
+          },
+          "bytes": 33416,
+          "sha256": "6f690b5280f895579d9e7153a68389d97c4ef78715f807cedd966562acc74bfd",
+          "sqlCount": 12,
+          "sqlMs": 428.46770000323886,
+          "maxSqlMs": 224.26239999913378,
+          "phases": {
+            "master_page": 393.4244999982184,
+            "page_context": 39.7956000015256,
+            "json_serialization": 0.35940000088885427
+          }
+        },
+        {
+          "label": "4-users-11",
+          "kind": "master",
+          "params": {},
+          "ms": 540.4209999978775,
+          "status": 200,
+          "returned": 30,
+          "pagination": {
+            "page": 1,
+            "pageSize": 30,
+            "total": 50000,
+            "pageCount": 1667
+          },
+          "bytes": 33416,
+          "sha256": "6f690b5280f895579d9e7153a68389d97c4ef78715f807cedd966562acc74bfd",
+          "sqlCount": 12,
+          "sqlMs": 515.6095999846002,
+          "maxSqlMs": 242.51759999606293,
+          "phases": {
+            "master_page": 479.41680000076303,
+            "page_context": 43.35239999636542,
+            "json_serialization": 0.36949999775970355
+          }
+        },
+        {
+          "label": "4-users-12",
+          "kind": "master",
+          "params": {},
+          "ms": 531.3677000012831,
+          "status": 200,
+          "returned": 30,
+          "pagination": {
+            "page": 1,
+            "pageSize": 30,
+            "total": 50000,
+            "pageCount": 1667
+          },
+          "bytes": 33416,
+          "sha256": "6f690b5280f895579d9e7153a68389d97c4ef78715f807cedd966562acc74bfd",
+          "sqlCount": 12,
+          "sqlMs": 509.7604999973555,
+          "maxSqlMs": 250.8319999978994,
+          "phases": {
+            "master_page": 469.4865999990725,
+            "page_context": 44.07309999805875,
+            "json_serialization": 0.29689999792026356
+          }
+        },
+        {
+          "label": "4-users-13",
+          "kind": "master",
+          "params": {},
+          "ms": 486.46780000126455,
+          "status": 200,
+          "returned": 30,
+          "pagination": {
+            "page": 1,
+            "pageSize": 30,
+            "total": 50000,
+            "pageCount": 1667
+          },
+          "bytes": 33416,
+          "sha256": "6f690b5280f895579d9e7153a68389d97c4ef78715f807cedd966562acc74bfd",
+          "sqlCount": 12,
+          "sqlMs": 460.5632000093465,
+          "maxSqlMs": 219.76030000223545,
+          "phases": {
+            "master_page": 413.5884999996051,
+            "page_context": 52.14870000054361,
+            "json_serialization": 0.36469999758992344
+          }
+        },
+        {
+          "label": "4-users-14",
+          "kind": "master",
+          "params": {},
+          "ms": 444.06010000238894,
+          "status": 200,
+          "returned": 30,
+          "pagination": {
+            "page": 1,
+            "pageSize": 30,
+            "total": 50000,
+            "pageCount": 1667
+          },
+          "bytes": 33416,
+          "sha256": "6f690b5280f895579d9e7153a68389d97c4ef78715f807cedd966562acc74bfd",
+          "sqlCount": 12,
+          "sqlMs": 421.486500017636,
+          "maxSqlMs": 198.04400000430178,
+          "phases": {
+            "master_page": 369.21060000167927,
+            "page_context": 52.55619999661576,
+            "json_serialization": 0.5338999981177039
+          }
+        },
+        {
+          "label": "4-users-15",
+          "kind": "master",
+          "params": {},
+          "ms": 471.66419999848586,
+          "status": 200,
+          "returned": 30,
+          "pagination": {
+            "page": 1,
+            "pageSize": 30,
+            "total": 50000,
+            "pageCount": 1667
+          },
+          "bytes": 33416,
+          "sha256": "6f690b5280f895579d9e7153a68389d97c4ef78715f807cedd966562acc74bfd",
+          "sqlCount": 12,
+          "sqlMs": 441.41350001154933,
+          "maxSqlMs": 227.58059999614488,
+          "phases": {
+            "master_page": 397.44790000258945,
+            "page_context": 54.98280000028899,
+            "json_serialization": 0.5365000033634715
+          }
+        },
+        {
+          "label": "4-users-16",
+          "kind": "master",
+          "params": {},
+          "ms": 464.1166000001249,
+          "status": 200,
+          "returned": 30,
+          "pagination": {
+            "page": 1,
+            "pageSize": 30,
+            "total": 50000,
+            "pageCount": 1667
+          },
+          "bytes": 33416,
+          "sha256": "6f690b5280f895579d9e7153a68389d97c4ef78715f807cedd966562acc74bfd",
+          "sqlCount": 12,
+          "sqlMs": 438.7767999942298,
+          "maxSqlMs": 206.4204999987851,
+          "phases": {
+            "master_page": 398.31620000040857,
+            "page_context": 46.423000007052906,
+            "json_serialization": 0.3108000018983148
+          }
+        },
+        {
+          "label": "4-users-17",
+          "kind": "master",
+          "params": {},
+          "ms": 484.07619999488816,
+          "status": 200,
+          "returned": 30,
+          "pagination": {
+            "page": 1,
+            "pageSize": 30,
+            "total": 50000,
+            "pageCount": 1667
+          },
+          "bytes": 33416,
+          "sha256": "6f690b5280f895579d9e7153a68389d97c4ef78715f807cedd966562acc74bfd",
+          "sqlCount": 12,
+          "sqlMs": 463.688199990429,
+          "maxSqlMs": 232.9780000000028,
+          "phases": {
+            "master_page": 431.26520000078017,
+            "page_context": 34.97629999765195,
+            "json_serialization": 0.30819999665254727
+          }
+        },
+        {
+          "label": "4-users-18",
+          "kind": "master",
+          "params": {},
+          "ms": 530.6886000034865,
+          "status": 200,
+          "returned": 30,
+          "pagination": {
+            "page": 1,
+            "pageSize": 30,
+            "total": 50000,
+            "pageCount": 1667
+          },
+          "bytes": 33416,
+          "sha256": "6f690b5280f895579d9e7153a68389d97c4ef78715f807cedd966562acc74bfd",
+          "sqlCount": 12,
+          "sqlMs": 510.8122000019648,
+          "maxSqlMs": 260.71110000339104,
+          "phases": {
+            "master_page": 479.03609999775654,
+            "page_context": 35.188199995900504,
+            "json_serialization": 0.3068000005441718
+          }
+        },
+        {
+          "label": "4-users-19",
+          "kind": "master",
+          "params": {},
+          "ms": 453.36260000476614,
+          "status": 200,
+          "returned": 30,
+          "pagination": {
+            "page": 1,
+            "pageSize": 30,
+            "total": 50000,
+            "pageCount": 1667
+          },
+          "bytes": 33416,
+          "sha256": "6f690b5280f895579d9e7153a68389d97c4ef78715f807cedd966562acc74bfd",
+          "sqlCount": 12,
+          "sqlMs": 435.9610999963479,
+          "maxSqlMs": 248.52370000007795,
+          "phases": {
+            "master_page": 409.59949999523815,
+            "page_context": 30.60439999535447,
+            "json_serialization": 0.2829000004567206
+          }
+        }
+      ]
+    },
+    {
+      "kind": "master",
+      "variant": {
+        "page": 2
+      },
+      "samples": [
+        {
+          "label": "variant-0",
+          "kind": "master",
+          "params": {
+            "page": 2
+          },
+          "ms": 362.6409999997122,
+          "status": 200,
+          "returned": 30,
+          "pagination": {
+            "page": 2,
+            "pageSize": 30,
+            "total": 50000,
+            "pageCount": 1667
+          },
+          "bytes": 33407,
+          "sha256": "21a6e3794c0825f53ed72b34512bf0cd8f1b1fcb4c24c9969a22b9cce26d5b28",
+          "sqlCount": 12,
+          "sqlMs": 344.23269998660544,
+          "maxSqlMs": 165.23440000310075,
+          "phases": {
+            "master_page": 314.9706999975024,
+            "page_context": 34.07850000075996,
+            "json_serialization": 0.32469999860040843
+          }
+        },
+        {
+          "label": "variant-1",
+          "kind": "master",
+          "params": {
+            "page": 2
+          },
+          "ms": 320.7416999939596,
+          "status": 200,
+          "returned": 30,
+          "pagination": {
+            "page": 2,
+            "pageSize": 30,
+            "total": 50000,
+            "pageCount": 1667
+          },
+          "bytes": 33407,
+          "sha256": "21a6e3794c0825f53ed72b34512bf0cd8f1b1fcb4c24c9969a22b9cce26d5b28",
+          "sqlCount": 12,
+          "sqlMs": 301.9481000083033,
+          "maxSqlMs": 144.26110000204062,
+          "phases": {
+            "master_page": 272.7761999994982,
+            "page_context": 33.34670000185724,
+            "json_serialization": 0.31880000460660085
+          }
+        }
+      ]
+    },
+    {
+      "kind": "master",
+      "variant": {
+        "q": "does-not-exist"
+      },
+      "samples": [
+        {
+          "label": "variant-0",
+          "kind": "master",
+          "params": {
+            "q": "does-not-exist"
+          },
+          "ms": 168.4531999999308,
+          "status": 200,
+          "returned": 0,
+          "pagination": {
+            "page": 1,
+            "pageSize": 30,
+            "total": 0,
+            "pageCount": 1
+          },
+          "bytes": 100,
+          "sha256": "7925f0507b2a644905884884dddf102d29c937ee821607b7e8cfbf0b82e8ae1e",
+          "sqlCount": 4,
+          "sqlMs": 165.6585000018822,
+          "maxSqlMs": 85.85229999880539,
+          "phases": {
+            "master_page": 163.22260000015376,
+            "json_serialization": 0.05570000212173909
+          }
+        },
+        {
+          "label": "variant-1",
+          "kind": "master",
+          "params": {
+            "q": "does-not-exist"
+          },
+          "ms": 300.7249000002048,
+          "status": 200,
+          "returned": 0,
+          "pagination": {
+            "page": 1,
+            "pageSize": 30,
+            "total": 0,
+            "pageCount": 1
+          },
+          "bytes": 100,
+          "sha256": "7925f0507b2a644905884884dddf102d29c937ee821607b7e8cfbf0b82e8ae1e",
+          "sqlCount": 4,
+          "sqlMs": 298.04290000902256,
+          "maxSqlMs": 158.04429999843705,
+          "phases": {
+            "master_page": 295.7849000013084,
+            "json_serialization": 0.053999996453057975
+          }
+        }
+      ]
+    },
+    {
+      "kind": "master",
+      "variant": {
+        "priceStatuses": [
+          "confirmed"
+        ]
+      },
+      "samples": [
+        {
+          "label": "variant-0",
+          "kind": "master",
+          "params": {
+            "priceStatuses": [
+              "confirmed"
+            ]
+          },
+          "ms": 814.7252999988268,
+          "status": 200,
+          "returned": 30,
+          "pagination": {
+            "page": 1,
+            "pageSize": 30,
+            "total": 12500,
+            "pageCount": 417
+          },
+          "bytes": 33256,
+          "sha256": "be017f309654f49f39069764d0912ae649a814c3b2215e24d1c4cca28c56b294",
+          "sqlCount": 12,
+          "sqlMs": 794.5886000015889,
+          "maxSqlMs": 416.50169999775244,
+          "phases": {
+            "master_page": 769.0306000004057,
+            "page_context": 31.098200000997167,
+            "json_serialization": 0.34469999809516594
+          }
+        },
+        {
+          "label": "variant-1",
+          "kind": "master",
+          "params": {
+            "priceStatuses": [
+              "confirmed"
+            ]
+          },
+          "ms": 763.9391999982763,
+          "status": 200,
+          "returned": 30,
+          "pagination": {
+            "page": 1,
+            "pageSize": 30,
+            "total": 12500,
+            "pageCount": 417
+          },
+          "bytes": 33256,
+          "sha256": "be017f309654f49f39069764d0912ae649a814c3b2215e24d1c4cca28c56b294",
+          "sqlCount": 12,
+          "sqlMs": 746.5857999995933,
+          "maxSqlMs": 363.05390000052284,
+          "phases": {
+            "master_page": 718.8550999999279,
+            "page_context": 26.3184000068577,
+            "json_serialization": 0.2688000022317283
+          }
+        }
+      ]
+    },
+    {
+      "kind": "master",
+      "variant": {
+        "candidatePriceSources": [
+          "ai"
+        ]
+      },
+      "samples": [
+        {
+          "label": "variant-0",
+          "kind": "master",
+          "params": {
+            "candidatePriceSources": [
+              "ai"
+            ]
+          },
+          "ms": 628.3729000060703,
+          "status": 200,
+          "returned": 30,
+          "pagination": {
+            "page": 1,
+            "pageSize": 30,
+            "total": 12500,
+            "pageCount": 417
+          },
+          "bytes": 33435,
+          "sha256": "cc190b6a86da07bbd79627c3edccf42ee57467dff32c4df5ef4598cabe529414",
+          "sqlCount": 12,
+          "sqlMs": 610.7797000076971,
+          "maxSqlMs": 308.30989999958547,
+          "phases": {
+            "master_page": 581.1584999974002,
+            "page_context": 26.558199999271892,
+            "json_serialization": 0.2697000018088147
+          }
+        },
+        {
+          "label": "variant-1",
+          "kind": "master",
+          "params": {
+            "candidatePriceSources": [
+              "ai"
+            ]
+          },
+          "ms": 618.5210999974515,
+          "status": 200,
+          "returned": 30,
+          "pagination": {
+            "page": 1,
+            "pageSize": 30,
+            "total": 12500,
+            "pageCount": 417
+          },
+          "bytes": 33435,
+          "sha256": "cc190b6a86da07bbd79627c3edccf42ee57467dff32c4df5ef4598cabe529414",
+          "sqlCount": 12,
+          "sqlMs": 601.3793000020087,
+          "maxSqlMs": 287.2776000003796,
+          "phases": {
+            "master_page": 572.4293999955989,
+            "page_context": 26.657400005206,
+            "json_serialization": 0.28029999521095306
+          }
+        }
+      ]
+    },
+    {
+      "kind": "master",
+      "variant": {
+        "annotationStatuses": [
+          "committed"
+        ]
+      },
+      "samples": [
+        {
+          "label": "variant-0",
+          "kind": "master",
+          "params": {
+            "annotationStatuses": [
+              "committed"
+            ]
+          },
+          "ms": 744.0597000022535,
+          "status": 200,
+          "returned": 30,
+          "pagination": {
+            "page": 1,
+            "pageSize": 30,
+            "total": 25000,
+            "pageCount": 834
+          },
+          "bytes": 34094,
+          "sha256": "b261c5927dee9b3619dd146d0267a33b03e5186b69b9288e1abfe928147d5aa7",
+          "sqlCount": 12,
+          "sqlMs": 724.4267000060063,
+          "maxSqlMs": 365.1635000060196,
+          "phases": {
+            "master_page": 695.2429000011762,
+            "page_context": 27.842299998155795,
+            "json_serialization": 0.356399999873247
+          }
+        },
+        {
+          "label": "variant-1",
+          "kind": "master",
+          "params": {
+            "annotationStatuses": [
+              "committed"
+            ]
+          },
+          "ms": 726.5658000033,
+          "status": 200,
+          "returned": 30,
+          "pagination": {
+            "page": 1,
+            "pageSize": 30,
+            "total": 25000,
+            "pageCount": 834
+          },
+          "bytes": 34094,
+          "sha256": "b261c5927dee9b3619dd146d0267a33b03e5186b69b9288e1abfe928147d5aa7",
+          "sqlCount": 12,
+          "sqlMs": 707.1927999859327,
+          "maxSqlMs": 342.99819999432657,
+          "phases": {
+            "master_page": 685.3202999991481,
+            "page_context": 22.906999998667743,
+            "json_serialization": 0.29120000544935465
+          }
+        }
+      ]
+    },
+    {
+      "kind": "master",
+      "variant": {
+        "includeHistory": true
+      },
+      "samples": [
+        {
+          "label": "variant-0",
+          "kind": "master",
+          "params": {
+            "includeHistory": true
+          },
+          "ms": 2583.8796999960323,
+          "status": 200,
+          "returned": 30,
+          "pagination": {
+            "page": 1,
+            "pageSize": 30,
+            "total": 300000,
+            "pageCount": 10000
+          },
+          "bytes": 33402,
+          "sha256": "7490a6675c65d5e27ae0b1503b16eb542aa548abe0de95633e1367592c009e56",
+          "sqlCount": 12,
+          "sqlMs": 2566.235800004506,
+          "maxSqlMs": 1295.7929000040167,
+          "phases": {
+            "master_page": 2534.4636000008904,
+            "page_context": 32.03959999518702,
+            "json_serialization": 0.27039999986300245
+          }
+        },
+        {
+          "label": "variant-1",
+          "kind": "master",
+          "params": {
+            "includeHistory": true
+          },
+          "ms": 2637.2937000051024,
+          "status": 200,
+          "returned": 30,
+          "pagination": {
+            "page": 1,
+            "pageSize": 30,
+            "total": 300000,
+            "pageCount": 10000
+          },
+          "bytes": 33402,
+          "sha256": "7490a6675c65d5e27ae0b1503b16eb542aa548abe0de95633e1367592c009e56",
+          "sqlCount": 12,
+          "sqlMs": 2619.384199992055,
+          "maxSqlMs": 1324.5253000059165,
+          "phases": {
+            "master_page": 2570.0021000011475,
+            "page_context": 50.92220000369707,
+            "json_serialization": 0.2950999987660907
+          }
+        }
+      ]
+    },
+    {
+      "kind": "master",
+      "variant": {
+        "categories": [
+          "类目0"
+        ],
+        "brands": [
+          "品牌0"
+        ]
+      },
+      "samples": [
+        {
+          "label": "variant-0",
+          "kind": "master",
+          "params": {
+            "categories": [
+              "类目0"
+            ],
+            "brands": [
+              "品牌0"
+            ]
+          },
+          "ms": 121.29940000158967,
+          "status": 200,
+          "returned": 30,
+          "pagination": {
+            "page": 1,
+            "pageSize": 30,
+            "total": 549,
+            "pageCount": 19
+          },
+          "bytes": 33380,
+          "sha256": "23afdfea72bfb76ccb846e5deae66138df7c4a925db1ea81f37be8f9fa6e875c",
+          "sqlCount": 12,
+          "sqlMs": 102.75619999447372,
+          "maxSqlMs": 49.73529999551829,
+          "phases": {
+            "master_page": 72.28619999659713,
+            "page_context": 34.55820000090171,
+            "json_serialization": 0.3862000012304634
+          }
+        },
+        {
+          "label": "variant-1",
+          "kind": "master",
+          "params": {
+            "categories": [
+              "类目0"
+            ],
+            "brands": [
+              "品牌0"
+            ]
+          },
+          "ms": 96.34779999760212,
+          "status": 200,
+          "returned": 30,
+          "pagination": {
+            "page": 1,
+            "pageSize": 30,
+            "total": 549,
+            "pageCount": 19
+          },
+          "bytes": 33380,
+          "sha256": "23afdfea72bfb76ccb846e5deae66138df7c4a925db1ea81f37be8f9fa6e875c",
+          "sqlCount": 12,
+          "sqlMs": 78.06490000803024,
+          "maxSqlMs": 26.42349999950966,
+          "phases": {
+            "master_page": 48.390700001618825,
+            "page_context": 33.116300000983756,
+            "json_serialization": 0.2840000015567057
+          }
+        }
+      ]
+    },
+    {
+      "kind": "master",
+      "memoryPeakBytes": 368328,
+      "sample": {
+        "label": "memory-with-tracing",
+        "kind": "master",
+        "params": {},
+        "ms": 450.22440000320785,
+        "status": 200,
+        "returned": 30,
+        "pagination": {
+          "page": 1,
+          "pageSize": 30,
+          "total": 50000,
+          "pageCount": 1667
+        },
+        "bytes": 33416,
+        "sha256": "6f690b5280f895579d9e7153a68389d97c4ef78715f807cedd966562acc74bfd",
+        "sqlCount": 12,
+        "sqlMs": 361.59129999578,
+        "maxSqlMs": 188.85749999753898,
+        "phases": {
+          "master_page": 323.7525000004098,
+          "page_context": 99.99120000429684,
+          "json_serialization": 2.415599999949336
+        }
+      },
+      "timingComparable": false
+    },
+    {
+      "label": "first-process-read",
+      "kind": "ranking",
+      "params": {},
+      "ms": 4514.7283999976935,
+      "status": 200,
+      "returned": 20,
+      "pagination": {
+        "page": 1,
+        "pageSize": 20,
+        "total": 300000,
+        "pageCount": 15000
+      },
+      "bytes": 23294,
+      "sha256": "8288e63d1c2d1b5e997cd737a94b5716e6bfa64851e8bf6d995d482259555424",
+      "sqlCount": 19,
+      "sqlMs": 4498.2455000063055,
+      "maxSqlMs": 4100.402600000962,
+      "phases": {
+        "filter_options": 224.47780000220519,
+        "ranking_page": 4101.022800001374,
+        "_snapshot_map": 5.323800003679935,
+        "_price_band_versions": 1.3835999998264015,
+        "_projection_metrics": 3.138200001558289,
+        "_sales_metrics": 13.133100001141429,
+        "json_serialization": 0.35460000071907416
+      }
+    },
+    {
+      "kind": "ranking",
+      "users": 1,
+      "summary": {
+        "samples": 20,
+        "errors": 0,
+        "p50Ms": 4578.266400003486,
+        "p95Ms": 4677.716899997904,
+        "maxMs": 4761.405899997044,
+        "correctHashes": 1
+      },
+      "samples": [
+        {
+          "label": "1-users-0",
+          "kind": "ranking",
+          "params": {},
+          "ms": 4481.207600001653,
+          "status": 200,
+          "returned": 20,
+          "pagination": {
+            "page": 1,
+            "pageSize": 20,
+            "total": 300000,
+            "pageCount": 15000
+          },
+          "bytes": 23294,
+          "sha256": "8288e63d1c2d1b5e997cd737a94b5716e6bfa64851e8bf6d995d482259555424",
+          "sqlCount": 19,
+          "sqlMs": 4466.713300003903,
+          "maxSqlMs": 4082.360600004904,
+          "phases": {
+            "filter_options": 206.8250000011176,
+            "ranking_page": 4082.997299999988,
+            "_snapshot_map": 5.124700001033489,
+            "_price_band_versions": 1.2625000017578714,
+            "_projection_metrics": 2.8257000012672506,
+            "_sales_metrics": 9.315499999502208,
+            "json_serialization": 0.40189999708672985
+          }
+        },
+        {
+          "label": "1-users-1",
+          "kind": "ranking",
+          "params": {},
+          "ms": 4483.831500001543,
+          "status": 200,
+          "returned": 20,
+          "pagination": {
+            "page": 1,
+            "pageSize": 20,
+            "total": 300000,
+            "pageCount": 15000
+          },
+          "bytes": 23294,
+          "sha256": "8288e63d1c2d1b5e997cd737a94b5716e6bfa64851e8bf6d995d482259555424",
+          "sqlCount": 19,
+          "sqlMs": 4469.962100003613,
+          "maxSqlMs": 4080.702300001576,
+          "phases": {
+            "filter_options": 209.6640000017942,
+            "ranking_page": 4081.179200002225,
+            "_snapshot_map": 4.7887000037007965,
+            "_price_band_versions": 1.1594000025070272,
+            "_projection_metrics": 3.584899997804314,
+            "_sales_metrics": 8.28689999616472,
+            "json_serialization": 0.27039999986300245
+          }
+        },
+        {
+          "label": "1-users-2",
+          "kind": "ranking",
+          "params": {},
+          "ms": 4452.58130000002,
+          "status": 200,
+          "returned": 20,
+          "pagination": {
+            "page": 1,
+            "pageSize": 20,
+            "total": 300000,
+            "pageCount": 15000
+          },
+          "bytes": 23294,
+          "sha256": "8288e63d1c2d1b5e997cd737a94b5716e6bfa64851e8bf6d995d482259555424",
+          "sqlCount": 19,
+          "sqlMs": 4438.119700018433,
+          "maxSqlMs": 4042.7076000050874,
+          "phases": {
+            "filter_options": 214.93550000013784,
+            "ranking_page": 4043.1626999998116,
+            "_snapshot_map": 5.40049999835901,
+            "_price_band_versions": 1.3504999951692298,
+            "_projection_metrics": 3.276100003859028,
+            "_sales_metrics": 9.445400006370619,
+            "json_serialization": 0.28529999690363184
+          }
+        },
+        {
+          "label": "1-users-3",
+          "kind": "ranking",
+          "params": {},
+          "ms": 4503.606700003729,
+          "status": 200,
+          "returned": 20,
+          "pagination": {
+            "page": 1,
+            "pageSize": 20,
+            "total": 300000,
+            "pageCount": 15000
+          },
+          "bytes": 23294,
+          "sha256": "8288e63d1c2d1b5e997cd737a94b5716e6bfa64851e8bf6d995d482259555424",
+          "sqlCount": 19,
+          "sqlMs": 4489.41860000923,
+          "maxSqlMs": 4103.007700003218,
+          "phases": {
+            "filter_options": 206.75040000060108,
+            "ranking_page": 4103.566400001,
+            "_snapshot_map": 5.3772000028402545,
+            "_price_band_versions": 1.742499996908009,
+            "_projection_metrics": 2.929700000095181,
+            "_sales_metrics": 8.811300001980271,
+            "json_serialization": 0.2575000034994446
+          }
+        },
+        {
+          "label": "1-users-4",
+          "kind": "ranking",
+          "params": {},
+          "ms": 4486.283400001412,
+          "status": 200,
+          "returned": 20,
+          "pagination": {
+            "page": 1,
+            "pageSize": 20,
+            "total": 300000,
+            "pageCount": 15000
+          },
+          "bytes": 23294,
+          "sha256": "8288e63d1c2d1b5e997cd737a94b5716e6bfa64851e8bf6d995d482259555424",
+          "sqlCount": 19,
+          "sqlMs": 4471.993400002248,
+          "maxSqlMs": 4082.0870000025025,
+          "phases": {
+            "filter_options": 206.24210000096355,
+            "ranking_page": 4082.5784000044223,
+            "_snapshot_map": 5.369200000131968,
+            "_price_band_versions": 1.1537999962456524,
+            "_projection_metrics": 3.164200003084261,
+            "_sales_metrics": 9.845100001257379,
+            "json_serialization": 0.34189999860245734
+          }
+        },
+        {
+          "label": "1-users-5",
+          "kind": "ranking",
+          "params": {},
+          "ms": 4553.490199999942,
+          "status": 200,
+          "returned": 20,
+          "pagination": {
+            "page": 1,
+            "pageSize": 20,
+            "total": 300000,
+            "pageCount": 15000
+          },
+          "bytes": 23294,
+          "sha256": "8288e63d1c2d1b5e997cd737a94b5716e6bfa64851e8bf6d995d482259555424",
+          "sqlCount": 19,
+          "sqlMs": 4539.347199970507,
+          "maxSqlMs": 4146.456099995703,
+          "phases": {
+            "filter_options": 212.81989999988582,
+            "ranking_page": 4146.9406000032905,
+            "_snapshot_map": 5.662200004735496,
+            "_price_band_versions": 1.319599999987986,
+            "_projection_metrics": 2.7865000010933727,
+            "_sales_metrics": 8.585999996284954,
+            "json_serialization": 0.27370000316295773
+          }
+        },
+        {
+          "label": "1-users-6",
+          "kind": "ranking",
+          "params": {},
+          "ms": 4543.29229999712,
+          "status": 200,
+          "returned": 20,
+          "pagination": {
+            "page": 1,
+            "pageSize": 20,
+            "total": 300000,
+            "pageCount": 15000
+          },
+          "bytes": 23294,
+          "sha256": "8288e63d1c2d1b5e997cd737a94b5716e6bfa64851e8bf6d995d482259555424",
+          "sqlCount": 19,
+          "sqlMs": 4505.63310002326,
+          "maxSqlMs": 4094.924400000309,
+          "phases": {
+            "filter_options": 219.56329999375157,
+            "ranking_page": 4095.384299995203,
+            "_snapshot_map": 28.399000002536923,
+            "_price_band_versions": 1.458200000342913,
+            "_projection_metrics": 2.9844999953638762,
+            "_sales_metrics": 10.610900004394352,
+            "json_serialization": 0.2586999980849214
+          }
+        },
+        {
+          "label": "1-users-7",
+          "kind": "ranking",
+          "params": {},
+          "ms": 4584.544199999073,
+          "status": 200,
+          "returned": 20,
+          "pagination": {
+            "page": 1,
+            "pageSize": 20,
+            "total": 300000,
+            "pageCount": 15000
+          },
+          "bytes": 23294,
+          "sha256": "8288e63d1c2d1b5e997cd737a94b5716e6bfa64851e8bf6d995d482259555424",
+          "sqlCount": 19,
+          "sqlMs": 4570.19940000464,
+          "maxSqlMs": 4172.281600003771,
+          "phases": {
+            "filter_options": 210.31239999865647,
+            "ranking_page": 4172.747500000696,
+            "_snapshot_map": 5.954100000963081,
+            "_price_band_versions": 1.7286000002059154,
+            "_projection_metrics": 2.9928000003565103,
+            "_sales_metrics": 8.602499998232815,
+            "json_serialization": 0.3317000009701587
+          }
+        },
+        {
+          "label": "1-users-8",
+          "kind": "ranking",
+          "params": {},
+          "ms": 4670.437300002959,
+          "status": 200,
+          "returned": 20,
+          "pagination": {
+            "page": 1,
+            "pageSize": 20,
+            "total": 300000,
+            "pageCount": 15000
+          },
+          "bytes": 23294,
+          "sha256": "8288e63d1c2d1b5e997cd737a94b5716e6bfa64851e8bf6d995d482259555424",
+          "sqlCount": 19,
+          "sqlMs": 4655.72670000256,
+          "maxSqlMs": 4205.108900001505,
+          "phases": {
+            "filter_options": 275.5554999966989,
+            "ranking_page": 4205.593400001817,
+            "_snapshot_map": 5.2684999973280355,
+            "_price_band_versions": 1.6259999974863604,
+            "_projection_metrics": 3.530900001351256,
+            "_sales_metrics": 8.24550000106683,
+            "json_serialization": 0.24950000079115853
+          }
+        },
+        {
+          "label": "1-users-9",
+          "kind": "ranking",
+          "params": {},
+          "ms": 4555.699799995637,
+          "status": 200,
+          "returned": 20,
+          "pagination": {
+            "page": 1,
+            "pageSize": 20,
+            "total": 300000,
+            "pageCount": 15000
+          },
+          "bytes": 23294,
+          "sha256": "8288e63d1c2d1b5e997cd737a94b5716e6bfa64851e8bf6d995d482259555424",
+          "sqlCount": 19,
+          "sqlMs": 4541.04440001538,
+          "maxSqlMs": 4141.997099999571,
+          "phases": {
+            "filter_options": 213.22279999731109,
+            "ranking_page": 4142.434100001992,
+            "_snapshot_map": 4.8208999942289665,
+            "_price_band_versions": 1.13489999785088,
+            "_projection_metrics": 4.230099999404047,
+            "_sales_metrics": 10.383200002252124,
+            "json_serialization": 0.2497000023140572
+          }
+        },
+        {
+          "label": "1-users-10",
+          "kind": "ranking",
+          "params": {},
+          "ms": 4611.431299999822,
+          "status": 200,
+          "returned": 20,
+          "pagination": {
+            "page": 1,
+            "pageSize": 20,
+            "total": 300000,
+            "pageCount": 15000
+          },
+          "bytes": 23294,
+          "sha256": "8288e63d1c2d1b5e997cd737a94b5716e6bfa64851e8bf6d995d482259555424",
+          "sqlCount": 19,
+          "sqlMs": 4596.910699990985,
+          "maxSqlMs": 4194.873100001132,
+          "phases": {
+            "filter_options": 209.89469999767607,
+            "ranking_page": 4195.388499996625,
+            "_snapshot_map": 5.707099997380283,
+            "_price_band_versions": 1.3755000036326237,
+            "_projection_metrics": 3.224599997338373,
+            "_sales_metrics": 9.365400001115631,
+            "json_serialization": 0.2710999979171902
+          }
+        },
+        {
+          "label": "1-users-11",
+          "kind": "ranking",
+          "params": {},
+          "ms": 4761.405899997044,
+          "status": 200,
+          "returned": 20,
+          "pagination": {
+            "page": 1,
+            "pageSize": 20,
+            "total": 300000,
+            "pageCount": 15000
+          },
+          "bytes": 23294,
+          "sha256": "8288e63d1c2d1b5e997cd737a94b5716e6bfa64851e8bf6d995d482259555424",
+          "sqlCount": 19,
+          "sqlMs": 4745.858799993584,
+          "maxSqlMs": 4322.117200004868,
+          "phases": {
+            "filter_options": 220.31669999705628,
+            "ranking_page": 4322.600400002557,
+            "_snapshot_map": 5.696700005501043,
+            "_price_band_versions": 1.4444000044022687,
+            "_projection_metrics": 3.117499996733386,
+            "_sales_metrics": 9.481499997491483,
+            "json_serialization": 0.28899999597342685
+          }
+        },
+        {
+          "label": "1-users-12",
+          "kind": "ranking",
+          "params": {},
+          "ms": 4572.500400005083,
+          "status": 200,
+          "returned": 20,
+          "pagination": {
+            "page": 1,
+            "pageSize": 20,
+            "total": 300000,
+            "pageCount": 15000
+          },
+          "bytes": 23294,
+          "sha256": "8288e63d1c2d1b5e997cd737a94b5716e6bfa64851e8bf6d995d482259555424",
+          "sqlCount": 19,
+          "sqlMs": 4557.881399996404,
+          "maxSqlMs": 4137.881600006949,
+          "phases": {
+            "filter_options": 225.52939999877708,
+            "ranking_page": 4138.502599998901,
+            "_snapshot_map": 5.002100006095134,
+            "_price_band_versions": 1.2978000013390556,
+            "_projection_metrics": 3.3814999987953342,
+            "_sales_metrics": 9.150600002612919,
+            "json_serialization": 0.25829999503912404
+          }
+        },
+        {
+          "label": "1-users-13",
+          "kind": "ranking",
+          "params": {},
+          "ms": 4626.197900004627,
+          "status": 200,
+          "returned": 20,
+          "pagination": {
+            "page": 1,
+            "pageSize": 20,
+            "total": 300000,
+            "pageCount": 15000
+          },
+          "bytes": 23294,
+          "sha256": "8288e63d1c2d1b5e997cd737a94b5716e6bfa64851e8bf6d995d482259555424",
+          "sqlCount": 19,
+          "sqlMs": 4610.797700013791,
+          "maxSqlMs": 4200.887699997111,
+          "phases": {
+            "filter_options": 221.63719999662135,
+            "ranking_page": 4201.379700003599,
+            "_snapshot_map": 5.605500002275221,
+            "_price_band_versions": 2.234700004919432,
+            "_projection_metrics": 4.113700000743847,
+            "_sales_metrics": 8.21929999801796,
+            "json_serialization": 0.269199998001568
+          }
+        },
+        {
+          "label": "1-users-14",
+          "kind": "ranking",
+          "params": {},
+          "ms": 4671.326000003319,
+          "status": 200,
+          "returned": 20,
+          "pagination": {
+            "page": 1,
+            "pageSize": 20,
+            "total": 300000,
+            "pageCount": 15000
+          },
+          "bytes": 23294,
+          "sha256": "8288e63d1c2d1b5e997cd737a94b5716e6bfa64851e8bf6d995d482259555424",
+          "sqlCount": 19,
+          "sqlMs": 4655.818000013824,
+          "maxSqlMs": 4238.459499996679,
+          "phases": {
+            "filter_options": 219.32460000243736,
+            "ranking_page": 4238.934699998936,
+            "_snapshot_map": 5.839699995703995,
+            "_price_band_versions": 1.3571000017691404,
+            "_projection_metrics": 3.38470000133384,
+            "_sales_metrics": 9.30779999907827,
+            "json_serialization": 0.3601000062189996
+          }
+        },
+        {
+          "label": "1-users-15",
+          "kind": "ranking",
+          "params": {},
+          "ms": 4677.716899997904,
+          "status": 200,
+          "returned": 20,
+          "pagination": {
+            "page": 1,
+            "pageSize": 20,
+            "total": 300000,
+            "pageCount": 15000
+          },
+          "bytes": 23294,
+          "sha256": "8288e63d1c2d1b5e997cd737a94b5716e6bfa64851e8bf6d995d482259555424",
+          "sqlCount": 19,
+          "sqlMs": 4662.805300002219,
+          "maxSqlMs": 4245.153600000776,
+          "phases": {
+            "filter_options": 227.04700000031153,
+            "ranking_page": 4245.625399998971,
+            "_snapshot_map": 6.043399996997323,
+            "_price_band_versions": 1.367900003970135,
+            "_projection_metrics": 3.14510000316659,
+            "_sales_metrics": 9.572800001478754,
+            "json_serialization": 0.27319999935571104
+          }
+        },
+        {
+          "label": "1-users-16",
+          "kind": "ranking",
+          "params": {},
+          "ms": 4584.032400001888,
+          "status": 200,
+          "returned": 20,
+          "pagination": {
+            "page": 1,
+            "pageSize": 20,
+            "total": 300000,
+            "pageCount": 15000
+          },
+          "bytes": 23294,
+          "sha256": "8288e63d1c2d1b5e997cd737a94b5716e6bfa64851e8bf6d995d482259555424",
+          "sqlCount": 19,
+          "sqlMs": 4569.7401000143145,
+          "maxSqlMs": 4164.082499999495,
+          "phases": {
+            "filter_options": 215.61389999988023,
+            "ranking_page": 4164.573400004883,
+            "_snapshot_map": 5.104600000777282,
+            "_price_band_versions": 1.3773000027867965,
+            "_projection_metrics": 3.062899995711632,
+            "_sales_metrics": 8.900699998775963,
+            "json_serialization": 0.3425999966566451
+          }
+        },
+        {
+          "label": "1-users-17",
+          "kind": "ranking",
+          "params": {},
+          "ms": 4622.125900001265,
+          "status": 200,
+          "returned": 20,
+          "pagination": {
+            "page": 1,
+            "pageSize": 20,
+            "total": 300000,
+            "pageCount": 15000
+          },
+          "bytes": 23294,
+          "sha256": "8288e63d1c2d1b5e997cd737a94b5716e6bfa64851e8bf6d995d482259555424",
+          "sqlCount": 19,
+          "sqlMs": 4608.242300004349,
+          "maxSqlMs": 4202.7735999945435,
+          "phases": {
+            "filter_options": 219.49619999941206,
+            "ranking_page": 4203.341500004171,
+            "_snapshot_map": 5.488599999807775,
+            "_price_band_versions": 1.2911000012536533,
+            "_projection_metrics": 3.121800000371877,
+            "_sales_metrics": 8.97889999760082,
+            "json_serialization": 0.24790000315988436
+          }
+        },
+        {
+          "label": "1-users-18",
+          "kind": "ranking",
+          "params": {},
+          "ms": 4609.659499998088,
+          "status": 200,
+          "returned": 20,
+          "pagination": {
+            "page": 1,
+            "pageSize": 20,
+            "total": 300000,
+            "pageCount": 15000
+          },
+          "bytes": 23294,
+          "sha256": "8288e63d1c2d1b5e997cd737a94b5716e6bfa64851e8bf6d995d482259555424",
+          "sqlCount": 19,
+          "sqlMs": 4593.949799993425,
+          "maxSqlMs": 4163.944300002186,
+          "phases": {
+            "filter_options": 227.26200000033714,
+            "ranking_page": 4164.42090000055,
+            "_snapshot_map": 5.720700006349944,
+            "_price_band_versions": 1.3096999973640777,
+            "_projection_metrics": 3.668199999083299,
+            "_sales_metrics": 11.602799997490365,
+            "json_serialization": 0.2736999958870001
+          }
+        },
+        {
+          "label": "1-users-19",
+          "kind": "ranking",
+          "params": {},
+          "ms": 4490.1605999984895,
+          "status": 200,
+          "returned": 20,
+          "pagination": {
+            "page": 1,
+            "pageSize": 20,
+            "total": 300000,
+            "pageCount": 15000
+          },
+          "bytes": 23294,
+          "sha256": "8288e63d1c2d1b5e997cd737a94b5716e6bfa64851e8bf6d995d482259555424",
+          "sqlCount": 19,
+          "sqlMs": 4475.250500021502,
+          "maxSqlMs": 4071.6630999959307,
+          "phases": {
+            "filter_options": 215.54929999547312,
+            "ranking_page": 4072.207099998195,
+            "_snapshot_map": 6.537400004162919,
+            "_price_band_versions": 1.581700002134312,
+            "_projection_metrics": 3.19619999936549,
+            "_sales_metrics": 9.635599999455735,
+            "json_serialization": 0.25400000595254824
+          }
+        }
+      ]
+    },
+    {
+      "kind": "ranking",
+      "users": 4,
+      "summary": {
+        "samples": 20,
+        "errors": 0,
+        "p50Ms": 5125.657299999148,
+        "p95Ms": 5274.124600000505,
+        "maxMs": 5275.099799997406,
+        "correctHashes": 1
+      },
+      "samples": [
+        {
+          "label": "4-users-0",
+          "kind": "ranking",
+          "params": {},
+          "ms": 5125.656299998809,
+          "status": 200,
+          "returned": 20,
+          "pagination": {
+            "page": 1,
+            "pageSize": 20,
+            "total": 300000,
+            "pageCount": 15000
+          },
+          "bytes": 23294,
+          "sha256": "8288e63d1c2d1b5e997cd737a94b5716e6bfa64851e8bf6d995d482259555424",
+          "sqlCount": 19,
+          "sqlMs": 5111.430199998722,
+          "maxSqlMs": 4641.404300004069,
+          "phases": {
+            "filter_options": 231.8191999947885,
+            "ranking_page": 4641.9229000021005,
+            "_snapshot_map": 4.982799997378606,
+            "_price_band_versions": 1.2046000047121197,
+            "_projection_metrics": 5.300199998600874,
+            "_sales_metrics": 11.015099997166544,
+            "json_serialization": 0.2559000058681704
+          }
+        },
+        {
+          "label": "4-users-1",
+          "kind": "ranking",
+          "params": {},
+          "ms": 5123.813999998674,
+          "status": 200,
+          "returned": 20,
+          "pagination": {
+            "page": 1,
+            "pageSize": 20,
+            "total": 300000,
+            "pageCount": 15000
+          },
+          "bytes": 23294,
+          "sha256": "8288e63d1c2d1b5e997cd737a94b5716e6bfa64851e8bf6d995d482259555424",
+          "sqlCount": 19,
+          "sqlMs": 5107.609299979231,
+          "maxSqlMs": 4653.839999999036,
+          "phases": {
+            "filter_options": 234.32859999593347,
+            "ranking_page": 4654.303600000276,
+            "_snapshot_map": 6.858799999463372,
+            "_price_band_versions": 1.7288999952143058,
+            "_projection_metrics": 4.133099995669909,
+            "_sales_metrics": 9.676800000306685,
+            "json_serialization": 0.31490000401390716
+          }
+        },
+        {
+          "label": "4-users-2",
+          "kind": "ranking",
+          "params": {},
+          "ms": 5112.040400003025,
+          "status": 200,
+          "returned": 20,
+          "pagination": {
+            "page": 1,
+            "pageSize": 20,
+            "total": 300000,
+            "pageCount": 15000
+          },
+          "bytes": 23294,
+          "sha256": "8288e63d1c2d1b5e997cd737a94b5716e6bfa64851e8bf6d995d482259555424",
+          "sqlCount": 19,
+          "sqlMs": 5094.920999988972,
+          "maxSqlMs": 4632.222699998238,
+          "phases": {
+            "filter_options": 234.72909999691183,
+            "ranking_page": 4632.795800003805,
+            "_snapshot_map": 7.624900004884694,
+            "_price_band_versions": 1.595099995029159,
+            "_projection_metrics": 3.837500000372529,
+            "_sales_metrics": 13.356700001168065,
+            "json_serialization": 0.28359999851090834
+          }
+        },
+        {
+          "label": "4-users-3",
+          "kind": "ranking",
+          "params": {},
+          "ms": 5130.845399995451,
+          "status": 200,
+          "returned": 20,
+          "pagination": {
+            "page": 1,
+            "pageSize": 20,
+            "total": 300000,
+            "pageCount": 15000
+          },
+          "bytes": 23294,
+          "sha256": "8288e63d1c2d1b5e997cd737a94b5716e6bfa64851e8bf6d995d482259555424",
+          "sqlCount": 19,
+          "sqlMs": 5115.074800007278,
+          "maxSqlMs": 4665.369800000917,
+          "phases": {
+            "filter_options": 234.118699998362,
+            "ranking_page": 4665.759800001979,
+            "_snapshot_map": 5.663700001605321,
+            "_price_band_versions": 1.9147000057273544,
+            "_projection_metrics": 4.5625999991898425,
+            "_sales_metrics": 8.142899998347275,
+            "json_serialization": 0.33940000139409676
+          }
+        },
+        {
+          "label": "4-users-4",
+          "kind": "ranking",
+          "params": {},
+          "ms": 5275.099799997406,
+          "status": 200,
+          "returned": 20,
+          "pagination": {
+            "page": 1,
+            "pageSize": 20,
+            "total": 300000,
+            "pageCount": 15000
+          },
+          "bytes": 23294,
+          "sha256": "8288e63d1c2d1b5e997cd737a94b5716e6bfa64851e8bf6d995d482259555424",
+          "sqlCount": 19,
+          "sqlMs": 5259.726299998874,
+          "maxSqlMs": 4775.601599998481,
+          "phases": {
+            "filter_options": 264.7692000027746,
+            "ranking_page": 4776.106399993296,
+            "_snapshot_map": 5.51679999625776,
+            "_price_band_versions": 1.4690999960293993,
+            "_projection_metrics": 5.612100001599174,
+            "_sales_metrics": 9.683600001153536,
+            "json_serialization": 0.25579999783076346
+          }
+        },
+        {
+          "label": "4-users-5",
+          "kind": "ranking",
+          "params": {},
+          "ms": 5239.082000000053,
+          "status": 200,
+          "returned": 20,
+          "pagination": {
+            "page": 1,
+            "pageSize": 20,
+            "total": 300000,
+            "pageCount": 15000
+          },
+          "bytes": 23294,
+          "sha256": "8288e63d1c2d1b5e997cd737a94b5716e6bfa64851e8bf6d995d482259555424",
+          "sqlCount": 19,
+          "sqlMs": 5224.70649999741,
+          "maxSqlMs": 4764.5279999997,
+          "phases": {
+            "filter_options": 260.2206999945338,
+            "ranking_page": 4765.008099995612,
+            "_snapshot_map": 5.225300003075972,
+            "_price_band_versions": 1.2492999958340079,
+            "_projection_metrics": 3.7383000017143786,
+            "_sales_metrics": 8.678399994096253,
+            "json_serialization": 0.2494000000297092
+          }
+        },
+        {
+          "label": "4-users-6",
+          "kind": "ranking",
+          "params": {},
+          "ms": 5274.124600000505,
+          "status": 200,
+          "returned": 20,
+          "pagination": {
+            "page": 1,
+            "pageSize": 20,
+            "total": 300000,
+            "pageCount": 15000
+          },
+          "bytes": 23294,
+          "sha256": "8288e63d1c2d1b5e997cd737a94b5716e6bfa64851e8bf6d995d482259555424",
+          "sqlCount": 19,
+          "sqlMs": 5259.170900011668,
+          "maxSqlMs": 4810.234899996431,
+          "phases": {
+            "filter_options": 255.24250000307802,
+            "ranking_page": 4810.693999999785,
+            "_snapshot_map": 5.956000000878703,
+            "_price_band_versions": 1.352999999653548,
+            "_projection_metrics": 3.2436000037705526,
+            "_sales_metrics": 7.430799996654969,
+            "json_serialization": 0.26449999859323725
+          }
+        },
+        {
+          "label": "4-users-7",
+          "kind": "ranking",
+          "params": {},
+          "ms": 5177.661299996544,
+          "status": 200,
+          "returned": 20,
+          "pagination": {
+            "page": 1,
+            "pageSize": 20,
+            "total": 300000,
+            "pageCount": 15000
+          },
+          "bytes": 23294,
+          "sha256": "8288e63d1c2d1b5e997cd737a94b5716e6bfa64851e8bf6d995d482259555424",
+          "sqlCount": 19,
+          "sqlMs": 5162.463400010893,
+          "maxSqlMs": 4701.955700002145,
+          "phases": {
+            "filter_options": 257.1389000004274,
+            "ranking_page": 4702.497600002971,
+            "_snapshot_map": 5.878399999346584,
+            "_price_band_versions": 2.1287999988999218,
+            "_projection_metrics": 3.55620000482304,
+            "_sales_metrics": 7.278600001882296,
+            "json_serialization": 0.2908000024035573
+          }
+        },
+        {
+          "label": "4-users-8",
+          "kind": "ranking",
+          "params": {},
+          "ms": 5183.923099997628,
+          "status": 200,
+          "returned": 20,
+          "pagination": {
+            "page": 1,
+            "pageSize": 20,
+            "total": 300000,
+            "pageCount": 15000
+          },
+          "bytes": 23294,
+          "sha256": "8288e63d1c2d1b5e997cd737a94b5716e6bfa64851e8bf6d995d482259555424",
+          "sqlCount": 19,
+          "sqlMs": 5167.637999991712,
+          "maxSqlMs": 4722.0034999991185,
+          "phases": {
+            "filter_options": 239.48709999967832,
+            "ranking_page": 4722.538299996813,
+            "_snapshot_map": 5.970099999103695,
+            "_price_band_versions": 2.1811999977217056,
+            "_projection_metrics": 3.7673999977414496,
+            "_sales_metrics": 8.170399996743072,
+            "json_serialization": 0.323799999023322
+          }
+        },
+        {
+          "label": "4-users-9",
+          "kind": "ranking",
+          "params": {},
+          "ms": 5125.658299999486,
+          "status": 200,
+          "returned": 20,
+          "pagination": {
+            "page": 1,
+            "pageSize": 20,
+            "total": 300000,
+            "pageCount": 15000
+          },
+          "bytes": 23294,
+          "sha256": "8288e63d1c2d1b5e997cd737a94b5716e6bfa64851e8bf6d995d482259555424",
+          "sqlCount": 19,
+          "sqlMs": 5110.181300005934,
+          "maxSqlMs": 4672.639000003983,
+          "phases": {
+            "filter_options": 237.48219999833964,
+            "ranking_page": 4673.172299997532,
+            "_snapshot_map": 6.066800000553485,
+            "_price_band_versions": 1.3009000031161122,
+            "_projection_metrics": 3.377199995156843,
+            "_sales_metrics": 7.7049999963492155,
+            "json_serialization": 0.3336000008857809
+          }
+        },
+        {
+          "label": "4-users-10",
+          "kind": "ranking",
+          "params": {},
+          "ms": 5076.155999995535,
+          "status": 200,
+          "returned": 20,
+          "pagination": {
+            "page": 1,
+            "pageSize": 20,
+            "total": 300000,
+            "pageCount": 15000
+          },
+          "bytes": 23294,
+          "sha256": "8288e63d1c2d1b5e997cd737a94b5716e6bfa64851e8bf6d995d482259555424",
+          "sqlCount": 19,
+          "sqlMs": 5060.668800011626,
+          "maxSqlMs": 4605.113900004653,
+          "phases": {
+            "filter_options": 231.0416999971494,
+            "ranking_page": 4605.607499994221,
+            "_snapshot_map": 6.004500006383751,
+            "_price_band_versions": 1.956400003109593,
+            "_projection_metrics": 6.880699998873752,
+            "_sales_metrics": 15.209500001219567,
+            "json_serialization": 0.2702000056160614
+          }
+        },
+        {
+          "label": "4-users-11",
+          "kind": "ranking",
+          "params": {},
+          "ms": 5111.560199999076,
+          "status": 200,
+          "returned": 20,
+          "pagination": {
+            "page": 1,
+            "pageSize": 20,
+            "total": 300000,
+            "pageCount": 15000
+          },
+          "bytes": 23294,
+          "sha256": "8288e63d1c2d1b5e997cd737a94b5716e6bfa64851e8bf6d995d482259555424",
+          "sqlCount": 19,
+          "sqlMs": 5097.11599998991,
+          "maxSqlMs": 4666.224599997804,
+          "phases": {
+            "filter_options": 227.02009999920847,
+            "ranking_page": 4666.682100003527,
+            "_snapshot_map": 5.022500001359731,
+            "_price_band_versions": 1.8635999949765392,
+            "_projection_metrics": 3.3640999972703867,
+            "_sales_metrics": 7.891499997640494,
+            "json_serialization": 0.26670000079320744
+          }
+        },
+        {
+          "label": "4-users-12",
+          "kind": "ranking",
+          "params": {},
+          "ms": 5178.357800003141,
+          "status": 200,
+          "returned": 20,
+          "pagination": {
+            "page": 1,
+            "pageSize": 20,
+            "total": 300000,
+            "pageCount": 15000
+          },
+          "bytes": 23294,
+          "sha256": "8288e63d1c2d1b5e997cd737a94b5716e6bfa64851e8bf6d995d482259555424",
+          "sqlCount": 19,
+          "sqlMs": 5160.227100015618,
+          "maxSqlMs": 4717.410299999756,
+          "phases": {
+            "filter_options": 239.51559999841265,
+            "ranking_page": 4718.005999995512,
+            "_snapshot_map": 7.737200001429301,
+            "_price_band_versions": 2.169400002458133,
+            "_projection_metrics": 3.4174999964307062,
+            "_sales_metrics": 7.202399996458553,
+            "json_serialization": 0.261799999861978
+          }
+        },
+        {
+          "label": "4-users-13",
+          "kind": "ranking",
+          "params": {},
+          "ms": 5120.205800005351,
+          "status": 200,
+          "returned": 20,
+          "pagination": {
+            "page": 1,
+            "pageSize": 20,
+            "total": 300000,
+            "pageCount": 15000
+          },
+          "bytes": 23294,
+          "sha256": "8288e63d1c2d1b5e997cd737a94b5716e6bfa64851e8bf6d995d482259555424",
+          "sqlCount": 19,
+          "sqlMs": 5104.713800006721,
+          "maxSqlMs": 4648.163400001067,
+          "phases": {
+            "filter_options": 240.362800002913,
+            "ranking_page": 4648.707799999102,
+            "_snapshot_map": 5.5551999976160005,
+            "_price_band_versions": 1.5435000022989698,
+            "_projection_metrics": 6.328599993139505,
+            "_sales_metrics": 11.951500004215632,
+            "json_serialization": 0.2748000042629428
+          }
+        },
+        {
+          "label": "4-users-14",
+          "kind": "ranking",
+          "params": {},
+          "ms": 5186.6422000020975,
+          "status": 200,
+          "returned": 20,
+          "pagination": {
+            "page": 1,
+            "pageSize": 20,
+            "total": 300000,
+            "pageCount": 15000
+          },
+          "bytes": 23294,
+          "sha256": "8288e63d1c2d1b5e997cd737a94b5716e6bfa64851e8bf6d995d482259555424",
+          "sqlCount": 19,
+          "sqlMs": 5171.619200009445,
+          "maxSqlMs": 4741.042900001048,
+          "phases": {
+            "filter_options": 236.76810000324622,
+            "ranking_page": 4741.52299999696,
+            "_snapshot_map": 5.303499994624872,
+            "_price_band_versions": 1.3395999994827434,
+            "_projection_metrics": 4.38669999857666,
+            "_sales_metrics": 8.120500002405606,
+            "json_serialization": 0.262400004430674
+          }
+        },
+        {
+          "label": "4-users-15",
+          "kind": "ranking",
+          "params": {},
+          "ms": 5219.737999999779,
+          "status": 200,
+          "returned": 20,
+          "pagination": {
+            "page": 1,
+            "pageSize": 20,
+            "total": 300000,
+            "pageCount": 15000
+          },
+          "bytes": 23294,
+          "sha256": "8288e63d1c2d1b5e997cd737a94b5716e6bfa64851e8bf6d995d482259555424",
+          "sqlCount": 19,
+          "sqlMs": 5205.001999995147,
+          "maxSqlMs": 4776.601600002323,
+          "phases": {
+            "filter_options": 236.8570999969961,
+            "ranking_page": 4777.116799996293,
+            "_snapshot_map": 6.164800004626159,
+            "_price_band_versions": 1.8487999986973591,
+            "_projection_metrics": 3.4109999978682026,
+            "_sales_metrics": 8.039300002565142,
+            "json_serialization": 0.29150000045774505
+          }
+        },
+        {
+          "label": "4-users-16",
+          "kind": "ranking",
+          "params": {},
+          "ms": 5039.480399995227,
+          "status": 200,
+          "returned": 20,
+          "pagination": {
+            "page": 1,
+            "pageSize": 20,
+            "total": 300000,
+            "pageCount": 15000
+          },
+          "bytes": 23294,
+          "sha256": "8288e63d1c2d1b5e997cd737a94b5716e6bfa64851e8bf6d995d482259555424",
+          "sqlCount": 19,
+          "sqlMs": 5024.556600015785,
+          "maxSqlMs": 4583.4747000044445,
+          "phases": {
+            "filter_options": 231.44119999778923,
+            "ranking_page": 4584.0043000062,
+            "_snapshot_map": 6.530399994517211,
+            "_price_band_versions": 1.6249999971478246,
+            "_projection_metrics": 3.594199995859526,
+            "_sales_metrics": 7.971600003656931,
+            "json_serialization": 0.24300000222865492
+          }
+        },
+        {
+          "label": "4-users-17",
+          "kind": "ranking",
+          "params": {},
+          "ms": 4989.730100001907,
+          "status": 200,
+          "returned": 20,
+          "pagination": {
+            "page": 1,
+            "pageSize": 20,
+            "total": 300000,
+            "pageCount": 15000
+          },
+          "bytes": 23294,
+          "sha256": "8288e63d1c2d1b5e997cd737a94b5716e6bfa64851e8bf6d995d482259555424",
+          "sqlCount": 19,
+          "sqlMs": 4974.008100027277,
+          "maxSqlMs": 4524.793000004138,
+          "phases": {
+            "filter_options": 224.00910000578733,
+            "ranking_page": 4525.288199998613,
+            "_snapshot_map": 5.650899998727255,
+            "_price_band_versions": 1.8022000003838912,
+            "_projection_metrics": 7.774900004733354,
+            "_sales_metrics": 14.743599997018464,
+            "json_serialization": 0.2612000025692396
+          }
+        },
+        {
+          "label": "4-users-18",
+          "kind": "ranking",
+          "params": {},
+          "ms": 4997.824900005071,
+          "status": 200,
+          "returned": 20,
+          "pagination": {
+            "page": 1,
+            "pageSize": 20,
+            "total": 300000,
+            "pageCount": 15000
+          },
+          "bytes": 23294,
+          "sha256": "8288e63d1c2d1b5e997cd737a94b5716e6bfa64851e8bf6d995d482259555424",
+          "sqlCount": 19,
+          "sqlMs": 4983.146700011275,
+          "maxSqlMs": 4567.598800000269,
+          "phases": {
+            "filter_options": 233.6009999999078,
+            "ranking_page": 4568.071200003033,
+            "_snapshot_map": 6.394099997123703,
+            "_price_band_versions": 1.6867000013007782,
+            "_projection_metrics": 3.088700002990663,
+            "_sales_metrics": 7.766000002447981,
+            "json_serialization": 0.28250000468688086
+          }
+        },
+        {
+          "label": "4-users-19",
+          "kind": "ranking",
+          "params": {},
+          "ms": 4984.972999998718,
+          "status": 200,
+          "returned": 20,
+          "pagination": {
+            "page": 1,
+            "pageSize": 20,
+            "total": 300000,
+            "pageCount": 15000
+          },
+          "bytes": 23294,
+          "sha256": "8288e63d1c2d1b5e997cd737a94b5716e6bfa64851e8bf6d995d482259555424",
+          "sqlCount": 19,
+          "sqlMs": 4969.711000005191,
+          "maxSqlMs": 4547.557000005327,
+          "phases": {
+            "filter_options": 235.35979999724077,
+            "ranking_page": 4548.1122999990475,
+            "_snapshot_map": 5.2713999975821935,
+            "_price_band_versions": 1.3690999985556118,
+            "_projection_metrics": 3.0221999986679293,
+            "_sales_metrics": 8.633199999167118,
+            "json_serialization": 0.32500000088475645
+          }
+        }
+      ]
+    },
+    {
+      "kind": "ranking",
+      "variant": {
+        "page": 2
+      },
+      "samples": [
+        {
+          "label": "variant-0",
+          "kind": "ranking",
+          "params": {
+            "page": 2
+          },
+          "ms": 4595.531800005119,
+          "status": 200,
+          "returned": 20,
+          "pagination": {
+            "page": 2,
+            "pageSize": 20,
+            "total": 300000,
+            "pageCount": 15000
+          },
+          "bytes": 23295,
+          "sha256": "ed4fd597512a8fba5e2bd34e1d2badc171d109b7a09308b2e2eab5a2894c863d",
+          "sqlCount": 19,
+          "sqlMs": 4580.537300011201,
+          "maxSqlMs": 4181.64059999981,
+          "phases": {
+            "filter_options": 214.8730000044452,
+            "ranking_page": 4182.128799999191,
+            "_snapshot_map": 6.073899996408727,
+            "_price_band_versions": 1.4378999985638075,
+            "_projection_metrics": 3.4420000010868534,
+            "_sales_metrics": 7.38660000206437,
+            "json_serialization": 0.28360000578686595
+          }
+        },
+        {
+          "label": "variant-1",
+          "kind": "ranking",
+          "params": {
+            "page": 2
+          },
+          "ms": 4604.954499998712,
+          "status": 200,
+          "returned": 20,
+          "pagination": {
+            "page": 2,
+            "pageSize": 20,
+            "total": 300000,
+            "pageCount": 15000
+          },
+          "bytes": 23295,
+          "sha256": "ed4fd597512a8fba5e2bd34e1d2badc171d109b7a09308b2e2eab5a2894c863d",
+          "sqlCount": 19,
+          "sqlMs": 4589.888900016376,
+          "maxSqlMs": 4176.553500001319,
+          "phases": {
+            "filter_options": 227.1958999990602,
+            "ranking_page": 4177.079500004766,
+            "_snapshot_map": 6.590199998754542,
+            "_price_band_versions": 1.2666000038734637,
+            "_projection_metrics": 2.8099999981350265,
+            "_sales_metrics": 8.559599998989142,
+            "json_serialization": 0.2502999996067956
+          }
+        }
+      ]
+    },
+    {
+      "kind": "ranking",
+      "variant": {
+        "filters": {
+          "query": "does-not-exist"
+        }
+      },
+      "samples": [
+        {
+          "label": "variant-0",
+          "kind": "ranking",
+          "params": {
+            "filters": {
+              "query": "does-not-exist"
+            }
+          },
+          "ms": 1894.4964999973308,
+          "status": 200,
+          "returned": 0,
+          "pagination": {
+            "page": 1,
+            "pageSize": 20,
+            "total": 0,
+            "pageCount": 1
+          },
+          "bytes": 3958,
+          "sha256": "d899ca084c59d1c5c55a8fd0cbfec118af024dcb9b847bdbc4970808167e167d",
+          "sqlCount": 11,
+          "sqlMs": 1887.8415999788558,
+          "maxSqlMs": 1385.0898999953642,
+          "phases": {
+            "filter_options": 234.95539999566972,
+            "ranking_page": 89.75159999681637,
+            "_snapshot_map": 0.0017999991541728377,
+            "_price_band_versions": 1.5002000000094995,
+            "_projection_metrics": 0.001400003384333104,
+            "_sales_metrics": 0.0033000032999552786,
+            "json_serialization": 0.13439999747788534
+          }
+        },
+        {
+          "label": "variant-1",
+          "kind": "ranking",
+          "params": {
+            "filters": {
+              "query": "does-not-exist"
+            }
+          },
+          "ms": 860.4559999948833,
+          "status": 200,
+          "returned": 0,
+          "pagination": {
+            "page": 1,
+            "pageSize": 20,
+            "total": 0,
+            "pageCount": 1
+          },
+          "bytes": 3958,
+          "sha256": "d899ca084c59d1c5c55a8fd0cbfec118af024dcb9b847bdbc4970808167e167d",
+          "sqlCount": 11,
+          "sqlMs": 853.8731000080588,
+          "maxSqlMs": 392.7812000038102,
+          "phases": {
+            "filter_options": 217.4721999981557,
+            "ranking_page": 88.81180000025779,
+            "_snapshot_map": 0.0023999964469112456,
+            "_price_band_versions": 1.6402999972342514,
+            "_projection_metrics": 0.0020000006770715117,
+            "_sales_metrics": 0.0020000006770715117,
+            "json_serialization": 0.11449999874457717
+          }
+        }
+      ]
+    },
+    {
+      "kind": "ranking",
+      "variant": {
+        "filters": {
+          "priceBands": [
+            "未确认价格"
+          ]
+        }
+      },
+      "samples": [
+        {
+          "label": "variant-0",
+          "kind": "ranking",
+          "params": {
+            "filters": {
+              "priceBands": [
+                "未确认价格"
+              ]
+            }
+          },
+          "ms": 4209.969600000477,
+          "status": 200,
+          "returned": 20,
+          "pagination": {
+            "page": 1,
+            "pageSize": 20,
+            "total": 225000,
+            "pageCount": 11250
+          },
+          "bytes": 22889,
+          "sha256": "80fde314e43c7c419eedf6e410e50b4b1a99c366f738e44d24660a8aa2eedb7b",
+          "sqlCount": 19,
+          "sqlMs": 4196.460900006059,
+          "maxSqlMs": 3808.032799999637,
+          "phases": {
+            "filter_options": 214.23019999929238,
+            "ranking_page": 3808.4931999983382,
+            "_snapshot_map": 4.934299999149516,
+            "_price_band_versions": 1.13229999988107,
+            "_projection_metrics": 3.179300001647789,
+            "_sales_metrics": 7.392500003334135,
+            "json_serialization": 0.32440000359201804
+          }
+        },
+        {
+          "label": "variant-1",
+          "kind": "ranking",
+          "params": {
+            "filters": {
+              "priceBands": [
+                "未确认价格"
+              ]
+            }
+          },
+          "ms": 4302.349099998537,
+          "status": 200,
+          "returned": 20,
+          "pagination": {
+            "page": 1,
+            "pageSize": 20,
+            "total": 225000,
+            "pageCount": 11250
+          },
+          "bytes": 22889,
+          "sha256": "80fde314e43c7c419eedf6e410e50b4b1a99c366f738e44d24660a8aa2eedb7b",
+          "sqlCount": 19,
+          "sqlMs": 4288.260800014541,
+          "maxSqlMs": 3903.108600003179,
+          "phases": {
+            "filter_options": 206.37169999827165,
+            "ranking_page": 3903.5760999977356,
+            "_snapshot_map": 5.221899999014568,
+            "_price_band_versions": 1.3120000003254972,
+            "_projection_metrics": 3.0126999990898184,
+            "_sales_metrics": 8.794499997748062,
+            "json_serialization": 0.2626999994390644
+          }
+        }
+      ]
+    },
+    {
+      "kind": "ranking",
+      "variant": {
+        "filters": {
+          "priceBands": [
+            "价格带1"
+          ]
+        }
+      },
+      "samples": [
+        {
+          "label": "variant-0",
+          "kind": "ranking",
+          "params": {
+            "filters": {
+              "priceBands": [
+                "价格带1"
+              ]
+            }
+          },
+          "ms": 3578.889500000514,
+          "status": 200,
+          "returned": 20,
+          "pagination": {
+            "page": 1,
+            "pageSize": 20,
+            "total": 25000,
+            "pageCount": 1250
+          },
+          "bytes": 23011,
+          "sha256": "0261baca237d2c0ca39ff18d78bc7cb32a38c8f4104ee842a311ba8437fbe916",
+          "sqlCount": 19,
+          "sqlMs": 3564.034699993499,
+          "maxSqlMs": 3172.5196999977925,
+          "phases": {
+            "filter_options": 211.46569999837084,
+            "ranking_page": 3172.9740999944624,
+            "_snapshot_map": 5.973200000880752,
+            "_price_band_versions": 1.5106999999261461,
+            "_projection_metrics": 3.0130000013741665,
+            "_sales_metrics": 9.74339999811491,
+            "json_serialization": 0.2538999979151413
+          }
+        },
+        {
+          "label": "variant-1",
+          "kind": "ranking",
+          "params": {
+            "filters": {
+              "priceBands": [
+                "价格带1"
+              ]
+            }
+          },
+          "ms": 3673.2895000022836,
+          "status": 200,
+          "returned": 20,
+          "pagination": {
+            "page": 1,
+            "pageSize": 20,
+            "total": 25000,
+            "pageCount": 1250
+          },
+          "bytes": 23011,
+          "sha256": "0261baca237d2c0ca39ff18d78bc7cb32a38c8f4104ee842a311ba8437fbe916",
+          "sqlCount": 19,
+          "sqlMs": 3658.3147999990615,
+          "maxSqlMs": 3271.0468000004767,
+          "phases": {
+            "filter_options": 208.83580000372604,
+            "ranking_page": 3271.5826999992714,
+            "_snapshot_map": 6.245099997613579,
+            "_price_band_versions": 1.179500002763234,
+            "_projection_metrics": 2.728600004047621,
+            "_sales_metrics": 7.763399997202214,
+            "json_serialization": 0.2750999992713332
+          }
+        }
+      ]
+    },
+    {
+      "kind": "ranking",
+      "variant": {
+        "filters": {
+          "startDate": "2026-08-01",
+          "endDate": "2026-08-31"
+        }
+      },
+      "samples": [
+        {
+          "label": "variant-0",
+          "kind": "ranking",
+          "params": {
+            "filters": {
+              "startDate": "2026-08-01",
+              "endDate": "2026-08-31"
+            }
+          },
+          "ms": 1389.9496999947587,
+          "status": 200,
+          "returned": 20,
+          "pagination": {
+            "page": 1,
+            "pageSize": 20,
+            "total": 50000,
+            "pageCount": 2500
+          },
+          "bytes": 23404,
+          "sha256": "0c8bbc1e41c048fdd1d6700f515e7e54255f514681176421942e1e5e877bfee4",
+          "sqlCount": 19,
+          "sqlMs": 1374.2615000155638,
+          "maxSqlMs": 904.7160000045551,
+          "phases": {
+            "filter_options": 204.20169999852078,
+            "ranking_page": 905.2203000028385,
+            "_snapshot_map": 5.938299997069407,
+            "_price_band_versions": 1.442499997210689,
+            "_projection_metrics": 3.444000001763925,
+            "_sales_metrics": 10.249200000544079,
+            "json_serialization": 0.29720000020461157
+          }
+        },
+        {
+          "label": "variant-1",
+          "kind": "ranking",
+          "params": {
+            "filters": {
+              "startDate": "2026-08-01",
+              "endDate": "2026-08-31"
+            }
+          },
+          "ms": 1504.3812000003527,
+          "status": 200,
+          "returned": 20,
+          "pagination": {
+            "page": 1,
+            "pageSize": 20,
+            "total": 50000,
+            "pageCount": 2500
+          },
+          "bytes": 23404,
+          "sha256": "0c8bbc1e41c048fdd1d6700f515e7e54255f514681176421942e1e5e877bfee4",
+          "sqlCount": 19,
+          "sqlMs": 1487.0008999932907,
+          "maxSqlMs": 1034.2804999963846,
+          "phases": {
+            "filter_options": 223.669200000586,
+            "ranking_page": 1034.9023000017041,
+            "_snapshot_map": 6.024599999364,
+            "_price_band_versions": 1.4608999990741722,
+            "_projection_metrics": 5.35449999733828,
+            "_sales_metrics": 10.042499998235144,
+            "json_serialization": 0.2896999940276146
+          }
+        }
+      ]
+    },
+    {
+      "kind": "ranking",
+      "variant": {
+        "filters": {
+          "brands": [
+            "品牌0"
+          ]
+        }
+      },
+      "samples": [
+        {
+          "label": "variant-0",
+          "kind": "ranking",
+          "params": {
+            "filters": {
+              "brands": [
+                "品牌0"
+              ]
+            }
+          },
+          "ms": 1060.4147000049124,
+          "status": 200,
+          "returned": 20,
+          "pagination": {
+            "page": 1,
+            "pageSize": 20,
+            "total": 24616,
+            "pageCount": 1231
+          },
+          "bytes": 23387,
+          "sha256": "13f74e7a5fe71bd403d70b1b2ac42139f1d120ebf64c9ff987f37c32f75ab02e",
+          "sqlCount": 19,
+          "sqlMs": 1045.6603999846266,
+          "maxSqlMs": 641.9243000054848,
+          "phases": {
+            "filter_options": 209.91829999547917,
+            "ranking_page": 642.4418000024161,
+            "_snapshot_map": 5.83119999646442,
+            "_price_band_versions": 1.2846000026911497,
+            "_projection_metrics": 5.30340000113938,
+            "_sales_metrics": 10.76689999899827,
+            "json_serialization": 0.24870000197552145
+          }
+        },
+        {
+          "label": "variant-1",
+          "kind": "ranking",
+          "params": {
+            "filters": {
+              "brands": [
+                "品牌0"
+              ]
+            }
+          },
+          "ms": 990.4333000013139,
+          "status": 200,
+          "returned": 20,
+          "pagination": {
+            "page": 1,
+            "pageSize": 20,
+            "total": 24616,
+            "pageCount": 1231
+          },
+          "bytes": 23387,
+          "sha256": "13f74e7a5fe71bd403d70b1b2ac42139f1d120ebf64c9ff987f37c32f75ab02e",
+          "sqlCount": 19,
+          "sqlMs": 976.3870999886421,
+          "maxSqlMs": 592.2130000035395,
+          "phases": {
+            "filter_options": 206.86079999723006,
+            "ranking_page": 592.698599997675,
+            "_snapshot_map": 5.289900000207126,
+            "_price_band_versions": 1.324599994404707,
+            "_projection_metrics": 3.1098000035854056,
+            "_sales_metrics": 7.628200000908691,
+            "json_serialization": 0.24629999825265259
+          }
+        }
+      ]
+    },
+    {
+      "kind": "ranking",
+      "variant": {
+        "filters": {
+          "categories": [
+            "类目0"
+          ],
+          "rankingDimensions": [
+            "SPU"
+          ]
+        }
+      },
+      "samples": [
+        {
+          "label": "variant-0",
+          "kind": "ranking",
+          "params": {
+            "filters": {
+              "categories": [
+                "类目0"
+              ],
+              "rankingDimensions": [
+                "SPU"
+              ]
+            }
+          },
+          "ms": 394.79620000201976,
+          "status": 200,
+          "returned": 0,
+          "pagination": {
+            "page": 1,
+            "pageSize": 20,
+            "total": 0,
+            "pageCount": 1
+          },
+          "bytes": 3972,
+          "sha256": "834ba96061142ed984ae985ead1527d8fc9bbc0496df72310f8213389fb05f88",
+          "sqlCount": 11,
+          "sqlMs": 388.34380001208046,
+          "maxSqlMs": 202.3412000053213,
+          "phases": {
+            "filter_options": 208.51850000326522,
+            "ranking_page": 19.397999996726867,
+            "_snapshot_map": 0.0016999983927235007,
+            "_price_band_versions": 1.4253999979700893,
+            "_projection_metrics": 0.0012999953469261527,
+            "_sales_metrics": 0.0018999999156221747,
+            "json_serialization": 0.11999999696854502
+          }
+        },
+        {
+          "label": "variant-1",
+          "kind": "ranking",
+          "params": {
+            "filters": {
+              "categories": [
+                "类目0"
+              ],
+              "rankingDimensions": [
+                "SPU"
+              ]
+            }
+          },
+          "ms": 421.8187000005855,
+          "status": 200,
+          "returned": 0,
+          "pagination": {
+            "page": 1,
+            "pageSize": 20,
+            "total": 0,
+            "pageCount": 1
+          },
+          "bytes": 3972,
+          "sha256": "834ba96061142ed984ae985ead1527d8fc9bbc0496df72310f8213389fb05f88",
+          "sqlCount": 11,
+          "sqlMs": 414.90699999121716,
+          "maxSqlMs": 213.37140000105137,
+          "phases": {
+            "filter_options": 220.26300000288757,
+            "ranking_page": 16.395699996792246,
+            "_snapshot_map": 0.001600004907231778,
+            "_price_band_versions": 1.4257000002544373,
+            "_projection_metrics": 0.0012000018614344299,
+            "_sales_metrics": 0.0018999999156221747,
+            "json_serialization": 0.11660000018309802
+          }
+        }
+      ]
+    },
+    {
+      "kind": "ranking",
+      "memoryPeakBytes": 227952,
+      "sample": {
+        "label": "memory-with-tracing",
+        "kind": "ranking",
+        "params": {},
+        "ms": 4562.392200001341,
+        "status": 200,
+        "returned": 20,
+        "pagination": {
+          "page": 1,
+          "pageSize": 20,
+          "total": 300000,
+          "pageCount": 15000
+        },
+        "bytes": 23294,
+        "sha256": "8288e63d1c2d1b5e997cd737a94b5716e6bfa64851e8bf6d995d482259555424",
+        "sqlCount": 19,
+        "sqlMs": 4511.016900010873,
+        "maxSqlMs": 4117.922599994927,
+        "phases": {
+          "filter_options": 216.61109999695327,
+          "ranking_page": 4119.441000002553,
+          "_snapshot_map": 20.25590000266675,
+          "_price_band_versions": 4.220000002533197,
+          "_projection_metrics": 7.8357000020332634,
+          "_sales_metrics": 12.447000000975095,
+          "json_serialization": 2.2000000026309863
+        }
+      },
+      "timingComparable": false
+    },
+    {
+      "readerWriteDenied": true
+    }
+  ]
+}

@@ -6,11 +6,20 @@
       "platform": "天猫",
       "shopName": "天猫-志高亿玖专卖店",
       "enabled": true,
+      "loginMode": "windows_dpapi_credentials",
+      "productMasterExportMode": "on_sale_pagewise_excel",
+      "productMasterCadence": {
+        "intervalDays": 1,
+        "initialDueDate": "2026-08-27"
+      },
       "initialStartDate": "2026-07-28",
       "portalUrl": "https://sycm.taobao.com/portal/home.htm",
       "browser": {
-        "profileDir": ".runtime/tmall-yijiu-chrome-profile",
-        "debugPort": 9324,
+        "executablePath": "%LOCALAPPDATA%/Chromium/Application/chrome.exe",
+        "userDataDir": "%LOCALAPPDATA%/Chromium-Tmall-Yijiu/User Data",
+        "profileName": "Default",
+        "profileDir": "%LOCALAPPDATA%/Chromium-Tmall-Yijiu/User Data/Default",
+        "debugPort": 9334,
         "downloadDir": "D:\\谷歌浏览器\\tmall-yijiu"
       }
     },
@@ -18,11 +27,19 @@
       "storeKey": "tmall-lili",
       "platform": "天猫",
       "shopName": "天猫-志高丽力专卖店",
-      "enabled": false,
-      "initialStartDate": null,
+      "enabled": true,
+      "loginMode": "windows_dpapi_credentials",
+      "productMasterCadence": {
+        "intervalDays": 1,
+        "initialDueDate": "2026-08-27"
+      },
+      "initialStartDate": "2026-08-01",
       "portalUrl": "https://sycm.taobao.com/portal/home.htm",
       "browser": {
-        "profileDir": ".runtime/tmall-lili-chrome-profile",
+        "executablePath": "%LOCALAPPDATA%/Chromium/Application/chrome.exe",
+        "userDataDir": "%LOCALAPPDATA%/Chromium-Tmall-Lili/User Data",
+        "profileName": "Default",
+        "profileDir": "%LOCALAPPDATA%/Chromium-Tmall-Lili/User Data/Default",
         "debugPort": 9325,
         "downloadDir": "D:\\谷歌浏览器\\tmall-lili"
       }
@@ -44,11 +61,20 @@
       "storeKey": "tmall-tuofeng",
       "platform": "天猫",
       "shopName": "天猫-志高拓丰专卖店",
-      "enabled": false,
-      "initialStartDate": null,
+      "enabled": true,
+      "loginMode": "windows_dpapi_credentials",
+      "productMasterExportMode": "on_sale_pagewise_excel",
+      "productMasterCadence": {
+        "intervalDays": 3,
+        "initialDueDate": "2026-08-25"
+      },
+      "initialStartDate": "2026-08-01",
       "portalUrl": "https://sycm.taobao.com/portal/home.htm",
       "browser": {
-        "profileDir": ".runtime/tmall-tuofeng-chrome-profile",
+        "executablePath": "%LOCALAPPDATA%/Chromium/Application/chrome.exe",
+        "userDataDir": "%LOCALAPPDATA%/Chromium-Tmall-Tuofeng/User Data",
+        "profileName": "Default",
+        "profileDir": "%LOCALAPPDATA%/Chromium-Tmall-Tuofeng/User Data/Default",
         "debugPort": 9327,
         "downloadDir": "D:\\谷歌浏览器\\tmall-tuofeng"
       }
@@ -57,11 +83,19 @@
       "storeKey": "tmall-yiyong",
       "platform": "天猫",
       "shopName": "天猫-志高亿用专卖店",
-      "enabled": false,
-      "initialStartDate": null,
+      "enabled": true,
+      "loginMode": "windows_dpapi_credentials",
+      "productMasterCadence": {
+        "intervalDays": 1,
+        "initialDueDate": "2026-08-26"
+      },
+      "initialStartDate": "2026-08-01",
       "portalUrl": "https://sycm.taobao.com/portal/home.htm",
       "browser": {
-        "profileDir": ".runtime/tmall-yiyong-chrome-profile",
+        "executablePath": "%LOCALAPPDATA%/Chromium/Application/chrome.exe",
+        "userDataDir": "%LOCALAPPDATA%/Chromium-Tmall-Yiyong/User Data",
+        "profileName": "Default",
+        "profileDir": "%LOCALAPPDATA%/Chromium-Tmall-Yiyong/User Data/Default",
         "debugPort": 9328,
         "downloadDir": "D:\\谷歌浏览器\\tmall-yiyong"
       }
@@ -70,11 +104,20 @@
       "storeKey": "tmall-cuizhiwang",
       "platform": "天猫",
       "shopName": "天猫-志高炊之王专卖店",
-      "enabled": false,
-      "initialStartDate": null,
+      "enabled": true,
+      "loginMode": "windows_dpapi_credentials",
+      "productMasterExportMode": "on_sale_pagewise_excel",
+      "productMasterCadence": {
+        "intervalDays": 3,
+        "initialDueDate": "2026-08-25"
+      },
+      "initialStartDate": "2026-08-01",
       "portalUrl": "https://sycm.taobao.com/portal/home.htm",
       "browser": {
-        "profileDir": ".runtime/tmall-cuizhiwang-chrome-profile",
+        "executablePath": "%LOCALAPPDATA%/Chromium/Application/chrome.exe",
+        "userDataDir": "%LOCALAPPDATA%/Chromium-Tmall-Cuizhiwang/User Data",
+        "profileName": "Default",
+        "profileDir": "%LOCALAPPDATA%/Chromium-Tmall-Cuizhiwang/User Data/Default",
         "debugPort": 9329,
         "downloadDir": "D:\\谷歌浏览器\\tmall-cuizhiwang"
       }
@@ -96,11 +139,20 @@
       "storeKey": "tmall-masitu",
       "platform": "天猫",
       "shopName": "天猫-志高马思图专卖店",
-      "enabled": false,
-      "initialStartDate": null,
+      "enabled": true,
+      "loginMode": "windows_dpapi_credentials",
+      "productMasterExportMode": "on_sale_pagewise_excel",
+      "productMasterCadence": {
+        "intervalDays": 3,
+        "initialDueDate": "2026-08-26"
+      },
+      "initialStartDate": "2026-08-01",
       "portalUrl": "https://sycm.taobao.com/portal/home.htm",
       "browser": {
-        "profileDir": ".runtime/tmall-masitu-chrome-profile",
+        "executablePath": "%LOCALAPPDATA%/Chromium/Application/chrome.exe",
+        "userDataDir": "%LOCALAPPDATA%/Chromium-Tmall-Masitu/User Data",
+        "profileName": "Default",
+        "profileDir": "%LOCALAPPDATA%/Chromium-Tmall-Masitu/User Data/Default",
         "debugPort": 9331,
         "downloadDir": "D:\\谷歌浏览器\\tmall-masitu"
       }

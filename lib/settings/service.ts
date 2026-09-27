@@ -1,7 +1,7 @@
 import {
-  getSalesDatabase,
-  type SalesDatabase,
-} from "@/lib/sales/database";
+  getD1Database,
+  type D1Database,
+} from "@/lib/database/d1";
 
 export type OperatingSettings = {
   targetDays: number;
@@ -57,7 +57,7 @@ function normalize(input: Partial<OperatingSettings> | null | undefined): Operat
   };
 }
 
-export async function ensureSettingsSchema(db: SalesDatabase = getSalesDatabase()) {
+export async function ensureSettingsSchema(db: D1Database = getD1Database()) {
   const key = db as unknown as object;
   const existing = schemaReadyByDatabase.get(key);
   if (existing) return existing;
@@ -71,7 +71,7 @@ export async function ensureSettingsSchema(db: SalesDatabase = getSalesDatabase(
   return setup;
 }
 
-export async function readOperatingSettings(db: SalesDatabase = getSalesDatabase()): Promise<StoredOperatingSettings> {
+export async function readOperatingSettings(db: D1Database = getD1Database()): Promise<StoredOperatingSettings> {
   await ensureSettingsSchema(db);
   const row = await db.prepare(
     `SELECT value_json, updated_by, updated_at FROM system_settings WHERE key = ? LIMIT 1`,
@@ -84,7 +84,7 @@ export async function readOperatingSettings(db: SalesDatabase = getSalesDatabase
   }
 }
 
-export async function saveOperatingSettings(input: Partial<OperatingSettings>, updatedBy: string, db: SalesDatabase = getSalesDatabase()) {
+export async function saveOperatingSettings(input: Partial<OperatingSettings>, updatedBy: string, db: D1Database = getD1Database()) {
   await ensureSettingsSchema(db);
   const settings = normalize(input);
   await db.prepare(

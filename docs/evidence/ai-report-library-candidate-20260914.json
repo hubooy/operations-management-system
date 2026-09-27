@@ -1,0 +1,98 @@
+{
+  "date": "2026-09-14",
+  "stage": "isolated-candidate-not-deployed",
+  "baseMain": "5ab4007af591965dd5067ae0537da58d7d56a69b",
+  "branch": "codex/ai-report-skills-pipelines",
+  "production": {
+    "writes": false,
+    "migration": false,
+    "serviceRestart": false,
+    "paidModelCalls": 0,
+    "notificationsSent": 0
+  },
+  "node": {
+    "command": "node --import tsx --test --test-concurrency=4 tests/*.test.ts",
+    "passed": 2159,
+    "failed": 0,
+    "cancelled": 0,
+    "skipped": 21,
+    "initialDefaultConcurrency": "two pre-existing browser tests timed out; both passed individually and in the bounded full run"
+  },
+  "postgres": {
+    "total": 222,
+    "passed": 219,
+    "skipped": 3,
+    "upgrade": "0011->0012",
+    "tables": 56,
+    "oldConversationsAndMessagesPreserved": true,
+    "repeatMigrationNoop": true,
+    "realReaderWriterRoles": true,
+    "immutableEvidence": true,
+    "writeFence": true,
+    "backupRestoreDigest": "fadee7e3e5821e8d248be57e7e0b8fd50f6209d7baa370f5995b638d1d5f3f10"
+  },
+  "finalRendererTests": {
+    "passed": 20,
+    "skipped": 1,
+    "note": "After adding explicit XLSX row/cell references and workbook view for cross-reader compatibility"
+  },
+  "backupContracts": {
+    "passed": 7
+  },
+  "renderedHtml": {
+    "passed": 20
+  },
+  "build": "passed",
+  "changedFrontendLint": "zero errors or warnings",
+  "backendBoundary": "zero violations",
+  "syntheticPreview": {
+    "port": 3100,
+    "writesAllowed": false,
+    "templates": 3,
+    "skills": 3,
+    "pipelines": 3,
+    "completedExample": "preview-report",
+    "browserChecked": [
+      "desktop 1440x900 three-column cards",
+      "narrow 594px layout",
+      "template editor",
+      "skill editor",
+      "completed report sections and download links"
+    ]
+  },
+  "xlsx": {
+    "independentParser": "bundled openpyxl read-only",
+    "renderEngine": "bundled artifact-tool importXlsx/render",
+    "sheets": 9,
+    "checkedValues": [
+      18600,
+      10000
+    ],
+    "sourceTotal": 28600,
+    "numericCells": true,
+    "formulas": 0,
+    "visualSheets": [
+      "报告说明",
+      "分析报告",
+      "明细6"
+    ]
+  },
+  "limitations": [
+    "Real paid model and real message delivery not exercised",
+    "Manual fixed-step pipelines only",
+    "Text-only Skill files use the system Markdown metadata format",
+    "Preview blocks all writes",
+    "No main merge or production adoption"
+  ],
+  "logSha256": {
+    "unit-bounded.log": "7a70f678015691537e0e41b63a1572ba1db8c29699b9462cf734c2867850ad10",
+    "report-pg-complete.log": "dbbb09cacbfd5531137683954dd45b5e9857b2db87b56dc758c038b2e9b516bb",
+    "report-render-final.log": "271751a31e3ca98631a23abaaf4bc5d554edb1bc7ebcdd0204037184aa556a96",
+    "backup-final.log": "085d4566287d59db28b3ca0dd28ad359a96adb88108df9325009b41ae801605b",
+    "rendered-html-complete.log": "4fbc149bfd384f1971213e13ec2dc13a4dd37796d474cfe8d66994da1e2bf71f",
+    "build-complete.log": "f16d94daf657944399c6687a38a38ed7dd6459daafc52c8cdeae0150e073e54d",
+    "lint-changed.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "boundary-final.log": "0236ef2e3cba83fd73a552a6dbdf6066e600791e9f7819dce8084718667ab262",
+    "report-qa/inspect.log": "c9ae6b5de159ea679bbda34fb1e751b72978eaafc68bf310dee19282f3a2dd42"
+  }
+}

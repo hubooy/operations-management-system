@@ -1,0 +1,92 @@
+{
+  "version": "teruisi-inventory-replenishment-date-dingtalk-production-v1",
+  "date": "2026-09-10",
+  "status": "completed",
+  "scope": [
+    "preserve the Excel calendar date for replenishment order dates without a UTC+8 previous-day shift",
+    "restore exact delivery to the 志高/特睿思备货计划群 DingTalk group",
+    "mention each corresponding buyer and format supplier sections in Markdown"
+  ],
+  "source": {
+    "mainCommit": "8a3c93bdd774eba842a96d6f3b65fa222363f0b7",
+    "originMainMatched": true,
+    "releaseWorktree": "D:\\运营管理系统-sales-django-release",
+    "releaseWorktreeCleanAtDeployment": true
+  },
+  "candidateValidation": {
+    "djangoInventory": { "tests": 57, "passed": 56, "skipped": 1, "failed": 0 },
+    "fullNode": { "tests": 2081, "passed": 2058, "skipped": 23, "failed": 0 },
+    "focusedLint": "passed",
+    "djangoCheck": "passed",
+    "migrationDrift": "none",
+    "build": "passed",
+    "dingtalkReadOnlyDiscovery": "exact unique group and robot resolved",
+    "dingtalkDryRun": "passed without sending a message"
+  },
+  "preReleaseRecovery": {
+    "backupId": "daily-20260910T125226Z-a5347a6fd2d0",
+    "backupDirectory": "D:\\teruisi-runtime\\django-sales\\backups\\postgres-daily\\daily-20260910T125226Z-a5347a6fd2d0",
+    "manifestSha256": "789d09d1da66f125fe3d2b187d725623488ecc3127d83c3c3fa2f5cbd2ecfb48",
+    "dumpSha256": "6e7964638a3d50b44d8927a28da15335c2c6f3c21b1f988bf296e023d5fa66de",
+    "contentSha256": "46944ae8e5abc90ea3d248d499c1fd125bbda37f3fdfc2c62ea574b2ea30579b",
+    "rehearsalId": "82edf6dbb6da",
+    "rehearsalReceipt": "D:\\teruisi-runtime\\django-sales\\rehearsals\\postgres-restore\\restore-82edf6dbb6da\\rehearsal-result.json",
+    "isolatedPort": 55466,
+    "restoredContentSha256": "46944ae8e5abc90ea3d248d499c1fd125bbda37f3fdfc2c62ea574b2ea30579b",
+    "productionDatabaseTouched": false,
+    "serviceStateChanged": false,
+    "cleanupStatus": "isolated_data_removed"
+  },
+  "deployment": {
+    "fullMaintenanceStop": true,
+    "djangoDeployApp": true,
+    "djangoDeploymentManifestSha256": "600a5b49a2ed00b075327cc892688c87cb08e303eee012e47886d36245161c7f",
+    "djangoAppFingerprint": "109feeb4aaba4665e91332844531a20e440009b2ba6f84a3f247c060d5fb0b49",
+    "djangoFileCount": 1996,
+    "migration": "none",
+    "workerPlanSha256": "fe37aac17509e541cfd4a2aad19307bfdbc9987c9286ebde2a98b01e450b9038",
+    "predecessorReleaseId": "20260910T100749Z-a4eaa6fb400fd7e5",
+    "releaseId": "20260910T131216Z-674af827668202c9",
+    "workerManifestSha256": "f66ee662e9ba6c36b6d532315356e8529d09f6bd88cd2c3a8a508e2d2fb5650c",
+    "successorSha256": "242f075c263131bf6179d3da843b402144de8bf1132ed3840588408aa5703517",
+    "consumptionSha256": "a01ca57b535b4fa1bdc9230e32801d715f4079a06f0303fb4217d1e6ec2d22c7",
+    "startupBindingSha256": "3c0047e03615b0b6e5e271bdccbf771c75df9e76f3877e92727ea294f9866e5a"
+  },
+  "productionReadback": {
+    "system": "Running",
+    "backend": "Ready",
+    "worker": "exact_release",
+    "allComponentsReady": true,
+    "homeHttpStatus": 200,
+    "importTemplateHttpStatus": 200,
+    "importTemplateBytes": 30604,
+    "runtimeDjangoFileMatchesSource": true,
+    "runtimeDjangoFileSha256": "f394722910dc2fbf6384bfd08cb8d994503ecc4cf44cbbf312c8528e33bfb1d4",
+    "exactDingTalkGroupFoundInRuntime": true,
+    "markdownDeliveryFoundInRuntime": true,
+    "correctedExcelDateParserFoundInImmutableRelease": true
+  },
+  "postReleaseRecovery": {
+    "backupId": "daily-20260910T132112Z-811f0d8c4e0f",
+    "backupDirectory": "D:\\teruisi-runtime\\django-sales\\backups\\postgres-daily\\daily-20260910T132112Z-811f0d8c4e0f",
+    "manifestSha256": "da805a89dfcb2bea6df49ae50f1d855d9392750c8a57d96d78489082a0919046",
+    "dumpSha256": "0aea4efe555873c540130534833020255e9926e00a2ed465649de6730bf0e350",
+    "contentSha256": "32d6ff9de08d754e423141ce3fc5c4294ebe2d412077b9564f830e51dc9386bd",
+    "rehearsalId": "635eefc85605",
+    "rehearsalReceipt": "D:\\teruisi-runtime\\django-sales\\rehearsals\\postgres-restore\\restore-635eefc85605\\rehearsal-result.json",
+    "isolatedPort": 55467,
+    "restoredContentSha256": "32d6ff9de08d754e423141ce3fc5c4294ebe2d412077b9564f830e51dc9386bd",
+    "productionDatabaseTouched": false,
+    "serviceStateChanged": false,
+    "cleanupStatus": "isolated_data_removed"
+  },
+  "externalEffects": {
+    "productionReplenishmentPlansCreatedOrChangedDuringAcceptance": 0,
+    "replenishmentPlansSubmittedToDingTalkDuringAcceptance": 0,
+    "realDingTalkMessagesSentDuringAcceptance": 0
+  },
+  "limitations": [
+    "Acceptance verified the production runtime, immutable Worker bundle, read-only endpoints and a DingTalk dry-run without mutating replenishment plans.",
+    "The first real group delivery remains an authorized business action and was intentionally not used as a release smoke test."
+  ]
+}

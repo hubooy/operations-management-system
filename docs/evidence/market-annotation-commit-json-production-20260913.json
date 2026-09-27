@@ -1,0 +1,358 @@
+{
+  "date": "2026-09-13",
+  "status": "adopted_on_local_production",
+  "sourceCommit": "0b96b86cd23f44f40ab6d557fedc0819a4069d1c",
+  "authorization": "Continued the same reported market error repair under the user production-release authorization in this conversation. Separate approval requested to resume remaining work after unknown-result quarantine; no unknown inference is replayed.",
+  "diagnosis": {
+    "action": "commit_selected",
+    "exception": "TypeError: Object of type datetime is not JSON serializable",
+    "internalStatus": 500,
+    "publicStatus": 503,
+    "location": "MarketAnnotationCommitReceipt.before_json",
+    "reproducedBeforeFix": true,
+    "validationEvidence": "market-annotation-commit-json-validation-20260913.json"
+  },
+  "django": {
+    "manifestSha256": "bb1d44779115d8b0fdc5b8caceae9b3b14a7f9e725c2039bb4bd2a650927354d",
+    "deployment": {
+      "version": 2,
+      "deployedAt": "2026-09-13T23:20:11.2218916+08:00",
+      "sourceRoot": "D:\\运营管理系统-sales-django-release",
+      "fingerprintAlgorithm": "relative-path-file-sha256-ordinal-v2",
+      "fileCount": 2027,
+      "appFingerprint": "4276f2a6d1614123436fbe84adfe6a480bc695b1ba39a282c16f7f5723b02fc3"
+    },
+    "sourceSha256": "11e69fa247fd9605a2157027744a20ee362e40cd2799973e5fd99f1e0afeba7c",
+    "previousManifestSha256": "d6bbf9f727475c7dab0a347f33a6ccc1523604bab55af074ba3659644c6d211e",
+    "runtimeDelta": {
+      "previousFileCount": 2028,
+      "currentFileCount": 2028,
+      "changedFiles": [
+        ".wrangler/cache/cf.json",
+        "backend/market/annotations.py",
+        "deployment.json"
+      ],
+      "note": "The controlled deploy also regenerates Wrangler local request metadata and the deployment manifest; only annotations.py changes application code."
+    }
+  },
+  "worker": {
+    "version": "teruisi-local-worker-status-v1",
+    "state": "exact_release",
+    "releaseId": "20260913T143708Z-cd14607ae3bd71e3",
+    "manifestSha256": "fe1255754246e12c3f2c5264ed4a06b7d032766943a3f4292a75e4fb070deb6f",
+    "supervisorProcessId": 51664,
+    "portProcessId": 6712,
+    "reason": null,
+    "releaseChanged": false,
+    "startup": {
+      "status": "verified",
+      "version": "teruisi-local-worker-status-v1",
+      "releaseId": "20260913T143708Z-cd14607ae3bd71e3",
+      "manifestSha256": "fe1255754246e12c3f2c5264ed4a06b7d032766943a3f4292a75e4fb070deb6f",
+      "startupVerified": true
+    }
+  },
+  "maintenance": {
+    "stop": {
+      "version": "teruisi-operations-system-service-v1",
+      "action": "Stop",
+      "status": "stopped",
+      "workerStatus": "stopped",
+      "backendStopped": true,
+      "message": "运营管理系统已完整停止：Worker（stopped）、各域 Django 服务与 PostgreSQL。",
+      "checkedAt": "2026-09-13T23:18:50.2516221+08:00"
+    },
+    "canonicalStart": {
+      "version": "teruisi-operations-system-control-v2",
+      "status": "started",
+      "state": "Running",
+      "backendState": "Ready",
+      "workerState": "exact_release",
+      "releaseId": "20260913T143708Z-cd14607ae3bd71e3",
+      "supervisorProcessId": 44704,
+      "portProcessId": 12008,
+      "url": "http://localhost:3000/",
+      "checkedAt": "2026-09-13T23:25:01.2378576+08:00"
+    },
+    "djangoDeployAppCompleted": true,
+    "hardenAclCompleted": true,
+    "databaseMigration": false,
+    "databaseRestart": true,
+    "djangoRestart": true,
+    "workerRestart": true,
+    "n8nRestart": false
+  },
+  "backups": {
+    "pre": {
+      "status": "completed",
+      "backupId": "daily-20260913T150833Z-8da138a3dce8",
+      "backupDirectory": "D:\\teruisi-runtime\\django-sales\\backups\\postgres-daily\\daily-20260913T150833Z-8da138a3dce8",
+      "manifestSha256": "40efe5aeda2907c1e01177d34088e725936325bb129804098edcf015a820c603",
+      "dumpSha256": "bb895a9d4a124bc7df77a655c7a0cb1fa1e6eb8c4a97d3b6963659bfe4e436a3",
+      "contentSha256": "ec0ac703c2dac6e86ed76ea1b058e145198bf1d08cf742190f3ae88843367d2f",
+      "completedAt": "09/13/2026 23:10:12",
+      "serviceStateChanged": false
+    },
+    "preVerify": {
+      "status": "completed",
+      "backupId": "daily-20260913T150833Z-8da138a3dce8",
+      "manifestSha256": "40efe5aeda2907c1e01177d34088e725936325bb129804098edcf015a820c603",
+      "dumpSha256": "bb895a9d4a124bc7df77a655c7a0cb1fa1e6eb8c4a97d3b6963659bfe4e436a3",
+      "contentSha256": "ec0ac703c2dac6e86ed76ea1b058e145198bf1d08cf742190f3ae88843367d2f",
+      "serviceStateChanged": false
+    },
+    "preIndependentRestore": {
+      "version": "teruisi-postgres-restore-rehearsal-v1",
+      "status": "completed",
+      "rehearsalId": "163cb657f2d0",
+      "startedAt": "2026-09-13T15:11:10.9168023+00:00",
+      "completedAt": "2026-09-13T15:15:42.4836298+00:00",
+      "backupId": "daily-20260913T150833Z-8da138a3dce8",
+      "backupManifestSha256": "40efe5aeda2907c1e01177d34088e725936325bb129804098edcf015a820c603",
+      "dumpSha256": "bb895a9d4a124bc7df77a655c7a0cb1fa1e6eb8c4a97d3b6963659bfe4e436a3",
+      "expectedContentSha256": "ec0ac703c2dac6e86ed76ea1b058e145198bf1d08cf742190f3ae88843367d2f",
+      "restoredContentSha256": "ec0ac703c2dac6e86ed76ea1b058e145198bf1d08cf742190f3ae88843367d2f",
+      "isolatedPort": 55484,
+      "productionDatabaseTouched": false,
+      "serviceStateChanged": false,
+      "cleanupStatus": "isolated_data_removed"
+    },
+    "post": {
+      "status": "completed",
+      "backupId": "daily-20260913T152600Z-c022317f5143",
+      "backupDirectory": "D:\\teruisi-runtime\\django-sales\\backups\\postgres-daily\\daily-20260913T152600Z-c022317f5143",
+      "manifestSha256": "7851e4267c8166299fbe51d7f1e817fd14f26d41b526d06e5f381c48d87d76f1",
+      "dumpSha256": "d4a3f6ee7a78da658fe0e6d9ae2468a9a6e404807bf1399547190ab766778d6d",
+      "contentSha256": "462d8162401df6e7bfd3ea784027cf754ec5ffd0ff4dcb24a67924fd2596db4d",
+      "completedAt": "09/13/2026 23:27:35",
+      "serviceStateChanged": false
+    },
+    "postVerify": {
+      "status": "completed",
+      "backupId": "daily-20260913T152600Z-c022317f5143",
+      "manifestSha256": "7851e4267c8166299fbe51d7f1e817fd14f26d41b526d06e5f381c48d87d76f1",
+      "dumpSha256": "d4a3f6ee7a78da658fe0e6d9ae2468a9a6e404807bf1399547190ab766778d6d",
+      "contentSha256": "462d8162401df6e7bfd3ea784027cf754ec5ffd0ff4dcb24a67924fd2596db4d",
+      "serviceStateChanged": false
+    },
+    "postIndependentRestoreRepeated": false
+  },
+  "runtime": {
+    "version": "teruisi-operations-system-control-v2",
+    "state": "Running",
+    "backendState": "Ready",
+    "workerState": "exact_release",
+    "releaseId": "20260913T143708Z-cd14607ae3bd71e3",
+    "supervisorProcessId": 44704,
+    "portProcessId": 12008,
+    "url": "http://localhost:3000/",
+    "reason": null,
+    "components": {
+      "core": true,
+      "finance": true,
+      "netshop": true,
+      "market": true,
+      "products": true,
+      "workflow": true,
+      "inventory": true,
+      "customerService": true,
+      "accessControl": true,
+      "erpReference": true,
+      "bi": true,
+      "ai": true
+    },
+    "checkedAt": "2026-09-13T23:29:57.6588406+08:00"
+  },
+  "productionReadback": {
+    "at": "2026-09-13T15:25:13.985Z",
+    "readiness": {
+      "ok": true,
+      "backend": "django-postgresql",
+      "unavailableServices": [],
+      "status": "ready"
+    },
+    "checks": [
+      {
+        "path": "/_teruisi/local/health/ready",
+        "status": 200,
+        "ms": 1824
+      },
+      {
+        "path": "/api/market/annotations?view=workspace_fast&aggregateJobs=1&itemPageSize=20",
+        "status": 200,
+        "ms": 934
+      },
+      {
+        "path": "/api/market/annotations?view=review&aggregateJobs=1&itemPageSize=20",
+        "status": 200,
+        "ms": 480
+      },
+      {
+        "path": "/api/market/annotations?view=candidate_counts",
+        "status": 200,
+        "ms": 5358
+      },
+      {
+        "path": "/api/market/annotations?view=progress&jobId=selected",
+        "status": 200,
+        "ms": 71
+      },
+      {
+        "path": "/api/market/annotations?view=progress&jobId=selected",
+        "status": 200,
+        "ms": 60
+      },
+      {
+        "path": "/api/market/annotations?view=progress&jobId=selected",
+        "status": 200,
+        "ms": 119
+      },
+      {
+        "path": "/api/market/annotations?view=progress&jobId=selected",
+        "status": 200,
+        "ms": 139
+      },
+      {
+        "path": "/health",
+        "status": 200,
+        "ms": 8
+      }
+    ],
+    "sourceSha256": "11e69fa247fd9605a2157027744a20ee362e40cd2799973e5fd99f1e0afeba7c",
+    "deployedSha256": "11e69fa247fd9605a2157027744a20ee362e40cd2799973e5fd99f1e0afeba7c",
+    "progress": [
+      {
+        "jobId": "market-annotation-job-ec555270-03c2-45d5-9747-af7fcc331f6f",
+        "activeClaims": 0,
+        "completedCount": 3546,
+        "totalCount": 5419,
+        "failedCount": 24
+      },
+      {
+        "jobId": "market-annotation-job-3eae2413-b0f5-481d-9d71-d4aa24f53b20",
+        "activeClaims": 0,
+        "completedCount": 3121,
+        "totalCount": 4737,
+        "failedCount": 29
+      },
+      {
+        "jobId": "market-annotation-job-06d77104-6edd-49a3-89c3-0c81c6fe7725",
+        "activeClaims": 0,
+        "completedCount": 3914,
+        "totalCount": 7301,
+        "failedCount": 16
+      },
+      {
+        "jobId": "market-annotation-job-19ea5346-c3b4-4d5a-975e-2b3082e3f4f9",
+        "activeClaims": 0,
+        "completedCount": 4050,
+        "totalCount": 9330,
+        "failedCount": 5280
+      }
+    ],
+    "helper": {
+      "ok": true,
+      "busy": false
+    },
+    "businessWrites": 0,
+    "paidModelCalls": 0
+  },
+  "maintenanceRace": {
+    "beforeStop": {
+      "at": "2026-09-13T15:16:25.141Z",
+      "progress": [
+        {
+          "jobId": "market-annotation-job-ec555270-03c2-45d5-9747-af7fcc331f6f",
+          "activeClaims": 0,
+          "completedCount": 3540,
+          "totalCount": 5419,
+          "failedCount": 13
+        },
+        {
+          "jobId": "market-annotation-job-3eae2413-b0f5-481d-9d71-d4aa24f53b20",
+          "activeClaims": 0,
+          "completedCount": 3109,
+          "totalCount": 4737,
+          "failedCount": 18
+        },
+        {
+          "jobId": "market-annotation-job-06d77104-6edd-49a3-89c3-0c81c6fe7725",
+          "activeClaims": 0,
+          "completedCount": 3913,
+          "totalCount": 7301,
+          "failedCount": 5
+        },
+        {
+          "jobId": "market-annotation-job-19ea5346-c3b4-4d5a-975e-2b3082e3f4f9",
+          "activeClaims": 0,
+          "completedCount": 4050,
+          "totalCount": 9330,
+          "failedCount": 5280
+        }
+      ],
+      "helper": {
+        "ok": true,
+        "busy": false
+      }
+    },
+    "review": {
+      "source": "local PostgreSQL market reader, read-only transaction",
+      "at": "2026-09-13T23:30:22.646705+08:00",
+      "jobs": [
+        {
+          "jobId": "market-annotation-job-06d77104-6edd-49a3-89c3-0c81c6fe7725",
+          "quarantinedCandidates": 14,
+          "distinctImageUnits": 14,
+          "earliestUpdatedAt": "2026-09-13T16:42:37.140242+08:00",
+          "latestUpdatedAt": "2026-09-13T23:24:13.835424+08:00",
+          "quarantinedOrUpdatedDuringMaintenance": 11
+        },
+        {
+          "jobId": "market-annotation-job-19ea5346-c3b4-4d5a-975e-2b3082e3f4f9",
+          "quarantinedCandidates": 18,
+          "distinctImageUnits": 18,
+          "earliestUpdatedAt": "2026-09-13T16:42:37.169241+08:00",
+          "latestUpdatedAt": "2026-09-13T23:24:13.808323+08:00",
+          "quarantinedOrUpdatedDuringMaintenance": 12
+        },
+        {
+          "jobId": "market-annotation-job-3eae2413-b0f5-481d-9d71-d4aa24f53b20",
+          "quarantinedCandidates": 21,
+          "distinctImageUnits": 21,
+          "earliestUpdatedAt": "2026-09-13T14:53:30.933874+08:00",
+          "latestUpdatedAt": "2026-09-13T23:24:13.855776+08:00",
+          "quarantinedOrUpdatedDuringMaintenance": 11
+        },
+        {
+          "jobId": "market-annotation-job-ec555270-03c2-45d5-9747-af7fcc331f6f",
+          "quarantinedCandidates": 21,
+          "distinctImageUnits": 21,
+          "earliestUpdatedAt": "2026-09-13T14:53:30.999585+08:00",
+          "latestUpdatedAt": "2026-09-13T23:24:13.873989+08:00",
+          "quarantinedOrUpdatedDuringMaintenance": 11
+        }
+      ]
+    },
+    "affectedJobs": 4,
+    "candidatesQuarantinedOrUpdated": 45,
+    "cause": "The idle snapshot did not fence subsequent scheduled claims before the controlled Stop; after restart expired inference leases triggered the existing fail-closed quarantine.",
+    "unknownResultsReplayed": false,
+    "failedItemsReset": false,
+    "manualBusinessImport": false,
+    "remainingQueueResume": {
+      "status": "resumed_after_explicit_user_authorization",
+      "at": "2026-09-13T23:40:37+08:00",
+      "jobs": 4,
+      "allJobsNaturallyProgressed": true,
+      "all74QuarantinedCandidatesUnchanged": true,
+      "evidence": "docs/evidence/market-annotation-remaining-resume-20260913.json"
+    },
+    "futureGate": "Require controlled dispatch quiescence and in-flight drainage, not a point-in-time idle snapshot."
+  },
+  "startupCallerNote": "Canonical Start emitted Running/Ready/exact_release, but the outer caller shell retained inherited pipe handles. Independent status and HTTP passed; only the exact verified caller shell was closed. No service or supervisor process was stopped.",
+  "limitations": [
+    "No production commit or paid model call was manually issued for acceptance; signed API writes and real writer grants were verified in isolated PostgreSQL.",
+    "Known writer HTTP connection-capacity warnings and master-list timeout were not changed.",
+    "Four inference plans were subsequently resumed on explicit user instruction; all 74 unknown-result candidates remain unchanged and quarantined. This does not claim the remaining queues have completed."
+  ]
+}

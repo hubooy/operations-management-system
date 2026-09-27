@@ -1,0 +1,86 @@
+{
+  "version": "teruisi-jackyun-sales-rolling-45-candidate-v1",
+  "status": "validated_not_deployed",
+  "baselineCommit": "8dcd655d8bcb55edcca1b9cfbe08ea1b69f1dc74",
+  "requested": {
+    "days": 45,
+    "includeYesterday": true,
+    "example": {
+      "runDate": "2026-09-23",
+      "startDate": "2026-08-09",
+      "endDate": "2026-09-22"
+    },
+    "updates": "Replace scoped facts with each successful new complete snapshot, preserving outside scope and same-scope content idempotency."
+  },
+  "contracts": {
+    "newApiPlanVersion": 2,
+    "newSalesInputHashVersion": 4,
+    "legacyPlanVersion": 1,
+    "legacyInputHashVersion": 3,
+    "frozenStartEnd": true,
+    "otherDatasetsUnchanged": true,
+    "existingCostAndChannelPolicyUnchanged": true
+  },
+  "validation": {
+    "focusedNodePassed": 76,
+    "isolatedPostgresPassed": 29,
+    "postgresScopeBugReproducedBeforeFix": true,
+    "postgresNewScopeReceiptRegressionPassed": true,
+    "migrationDrift": false,
+    "workerBuildPassed": true,
+    "helperBuildPassed": true,
+    "helperSha256": "90d27f53d1652397afe454a77c446eeb6b28525755d66393cb0a157fd824618f",
+    "renderPassed": 20,
+    "backendModules": 457,
+    "backendViolations": 0,
+    "lintErrors": 0,
+    "lintWarnings": 11,
+    "types": {
+      "baseline": "existing unchanged source check from 1ce52b7e; 8dcd655d changed documentation only",
+      "excluded": "untracked outputs/validation/baseline copies",
+      "baselineUnique": 63,
+      "currentUnique": 63,
+      "added": [],
+      "removed": []
+    },
+    "fullAttemptBeforeFinalPythonScopeFix": {
+      "tests": 2269,
+      "passed": 2245,
+      "failed": 3,
+      "canceled": 1,
+      "skipped": 20,
+      "existingFailures": [
+        "finance static dispatch assertion",
+        "missing color-surface-subtle token"
+      ],
+      "unrelatedAnomalies": [
+        "customer-save interaction timeout",
+        "local-worker-start test runner serialization"
+      ],
+      "isolatedRetests": {
+        "customerPlusFinalChangedTestsPassed": 14,
+        "localWorkerStartPassed": 23
+      }
+    }
+  },
+  "productionActions": {
+    "deployed": false,
+    "serviceStateChanged": false,
+    "databaseMigrated": false,
+    "real45DayExportOrImport": false,
+    "liveN8nChanged": false
+  },
+  "sourceHashes": {
+    "lib/jackyun/sales-period.ts": "2a649d0a9e7880a1bae2201b6818fc811d61db2e8da9c4117dcac155e5834339",
+    "lib/jackyun/run-contract.ts": "297176e4cc573ba9368c3063f4fa7a85504d019844af42f1bebdfb9cccfe2a5e",
+    "tools/jackyun-export-first-pipeline.ts": "7d3210d8d67e1a179391c9c1362be56094435cccf684d9d8c3a9b3baca3a944a",
+    "tools/jackyun-api-export.ts": "7bb89ae0cdaae88f1f5e0bbc6035de302d701787c5e79b059bb4a09791249667",
+    "tools/jackyun-download-runner.ts": "d9ab84e8ced74fe2909da358b667862daed5b32c69cfda764113845eeb27e41c",
+    "tools/sales-import-runner.ts": "5e59a4e146fef95a4f97c729021e503ee702f482ca76fb8e3d7bb366c7426aa0",
+    "backend/sales/write_service.py": "8db9c45efd8213ca2285f1911fbd22f4a1de12e5c0420f76ada8e8716acf54b9"
+  },
+  "limitations": [
+    "Real 45-day platform export and import require production adoption and separate run verification.",
+    "Latest-data semantics apply to fresh serialized snapshots in this workflow; no generic source-time watermark for arbitrary delayed manual files."
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "status": "phase_1_first_batch_candidate_not_deployed",
+  "date": "2026-09-16",
+  "baseCommit": "5904d690",
+  "branch": "codex/ai-business-analysis-stages",
+  "scope": [
+    "Revision-fenced netshop fact pages and signed reader-only tool",
+    "Explicit periods, metric missingness and source semantics",
+    "Streaming reconciliation and bounded dimension aggregation",
+    "Five-phase roadmap with remaining phase-one work disclosed"
+  ],
+  "validation": {
+    "isolatedPostgresql": {
+      "command": "tools/ai-postgres-rehearsal.py --tests-only --test-label business_analysis --test-label netshop --port 55485",
+      "passed": 45,
+      "failed": 0,
+      "log": ".runtime/ai-pg-b1b33af39e88/tests.log",
+      "includes": ["100000 synthetic rows streamed through 1000 pages", "source totals reconciliation", "cross-shop isolation", "nonempty synthetic B2B and native SPU", "missing B2B", "master snapshot selection", "reader and writer URL configuration", "cursor and revision fencing", "role and scope rejection"]
+    },
+    "nodeFullRun": {
+      "passed": 2189,
+      "failed": 4,
+      "skipped": 21,
+      "log": ".runtime/unit-tests.log",
+      "failureResolution": "Independent worktree npm install had skipped the pinned workerd postinstall adapter; installed the existing adapter and reran both affected test files successfully. An unrelated Windows process identity test saw a transient lineage change; both shell variants passed the focused rerun. The initial full run is not represented as zero failures."
+    },
+    "nodeFocusedFinal": { "passed": 12, "failed": 0, "log": ".runtime/final-focused-tests.log" },
+    "processIdentityRecheck": { "passed": 2, "failed": 0, "log": ".runtime/process-recheck.log" },
+    "build": { "status": "passed", "log": ".runtime/build-final.log" },
+    "eslintChangedNewTypescript": { "status": "passed", "log": ".runtime/lint-analysis.log" },
+    "backendBoundary": { "checkedModules": 452, "violations": 0 },
+    "typescript": {
+      "status": "existing_repository_errors",
+      "candidateErrorLines": 153,
+      "baseCheckoutErrorLines": 185,
+      "candidateOnlyErrorLines": 0,
+      "note": "Base checkout has extra ignored historical output files and dependency differences. This is an error-line comparison, not an identical clean-tree typecheck. No diagnostics in changed production files; full typecheck remains unsuccessful."
+    }
+  },
+  "production": {
+    "writes": false,
+    "deployment": false,
+    "migration": false,
+    "serviceRestart": false,
+    "paidModelCalls": false,
+    "notifications": false,
+    "realDataScaleAcceptance": false
+  },
+  "remaining": [
+    "ERP/shop source adapters and cross-domain reconciliation",
+    "Durable shared evidence, checkpoints and common report result schema",
+    "Real source coverage and mapping acceptance for market, B2B and comparison history",
+    "Multi-agent execution, diagnosis, engineered HTML/XLSX and workbench phases"
+  ]
+}

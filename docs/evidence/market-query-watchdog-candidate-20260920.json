@@ -1,0 +1,39 @@
+{
+  "status": "candidate_not_deployed",
+  "date": "2026-09-20",
+  "initialBase": "c7723998403cb45135179501364b3a209aa7c630",
+  "branch": "codex/market-query-watchdog-20260920",
+  "implementationCommit": "db23a4a2",
+  "integratedMain": "dd1956052ada7da0e9a99108b0b84d507985994e",
+  "productionActions": {"deployed": false, "migrated": false, "servicesStopped": false, "businessDataWritten": false, "messagesSent": false},
+  "diagnosis": {
+    "databaseStatementTimeoutSeconds": 7,
+    "marketFailure": "filter_options aggregation statement timeout in both independent filters and overview",
+    "watchdog": "scheduled task running; Django supervisor heartbeat stale; alert_only; old notification identity_failed",
+    "oldNotificationFailureCause": "unknown: old audit did not preserve stage/reason",
+    "productionIndexPerformance": "not yet verified; four candidate indexes do not exist in production"
+  },
+  "validation": {
+    "isolatedPostgreSQL": {"passed": 95, "port": 55447, "clusterStopped": true, "readerNegativePermissionProbes": 5, "writerNegativePermissionProbes": 4, "migrationCheck": "passed", "artifact": ".runtime/market-annotation-pg-6218a042c4e2/result.json"},
+    "finalCacheAndBusinessHealthTests": {"passed": 7, "includes": ["concurrent cold reads", "revision change", "database isolation", "transaction bypass", "size and TTL bound", "failure backoff", "timeout message", "expired business observations"]},
+    "watchdogAndSupervisor": {"passed": 10, "productionProcessesTouched": false, "includes": ["direct parent exit status", "descendant preserved", "maintenance and ownership fences", "business expiry cannot close incident", "pre-send retry limit", "unknown delivery never replayed", "GUI launcher no-console"]},
+    "marketCacheAndLocalWorkerRecheck": {"passed": 48, "artifact": ".runtime/final-recheck.log"},
+    "browserSynthetic": {"passed": 7, "productionData": false, "artifact": ".runtime/market-query-ui/result.json"},
+    "build": "passed",
+    "renderedPages": {"passed": 20},
+    "afterMainIntegration": {"build": "passed", "renderedPagesPassed": 20, "targetedFinanceAndMarketPassed": 18, "watchdogIsolatedAssertions": 36},
+    "lint": {"errors": 0, "existingWarnings": 11},
+    "dingTalkPreflight": {"status": "dry_run_verified", "targets": 1, "executed": false},
+    "fullNodeRun": {
+      "tests": 2232, "passed": 2208, "failed": 3, "cancelled": 1, "skipped": 20,
+      "artifact": ".runtime/node-unit.log",
+      "followUp": [
+        "Market route/prefetch contract adjusted and 48 related cases passed on recheck",
+        "Unrelated combo browser timeout passed on isolated recheck",
+        "Local worker test runner IPC deserialization cancellation passed on isolated recheck",
+        "Existing color-surface-subtle token omission remains; at the full-run recheck the relevant CSS and test files matched the initial base. Later main integration only adds the unrelated finance download-link rule"
+      ]
+    }
+  },
+  "adoptionRequirements": ["explicit maintenance approval", "backup and independent restore verification", "original controlled release and migration mechanisms", "market.0005_filter_facet_indexes", "cold and warm production query parity and timing", "fresh supervisor heartbeat", "two independent installed watchdog checks", "post-release backup and E-drive archive"]
+}

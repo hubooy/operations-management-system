@@ -1,0 +1,76 @@
+{
+  "evidenceVersion": "teruisi-bi-production-cutover-v1",
+  "status": "completed",
+  "completedAt": "2026-09-05T06:50:12.4420871+08:00",
+  "code": {
+    "initialCommit": "b5553383242ccf154f21d74250dce364af655d8e",
+    "effectiveCommit": "0c449bcafe5eac914c21a3e8679106ffaf13ef1e",
+    "branch": "main",
+    "pushed": true
+  },
+  "migration": {
+    "contractVersion": "bi-dashboard-read-model-v1",
+    "planId": "bi-plan-f486db46d27d1a203e33365118954e38",
+    "runId": "bi-apply-1079734fb42842eeb1cb13b830bbb8a6",
+    "sourceDigest": "f486db46d27d1a203e33365118954e384a29332f6e164b85aa22729e28cc3ae8",
+    "sourceAuthorities": {
+      "sales": "postgresql",
+      "erp": "d1-via-postgresql-read-projection",
+      "inventory": "postgresql"
+    },
+    "sourceRevisions": {
+      "salesErp": "14:10",
+      "inventory": "25:836ee07086e6"
+    },
+    "sourceCounts": {
+      "salesBusinessRows": 577957,
+      "latestInventoryStockRows": 22628,
+      "latestInventoryAgeRows": 5525,
+      "legacyBiFactRows": 0
+    },
+    "factCopyRequired": false
+  },
+  "runtime": {
+    "databaseRole": "teruisi_bi_reader",
+    "processRole": "bi_reader",
+    "listen": "127.0.0.1:8081",
+    "startupEnabled": true,
+    "readerReadiness": "ready"
+  },
+  "worker": {
+    "rotationPlanSha256": "0de08035d40d360af57f7c879e5ff8c42681303a69e178a8ef1b26def81996b5",
+    "predecessorReleaseId": "20260904T175625Z-61c15a876f2c685c",
+    "releaseId": "20260904T223540Z-40a783da7d4d5867",
+    "manifestSha256": "b31a3e2f4e2861ebf65d66db860072af0acdf99326e00b08480254b1863cad90",
+    "successorSha256": "08d96fb5b3280fa6bcecdb1050ffd102a4b0e1ce64af67482309b0bb5c5589cf",
+    "consumptionSha256": "f89e8b6fa8d6d22a08699572d6561b1496a4960233c953380eb831417038d046",
+    "startupBindingSha256": "2976f41c49e1a3cc7effb31d63e0d9abcd092d1a7a84f460995ac24efb63bd2e",
+    "state": "exact_release"
+  },
+  "smoke": {
+    "homeStatus": 200,
+    "publicBiStatus": 200,
+    "publicInvalidQueryStatus": 400,
+    "unsignedInternalStatus": 401,
+    "revision": "14:10|25:836ee07086e6",
+    "revisionHeaderMatches": true,
+    "cacheControl": "no-store"
+  },
+  "postCutoverBackup": {
+    "backupId": "daily-20260904T224400Z-3a04b5b245f5",
+    "manifestSha256": "539113700f102d56b2056c5476f15419ed7527434f3466599420a01357d639cb",
+    "dumpSha256": "856ecdd0142a0320ee399783dd3b9fb8bd8ab72f92ae4fc2078f2ac317a1ae19",
+    "contentSha256": "818055d8359d8f2ae222f53277345e801023f11472f29a356a20e6a4e2f05910",
+    "containsBiMigrationRuns": true,
+    "serviceStateChanged": false
+  },
+  "restoreRehearsal": {
+    "rehearsalId": "5bdcabec9e8a",
+    "isolatedPort": 55432,
+    "expectedContentSha256": "818055d8359d8f2ae222f53277345e801023f11472f29a356a20e6a4e2f05910",
+    "restoredContentSha256": "818055d8359d8f2ae222f53277345e801023f11472f29a356a20e6a4e2f05910",
+    "productionDatabaseTouched": false,
+    "serviceStateChanged": false,
+    "cleanupStatus": "isolated_data_removed"
+  }
+}

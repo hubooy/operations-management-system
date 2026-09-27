@@ -1,0 +1,154 @@
+{
+  "status": "implemented-and-verified-not-merged-not-deployed",
+  "date": "2026-09-16",
+  "baseMain": "be2c4dff85ba80e2c8b1020dd04b1d25c158f29c",
+  "batch1Commit": "b9374841",
+  "branch": "codex/health-fixes-batch2-20260916",
+  "sourceSha256": {
+    "backend/market/admin.py": "9e37b633be2905dc282c2d42630372dc615cc4579950a48e49878edd9a6660bc",
+    "backend/market/master_query.py": "00fd022d4c78b5803b9d393bf6df26900d8790e960907f107496d4c1b083cedd",
+    "backend/market/query.py": "71bb71be76452772c146b13713667024c3396c3c4063a357f30629f1e908ec6a",
+    "backend/market/ranking_query.py": "270216c735a2e58b48dcb3f720ad1f8a014ae2084326f5d85a9050bde98003b7",
+    "backend/market/tests/test_master_pagination.py": "069aab3167d9951c660072d4de8c27d99ab10c7a698cf9d10795d7cf5bad388a",
+    "backend/market/tests/test_ranking_pagination.py": "95785cec3f9fb0aa6271b4692b2469359f919cf14aa95513e9f54e33995eae3f",
+    "backend/market/tests/test_api.py": "e4b9fb8068580f4dce06b14ddeedda22432f21337eaa89d0eb34f4db626290b6",
+    "tools/verify-market-query-ui.mjs": "dd04b073b84d48ec428dfa59b6acff69f149eac225cc4d697c472ffcd468e78a"
+  },
+  "runtime": {
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.12.10",
+    "postgresql": "17.11",
+    "django": "5.2.17",
+    "node": "24.18.0"
+  },
+  "validation": {
+    "integratedPostgresql": {
+      "passed": 199
+    },
+    "finalTargetedPostgresql": {
+      "passed": 13
+    },
+    "sqlite": {
+      "passed": 12,
+      "skipped": 1
+    },
+    "nodeFull": {
+      "passed": 2190,
+      "skipped": 20,
+      "fileRunnerErrors": 1,
+      "reason": "Node test runner deserialization; local-worker-start.test.ts"
+    },
+    "nodeAffectedFileRetest": {
+      "passed": 23
+    },
+    "renderedHtml": {
+      "passed": 20
+    },
+    "browserSyntheticApi": {
+      "checksPassed": 7,
+      "initialHarnessFailure": "shared Vite cache export mismatch",
+      "fixed": "separate cache + explicit React dependencies"
+    },
+    "build": "passed",
+    "lint": {
+      "errors": 0,
+      "existingWarnings": 11
+    },
+    "changedToolLint": "passed",
+    "backendBoundary": "passed",
+    "migrations": "No changes detected",
+    "permissions": {
+      "candidateIndexCount": 0,
+      "marketMigrations": [
+        "0001_initial",
+        "0002_seed_control_rows",
+        "0003_remove_marketannotationvalidationsample_mkt_validation_sample_uq_and_more",
+        "0004_projection_sync_fencing"
+      ],
+      "rankingRowSignature": [
+        320000,
+        "0d650ebfe6c15edd77bbce951badeaf7"
+      ],
+      "negativeProbeTransactionReadOnly": "off",
+      "writeDeniedSqlState": "42501"
+    }
+  },
+  "cleanup": {
+    "isolatedPostgresqlStopped": true,
+    "privateEnvRemoved": true,
+    "productionModified": false,
+    "mainMerged": false,
+    "worktreeKept": "unmerged candidate"
+  },
+  "limits": [
+    "Synthetic PostgreSQL data; not a production load test",
+    "Django signed Client with real sales consumer in-process; Worker/HTTP hop/browser timing excluded",
+    "First process read is not a flushed OS/database cold-cache measurement",
+    "Ranking repeat P95 remains above proposed 3-second target",
+    "Python allocation peak is not process RSS or proof of long-term workerd stability"
+  ],
+  "logs": {
+    "integration-pg.log": {
+      "sha256": "88b10178e61643d9f8e64fc893c937a485a237612e60b032f270e885953d69f1",
+      "bytes": 10842
+    },
+    "final-targeted-pg.log": {
+      "sha256": "c5b092880a3c0b676cbdc327507d9051f7ae4c5f21b5559750314893ec77ed71",
+      "bytes": 486
+    },
+    "final-targeted-sqlite.log": {
+      "sha256": "a954dc7bba7c40607073f198f90ff79dec75b080fecf383a79741eae483fce9f",
+      "bytes": 497
+    },
+    "node-tests.log": {
+      "sha256": "248a5d2a5528f309ec5d0ac535f091aa0fbf72ad803ab67ab915bd792a46d86d",
+      "bytes": 211464
+    },
+    "local-worker-retest.log": {
+      "sha256": "606c38fa72df0bb848f217870875121c7a1d7c5ad7145b90e88593dabdd58fa9",
+      "bytes": 2595
+    },
+    "rendered-tests.log": {
+      "sha256": "47069aa5bae738aa6d80d311ddc2400fef1046dd4224aff109d113cc178b036c",
+      "bytes": 1838
+    },
+    "build.log": {
+      "sha256": "2d2787121d4c020bc10e9b77e670ef73cf0c249f6ca136c847a7ab520e3e7f0a",
+      "bytes": 10129
+    },
+    "lint.log": {
+      "sha256": "b6dff9079ae585311e13363da385d3021ca5fca8428b6661b2cf36fa978faa30",
+      "bytes": 2494
+    },
+    "boundary.log": {
+      "sha256": "d969400b9d66927e23dc90b0788a13ee5221b7a9f93e5491d6cfc3922833a4c1",
+      "bytes": 1396
+    },
+    "changed-lint.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "market-ui.log": {
+      "sha256": "455125fc3329203f578dfc5121fbd86e091ce1f47b13e36713b632e53dc3990e",
+      "bytes": 840
+    },
+    "market-ui-retest.log": {
+      "sha256": "7c49f8ba790398a4cf78cf9e4f47a432053d48049cd419bf063439f002695e82",
+      "bytes": 575
+    },
+    "migration-dryrun.log": {
+      "sha256": "93e6e2d5be3c054add80c0f19101608803f7ca8a7df1fa41f76bbb9a1f570f4a",
+      "bytes": 21
+    },
+    "benchmark-20.log": {
+      "sha256": "bc7cc18da598762e3bc5cb2fc570ebc0fe7c21cf2649ba95fffd7da52625ed1a",
+      "bytes": 715
+    },
+    "comparison.log": {
+      "sha256": "92e3ba38f562ca6fe462af39f8f2e98a50ba0bac8f1561b4d74614a77315eec0",
+      "bytes": 1959
+    }
+  },
+  "reviewedMain": "58a5f42dd8ec808bc933fe5d969bf57594393bff",
+  "mainDeltaFromBase": "AGENTS/README/Jackyun deployment evidence only; no runtime source changes"
+}

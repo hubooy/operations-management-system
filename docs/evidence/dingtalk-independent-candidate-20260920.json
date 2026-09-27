@@ -1,0 +1,74 @@
+{
+  "status": "candidate_verified_pending_platform_permission_and_production_approval",
+  "checked_at": "2026-09-20T10:27:25+08:00",
+  "base_commit": "1a267eb00ad43c18ed9cd148f5a881add2173fa1",
+  "branch": "codex/dingtalk-independent-scheduler",
+  "scope": [
+    "CurrentUser DPAPI enterprise application credentials with one-time operator adoption",
+    "Official application-token delivery for text, image, combined markdown and file",
+    "Separate scheduled-delivery and inbound Stream processes",
+    "Preserved scope/version/group approval, singleton locks and at-most-once delivery reservations"
+  ],
+  "explicitly_excluded": ["new watchdog", "scheduler heartbeat", "alerting", "crash auto-restart", "automatic historical replay"],
+  "validation": {
+    "postgres_rehearsal": {
+      "port": 55457,
+      "tests": 245,
+      "passed": 243,
+      "skipped": 2,
+      "failed": 0,
+      "ai_tables": 56,
+      "migration_drift": false,
+      "reader_writer_permissions_and_readiness": "passed",
+      "old_conversation_retained": true,
+      "independent_command_actual_lease_and_queue_dispatch": "passed",
+      "legacy_and_duplicate_scheduler_exclusion": "passed",
+      "receiver_and_scheduler_distinct_lock_keys": "passed",
+      "dump_restore_sha256": "ffb77af93bfa433a81e49487689d6d647def63fd45eb17212982fab190a61b09",
+      "local_evidence": ".runtime/dingtalk-pg-a3a06e119a96/result.json"
+    },
+    "windows_dpapi": "actual CurrentUser encrypt/decrypt, tampering, identity mismatch, hardlink and create-only tests passed",
+    "startup_tests": "6 passed; Windows PowerShell 5.1 and PowerShell 7 isolated adapters; independent starts, duplicate rejection and schedule survival when Stream SDK startup fails",
+    "node_full_suite": {
+      "tests": 2231,
+      "passed": 2207,
+      "skipped": 23,
+      "failed": 1,
+      "cancelled": 0,
+      "existing_failure": "frontend-foundation.test.ts: undefined color-surface-subtle",
+      "baseline_evidence": "Failure reproduced in focused check. Test source, app/globals.css and app/styles/tokens.css exactly match base-commit bytes. No frontend files changed."
+    },
+    "lint": {"errors": 0, "existing_warnings": 11},
+    "backend_boundary": {"checked_modules": 454, "violations": 0},
+    "isolated_production_build": "passed",
+    "rendered_page_tests": {"passed": 20, "failed": 0},
+    "diff_check": "passed"
+  },
+  "live_readonly_checks": {
+    "enterprise_application_token": "passed; application secret used only in process memory, no production credential file created",
+    "selected_group_query": "/v1.0/robot/groups/robots/query",
+    "group_query_result": "HTTP 403 Forbidden.AccessDenied.AccessTokenPermissionDenied",
+    "required_scope": "qyapi_chat_manage",
+    "permission_catalog": {"description": "钉钉群基础信息管理权限", "currently_authorized": false, "platform_api_count": 34},
+    "permission_add_dry_run": "prepared for this one scope; no permission applied",
+    "permission_command_contract": {"risk": "high", "confirmation": "user_required"},
+    "group_target_contract": "Approved immutable openConversationId plus live exact robot installation; display name is not resolved to another recipient. Group renaming alone no longer blocks delivery.",
+    "discarded_scopes_not_requested": ["AntDing.Read.Send", "IM.Group.ReadWrite.Special"]
+  },
+  "not_performed": [
+    "production deployment or main merge",
+    "production service stop/restart",
+    "production credentials provisioning",
+    "platform permission grant",
+    "production migration or task-definition change",
+    "manual enqueue or historical resend",
+    "real message upload/send or paid model call"
+  ],
+  "remaining_acceptance": [
+    "Authorize and grant qyapi_chat_manage, then verify all approved groups using application auth",
+    "Approve controlled runtime maintenance and deploy the reviewed candidate",
+    "Provision exact bound DPAPI credentials and verify both independent processes",
+    "Confirm task/history retention and existing expiry handling",
+    "Separately authorize an exact real delivery if immediate client-visible acceptance is required"
+  ]
+}

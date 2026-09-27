@@ -1,0 +1,84 @@
+{
+  "version": "teruisi-jackyun-4098-candidate-v1",
+  "status": "prepared_not_deployed_not_closed",
+  "baseCommit": "6906267a",
+  "authorization": "User requested safe closure of the failed workflow. Application maintenance has not been explicitly approved.",
+  "readonlyAudit": {
+    "status": "candidate_only_not_published",
+    "checkedAt": "2026-09-22T16:36:19.617Z",
+    "executionId": "4098",
+    "releaseId": "20260922T105105Z-d8e06b9d16695c3f",
+    "deployedExporterSha256": "91d61fd9f126cca9c7a5650a3f8d9b35f9d1f3b5d6f6dcf7846a4dfee6aaa388",
+    "exporterMatchesReviewedSource": true,
+    "deployedClosureSupport": false,
+    "candidateProposalSha256": "bbc4d006502b1e4485b1dfed996ffe9b0e11b17aea5882e1b9c7eefd21bdffb0",
+    "evidence": {
+      "executionId": "4098",
+      "workflowId": "J8kY2mQ5vR7sT4pN",
+      "status": "error",
+      "startedAt": "2026-09-22T16:10:00.032Z",
+      "stoppedAt": "2026-09-22T16:10:04.434Z",
+      "retrySuccessId": null,
+      "lastNode": "B·接口校验与五表下载",
+      "runNodes": [
+        "每天本机时间 00:10",
+        "领取共享 helper",
+        "helper 领取成功？",
+        "A·固定采集日和销售日期",
+        "B·接口校验与五表下载"
+      ],
+      "error": "API_LOGIN_PAGE_NOT_UNIQUE",
+      "httpCode": "500",
+      "requestUrl": "http://127.0.0.1:5791/jackyun/export-first/export-all",
+      "executionDataSha256": "b44a28839e5d2ea0741c9d0420bb3d2aefa54ac3d29ea7309501a420a352dafb",
+      "activeExecutions": 0
+    },
+    "planSha256": "73271811656a77ef5534388fbf503edfcc536425f11e4dd30d5c45a0227c7714",
+    "activeSha256": "b7fc8ce99f025429ffd33dc07c42c321f15be0b038ff0f509fc0a1b087fe1f0c",
+    "absentBusinessEffectPaths": 4,
+    "helperIdle": true,
+    "productionClosureWritten": false,
+    "productionServicesChanged": false
+  },
+  "validation": {
+    "focusedTests": 27,
+    "fullUnit": {
+      "total": 2253,
+      "passed": 2231,
+      "failed": 2,
+      "skipped": 20,
+      "cancelled": 0,
+      "existingFailures": [
+        "finance routes have no D1 branch and every write has one Django dispatch",
+        "semantic design tokens cover every stylesheet variable reference"
+      ],
+      "baselineReproduced": true
+    },
+    "workerBuildPassed": true,
+    "helperBuildPassed": true,
+    "helperSha256": "9af21fbf6ab322c3c1ad24356f9ac7972734779d4751d09e4d1f85d5e3c890f2",
+    "renderTestsPassed": 20,
+    "backendModules": 456,
+    "backendViolations": 0,
+    "lintErrors": 0,
+    "lintWarnings": 11
+  },
+  "production": {
+    "closureWritten": false,
+    "servicesStopped": false,
+    "deployed": false,
+    "migrations": [],
+    "n8nChanged": false,
+    "businessRerun": false
+  },
+  "remaining": [
+    "Explicit application-maintenance approval and controlled adoption",
+    "Regenerate proposal with fresh evidence and create-only closure",
+    "Verify preserved original state and final production readiness"
+  ],
+  "limitations": [
+    "Login page selection root cause is not fixed",
+    "Existing 4099 retry is scheduled for 2026-09-23 01:10:04 Asia/Shanghai; inspect it again before adoption",
+    "Old immutable helper cannot validate candidate closure until deployment"
+  ]
+}

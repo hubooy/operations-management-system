@@ -1,0 +1,25 @@
+{
+  "date": "2026-09-14",
+  "scope": "市场分析 → 行业汇报 pageSize 参数修复",
+  "sourceCommit": "7376e6a19b5db0df3c7f3174fd2a176fa67173d5",
+  "cause": "full 概览由 Worker 发送 pageSize=200，Django 市场 overview 仅接受 10 至 50，因此正式页面返回 pageSize 参数无效。",
+  "change": "full 概览固定发送 pageSize=50；请求失败时停止显示正在生成行业汇报。后端仍对完整筛选结果汇总行业指标。",
+  "validation": {
+    "marketTargetedTests": "28 passed",
+    "fullNodeTests": "2165 passed, 0 failed, 20 skipped; low-concurrency rerun",
+    "renderedHtmlTests": "20 passed",
+    "build": "passed",
+    "changedFileLint": "passed",
+    "backendBoundary": "442 modules checked, 0 violations"
+  },
+  "production": {
+    "workerReleaseId": "20260914T154612Z-36b6fd5a8dbe31f7",
+    "workerManifestSha256": "47ce8f8f6ff8a5993d4f9d5fb60b167099c4729d3124ac2ae2036d3e9c3b5cd2",
+    "sourceSnapshotChecks": [
+      "lib/market/query-contract.ts full pageSize=50",
+      "app/market-view.tsx spinner gated by loading and no error"
+    ],
+    "systemStatus": "Running / Ready / exact_release",
+    "readOnlyBrowserCheck": "http://localhost:3000/?module=market&view=overview rendered the industry report and monthly trend; pageSize 参数无效 and the generating spinner were absent."
+  }
+}

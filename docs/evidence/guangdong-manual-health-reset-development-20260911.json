@@ -1,0 +1,18 @@
+{
+  "status": "development_verified_not_deployed",
+  "rule": "Clear manual healthy risk and reason on a current Guangdong on-hand quantity increase or decrease; end existing health holds for that product.",
+  "productionChanged": false,
+  "newMigrations": false,
+  "verification": {
+    "postgresTests": 87,
+    "postgresPort": 55458,
+    "syntheticDataOnly": true,
+    "migrationPlanApplyAndDrift": "passed",
+    "minimumWriterStockRiskReset": "passed",
+    "backupRestoreReadback": "passed",
+    "productionBoundaryModules": 423,
+    "productionBoundaryViolations": 0,
+    "diffCheck": "passed"
+  },
+  "localEvidence": ".runtime/guangdong-pg-b8a863ee5f5e/result.json"
+}

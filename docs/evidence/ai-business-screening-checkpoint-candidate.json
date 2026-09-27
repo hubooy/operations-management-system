@@ -1,0 +1,11 @@
+{
+  "date": "2026-09-17", "batch": 44,
+  "status": "candidate_cooperative_checkpoints_not_scheduler_deadline",
+  "verification": {
+    "pure": {"passed": 87, "log": ".runtime/screening-checkpoint-44-pure.log", "note": "Archived actual tool receipts; 58 legacy algorithm tests preceded final normal-exit safeguard; final 9 checkpoint tests include that safeguard; 20 promotion tests"},
+    "independentReview": {"agent": "workbench_gap_review", "passed": 9, "seconds": 0.622, "log": ".runtime/batch44-checkpoint-independent-pure.log", "remainingBlockers": 0},
+    "firstPostgres": {"tests": 23, "passed": 20, "errors": 3, "seconds": 39.158, "log": ".runtime/ai-pg-d81e265e8542/failure.log", "cause": "Fixture self.report attribute shadows new test helper report()", "fix": "Rename helper to make_report; no implementation change"},
+    "finalPostgres": {"passed": 3, "seconds": 13.232, "log": ".runtime/ai-pg-bbb952abe1e5/tests.log", "suite": "ai_assistant.test_business_screening_checkpoint.ScreeningCheckpointOwningTests"}
+  },
+  "operations": {"productionBusinessReads": false, "productionWrites": false, "deployment": false, "serviceRestart": false, "paidModelCalls": false, "externalMessages": false}
+}

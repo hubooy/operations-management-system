@@ -1,0 +1,123 @@
+{
+  "version": "teruisi-inventory-dingtalk-release-v1",
+  "scope": "Current Windows host; inventory replenishment DingTalk error handling and guarded retry",
+  "sourceCommit": "a1eff0bf1fd29db7541d775b3030aa19fb909c59",
+  "completedAt": "2026-09-07T09:52:16.4256566+00:00",
+  "worker": {
+    "predecessorReleaseId": "20260907T013343Z-d1f5518ff9392cc3",
+    "releaseId": "20260907T093433Z-45b22a6f2cfced84",
+    "manifestSha256": "07cda372893ab39c6295ceaba3b136a885fda36428cccb4ab7582b79895e8d15",
+    "approvedPlanSha256": "ca859338b8b2e2b5fc598291d737260fb0f1753651b3c980c853f865fb0b2987",
+    "successorSha256": "26f82f881090ec2f3e9c2f832b10e46aaad3ab4cee82a632d8e7b3a5127119b5",
+    "startupBindingSha256": "8bcc572fc4b3b33ace579cf307d0c39fb43bae2499c017bc71f764a6523c0214",
+    "activation": "activated; exact release independently resolved; startup binding verified"
+  },
+  "django": {
+    "deploymentManifestSha256": "6a5a84fd8aa7570e37b86172ee22b9e8aa89de2f8ed39df2a5376c32dfd77b11",
+    "schemaMigrationRequired": false,
+    "changedProductionModule": "inventory/dingtalk_sync.py"
+  },
+  "validation": {
+    "inventoryDjangoTestsPassed": 38,
+    "serialFocusedAndFailedTestRecheckPassed": 74,
+    "fullUnitInitialRun": {
+      "total": 1952,
+      "passed": 1924,
+      "failed": 2,
+      "cancelled": 3,
+      "skipped": 23
+    },
+    "recheckNote": "Refresh-count regression fixed; all initially failed/cancelled tests included in the successful serial recheck. The full parallel suite was not rerun after correction.",
+    "build": "passed",
+    "lintErrors": 0,
+    "existingLintWarnings": 9,
+    "backendBoundaryModules": 381,
+    "backendBoundaryViolations": 0
+  },
+  "preReleaseBackup": {
+    "backupId": "daily-20260907T091817Z-993c8bebea71",
+    "manifestSha256": "f0de87da74ed703cddd56a24d1fd570336789c8de9b2cba791fd4fda757722e4",
+    "contentSha256": "a59dcd850ca4e7ae24d560572da3136e1ee0af47977d0c613b3847740d5017b2",
+    "verified": true
+  },
+  "isolatedMirror": {
+    "runId": "290532b838f3",
+    "resultSha256": "44e689eecda6656d084defc9946f4cbbb70d6d1df72f1f304042e5554471e301",
+    "status": "completed",
+    "postgresPort": 55444,
+    "coldStartReady": 23,
+    "restartReady": 23,
+    "aclSnapshotSha256": "f40d2302f7e58fad88c5bd580618300b43e103824c5ec18c651bd764e82e0f8d",
+    "restoredContentSha256": "a59dcd850ca4e7ae24d560572da3136e1ee0af47977d0c613b3847740d5017b2",
+    "finalContentSha256": "a59dcd850ca4e7ae24d560572da3136e1ee0af47977d0c613b3847740d5017b2",
+    "clusterStopped": true,
+    "productionDatabaseTouched": false,
+    "productionServiceStateChanged": false,
+    "externalActionsEnabled": false,
+    "workerD1Bindings": 0,
+    "externalEgressBlocked": true,
+    "workerCheckCount": 16,
+    "migrationCheck": "passed; no pending or generated model changes"
+  },
+  "online": {
+    "state": "Running",
+    "backendState": "Ready",
+    "workerState": "exact_release",
+    "components": {
+      "core": true,
+      "finance": true,
+      "netshop": true,
+      "market": true,
+      "products": true,
+      "workflow": true,
+      "inventory": true,
+      "customerService": true,
+      "accessControl": true,
+      "erpReference": true,
+      "bi": true,
+      "ai": true
+    },
+    "checkedAt": "2026-09-07T17:47:19.1584329+08:00",
+    "readiness": {
+      "httpStatus": 200,
+      "ok": true,
+      "backend": "django-postgresql",
+      "unavailableServices": [],
+      "status": "ready"
+    }
+  },
+  "originalPlanSync": {
+    "outcome": "created",
+    "localStatus": "synced",
+    "localSyncedAt": "2026-09-07T09:44:57.435996+00:00",
+    "independentDwsQueryVerified": true,
+    "uniqueRecordCount": 1,
+    "productQuantityAndMarkerMatched": true,
+    "verifiedAt": "2026-09-07T17:45:42.2065161+08:00",
+    "groupMessagesSent": 0,
+    "note": "Existing failed plan retried once through the public API; no local plan recreated. Record identifiers and business row data omitted."
+  },
+  "postReleaseBackup": {
+    "backupId": "daily-20260907T094550Z-a336ad76addd",
+    "manifestSha256": "f97ce990d3aa003e7baba48beb49fb03938b88f6891d30c9d99d6227fc42e302",
+    "dumpSha256": "fd033476b26ae94a77e7ded9943e2cedf67aa201b454d59bb517aabe0972af86",
+    "contentSha256": "577eaba1fbc8a2faf7fb18680999d0c2c39182fd4c313da4f3e66397834c5134",
+    "verified": true
+  },
+  "postReleaseRestore": {
+    "version": "teruisi-postgres-restore-rehearsal-v1",
+    "status": "completed",
+    "rehearsalId": "20e73b3ff597",
+    "startedAt": "2026-09-07T09:48:22.5185240+00:00",
+    "completedAt": "2026-09-07T09:52:16.4256566+00:00",
+    "backupId": "daily-20260907T094550Z-a336ad76addd",
+    "backupManifestSha256": "f97ce990d3aa003e7baba48beb49fb03938b88f6891d30c9d99d6227fc42e302",
+    "dumpSha256": "fd033476b26ae94a77e7ded9943e2cedf67aa201b454d59bb517aabe0972af86",
+    "expectedContentSha256": "577eaba1fbc8a2faf7fb18680999d0c2c39182fd4c313da4f3e66397834c5134",
+    "restoredContentSha256": "577eaba1fbc8a2faf7fb18680999d0c2c39182fd4c313da4f3e66397834c5134",
+    "isolatedPort": 55432,
+    "productionDatabaseTouched": false,
+    "serviceStateChanged": false,
+    "cleanupStatus": "isolated_data_removed"
+  }
+}

@@ -1,0 +1,161 @@
+{
+  "version": "teruisi-store-annual-target-import-production-v1",
+  "date": "2026-09-15",
+  "status": "adopted",
+  "sourceFile": {
+    "path": "E:\\微软文件\\OneDrive\\桌面\\店铺年度目标.xlsx",
+    "treatedAsInstructions": false,
+    "namedRows": 27,
+    "importedRows": 21,
+    "blankRowsSkipped": 6
+  },
+  "source": {
+    "featureCommit": "677f1c6505cbcd5a6b3856e45523a92f85dd1405",
+    "firstAliasFixCommit": "28ba6f7927df2866489fc8166dea7bcb18957d48",
+    "finalCommit": "71ce54cb1ff8a92575ac73d011078753aae8a0ba"
+  },
+  "scope": [
+    "Admin XLSX import at Sales Analysis / Target Settings",
+    "Annual sales and profit amounts converted from ten-thousand yuan to cents",
+    "Gross margin and promotion rates converted from Excel percentages to basis points",
+    "Annual actual sales, profit, weighted gross margin and weighted promotion rate display"
+  ],
+  "migration": {
+    "name": "finance.0002_finance_target_gross_margin",
+    "status": "applied"
+  },
+  "identityMatching": {
+    "exactIdentityFirst": true,
+    "uniqueFullLabelAlias": true,
+    "trailingParentheticalNoteMayBeOmitted": true,
+    "ambiguousOrUnknownFailsClosed": true
+  },
+  "verification": {
+    "djangoFinanceTests": {
+      "passed": 33,
+      "failed": 0
+    },
+    "nodeFullRun": {
+      "passed": 2177,
+      "failed": 0,
+      "skipped": 21,
+      "cancelled": 1
+    },
+    "unrelatedBrowserFileRetry": {
+      "passed": 10,
+      "failed": 0
+    },
+    "renderedHtml": 20,
+    "build": "passed",
+    "applicationTypes": "passed",
+    "scopedLint": "passed",
+    "productionBoundaryModules": 448,
+    "migrationDrift": false,
+    "unresolvedFailures": 0
+  },
+  "productionImports": [
+    {
+      "attempt": 1,
+      "result": "rolled_back",
+      "failedAtRow": 15,
+      "reason": "Workbook shop label omitted the canonical trailing parenthetical note",
+      "rowsWritten": 0
+    },
+    {
+      "attempt": 2,
+      "result": "rolled_back",
+      "failedAtRow": 15,
+      "reason": "Production finance group_name is not the platform prefix contained in the full shop label",
+      "rowsWritten": 0
+    },
+    {
+      "attempt": 3,
+      "result": "completed",
+      "year": 2026,
+      "created": 21,
+      "updated": 0,
+      "blankRowsSkipped": 6,
+      "unlistedTargetsPreserved": true
+    }
+  ],
+  "browser": {
+    "path": "Sales Analysis / Target Settings / Store Annual Target Progress",
+    "targetListCount": 21,
+    "annualProgressShopCount": 28,
+    "financialReportCutoff": "2026-08",
+    "successMessageVerified": true,
+    "fourTargetMetricsVerified": true,
+    "missingMonthWarningsVerified": true
+  },
+  "maintenance": {
+    "ids": [
+      "34de3641e5704bc69340bf564ba10153",
+      "52aa405e01584ad1a6e242690d40d013",
+      "d5643a565dc94613bf7d26f81a90a50d"
+    ],
+    "finalMarker": null,
+    "failedImportsReplayedAutomatically": false,
+    "n8nRestarted": false
+  },
+  "deployment": {
+    "releaseId": "20260915T113701Z-5c7c6173998295bb",
+    "planSha256": "3a7c6dd12563544d858faa5f6be318710d0fb396be8f1f7f281742fbb042bf0b",
+    "workerManifestSha256": "d2bc10037f5d3cd70b9e7037f8ad2acd70d5104d12c8ee56adb93720214fa7f6",
+    "successorSha256": "4565e902af1b0f63adb3a5f645f37f7937c7cc99731bf0dc621a6715fb1e6530",
+    "startupBindingSha256": "5fe791490ea2e6c28f4cd66b8cdda50eae8730780e716168edee8d3e29c41e02",
+    "djangoManifestSha256": "788cd95480c09af4fcedff2c246998b92e4d0e06353d51051c55b29bd6cdc969",
+    "djangoAppFingerprint": "92c3671d02b8eb3a07fa8ef713e8c786a786f36ae5028da6a837a4ab9cdf164d"
+  },
+  "backup": {
+    "before": {
+      "backupId": "daily-20260915T110031Z-1b4686203bcc",
+      "manifestSha256": "8e20e2d79a92d12c9f67b372199d8d8863e8ad19bb59fe9ff8a87ac1ef2e6424",
+      "dumpSha256": "2e865dbf742a54de3a23d94534cd09997bbe56904fb7647fc378d41a480066c5",
+      "contentSha256": "954b94704e8a349340d968dfc77b8c4b44554349c8e77209e3be66bc6bf3f28c",
+      "archivedToE": true
+    },
+    "independentRestore": {
+      "rehearsalId": "98a1eba3fd04",
+      "isolatedPort": 55474,
+      "expectedContentSha256": "954b94704e8a349340d968dfc77b8c4b44554349c8e77209e3be66bc6bf3f28c",
+      "restoredContentSha256": "954b94704e8a349340d968dfc77b8c4b44554349c8e77209e3be66bc6bf3f28c",
+      "productionDatabaseTouched": false,
+      "cleanupStatus": "isolated_data_removed"
+    },
+    "after": {
+      "backupId": "daily-20260915T115822Z-7c5b8af2a14a",
+      "manifestSha256": "5573eb59c1b62e34f4f8fc4613621cdaae015c3c84a3df17e90598f3fdf93393",
+      "dumpSha256": "a0ce0ae2c539e76d59d74d2a136e491470acfc1c33d6c92b4dd13449c0a6463b",
+      "contentSha256": "254f5b38e0432bb82b3872d792c6d7043ef1e7c1d7031297ebc92e0d73596c8e",
+      "verified": true,
+      "archivePath": "E:\\运营管理系统业务数据\\daily-20260915T115822Z-7c5b8af2a14a",
+      "archiveFilesHashMatched": 3,
+      "serviceStateChanged": false
+    }
+  },
+  "finalSystem": {
+    "state": "Running",
+    "backendState": "Ready",
+    "workerState": "exact_release",
+    "workerVerify": "verified",
+    "startupVerify": "verified",
+    "componentsReady": 12,
+    "maintenance": null,
+    "dingTalkStartup": "enabled",
+    "dingTalkReceiver": "running",
+    "dingTalkLogStatus": "connected",
+    "dingTalkStderrBytes": 0,
+    "checkedAt": "2026-09-15T20:02:54.5746569+08:00"
+  },
+  "externalAutomation": {
+    "n8nRestarted": false,
+    "naturallyStartedAfterDeployment": {
+      "executionId": 2236,
+      "workflowId": "NewProductWeeklyDingTalk2026",
+      "startedAtUtc": "2026-09-15 12:05:00.112",
+      "stoppedAtUtc": "2026-09-15 12:05:43.398",
+      "finalStatus": "success",
+      "intervened": false
+    }
+  }
+}

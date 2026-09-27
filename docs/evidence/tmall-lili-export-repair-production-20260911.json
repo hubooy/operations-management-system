@@ -1,0 +1,129 @@
+{
+  "task": "Controlled Lili product-master export repair and one full n8n verification",
+  "recordedAt": "2026-09-11T22:50:00+08:00",
+  "status": "production_adopted_business_verification_failed_manual_review_required",
+  "sourceCommit": "5c93442493e30815252d1fa56f2f40c8a2b81750",
+  "scope": {
+    "storeKey": "tmall-lili",
+    "workflowId": "TmallLiliDaily2026",
+    "fullManualExecutionId": "1029",
+    "n8nRestarted": false,
+    "djangoOrPostgresRestarted": false,
+    "databaseMigration": false,
+    "manual109ProductAnd20RowTasksModified": false
+  },
+  "verification": {
+    "unit": { "tests": 2116, "passed": 2093, "failed": 0, "skipped": 23, "concurrency": 4 },
+    "tmallFocused": { "passed": 216, "failed": 0 },
+    "finalAiAndProductFocused": { "passed": 33, "failed": 0 },
+    "lint": { "errors": 0, "existingWarnings": 11, "modifiedFilesWarnings": 0 },
+    "isolatedFrontendBuild": "passed",
+    "isolatedHelperBuild": "passed",
+    "diffCheck": "passed",
+    "historicalFailures": "Preserved initial stale AI assertion failure and Node default-concurrency IPC failure; existing AI behavior was verified against clean main. Only the stale test was updated after explicit authorization."
+  },
+  "worker": {
+    "predecessorReleaseId": "20260911T081342Z-6b7a6a81082f9a5b",
+    "releaseId": "20260911T143402Z-fc575f36864bbb8d",
+    "manifestSha256": "2cebf6f0fde90bb3528b10e71a8012e2d091978864b9fe1b8a5dc045d5c821e0",
+    "planSha256": "2731b410f1f2c96f70ddbed800175d740c43e280d6284f403eebc5330ddd60d5",
+    "successorSha256": "e8c104e4fd806743655f19ba026c7d1f0868ed7499becafe9cfe270aa29bf749",
+    "consumptionSha256": "c27afbb5e9035da5cb3a2a2c8ec8ddbe737d9246068d01ac56e41231c6378117",
+    "startupBindingSha256": "8c33c4d95b8c2946081bde4723831c1e1ae3b06536c9fb5b5dd166fa6e5e4f10",
+    "startupVerified": true,
+    "systemState": "Running",
+    "backendState": "Ready",
+    "workerState": "exact_release",
+    "homeStatus": 200,
+    "n8nHealthStatus": 200
+  },
+  "django": {
+    "unchanged": true,
+    "deploymentManifestSha256": "d337f14cf64caad2e8efe01c9ecb00f34f2cdca8abc65af6d4f11c2c41dfb0dc",
+    "appFingerprint": "e9803056d3e2815796a4484a1e5f4531493f9a6c3fa988a8792dfc6a3c059d8f"
+  },
+  "n8nDefinitionAudit": {
+    "unchangedBeforeAfterPublication": true,
+    "definitionsSha256": "813b2d3d100f4b44ef1095f0d3c5d37d3c082cf506d1f31e23dab63b2ef90ef7",
+    "ownersSha256": "f77a5c10c439ade56e13d2f6e3530bfabe2ae058d09bf09fe4b17cba16771935",
+    "webhooksSha256": "9973a9bde77b1843c454a42e2212f59c67180ba8014cdfb4f80e39424343cdf7",
+    "digestMethod": "SHA256 of Python json.dumps(read-only SQLite fetchall, ensure_ascii=True, separators=(',', ':')). Definitions sorted by id; owners by workflowId,projectId; webhooks by workflowId,webhookPath."
+  },
+  "executionResult": {
+    "executionId": "1029",
+    "status": "error",
+    "startedAt": "2026-09-11T14:43:38.798Z",
+    "stoppedAt": "2026-09-11T14:46:25.736Z",
+    "dataSource": "Authorized local read-only n8n persisted results and exact audit/file verification; teruisi_operations MCP unavailable.",
+    "A": { "authenticatedStore": "tmall-lili", "coverageRangeStart": "2026-08-01", "coverageRangeEnd": "2026-09-10", "selectedDate": "2026-09-05" },
+    "B": { "downloaded": 0, "reason": "No product-day gap for selected date" },
+    "C": { "processedDateCount": 0, "coverageConfirmed": true },
+    "P": {
+      "status": "imported",
+      "date": "2026-09-05",
+      "rowCount": 48,
+      "warningCount": 0,
+      "coverageConfirmed": true,
+      "batchId": "tmall_promotion:%E5%A4%A9%E7%8C%AB:%E5%A4%A9%E7%8C%AB-%E5%BF%97%E9%AB%98%E4%B8%BD%E5%8A%9B%E4%B8%93%E5%8D%96%E5%BA%97:2e2b1296787d727db05c5fb34872d759dd868393ec568ae7c87e601351549971",
+      "fileSha256": "5e47072f27fa9aa07fe3748359b7f84264684d578362f7546e81ac09777e3e7c",
+      "fileHashIndependentlyVerified": true
+    },
+    "M": {
+      "status": "failed",
+      "runId": "f48b8cc7-9120-4f5a-b3bd-14b3de09eec9",
+      "snapshotDate": "2026-09-11",
+      "stage": "export_submitted",
+      "exportSubmittedAt": "2026-09-11T14:44:54.797Z",
+      "prompt": "查询[商品状态:出售中]的商品，并批量导出到excel",
+      "acknowledgementDiagnostic": { "promptStillInInput": false, "searchResultPresent": false, "acceptedTaskCount": 0, "completedResultPresent": false },
+      "downloadOrImportVerified": false,
+      "activeAuditPreserved": true,
+      "automaticResubmission": false,
+      "rootCauseProven": false,
+      "nextStep": "Operator must inspect the original 22:44:54 Lili product-manager conversation without sending another export. Empty input alone does not prove server acceptance; detection scope and platform response remain unproven."
+    },
+    "remainingUnprocessedDates": ["2026-09-06", "2026-09-07", "2026-09-08", "2026-09-09", "2026-09-10"],
+    "helperIdleAfterFailure": true,
+    "controlledBrowserPort9325Closed": true,
+    "controlledBrowserProcessAbsent": true,
+    "businessRepairAccepted": false
+  },
+  "operatorArchive": {
+    "operatorConfirmed": true,
+    "runId": "f8600a4e-1de3-4857-ac1a-37c29000287d",
+    "snapshotDate": "2026-09-11",
+    "exportSubmittedAt": "2026-09-11T13:36:31.148Z",
+    "previousStage": "export_submitted",
+    "archiveFileName": "abandoned-tmall-lili-2026-09-11-f8600a4e-1de3-4857-ac1a-37c29000287d.json",
+    "activeSlotRemoved": true,
+    "platformTaskCanceled": false
+  },
+  "backups": {
+    "after": {
+      "backupId": "daily-20260911T144719Z-59873d356e3b",
+      "manifestSha256": "b637feab1e5bead246c0186a52154622ea95fe810534b7786c18b51263385aec",
+      "dumpSha256": "18d41e54b9cfaabd02bb1b53e7fea8424171e05c898ff1c9c21396dee930cb96",
+      "contentSha256": "1af3925c53a82d0ba9dbc5ebb0590c477ba89acb206102474117a982868b0044",
+      "verified": true,
+      "restoreRepeated": false,
+      "serviceStateChanged": false
+    },
+    "before": {
+      "backupId": "daily-20260911T142436Z-460feb8f65b4",
+      "manifestSha256": "6ac2463eda16ff119835a161dc178dfd9f75449cdb11c1cfa1e7c74ccebe0765",
+      "dumpSha256": "7cc52ac7eedb9b93496455c6d929f25eb56485b95ef32b65bb5d5f0311208a67",
+      "contentSha256": "d4c02e0777b7397bb6fe2baadc29efb1198aa8ea39c0f96ccc7dff8f6e18741a",
+      "verified": true
+    },
+    "beforeRestore": {
+      "rehearsalId": "7e19ac3bd652",
+      "isolatedPort": 55449,
+      "status": "completed",
+      "expectedContentSha256": "d4c02e0777b7397bb6fe2baadc29efb1198aa8ea39c0f96ccc7dff8f6e18741a",
+      "restoredContentSha256": "d4c02e0777b7397bb6fe2baadc29efb1198aa8ea39c0f96ccc7dff8f6e18741a",
+      "productionDatabaseTouched": false,
+      "serviceStateChanged": false,
+      "cleanupStatus": "isolated_data_removed"
+    }
+  }
+}

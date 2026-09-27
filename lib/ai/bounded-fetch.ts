@@ -18,7 +18,7 @@ export async function fetchBoundedJson(input: {
   maxBytes?: number;
   fetcher?: typeof fetch;
   signal?: AbortSignal;
-}): Promise<{ response: Response; data: unknown }> {
+}): Promise<{ response: Response; data: unknown; responseBytes: number }> {
   const controller = new AbortController();
   const externalSignal = input.signal ?? input.init.signal ?? undefined;
   const timeoutMs = Math.max(1, input.timeoutMs);
@@ -45,11 +45,11 @@ export async function fetchBoundedJson(input: {
       throw new BoundedFetchError("response_too_large", `模型响应超过 ${maxBytes} 字节上限`);
     }
     const bytes = await readBoundedBody(response, maxBytes);
-    if (bytes.byteLength === 0) return { response, data: null };
+    if (bytes.byteLength === 0) return { response, data: null, responseBytes: 0 };
     try {
-      return { response, data: JSON.parse(new TextDecoder().decode(bytes)) as unknown };
+      return { response, data: JSON.parse(new TextDecoder().decode(bytes)) as unknown, responseBytes: bytes.byteLength };
     } catch {
-      return { response, data: null };
+      return { response, data: null, responseBytes: bytes.byteLength };
     }
   } catch (error) {
     if (error instanceof BoundedFetchError) throw error;

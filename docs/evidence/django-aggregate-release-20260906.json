@@ -1,0 +1,560 @@
+{
+  "version": "teruisi-django-aggregate-adoption-v1",
+  "verifiedAt": "2026-09-05T18:42:29.128Z",
+  "scope": "authorized local Windows production",
+  "worker": {
+    "releaseId": "20260905T180043Z-7364a22437c52ae1",
+    "planSha256": "f88f4156734d99794a912a3efa192511b3ad6fd9d01fb67b8960ea6c8ceb9943",
+    "manifestSha256": "589e304f0e60a8ee711840888b5090c8bcdb7580b2372275e2313e8e219a7f4e",
+    "d1Bindings": 0,
+    "erpConfigMatches": true,
+    "r2Retained": true,
+    "sourceCommit": "0dc7b2b75bceee64c74456287a590cb6dabdef87",
+    "verificationStatus": "verified",
+    "predecessorReleaseId": "20260905T161941Z-2f1ddff054f33ff5",
+    "successorSha256": "ec0cced759f596a0d2ed0d573211af0ced2d8ac20b3c558cd628c2fc3e4d118d",
+    "startupBindingSha256": "375903aa88454b99160155ba037968cb1c4d34b5f3559f817f4509de7feb9932",
+    "startupVerified": true,
+    "drizzleMigrationsPackaged": false,
+    "predecessorRejected": true,
+    "predecessorRejection": "ManifestPath is not the authorized effective head release"
+  },
+  "django": {
+    "sourceCommit": "db347c22680d09039322cbb4a3da43458f46b03c",
+    "deploymentManifestSha256": "72396639f229985e1db63cd58546095fb87420c70329830c14afeec4b3e0acdf",
+    "netshopConsumerSha256": "4a04ecef23da4a07b2bebb3398f61f0792957676d87d78a18a08bacb7eed0e10",
+    "financeViewsSha256": "a8e047a4d09f4744adbb421cc680d07022e47a6ce974733af8167f0402c14326",
+    "readiness": {
+      "ok": true,
+      "backend": "django-postgresql",
+      "unavailableServices": [],
+      "elapsedMs": 1785,
+      "operation": "GET /health/ready only",
+      "services": 23
+    },
+    "schemaChanges": 0,
+    "newDatabaseGrants": 0,
+    "startup": {
+      "djangoSupervisorStartupVerified": true,
+      "windowStyle": 7
+    }
+  },
+  "verification": {
+    "dependencyGraph": {
+      "modules": 302,
+      "d1Violations": 0
+    },
+    "unit": {
+      "passed": 1839,
+      "skipped": 20,
+      "failed": 0
+    },
+    "renderedWorker": {
+      "passed": 20
+    },
+    "djangoPostgres": {
+      "testsPassed": 49,
+      "isolatedPort": 15492,
+      "migrationDryRun": "no changes"
+    },
+    "build": "passed",
+    "lint": {
+      "errors": 0,
+      "existingWarnings": 9
+    },
+    "typescript": {
+      "existingDiagnostics": 160,
+      "newDiagnostics": 0,
+      "fullCheckPassed": false
+    },
+    "syntheticPerformance": {
+      "syntheticRows": 100000,
+      "batches": 40,
+      "results": [
+        {
+          "queryKind": "exact",
+          "beforeMs": 186,
+          "afterMs": 25,
+          "total": 4,
+          "equivalent": true
+        },
+        {
+          "queryKind": "broad",
+          "beforeMs": 3086,
+          "afterMs": 46,
+          "total": 10000,
+          "equivalent": true
+        }
+      ]
+    },
+    "realPrincipal": {
+      "source": "authorized local read-only API fallback; operations MCP unavailable",
+      "role": "admin",
+      "scopeRestricted": false,
+      "salesFreshness": {
+        "authority": "sales_single_write",
+        "source": "django_postgresql",
+        "revision": "14:10",
+        "cutoffDate": "2026-09-03"
+      }
+    },
+    "publicApiChecks": [
+      {
+        "path": "/api/auth/me",
+        "status": 200,
+        "elapsedMs": 42,
+        "role": "admin",
+        "scopeRestricted": false
+      },
+      {
+        "path": "/api/sales/data-health",
+        "status": 200,
+        "elapsedMs": 76,
+        "source": "django_postgresql",
+        "authority": "sales_single_write",
+        "revision": "14:10",
+        "cutoffDate": "2026-09-03"
+      },
+      {
+        "path": "http://127.0.0.1:5791/health",
+        "status": 200,
+        "elapsedMs": 9,
+        "busy": false
+      },
+      {
+        "path": "/_teruisi/local/health/live",
+        "status": 200,
+        "elapsedMs": 17
+      },
+      {
+        "path": "/_teruisi/local/health/ready",
+        "status": 200,
+        "elapsedMs": 1835
+      },
+      {
+        "path": "/",
+        "status": 200,
+        "elapsedMs": 15
+      },
+      {
+        "path": "/api/finance/analysis?initialMonthFallback=latest_completed&month=2026-09",
+        "status": 200,
+        "elapsedMs": 186
+      },
+      {
+        "path": "/api/finance/targets?view=items&pageSize=1",
+        "status": 200,
+        "elapsedMs": 65
+      },
+      {
+        "path": "/api/finance/targets?view=options",
+        "status": 200,
+        "elapsedMs": 502
+      },
+      {
+        "path": "/api/imports/finance?pageSize=1",
+        "status": 200,
+        "elapsedMs": 27
+      },
+      {
+        "path": "/api/market/annotations?view=workspace_fast",
+        "status": 200,
+        "elapsedMs": 556
+      },
+      {
+        "path": "/api/ai/models",
+        "status": 200,
+        "elapsedMs": 18
+      },
+      {
+        "path": "/api/netshop/products?pageSize=1",
+        "status": 200,
+        "elapsedMs": 746
+      },
+      {
+        "path": "/api/products/summary?pageSize=1",
+        "status": 200,
+        "elapsedMs": 1056
+      },
+      {
+        "path": "/api/inventory/overview?pageSize=1",
+        "status": 200,
+        "elapsedMs": 1293
+      },
+      {
+        "path": "/api/customer-service/conversations?pageSize=1",
+        "status": 200,
+        "elapsedMs": 821
+      },
+      {
+        "path": "/api/search?q=%E5%BF%97%E9%AB%98&group=products&pageSize=1&totalLimit=20",
+        "status": 200,
+        "elapsedMs": 82,
+        "groups": [
+          {
+            "key": "products",
+            "available": true,
+            "total": 3559,
+            "returned": 1
+          }
+        ],
+        "deadlineExceeded": false
+      },
+      {
+        "path": "/api/search?q=%E5%BF%97%E9%AB%98&group=jd_products&pageSize=1&totalLimit=20",
+        "status": 200,
+        "elapsedMs": 225,
+        "groups": [
+          {
+            "key": "jd_products",
+            "available": true,
+            "total": 23705,
+            "returned": 1
+          }
+        ],
+        "deadlineExceeded": false
+      },
+      {
+        "path": "/api/search?q=%E5%BF%97%E9%AB%98&group=inventory&pageSize=1&totalLimit=20",
+        "status": 200,
+        "elapsedMs": 146,
+        "groups": [
+          {
+            "key": "inventory",
+            "available": true,
+            "total": 11140,
+            "returned": 1
+          }
+        ],
+        "deadlineExceeded": false
+      },
+      {
+        "path": "/api/search?q=%E5%BF%97%E9%AB%98&group=inventory_age&pageSize=1&totalLimit=20",
+        "status": 200,
+        "elapsedMs": 118,
+        "groups": [
+          {
+            "key": "inventory_age",
+            "available": true,
+            "total": 2524,
+            "returned": 1
+          }
+        ],
+        "deadlineExceeded": false
+      },
+      {
+        "path": "/api/search?q=%E5%BF%97%E9%AB%98&group=combos&pageSize=1&totalLimit=20",
+        "status": 200,
+        "elapsedMs": 79,
+        "groups": [
+          {
+            "key": "combos",
+            "available": true,
+            "total": 2414,
+            "returned": 1
+          }
+        ],
+        "deadlineExceeded": false
+      },
+      {
+        "path": "/api/search?q=%E5%BF%97%E9%AB%98&group=replenishment&pageSize=1&totalLimit=20",
+        "status": 200,
+        "elapsedMs": 15,
+        "groups": [
+          {
+            "key": "replenishment",
+            "available": true,
+            "total": 4,
+            "returned": 1
+          }
+        ],
+        "deadlineExceeded": false
+      },
+      {
+        "path": "/api/search?q=%E5%BF%97%E9%AB%98&group=market_skus&pageSize=1&totalLimit=20",
+        "status": 200,
+        "elapsedMs": 478,
+        "groups": [
+          {
+            "key": "market_skus",
+            "available": true,
+            "total": 2825,
+            "returned": 1
+          }
+        ],
+        "deadlineExceeded": false
+      },
+      {
+        "path": "/api/search?q=%E5%BF%97%E9%AB%98&group=market_annotations&pageSize=1&totalLimit=20",
+        "status": 200,
+        "elapsedMs": 159,
+        "groups": [
+          {
+            "key": "market_annotations",
+            "available": true,
+            "total": 0,
+            "returned": 0
+          }
+        ],
+        "deadlineExceeded": false
+      },
+      {
+        "path": "/api/search?q=%E5%BF%97%E9%AB%98&group=customer_service&pageSize=1&totalLimit=20",
+        "status": 200,
+        "elapsedMs": 237,
+        "groups": [
+          {
+            "key": "customer_service",
+            "available": true,
+            "total": 25827,
+            "returned": 1
+          }
+        ],
+        "deadlineExceeded": false
+      },
+      {
+        "path": "/api/search?q=%E5%BF%97%E9%AB%98&group=finance&pageSize=1&totalLimit=20",
+        "status": 200,
+        "elapsedMs": 70,
+        "groups": [
+          {
+            "key": "finance",
+            "available": true,
+            "total": 38520,
+            "returned": 1
+          }
+        ],
+        "deadlineExceeded": false
+      },
+      {
+        "path": "/api/search?q=%E5%BF%97%E9%AB%98&group=targets&pageSize=1&totalLimit=20",
+        "status": 200,
+        "elapsedMs": 19,
+        "groups": [
+          {
+            "key": "targets",
+            "available": true,
+            "total": 0,
+            "returned": 0
+          }
+        ],
+        "deadlineExceeded": false
+      },
+      {
+        "path": "/api/search?q=%E5%BF%97%E9%AB%98&group=workflow&pageSize=1&totalLimit=20",
+        "status": 200,
+        "elapsedMs": 90,
+        "groups": [
+          {
+            "key": "workflow",
+            "available": true,
+            "total": 6,
+            "returned": 1
+          }
+        ],
+        "deadlineExceeded": false
+      },
+      {
+        "path": "/api/search?q=%E5%BF%97%E9%AB%98&group=imports&pageSize=1&totalLimit=20",
+        "status": 200,
+        "elapsedMs": 249,
+        "groups": [
+          {
+            "key": "imports",
+            "available": true,
+            "total": 1053,
+            "returned": 1
+          }
+        ],
+        "deadlineExceeded": false
+      },
+      {
+        "path": "/api/search?q=2026&pageSize=1&totalLimit=20",
+        "status": 200,
+        "elapsedMs": 1475,
+        "groupCount": 14,
+        "unavailableDomains": [],
+        "deadlineExceeded": false
+      },
+      {
+        "path": "/api/search?q=a&group=unknown",
+        "status": 400,
+        "elapsedMs": 14
+      },
+      {
+        "path": "/api/finance/targets?view=invalid",
+        "status": 400,
+        "elapsedMs": 16
+      },
+      {
+        "path": "/api/finance/analysis?month=2026-99",
+        "status": 400,
+        "elapsedMs": 5
+      },
+      {
+        "path": "http://127.0.0.1:8011/api/finance/targets?view=items",
+        "status": 401,
+        "elapsedMs": 4
+      }
+    ],
+    "coldSearchDeadlineObservation": [
+      {
+        "path": "/api/search?q=%E5%BF%97%E9%AB%98&group=orders&pageSize=1&totalLimit=20",
+        "failure": "Expected values to be strictly equal:\n\ntrue !== false\n"
+      }
+    ],
+    "coldSearchDeadlineExplanation": "The first broad order search returned the existing 2-second partial-result response; it was not a Django availability failure. Precise and combined searches passed, and the broad query passed on follow-up.",
+    "broadSearchFollowup": {
+      "status": 200,
+      "elapsedMs": 86,
+      "deadlineExceeded": false,
+      "truncated": true,
+      "timedOutDomains": [],
+      "unavailableDomains": [],
+      "contractVerified": true
+    },
+    "preciseSearch": {
+      "queryKind": "existing-product-identifier",
+      "querySha256": "7188b540344534ba91cae7ba20e8838bb73500d997d83a9de98bf6eefdab362c",
+      "groups": [
+        {
+          "group": "orders",
+          "status": 200,
+          "elapsedMs": 1143,
+          "deadlineExceeded": false,
+          "unavailableDomains": [],
+          "returned": 0,
+          "matchedGroups": []
+        },
+        {
+          "group": "jd_products",
+          "status": 200,
+          "elapsedMs": 224,
+          "deadlineExceeded": false,
+          "unavailableDomains": [],
+          "returned": 1,
+          "matchedGroups": [
+            "jd_products"
+          ]
+        },
+        {
+          "group": "all",
+          "status": 200,
+          "elapsedMs": 623,
+          "deadlineExceeded": false,
+          "unavailableDomains": [],
+          "returned": 1,
+          "matchedGroups": [
+            "jd_products"
+          ]
+        }
+      ],
+      "failures": []
+    },
+    "hostBoundary": {
+      "loopbackStatus": 200,
+      "untrustedHostStatus": 404
+    },
+    "unsignedInternalFinanceStatus": 401,
+    "restrictedPrincipalChecks": "isolated signed-principal API tests; no new production account was created"
+  },
+  "runningState": {
+    "version": "teruisi-operations-system-control-v2",
+    "state": "Running",
+    "backendState": "Ready",
+    "workerState": "exact_release",
+    "releaseId": "20260905T180043Z-7364a22437c52ae1",
+    "supervisorProcessId": 8860,
+    "portProcessId": 27968,
+    "url": "http://localhost:3000/",
+    "reason": null,
+    "components": {
+      "core": true,
+      "finance": true,
+      "netshop": true,
+      "market": true,
+      "products": true,
+      "workflow": true,
+      "inventory": true,
+      "customerService": true,
+      "accessControl": true,
+      "erpReference": true,
+      "bi": true,
+      "ai": true
+    },
+    "checkedAt": "2026-09-06T02:42:17.1697566+08:00"
+  },
+  "supervisor": {
+    "status": "completed",
+    "desiredState": "running",
+    "supervisorProcess": "running",
+    "health": "healthy",
+    "code": "all_components_ready",
+    "lastHealthyAt": "2026-09-05T18:38:07.8721479+00:00",
+    "restartAttemptsInWindow": 0,
+    "pendingAlertCount": 9,
+    "serviceStateChanged": false
+  },
+  "backups": {
+    "before": {
+      "status": "completed",
+      "backupId": "daily-20260905T174555Z-1bf6ec64a336",
+      "backupDirectory": "D:\\teruisi-runtime\\django-sales\\backups\\postgres-daily\\daily-20260905T174555Z-1bf6ec64a336",
+      "manifestSha256": "7385928c9e6e1f3f789f6141d711eb37ec779e45631ce1ec713220c3799a2dd5",
+      "dumpSha256": "d3835191858cae4bf221b3028046b2f525986d586ddb883e5e9e396286b2a609",
+      "contentSha256": "77a5ca66bf3e18506a31a15ba401bf6fdfbc76833a904212df4496c55675ebcb",
+      "completedAt": "2026-09-05T17:47:18.6095629+00:00",
+      "serviceStateChanged": false
+    },
+    "after": {
+      "rehearsal": {
+        "version": "teruisi-postgres-restore-rehearsal-v1",
+        "status": "completed",
+        "rehearsalId": "5a922aaefa5b",
+        "startedAt": "2026-09-06T02:34:28.1754244+08:00",
+        "completedAt": "2026-09-06T02:38:17.0850653+08:00",
+        "backupId": "daily-20260905T183255Z-7e27e4b41cc6",
+        "backupManifestSha256": "83794c2267a744f1cf689ceef36567aa9603e325186a805946d618cd4a89f48c",
+        "dumpSha256": "2dfb303fc644b7429e8451ac056607685fadfe02a10c29f72faf55894cd8621f",
+        "expectedContentSha256": "d61a14870416a36f88e5f9d50ff58bf32758d815c68fecac200a548d8df249b5",
+        "restoredContentSha256": "d61a14870416a36f88e5f9d50ff58bf32758d815c68fecac200a548d8df249b5",
+        "isolatedPort": 55432,
+        "productionDatabaseTouched": false,
+        "serviceStateChanged": false,
+        "cleanupStatus": "isolated_data_removed"
+      },
+      "verification": {
+        "status": "completed",
+        "backupId": "daily-20260905T183255Z-7e27e4b41cc6",
+        "manifestSha256": "83794c2267a744f1cf689ceef36567aa9603e325186a805946d618cd4a89f48c",
+        "dumpSha256": "2dfb303fc644b7429e8451ac056607685fadfe02a10c29f72faf55894cd8621f",
+        "contentSha256": "d61a14870416a36f88e5f9d50ff58bf32758d815c68fecac200a548d8df249b5",
+        "serviceStateChanged": false
+      },
+      "backup": {
+        "status": "completed",
+        "backupId": "daily-20260905T183255Z-7e27e4b41cc6",
+        "backupDirectory": "D:\\teruisi-runtime\\django-sales\\backups\\postgres-daily\\daily-20260905T183255Z-7e27e4b41cc6",
+        "manifestSha256": "83794c2267a744f1cf689ceef36567aa9603e325186a805946d618cd4a89f48c",
+        "dumpSha256": "2dfb303fc644b7429e8451ac056607685fadfe02a10c29f72faf55894cd8621f",
+        "contentSha256": "d61a14870416a36f88e5f9d50ff58bf32758d815c68fecac200a548d8df249b5",
+        "completedAt": "2026-09-06T02:34:18.1939896+08:00",
+        "serviceStateChanged": false
+      }
+    },
+    "comparison": {
+      "allBusinessRevisionsAndAuthoritiesUnchanged": true,
+      "tableCountChanges": [
+        {
+          "table": "market_write_request_receipts",
+          "before": 15381,
+          "after": 15450
+        }
+      ]
+    }
+  },
+  "retained": {
+    "r2": "market/netshop images and workflow attachment bytes",
+    "d1": "historical databases, tombstones, permanent guards and audit evidence only"
+  }
+}

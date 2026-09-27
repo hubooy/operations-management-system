@@ -1,0 +1,68 @@
+{
+  "version": "teruisi-jackyun-3134-candidate-v1",
+  "date": "2026-09-19",
+  "status": "candidate_verified_not_deployed",
+  "baseCommit": "9e38cb74",
+  "failure": {
+    "executionId": "3134",
+    "workflowId": "J8kY2mQ5vR7sT4pN",
+    "status": "error",
+    "startedAt": "2026-09-18T16:10:00.032Z",
+    "stoppedAt": "2026-09-18T16:10:09.951Z",
+    "retrySuccessId": null,
+    "lastNode": "B·接口校验与五表下载",
+    "runNodes": [
+      "每天本机时间 00:10",
+      "领取共享 helper",
+      "helper 领取成功？",
+      "A·固定采集日和销售日期",
+      "B·接口校验与五表下载"
+    ],
+    "error": "waiting_login：吉客云 DPAPI 凭据配置或解密未完成（binding）。",
+    "httpCode": "500",
+    "requestUrl": "http://127.0.0.1:5791/jackyun/export-first/export-all",
+    "executionDataSha256": "5141ae5b5afe83128a086725db70b3cc12fde4d460c5f14305e4662d6b9832f7",
+    "activeExecutions": 0
+  },
+  "planSha256": "9741967ab88f4e78fec77842132a4d769b17d8ca18b91978873f48c9c3a845db",
+  "activeSha256": "0d382edd41e454b2c0bb35ac836a326b49937d5ff705a754cc32a45aef3a04a0",
+  "effectPathsAbsent": 4,
+  "recovery": {
+    "reason": "audited_3134_dpapi_before_api_exports",
+    "proposalVerified": true,
+    "proposalSha256": "7b29217e015e8232b90b48880e6bb25f0de601ab2c44336447a9c791dce4006b",
+    "published": false,
+    "reasonNotPublished": "The running immutable helper cannot validate this new closure reason; controlled release needs separate explicit service-maintenance authorization."
+  },
+  "validation": {
+    "focusedNodeTests": {
+      "passed": 53,
+      "failed": 0
+    },
+    "renderedHtmlTests": {
+      "passed": 20,
+      "failed": 0
+    },
+    "isolatedProductionBuild": "passed",
+    "helperBuild": "passed",
+    "helperSha256": "c8e2aaf6f19889c73a014c1c2c34cd76756884c52815312edc8be773f761f363",
+    "targetedEslint": "passed",
+    "backendBoundary": {
+      "checkedModules": 454,
+      "violations": 0
+    },
+    "gitDiffCheck": "passed",
+    "initialBuildFailure": "Borrowed source node_modules was missing react-markdown. Removed only the isolated worktree junction, installed lockfile dependencies in the isolated worktree, rebuilt successfully. Production dependencies unchanged."
+  },
+  "productionChanges": {
+    "closurePublished": false,
+    "deployed": false,
+    "serviceLifecycleChanged": false,
+    "credentialsChanged": false,
+    "databaseWrites": false,
+    "n8nDefinitionsChanged": false,
+    "businessDownloadOrImport": false
+  },
+  "assessment": "../JACKYUN_REPEAT_RUN_ASSESSMENT.md",
+  "localArtifacts": "D:\\codex-artifacts\\jackyun-3134-20260919"
+}

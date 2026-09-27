@@ -1,0 +1,40 @@
+{
+  "version": "operations-watchdog-adoption-v1",
+  "checkedAt": "2026-09-19T23:33:03.1803879+08:00",
+  "runtime": "D:/teruisi-runtime/operations-watchdog",
+  "taskName": "TERUISI Operations Watchdog",
+  "triggerCount": 2,
+  "cadence": "PT1M plus current-user logon",
+  "runLevel": "Limited",
+  "scriptSha256": "24275fd77c19937a945ad142dc3e2d508a18a6ca110ce33aed0d0b92b522cc2c",
+  "installedMatchesSource": true,
+  "state": "healthy",
+  "lastCheck": "2026-09-19T23:32:56.7274239+08:00",
+  "healthy": true,
+  "readyComponents": 12,
+  "workerRelease": "20260919T054421Z-8396938e0c741f6c",
+  "workerPid": 3404,
+  "workerSupervisorPid": 9352,
+  "isolatedAssertions": 28,
+  "relatedTestsPassed": 35,
+  "encodingRetestPassed": true,
+  "notification": "dynamic owner/bot lookup and real CLI dry-run verified; no actual message",
+  "fullSuite": {
+    "newFailureFixed": "PowerShell 5 UTF8 BOM parser; retest passed",
+    "failed": 6,
+    "passed": 2196,
+    "remaining": "missing react-markdown; missing color-surface-subtle; 3 workerd heap/supervisor dependency baseline failures",
+    "skipped": 22
+  },
+  "serviceStops": 0,
+  "workerDeployments": 0,
+  "djangoDeployments": 0,
+  "businessReruns": 0,
+  "limitations": [
+    "requires logged-in Windows user and running Task Scheduler",
+    "live-process HTTP hangs only alert; existing liveness supervisor owns restart",
+    "no production crash injection or Windows reboot test",
+    "no actual DingTalk client receipt test",
+    "long-running Start is never forcibly killed"
+  ]
+}

@@ -24,6 +24,7 @@ import {
   stableRowCount,
   type QueryRefreshTracking,
   waitForNestedControls,
+  withOwnedControllerChromeCleanup,
 } from "../tools/jackyun-browser-controller";
 
 test("row-count readback requests the exact total before accepting a page-sized grid count", () => {
@@ -182,6 +183,40 @@ test("query network refresh evidence is limited to the active module's XHR/fetch
   }, "inventory"), false);
 });
 
+test("observed stockSkuList route counts as inventory refresh without relaxing historical dates or adjacent endpoints", () => {
+  const url = "https://web.jackyun.com/jkyun/erp-stock/warehouseStock/stockSkuList";
+  const request = { type: "XHR", request: { url, postData: "pageIndex=0&pageSize=100&warehouseId=synthetic" } };
+  assert.equal(isModuleQueryRefreshRequest(request, "inventory"), true);
+  assert.equal(isModuleQueryRefreshRequest(request, "inventory", "2026-09-05"), false);
+  assert.equal(isModuleQueryRefreshRequest({ ...request, request: { url, postData: "snapshotDate=2026-09-05" } }, "inventory", "2026-09-05"), true);
+  assert.equal(isModuleQueryRefreshRequest(request, "inventory_age"), false);
+  assert.equal(isModuleQueryRefreshRequest({ ...request, type: "Image" }, "inventory"), false);
+  for (const ending of ["stockSkuListTotal", "stockSkuListExport", "purchaseList"]) {
+    assert.equal(isModuleQueryRefreshRequest({ ...request, request: { url: url.replace("stockSkuList", ending) } }, "inventory"), false);
+  }
+});
+
+test("current stockSkuList query requires its own successful response and loading completion", async () => {
+  for (const status of [200, 500]) {
+    const handlers = new Map<string, (params: Record<string, unknown>) => void>();
+    const client = { send: async () => ({ result: { value: 0 } }),
+      on(method: string, handler: (params: Record<string, unknown>) => void) { handlers.set(method, handler); return () => handlers.delete(method); },
+      close() {} } as BrowserAutomationClient;
+    const tracking = await armQueryRefreshTracking(client, "inventory", new Date().toISOString(), ["branch_stock"], undefined, true);
+    handlers.get("Network.requestWillBeSent")!({ requestId: "current", type: "XHR",
+      request: { url: "https://web.jackyun.com/jkyun/erp-stock/warehouseStock/stockSkuList" } });
+    handlers.get("Network.responseReceived")!({ requestId: "other", response: { status: 200 } });
+    handlers.get("Network.loadingFinished")!({ requestId: "other" });
+    assert.equal(tracking.networkCompletedAt, undefined);
+    handlers.get("Network.responseReceived")!({ requestId: "current", response: { status } });
+    assert.equal(tracking.networkCompletedAt, undefined);
+    handlers.get("Network.loadingFinished")!({ requestId: "current" });
+    assert.equal(Boolean(tracking.networkCompletedAt), status === 200);
+    assert.equal(Boolean(tracking.networkFailedAt), status !== 200);
+    tracking.dispose?.();
+  }
+});
+
 test("historical query refresh rejects a matching request whose HTTP response is not successful", async () => {
   const handlers = new Map<string, Set<(params: Record<string, unknown>) => void>>();
   const client = {
@@ -231,6 +266,29 @@ test("dedicated Chrome session classification distinguishes login from authentic
   assert.equal(classifyJackyunSession("忘记密码 为企业注册吉客号 忘记吉客号 登录"), "login_required");
   assert.equal(classifyJackyunSession("主菜单 货品查询 分仓库存查询"), "authenticated");
   assert.equal(classifyJackyunSession("页面加载中"), "unknown");
+});
+
+test("controller closes only an owned Chrome and still cleans up after failure", async () => {
+  const closedPorts: number[] = [];
+  const closeBrowser = async (port: number) => {
+    closedPorts.push(port);
+    return true;
+  };
+
+  assert.equal(await withOwnedControllerChromeCleanup(false, 9223, async () => "reused", closeBrowser), "reused");
+  assert.deepEqual(closedPorts, []);
+  assert.equal(await withOwnedControllerChromeCleanup(true, 9223, async () => "completed", closeBrowser), "completed");
+  assert.deepEqual(closedPorts, [9223]);
+  await assert.rejects(
+    withOwnedControllerChromeCleanup(true, 9224, async () => { throw new Error("login probe failed"); }, closeBrowser),
+    /login probe failed/,
+  );
+  assert.deepEqual(closedPorts, [9223, 9224]);
+
+  const controllerSource = readFileSync(path.resolve("tools/jackyun-browser-controller.ts"), "utf8");
+  assert.match(controllerSource, /const launchedBrowser = await launchDedicatedChrome/);
+  assert.match(controllerSource, /const ownsBrowser = Boolean\(launchedBrowser\)/);
+  assert.match(controllerSource, /return withOwnedControllerChromeCleanup\(ownsBrowser, port, async \(\) => \{/);
 });
 
 test("saved-password login submits only Chrome-autofilled fields and never transports secrets", async () => {

@@ -1,0 +1,156 @@
+{
+  "version": "jackyun-session-api-local-adoption-v1",
+  "recordedAt": "2026-09-08T06:13:38.416Z",
+  "sourceCommit": "e193367eeb648f17e22e1b0c56858db752d9f72d",
+  "release": {
+    "status": "activated",
+    "version": "teruisi-local-worker-release-successor-v1",
+    "planSha256": "7f10eb6d18989a7297ee85e6f5c896ff6bd8e5f5517073308d64a29fc99fa5b2",
+    "predecessorReleaseId": "20260908T023322Z-d783739f19e43a9d",
+    "releaseId": "20260908T060055Z-c06e40a5d153d39e",
+    "manifestPath": "D:\\teruisi-runtime\\teruisi-worker-sales\\releases\\20260908T060055Z-c06e40a5d153d39e\\deployment-manifest.json",
+    "manifestSha256": "ac0676a9ff83e432cfe9fda4d0240d61f6b8d0d8d96698451e923d5632d58bb0",
+    "successorSha256": "7ebbf68e67989cbb7d8fe4f8de66252473c1d29ef9339b2ee4a1a4c985dc315e",
+    "consumptionSha256": "22a142fe87459cc417d322de8479e4a796a396727f654596b8a773502d68c78b",
+    "startupBindingSha256": "97b3527adf845e7767201b378956cfbd95271e2c581de87fa5901ed8d0d81f4d"
+  },
+  "django": {
+    "trustedVerifierMatches": true,
+    "sourceCommit": "e193367eeb648f17e22e1b0c56858db752d9f72d",
+    "deploymentManifestSha256": "0b4235f702266c1fdbd646cdb082b31361b3fe1ccf04c288a27f579d3e54c06d"
+  },
+  "workflow": {
+    "status": "verified",
+    "workflowId": "J8kY2mQ5vR7sT4pN",
+    "name": "吉客云导入系统",
+    "nodeCount": 11,
+    "manualOnly": true,
+    "active": false,
+    "versionId": "1e9930b1-4e64-4ee3-919b-d8fe10f8f670",
+    "unrelatedDefinitionsVerified": 16,
+    "actions": [
+      "plan-api",
+      "export-all",
+      "validate",
+      "import",
+      "verify"
+    ]
+  },
+  "system": {
+    "state": "Running",
+    "backendState": "Ready",
+    "workerState": "exact_release",
+    "releaseId": "20260908T060055Z-c06e40a5d153d39e",
+    "components": {
+      "core": true,
+      "finance": true,
+      "netshop": true,
+      "market": true,
+      "products": true,
+      "workflow": true,
+      "inventory": true,
+      "customerService": true,
+      "accessControl": true,
+      "erpReference": true,
+      "bi": true,
+      "ai": true
+    }
+  },
+  "supervisor": {
+    "desiredState": "running",
+    "process": "running",
+    "health": "healthy",
+    "code": "all_components_ready"
+  },
+  "helper": {
+    "ok": true,
+    "busy": false,
+    "activeWorkflow": null
+  },
+  "readOnlySales": {
+    "source": "authorized-local-api-fallback",
+    "revision": "17:13",
+    "cutoffDate": "2026-09-07"
+  },
+  "backupRestore": {
+    "version": "teruisi-postgres-restore-rehearsal-v1",
+    "status": "completed",
+    "rehearsalId": "a89709080539",
+    "startedAt": "2026-09-08T05:40:01.2919152+00:00",
+    "completedAt": "2026-09-08T05:44:25.6703717+00:00",
+    "backupId": "daily-20260908T053620Z-dd46ac9b49d7",
+    "backupManifestSha256": "5b731557a37a542a642ebab0a88d18a76dae0cacde6027376bbac8e6e3dd4b08",
+    "dumpSha256": "2329926d76212803640c391c4c6fd7a66957d5a424678c2a979c18156d012f25",
+    "expectedContentSha256": "9c980ab8ae53a0f0f2a4a4a483315b202c3072fb3fee14c3576f80d369514c8f",
+    "restoredContentSha256": "9c980ab8ae53a0f0f2a4a4a483315b202c3072fb3fee14c3576f80d369514c8f",
+    "isolatedPort": 55432,
+    "productionDatabaseTouched": false,
+    "serviceStateChanged": false,
+    "cleanupStatus": "isolated_data_removed"
+  },
+  "businessImportsPerformed": false,
+  "newN8nExecutionsTriggered": false,
+  "original897Status": "closed_before_export",
+  "artifactHashes": [
+    {
+      "name": "worker-plan-fixed.json",
+      "sha256": "9634f5e26063d8833abe8e87bc03e1817b305a10affae920d3f08f8fc50bf7fe"
+    },
+    {
+      "name": "worker-apply.json",
+      "sha256": "d27b53870303bcfe1bb0d6fcf8d3d481bcf934d8ef08d74cb600852835270f3a"
+    },
+    {
+      "name": "django-deploy-fixed-verification.json",
+      "sha256": "d290075310bc6f2e3f178ac133ebe459ecd40c44ece4c98ee7e40ba375ba4cca"
+    },
+    {
+      "name": "n8n-verification.json",
+      "sha256": "d2661be01bb7585b5ee025dd8c9ea5e2245c98ca4698000d04f13a284c120314"
+    },
+    {
+      "name": "start-full.json",
+      "sha256": "4e58250b604abf735bcabc80b0af59be3aed1736d2eb17d6d8c2a7781063d304"
+    },
+    {
+      "name": "system-status-after.json",
+      "sha256": "76e96c8e7fca41cef12d0fdc029ae138b3c2e9331baa7e7ba6a2432f469272f5"
+    },
+    {
+      "name": "supervisor-after.json",
+      "sha256": "1bc099b53232b62c023dabd832dab77c101e1537b742658bb008a288487524d4"
+    },
+    {
+      "name": "helper-after.json",
+      "sha256": "24c43a9beb08e7a57686deaf499abcfa25ade9550e5231a6d5e65d53a90365c1"
+    },
+    {
+      "name": "sales-health-after.json",
+      "sha256": "2253f764dd7f56917f64a227fde546b3a8aae8684f323ee9a6809f84f89b136a"
+    },
+    {
+      "name": "backup-before.json",
+      "sha256": "d854781d1bf1d5e3cc82027d4cf51ad0d1857d0e94a1f01958932a5566524eab"
+    },
+    {
+      "name": "verify-before.json",
+      "sha256": "faece843aadf47a93da634477267341634e8b5c68af69d8f7f9f6059ef98a613"
+    },
+    {
+      "name": "restore-before.json",
+      "sha256": "641d028d865108fbd05bbc1360aee735d168a2e864f8b49e6fee267f5faeb939"
+    },
+    {
+      "name": "897-closure-apply.json",
+      "sha256": "e7e4837d231a22ee328a5dd6ad6888e4b497d90cbb6f08dc714e91bf48933430"
+    },
+    {
+      "name": "unit-release-final.log",
+      "sha256": "c00959c4214aafab10dc1bc85125834e1da3e86bfc86621e01afe8b3c6f2930e"
+    },
+    {
+      "name": "fix-release-tests.log",
+      "sha256": "6e280271d626aae57f39e7e3b049ed4bf1e51f86afcf90a9014bde0b5b4afb9b"
+    }
+  ]
+}

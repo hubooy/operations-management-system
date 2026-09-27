@@ -1,0 +1,40 @@
+{
+  "schemaVersion": "candidate-evidence-v1",
+  "date": "2026-09-17",
+  "branch": "codex/ai-business-analysis-stages",
+  "baseCommit": "8f3f5081",
+  "batch": 18,
+  "status": "candidate_not_production_adopted",
+  "changes": [
+    "V2 lightweight immutable report reference and internal-only execution profile",
+    "Dedicated business_agent_v2 surface with directory and analysis tools; all 39 legacy entries and 72 catalog hashes unchanged",
+    "Per-agent complete directory proof rebuilt from bounded immutable dispatch/result receipts",
+    "Known bad directory receipts rejected before subsequent provider dispatch; known provider responses retained on local validation failure",
+    "Actual whole-directory context preflight plus 2*38000+4096-byte analysis transcript reserve; new table tool enforces UTF-8 bytes",
+    "Three professional agents run concurrently, then independent review, report assembly and human review"
+  ],
+  "verification": {
+    "initialTargetedPostgres": {"tests": 50, "passed": 50, "log": ".runtime/ai-pg-76935659f9b3/tests.log"},
+    "finalAiBusinessSalesNetshopPostgres": {"tests": 498, "passed": 496, "skipped": 2, "log": ".runtime/ai-pg-b6155bc7bd6b/tests.log"},
+    "syntheticParallelEndToEnd": {"shops": 2, "periods": 2, "professionalConcurrencyPeak": 3, "agentJobs": 5, "providerResults": 15, "toolResults": 10, "independentAndHumanReviewCompleted": true, "paidProvidersMocked": true},
+    "targetedToolsNode": {"tests": 18, "passed": 18, "legacyEntries": 39, "legacyCatalogHashes": 72},
+    "fullNode": {"tests": 2245, "passed": 2225, "failed": 0, "cancelled": 0, "skipped": 20, "testConcurrency": 4, "log": ".runtime/batch18-full-node.log"},
+    "v2Chrome": {"cases": 8, "passed": 8, "log": ".runtime/batch18-workbench-ui/evidence.json"},
+    "renderedHtml": {"tests": 20, "passed": 20, "log": ".runtime/batch18-rendered-html.log"},
+    "build": {"passed": true, "log": ".runtime/batch18-build.log"},
+    "lint": {"errors": 0, "existingWarnings": 11, "log": ".runtime/batch18-lint.log"},
+    "typecheck": {"existingDiagnostics": 153, "changedPathDiagnostics": 0, "log": ".runtime/batch18-typecheck.log"},
+    "backendBoundary": {"passed": true, "log": ".runtime/batch18-boundary.log"},
+    "independentReview": {"fixed": ["Directory proof was checked after a subsequent model call instead of before it", "Analysis transcript reservation underestimated multibyte JSON"], "remainingReportedBlockers": 0}
+  },
+  "limits": [
+    "V2 report API is integrated; first-task workbench planner remains v1 and v2 analysis buttons stay gated pending complete delivery",
+    "V2 budgets and persistent volume files are explicitly rejected; no new migration in this batch",
+    "Directory proof establishes source-list coverage only, not complete fact reading or correct causal interpretation",
+    "Actual directory pages plus model context may reject wide catalogs despite the 48-source storage cap",
+    "Existing fact, mapping, file and provider limits remain; no truncation or unknown-result replay",
+    "Synthetic isolated data only; real-store, historical coverage, paid-provider and production acceptance remain outstanding",
+    "No complete phase declared"
+  ],
+  "operations": {"productionReads": false, "productionWrites": false, "newMigration": false, "productionMigration": false, "deployment": false, "serviceRestart": false, "paidModelCalls": false, "externalMessages": false}
+}

@@ -1,0 +1,30 @@
+{
+  "evidenceVersion": "teruisi-bi-isolated-migration-v1",
+  "generatedAt": "2026-09-04T19:26:35.2311565+00:00",
+  "environment": "isolated-sqlite-mirror",
+  "databasePathSha256": "7138bbbc14729b4ae6be308280a055bcc236606e1ce0af3f2883cc786414a999",
+  "contractVersion": "bi-dashboard-read-model-v1",
+  "status": "verified",
+  "planId": "bi-plan-5cb02bfbe8936ec81ee799f476954f66",
+  "runId": "bi-apply-f34b60a7df6f4a6c8df389b47d510c0d",
+  "sourceDigest": "5cb02bfbe8936ec81ee799f476954f6666a186bb961c6b2acfc1ea22484da13d",
+  "sourceAuthorities": {
+    "erp": "d1-via-postgresql-read-projection",
+    "inventory": "postgresql",
+    "sales": "postgresql"
+  },
+  "sourceRevisions": {
+    "inventory": "4:bbbbbbbbbbbb",
+    "salesErp": "7:3"
+  },
+  "sourceCounts": {
+    "latestInventoryAgeRows": 1,
+    "latestInventoryStockRows": 1,
+    "legacyBiFactRows": 0,
+    "salesBusinessRows": 4
+  },
+  "latestSalesBatchId": "batch-1",
+  "latestInventoryBatchId": "inventory-batch-1",
+  "latestInventoryAgeBatchId": "inventory-age-batch-1",
+  "factCopyRequired": false
+}

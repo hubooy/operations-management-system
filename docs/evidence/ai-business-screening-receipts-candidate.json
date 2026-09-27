@@ -1,0 +1,12 @@
+{
+  "date": "2026-09-17",
+  "batch": 42,
+  "status": "candidate_per_job_receipt_verifier_not_dispatch_gate",
+  "verification": {
+    "pure": {"passed": 12, "seconds": 14.965, "log": ".runtime/batch42-screening-receipts-pure.log", "scope": "Real package codec with mocked owning loader and ledger queries"},
+    "combinedPostgres": {"passed": 16, "seconds": 135.647, "log": ".runtime/ai-pg-9613813eb3de/tests.log", "receiptsTests": 2, "toolsTests": 14, "scope": "Real fixed reports, published results and immutable synthetic dispatch ledgers; no actual scheduler or provider"},
+    "coverage": ["Five separate job receipts", "Required budget pages", "Complete ordered role package pages", "Wrong role and borrowed receipts rejected", "Forged successful result remains recorded but cannot pass", "No replay on unknown or repeated verification", "Failed attempts count toward per-tool cap", "Strict three-tool catalog list"]
+  },
+  "remaining": ["Runtime completion and provider gate integration", "Actual model capacity admission", "Human review and HTML/XLSX", "Real model and production acceptance"],
+  "operations": {"productionBusinessReads": false, "productionWrites": false, "deployment": false, "serviceRestart": false, "paidModelCalls": false, "externalMessages": false}
+}

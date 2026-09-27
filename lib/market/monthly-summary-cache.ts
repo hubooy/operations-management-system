@@ -1,4 +1,5 @@
 import { buildMarketMonthlySummaryRefreshSql } from "@/lib/market/overview-sql";
+import { marketNetshopProjectionStatements } from "@/lib/market/schema-core";
 
 type CacheStatement = {
   bind(...values: unknown[]): CacheStatement;
@@ -57,12 +58,6 @@ function dirtyScopeSelectSql(selectSql: string) {
     ON CONFLICT(category) DO UPDATE SET dirty_revision=MAX(dirty_revision,excluded.dirty_revision)`;
 }
 
-function dirtyProductsSql(valuesSql: string) {
-  return `INSERT INTO market_monthly_summary_dirty_products (product_code,dirty_revision)
-    SELECT value,${revisionSql} FROM json_each(json_array(${valuesSql})) WHERE value<>''
-    ON CONFLICT(product_code) DO UPDATE SET dirty_revision=MAX(dirty_revision,excluded.dirty_revision)`;
-}
-
 export const monthlySummaryTriggerStatements = [
   `CREATE TRIGGER IF NOT EXISTS market_monthly_summary_market_insert AFTER INSERT ON market_ranking_entries BEGIN
     ${bumpSql}; ${dirtyKeySql("NEW")}; END`,
@@ -88,27 +83,28 @@ export const monthlySummaryTriggerStatements = [
     ${bumpSql}; ${dirtyScopeSelectSql("FROM market_price_band_versions WHERE id IN (OLD.version_id,NEW.version_id)")}; END`,
   `CREATE TRIGGER IF NOT EXISTS market_monthly_summary_band_item_delete BEFORE DELETE ON market_price_band_items BEGIN
     ${bumpSql}; ${dirtyScopeSelectSql("FROM market_price_band_versions WHERE id=OLD.version_id")}; END`,
-  `CREATE TRIGGER IF NOT EXISTS market_monthly_summary_netshop_insert AFTER INSERT ON netshop_rows BEGIN
-    ${bumpSql}; ${dirtyProductsSql("NEW.sku_id,NEW.spu_id,NEW.product_code")}; END`,
-  `CREATE TRIGGER IF NOT EXISTS market_monthly_summary_netshop_update
-    AFTER UPDATE OF sku_id,spu_id,product_code ON netshop_rows
-    WHEN OLD.sku_id IS NOT NEW.sku_id OR OLD.spu_id IS NOT NEW.spu_id OR OLD.product_code IS NOT NEW.product_code BEGIN
-    ${bumpSql}; ${dirtyProductsSql("OLD.sku_id,OLD.spu_id,OLD.product_code,NEW.sku_id,NEW.spu_id,NEW.product_code")}; END`,
-  `CREATE TRIGGER IF NOT EXISTS market_monthly_summary_netshop_delete AFTER DELETE ON netshop_rows BEGIN
-    ${bumpSql}; ${dirtyProductsSql("OLD.sku_id,OLD.spu_id,OLD.product_code")}; END`,
-  `CREATE TRIGGER IF NOT EXISTS market_monthly_summary_sales_insert AFTER INSERT ON sales_order_lines WHEN NEW.product_code<>'' BEGIN
-    ${bumpSql}; ${dirtyProductsSql("NEW.product_code")}; END`,
-  `CREATE TRIGGER IF NOT EXISTS market_monthly_summary_sales_update
-    AFTER UPDATE OF product_code ON sales_order_lines
-    WHEN OLD.product_code IS NOT NEW.product_code BEGIN
-    ${bumpSql}; ${dirtyProductsSql("OLD.product_code,NEW.product_code")}; END`,
-  `CREATE TRIGGER IF NOT EXISTS market_monthly_summary_sales_delete AFTER DELETE ON sales_order_lines WHEN OLD.product_code<>'' BEGIN
-    ${bumpSql}; ${dirtyProductsSql("OLD.product_code")}; END`,
+  `CREATE TRIGGER IF NOT EXISTS market_monthly_summary_netshop_projection
+    AFTER UPDATE OF active_revision ON market_netshop_projection_control
+    WHEN OLD.active_revision IS NOT NEW.active_revision BEGIN
+    ${bumpSql}; ${dirtyScopeValueSql("'*'")}; END`,
 ] as const;
 
 export const monthlySummaryTriggerReplacementStatements = [
+  "DROP TRIGGER IF EXISTS market_monthly_summary_netshop_insert",
   "DROP TRIGGER IF EXISTS market_monthly_summary_netshop_update",
+  "DROP TRIGGER IF EXISTS market_monthly_summary_netshop_delete",
+  "DROP TRIGGER IF EXISTS market_monthly_summary_netshop_projection",
+  "DROP TRIGGER IF EXISTS market_monthly_summary_sales_insert",
   "DROP TRIGGER IF EXISTS market_monthly_summary_sales_update",
+  "DROP TRIGGER IF EXISTS market_monthly_summary_sales_delete",
+] as const;
+
+const monthlySummaryInvalidationUpgradeStatements = [
+  `UPDATE market_monthly_summary_cache_state
+    SET source_revision=source_revision+1,status='stale' WHERE id=1`,
+  `INSERT INTO market_monthly_summary_dirty_scopes (category,dirty_revision)
+    SELECT '*',source_revision FROM market_monthly_summary_cache_state WHERE id=1
+    ON CONFLICT(category) DO UPDATE SET dirty_revision=MAX(dirty_revision,excluded.dirty_revision)`,
 ] as const;
 
 export function ensureMarketMonthlySummaryInvalidationTriggers(db: MonthlySummaryCacheDatabase): Promise<void> {
@@ -116,17 +112,34 @@ export function ensureMarketMonthlySummaryInvalidationTriggers(db: MonthlySummar
   const ready = triggersByDatabase.get(key);
   if (ready) return ready;
   const setup = (async () => {
+    // This upgrade hook is also called directly by existing-database repair
+    // paths, not only after ensureMarketSchemaCore().  Create the projection
+    // dependency first so trigger preparation fails closed instead of leaving
+    // the monthly cache half-upgraded.
+    for (const statement of marketNetshopProjectionStatements) await db.prepare(statement).run();
     const updateTriggers = await db.prepare(`SELECT name,sql FROM sqlite_master
-      WHERE type='trigger' AND name IN ('market_monthly_summary_netshop_update','market_monthly_summary_sales_update')`)
+      WHERE type='trigger' AND name IN (
+        'market_monthly_summary_netshop_projection',
+        'market_monthly_summary_sales_insert',
+        'market_monthly_summary_sales_update',
+        'market_monthly_summary_sales_delete'
+      )`)
       .all<{ name: string; sql: string }>();
-    const triggerSql = new Map((updateTriggers.results ?? []).map((row) => [row.name, row.sql.replace(/[`\"]/g, "")]));
-    const needsReplacement = !triggerSql.get("market_monthly_summary_netshop_update")?.includes("UPDATE OF sku_id,spu_id,product_code")
-      || !triggerSql.get("market_monthly_summary_sales_update")?.includes("UPDATE OF product_code");
+    const triggerSql = new Map((updateTriggers.results ?? []).map((row) => [
+      row.name,
+      row.sql.replace(/[`\"\s]/g, "").toLowerCase(),
+    ]));
+    const hasLegacySalesTrigger = [...triggerSql.keys()]
+      .some((name) => name.startsWith("market_monthly_summary_sales_"));
+    const needsReplacement = hasLegacySalesTrigger
+      || !triggerSql.get("market_monthly_summary_netshop_projection")
+        ?.includes("updateofactive_revisiononmarket_netshop_projection_control");
     await db.batch([
       db.prepare(`INSERT OR IGNORE INTO market_monthly_summary_cache_state
         (id,source_revision,built_revision,status) VALUES (1,1,-1,'stale')`),
-      ...(needsReplacement ? monthlySummaryTriggerReplacementStatements.map((statement) => db.prepare(statement)) : []),
+      ...monthlySummaryTriggerReplacementStatements.map((statement) => db.prepare(statement)),
       ...monthlySummaryTriggerStatements.map((statement) => db.prepare(statement)),
+      ...(needsReplacement ? monthlySummaryInvalidationUpgradeStatements.map((statement) => db.prepare(statement)) : []),
       db.prepare(`INSERT INTO market_monthly_summary_dirty_scopes (category,dirty_revision)
         SELECT '*',source_revision FROM market_monthly_summary_cache_state WHERE id=1 AND built_revision<0
         ON CONFLICT(category) DO UPDATE SET dirty_revision=MAX(dirty_revision,excluded.dirty_revision)`),

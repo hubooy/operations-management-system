@@ -1,0 +1,71 @@
+{
+  "checkedAt": "2026-09-12T06:19:53+08:00",
+  "scope": {
+    "platform": "天猫",
+    "coverageEndDate": "2026-09-11",
+    "stores": 6,
+    "dataSource": "authorized local read-only public API backed by Django/PostgreSQL; teruisi_operations MCP unavailable"
+  },
+  "initialUnionGapCounts": {
+    "tmall-yijiu": 2,
+    "tmall-lili": 4,
+    "tmall-tuofeng": 9,
+    "tmall-yiyong": 10,
+    "tmall-cuizhiwang": 8,
+    "tmall-masitu": 7,
+    "total": 40
+  },
+  "finalCoverage": [
+    { "storeKey": "tmall-yijiu", "productCoveredThrough": "2026-09-11", "promotionCoveredThrough": "2026-09-11", "unionMissingDates": [] },
+    { "storeKey": "tmall-lili", "productCoveredThrough": "2026-09-11", "promotionCoveredThrough": "2026-09-11", "unionMissingDates": [] },
+    { "storeKey": "tmall-tuofeng", "productCoveredThrough": "2026-09-11", "promotionCoveredThrough": "2026-09-11", "unionMissingDates": [] },
+    { "storeKey": "tmall-yiyong", "productCoveredThrough": "2026-09-11", "promotionCoveredThrough": "2026-09-11", "unionMissingDates": [] },
+    { "storeKey": "tmall-cuizhiwang", "productCoveredThrough": "2026-09-11", "promotionCoveredThrough": "2026-09-11", "unionMissingDates": [] },
+    { "storeKey": "tmall-masitu", "productCoveredThrough": "2026-09-11", "promotionCoveredThrough": "2026-09-11", "unionMissingDates": [] }
+  ],
+  "executionEvidence": {
+    "parallelInitialExecutions": [1066, 1067, 1068, 1069, 1070, 1071],
+    "hourlyRetryWaitExecutions": [1072, 1075, 1120, 1147, 1163],
+    "automaticFullRetryExecutions": [1109, 1110, 1143, 1160, 1176],
+    "finalSourceReadyExecutions": [1180, 1181, 1182, 1183, 1184, 1185],
+    "sameStoreSerial": true,
+    "crossStoreIndependent": true,
+    "businessHelperCalledOutsideN8n": false
+  },
+  "finalRuntime": {
+    "n8nHealthStatus": 200,
+    "activeOrWaitingExecutionCount": 0,
+    "helperOk": true,
+    "helperBusy": false,
+    "helperStoreExecutionCount": 0,
+    "tmallDebugListenerCount": 0,
+    "workflowCount": 6,
+    "allWorkflowsActiveAndPublished": true,
+    "hourlyRetryVersionId": "51947b7a-21ee-449f-9b62-57525dad7dfd"
+  },
+  "n8nStartupRepair": {
+    "moduleEnvironmentIssueClosed": true,
+    "credentialsChanged": false,
+    "weeklyTaskResent": false,
+    "databaseRestarted": false,
+    "djangoRestarted": false,
+    "workerRestarted": false,
+    "helperRestarted": false,
+    "naturalWeeklyExecutionsSucceededFrom": 1065
+  },
+  "postFillBackup": {
+    "backupId": "daily-20260911T222115Z-97d86afcb804",
+    "manifestSha256": "2d56d3952c3a67ff394d58e2e75b0da8b0e037cfc57a8a5907c5883420e8b7c1",
+    "dumpSha256": "590e49580ec37473ced0e9ecdcbcaeb55476567707f80024382e4a6f8542a966",
+    "contentSha256": "4028e9a7632870cf727855ca8f2d6bd42ae3b9514aad18f7a23fdba14bd1ec62",
+    "verified": true,
+    "serviceStateChanged": false,
+    "restoreRepeated": false
+  },
+  "privateEvidence": [
+    "D:\\teruisi-runtime\\tmall-store-isolation-20260912\\tonight-gap-fill-state.json",
+    "D:\\teruisi-runtime\\tmall-store-isolation-20260912\\tmall-gap-audit-final-0619.json",
+    "D:\\teruisi-runtime\\tmall-store-isolation-20260912\\tmall-n8n-runtime-final-0619.json",
+    "D:\\teruisi-runtime\\tmall-store-isolation-20260912\\n8n-clean-environment-restart.json"
+  ]
+}

@@ -1,0 +1,1 @@
+"""TERUISI Django project."""

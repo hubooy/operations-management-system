@@ -1,0 +1,106 @@
+{
+  "at": "2026-09-14T00:13:45.6433520+08:00",
+  "sourceCommit": "75c73f748de00eb2dfec9fbe45ecdab92fefdfac",
+  "diagnosis": {
+    "at": "2026-09-13T23:48:44+08:00",
+    "source": "local PostgreSQL market reader, read-only transaction",
+    "selectedCandidatesWithChangedImage": 184,
+    "missingSnapshots": 0,
+    "missingRankings": 0,
+    "cause": "Review/selection admitted stale images while final commit rejected any stale item, rolling back a valid mixed batch."
+  },
+  "baseline": {
+    "postgresTests": 61,
+    "newRegressionFailures": 6,
+    "confirmedOldBehavior": "409 for mixed/all-stale commits and stale candidates counted as selectable"
+  },
+  "postgres": {
+    "port": 55447,
+    "productionTouched": false,
+    "externalModelCalls": 0,
+    "tests": {
+      "count": 61,
+      "log": "D:\\teruisi-worktrees\\market-stale-candidates\\.runtime\\market-annotation-pg-1aa07c407947\\tests.log"
+    },
+    "roles": [
+      {
+        "role": "teruisi_market_reader",
+        "readQueries": true,
+        "claimComplete": false,
+        "commitExistingAnnotation": false,
+        "externalModelCalls": 0,
+        "negativePermissionsRejected": 5
+      },
+      {
+        "role": "teruisi_market_writer",
+        "readQueries": true,
+        "claimComplete": true,
+        "commitExistingAnnotation": true,
+        "externalModelCalls": 0,
+        "negativePermissionsRejected": 4
+      }
+    ],
+    "status": "passed",
+    "isolatedClusterStopped": true
+  },
+  "browser": {
+    "status": "passed",
+    "source": "Actual React component in an isolated headless browser with synthetic HTTP responses; PostgreSQL writes verified separately",
+    "checks": [
+      "stale checkbox and editor disabled",
+      "cross-page selection uses 501 valid candidates",
+      "review sends only valid edited row",
+      "two commit batches finish 501 candidates",
+      "skip notice preserved without rebuild/model mutation",
+      "all-stale remaining state disables commit"
+    ],
+    "commands": [
+      "select_filtered",
+      "review",
+      "commit_selected",
+      "commit_selected"
+    ],
+    "pageErrors": [],
+    "externalRequests": 0,
+    "productionWrites": 0
+  },
+  "unit": {
+    "total": 2167,
+    "passed": 2147,
+    "failed": 0,
+    "cancelled": 0,
+    "skipped": 20,
+    "durationMs": 285728.5456
+  },
+  "targetedMarketTests": {
+    "passed": 73,
+    "failed": 0
+  },
+  "renderedHtmlTests": {
+    "passed": 20,
+    "failed": 0
+  },
+  "lint": {
+    "errors": 0,
+    "existingWarnings": 11,
+    "changedFilesRechecked": true
+  },
+  "productionBoundary": {
+    "modules": 433,
+    "violations": 0
+  },
+  "build": "passed",
+  "migrationDryRun": "No changes detected in app market",
+  "firstUnitRun": {
+    "passed": 2145,
+    "failed": 1,
+    "cancelled": 1,
+    "reason": "Windows text rewrite changed a source-test newline; normalized to LF. An unrelated Jackyun DOM test exceeded 30 seconds while other checks ran.",
+    "resolution": "Market 73/73 and Jackyun 10/10 passed individually; entire suite then passed 2147 with no failures or cancellation."
+  },
+  "limitations": [
+    "Browser operation checks use synthetic HTTP responses; real database write behavior is separately exercised by signed Django API and least-privilege PostgreSQL roles.",
+    "No production business import or manual paid model request performed for acceptance.",
+    "Stale historical candidates are preserved and require recognition/review against the current image; unsupported rebuild calls are no longer part of bulk commit."
+  ]
+}

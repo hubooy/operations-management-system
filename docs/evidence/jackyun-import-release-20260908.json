@@ -1,0 +1,227 @@
+{
+  "status": "published_and_import_verified",
+  "sourceCommit": "dbeef4ee210776b2347640d4ee8e3739cff31746",
+  "worker": {
+    "status": "activated",
+    "version": "teruisi-local-worker-release-successor-v1",
+    "planSha256": "010e75237a5a5cd090c28d7260c300c04edc553919d2f7810cad8679ca3ca36c",
+    "predecessorReleaseId": "20260908T011213Z-2c54fdabce6753c9",
+    "releaseId": "20260908T023322Z-d783739f19e43a9d",
+    "manifestPath": "D:\\teruisi-runtime\\teruisi-worker-sales\\releases\\20260908T023322Z-d783739f19e43a9d\\deployment-manifest.json",
+    "manifestSha256": "c39eb75b0e7fe993455d3b83daa005dd5e8d0e489b9b125fd0fc26f7368de9aa",
+    "successorSha256": "c66f0db794a2afa766f6c662531f37bdb972a6477b919eff32524f33ae858a3b",
+    "consumptionSha256": "abea04c4f6e0591afc4b485a14e44ac9599d978789b1fd9d13fa7730f5018483",
+    "startupBindingSha256": "f0c3f2206138482e95ed579ddd33ff9005383acf6bd1262e49db0b2076f76cff"
+  },
+  "django": {
+    "deploymentManifestSha256": "c61eed189f1c50aa0dc41a67bff1f4d6476e38450af23353d36abe4502347fd5",
+    "erpSourceSha256": "a9607f4b8078c3030961677f1eddce18016aab8c2690eb29f776547411db4d14",
+    "sourceMatches": true
+  },
+  "execution": {
+    "id": 896,
+    "status": "success",
+    "startedAt": "2026-09-08 02:49:19.122",
+    "stoppedAt": "2026-09-08 02:50:53.690",
+    "elapsedMs": 94568,
+    "stages": [
+      {
+        "name": "手动运行",
+        "startedAt": "2026-09-08T02:49:31.100Z",
+        "durationMs": 1,
+        "status": "success"
+      },
+      {
+        "name": "领取共享 helper",
+        "startedAt": "2026-09-08T02:49:31.101Z",
+        "durationMs": 248,
+        "status": "success"
+      },
+      {
+        "name": "helper 领取成功？",
+        "startedAt": "2026-09-08T02:49:31.349Z",
+        "durationMs": 6,
+        "status": "success"
+      },
+      {
+        "name": "A·固定采集日和销售日期",
+        "startedAt": "2026-09-08T02:49:31.355Z",
+        "durationMs": 372,
+        "status": "success"
+      },
+      {
+        "name": "B·网页校验后 HTTP 导出五表",
+        "startedAt": "2026-09-08T02:49:31.727Z",
+        "durationMs": 4705,
+        "status": "success"
+      },
+      {
+        "name": "C·五表完整校验和导入演练",
+        "startedAt": "2026-09-08T02:49:36.432Z",
+        "durationMs": 4263,
+        "status": "success"
+      },
+      {
+        "name": "D·统一导入运营管理系统",
+        "startedAt": "2026-09-08T02:49:40.695Z",
+        "durationMs": 68253,
+        "status": "success"
+      },
+      {
+        "name": "E·独立核验五类精确批次",
+        "startedAt": "2026-09-08T02:50:48.948Z",
+        "durationMs": 4741,
+        "status": "success"
+      }
+    ]
+  },
+  "cli": {
+    "exitCode": 0,
+    "elapsedMs": 166721.8271,
+    "completedAt": "2026-09-08T02:50:53.8519965+00:00",
+    "startedAt": "2026-09-08T02:48:07.1301694+00:00"
+  },
+  "logicalRun": "n8n-export-first-890",
+  "modules": [
+    {
+      "module": "products",
+      "rowCount": 8485,
+      "batchId": "products:6b325469c8c4a885e04190b137d4458edb86243e7bc59852dc524bc23bbe2da1",
+      "snapshotDate": null,
+      "sourceSha256": "1b5ec338fcfbf74c051ce0df71dd7783740c118c3462d0c3bb50f9ccc31a9a00",
+      "outputSha256": "1b5ec338fcfbf74c051ce0df71dd7783740c118c3462d0c3bb50f9ccc31a9a00",
+      "outputMatchesDryRun": true
+    },
+    {
+      "module": "inventory",
+      "rowCount": 22662,
+      "batchId": "d01b1f10806ab4111b70f7558bcd85febc3403b715ad48bc88a9816cd8ed9ec1",
+      "snapshotDate": "2026-09-08",
+      "sourceSha256": "ec601b8a36293dbc032478cd6c0103702cb8f34226e782dd7420c473474a271a",
+      "outputSha256": "56bc079fd75146c2befc50fa08e8ca053542654bcf7d3e1fa9fb0645c0f748f0",
+      "outputMatchesDryRun": true
+    },
+    {
+      "module": "inventory_age",
+      "rowCount": 5609,
+      "batchId": "inventory_age:d97a3066684c174867a2138052b05c1e52d5af52f87a020419179a8461c7ed6d",
+      "snapshotDate": "2026-09-08",
+      "sourceSha256": "e2ab41a846ad8a2ac645fa6797773d76a5d5ad30c22e635e09d7da1da4986790",
+      "outputSha256": "c349ede09d45b16dfa54fa10b1bf1a2d40d6326e1c7a03ed2fdf8b8706b9df05",
+      "outputMatchesDryRun": true
+    },
+    {
+      "module": "sales",
+      "rowCount": 6118,
+      "batchId": "372c5589767ffbc1bd67ee870c35018423684e2f9447f1d92eb6b2135a030891",
+      "snapshotDate": null,
+      "sourceSha256": "f53a888b7f900afaa599b31a975d0cad1273844d59668c2f0347b135a2843a39",
+      "outputSha256": "e17a92f752d39e2d88f032a6f9c591bd5eb86a3407b402026d7cf3fefeaab05f",
+      "outputMatchesDryRun": true
+    },
+    {
+      "module": "combos",
+      "rowCount": 4392,
+      "batchId": "combos:d4e8221f494750c57bac81129093e9d3431daca0c979d0c77d22c0ff1340c3a4",
+      "snapshotDate": null,
+      "sourceSha256": "0b81e89b3246beadc0c7ca63f400722a3c0b496da5628adee35fa048c98336da",
+      "outputSha256": "0b81e89b3246beadc0c7ca63f400722a3c0b496da5628adee35fa048c98336da",
+      "outputMatchesDryRun": true
+    }
+  ],
+  "costs": {
+    "costConflicts": 0,
+    "unmatchedCosts": 0,
+    "missingCostRows": 0,
+    "numericProblems": 0,
+    "outputMatchesDryRun": true
+  },
+  "coverage": {
+    "source": "django_postgresql",
+    "revision": "17:13",
+    "startDate": "2025-01-01",
+    "cutoffDate": "2026-09-07",
+    "coveredDayCount": 615,
+    "lagDaysToCurrentBusinessDate": 1,
+    "throughYesterday": true
+  },
+  "snapshotDate": "2026-09-08",
+  "salesStartDate": "2026-09-01",
+  "salesEndDate": "2026-09-07",
+  "backupBefore": {
+    "status": "completed",
+    "backupId": "daily-20260908T022103Z-ab35ecf82f2a",
+    "backupDirectory": "D:\\teruisi-runtime\\django-sales\\backups\\postgres-daily\\daily-20260908T022103Z-ab35ecf82f2a",
+    "manifestSha256": "99975405c860526e7f85050e8878cad455757b013bffd6759815a18659d359f4",
+    "dumpSha256": "37e85e7e48aeb45c59bfecf632cd61328214443de4cedfb0c0379a828ce00cb7",
+    "contentSha256": "21ad522d4c54834bad021e933d785544ffbe2ad40a8dfb6ee4462cf64a023dab",
+    "completedAt": "09/08/2026 10:22:29",
+    "serviceStateChanged": false
+  },
+  "restoreBefore": {
+    "version": "teruisi-postgres-restore-rehearsal-v1",
+    "status": "completed",
+    "rehearsalId": "260908891a01",
+    "startedAt": "2026-09-08T02:23:29.4483945+00:00",
+    "completedAt": "2026-09-08T02:27:29.8337385+00:00",
+    "backupId": "daily-20260908T022103Z-ab35ecf82f2a",
+    "backupManifestSha256": "99975405c860526e7f85050e8878cad455757b013bffd6759815a18659d359f4",
+    "dumpSha256": "37e85e7e48aeb45c59bfecf632cd61328214443de4cedfb0c0379a828ce00cb7",
+    "expectedContentSha256": "21ad522d4c54834bad021e933d785544ffbe2ad40a8dfb6ee4462cf64a023dab",
+    "restoredContentSha256": "21ad522d4c54834bad021e933d785544ffbe2ad40a8dfb6ee4462cf64a023dab",
+    "isolatedPort": 55432,
+    "productionDatabaseTouched": false,
+    "serviceStateChanged": false,
+    "cleanupStatus": "isolated_data_removed"
+  },
+  "guardInterruptedFirstApply": true,
+  "firstApplyActivated": false,
+  "originalFailuresPreserved": true,
+  "exportsReused": true,
+  "backupAfter": {
+    "status": "completed",
+    "backupId": "daily-20260908T025214Z-b3220e76622b",
+    "backupDirectory": "D:\\teruisi-runtime\\django-sales\\backups\\postgres-daily\\daily-20260908T025214Z-b3220e76622b",
+    "manifestSha256": "c34082a0dc8744f55780d73cf3d80793d8b75b3a083e57454c235d11adbed988",
+    "dumpSha256": "4b7e47312d965cbf1a2d1270378c5a89909e88788dabcb34f7a4b2d15c51ffd4",
+    "contentSha256": "2a65a0b988407ced14a1256cb820b3a7a1dc7ceff7a94f670bcfe50cd7fd027d",
+    "completedAt": "09/08/2026 10:53:39",
+    "serviceStateChanged": false
+  },
+  "restoreAfter": {
+    "version": "teruisi-postgres-restore-rehearsal-v1",
+    "status": "completed",
+    "rehearsalId": "260908891a02",
+    "startedAt": "2026-09-08T02:58:08.6226937+00:00",
+    "completedAt": "2026-09-08T03:02:27.5559348+00:00",
+    "backupId": "daily-20260908T025214Z-b3220e76622b",
+    "backupManifestSha256": "c34082a0dc8744f55780d73cf3d80793d8b75b3a083e57454c235d11adbed988",
+    "dumpSha256": "4b7e47312d965cbf1a2d1270378c5a89909e88788dabcb34f7a4b2d15c51ffd4",
+    "expectedContentSha256": "2a65a0b988407ced14a1256cb820b3a7a1dc7ceff7a94f670bcfe50cd7fd027d",
+    "restoredContentSha256": "2a65a0b988407ced14a1256cb820b3a7a1dc7ceff7a94f670bcfe50cd7fd027d",
+    "isolatedPort": 55432,
+    "productionDatabaseTouched": false,
+    "serviceStateChanged": false,
+    "cleanupStatus": "isolated_data_removed"
+  },
+  "finalHealth": {
+    "readiness": "ready",
+    "backend": "django-postgresql",
+    "supervisor": "healthy"
+  },
+  "workflowId": "J8kY2mQ5vR7sT4pN",
+  "workflowActive": false,
+  "schemaMigrations": false,
+  "costPolicyChanged": false,
+  "verification": {
+    "unitPassed": 1994,
+    "unitSkipped": 20,
+    "unitFailed": 0,
+    "renderPassed": 20,
+    "buildPassed": true,
+    "existingTypeDiagnostics": 142,
+    "newTypeDiagnostics": 0
+  },
+  "evidenceRoot": "D:/codex-artifacts/jackyun-http-run-20260908/formal-release",
+  "scope": "current Windows host; recovery import reused existing exports"
+}

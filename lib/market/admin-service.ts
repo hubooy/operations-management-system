@@ -1,12 +1,15 @@
 import type { AppPrincipal } from "@/lib/auth/authorization";
-import { runPromptTextCompletion } from "@/lib/market/annotation-model";
+import { runPromptTextCompletion } from "../../tests/legacy/market/annotation-model";
 import { ensureAnnotationSchema } from "@/lib/market/annotation-schema";
 import type { MarketDatabase } from "@/lib/market/database";
+import { mapMarketBatch, marketBatchColumns } from "@/lib/market/import-core";
 import { ensureMarketSchemaCached, officialPriceBandSql } from "@/lib/market/schema-core";
 import { buildMarketAdminComparisonSql, buildMarketAdminItemTrendLiteSql } from "@/lib/market/overview-sql";
 import { ensureMarketSkuGmvTotals } from "@/lib/market/gmv-total";
-import { ensureMarketMasterIdentities, refreshMarketMasterIdentities } from "@/lib/market/master-identity";
+import { ensureMarketMasterIdentities, marketMasterIdentityRefreshKeyStatements } from "@/lib/market/master-identity";
 import { marketNaturalKeySql, normalizeMarketSkuCode } from "@/lib/market/import-identity";
+import { getCachedMarketMasterDatabaseFilters, getCachedMarketSystemKpis } from "@/lib/market/overview-response-cache";
+import { validateMarketSystemKpiCachePayload } from "@/lib/market/cache-payload-validators";
 import {
   applyManualBrandSeedToIdentity,
   listMarketBrandSeeds,
@@ -111,6 +114,19 @@ type MarketMasterListInput = {
   annotationStatus?: "committed" | "pending"; annotationStatuses?: string[]; page?: number; pageSize?: number; includeHistory?: boolean;
 };
 
+function validateMarketMasterDatabaseFiltersCachePayload(value: unknown) {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return false;
+  const payload = value as { categories?: unknown; subcategories?: unknown };
+  const validOptions = (options: unknown) => Array.isArray(options) && options.length <= 200 && options.every((option) => {
+    if (!option || typeof option !== "object" || Array.isArray(option)) return false;
+    const row = option as { value?: unknown; count?: unknown };
+    return typeof row.value === "string" && row.value.length <= 120
+      && Number.isSafeInteger(Number(row.count)) && Number(row.count) >= 0;
+  });
+  return validOptions(payload.categories) && validOptions(payload.subcategories)
+    && JSON.stringify(value).length <= 64 * 1024;
+}
+
 export async function listMarketMasterData(db: MarketDatabase, input: MarketMasterListInput = {}) {
   await Promise.all([ensureMarketAdminSchema(db), ensureAnnotationSchema(db)]);
   await ensureMarketSkuGmvTotals(db);
@@ -118,21 +134,51 @@ export async function listMarketMasterData(db: MarketDatabase, input: MarketMast
   const pageSize = integer(input.pageSize, 30, 1, 100);
   const requestedPage = integer(input.page, 1, 1, 10_000);
   const { where, values } = masterWhere(input);
-  const baseSql = `${masterBaseSql(Boolean(input.includeHistory))} WHERE ${where}`;
-  const rows = await db.prepare(`WITH filtered AS MATERIALIZED (${baseSql}),
+  const includeHistory = Boolean(input.includeHistory);
+  const rows = await db.prepare(includeHistory ? `WITH filtered AS MATERIALIZED (${masterBaseSql(true)} WHERE ${where}),
     meta AS MATERIALIZED (
       SELECT total, page_count, MIN(?, page_count) safe_page FROM (
         SELECT COUNT(*) total, MAX(1, CAST((COUNT(*) + ? - 1) / ? AS INTEGER)) page_count FROM filtered
       )
     ), paged AS MATERIALIZED (
       SELECT filtered.* FROM filtered
-      ORDER BY gmv_total_cents DESC, period_end DESC, CASE WHEN rank IS NULL THEN 1 ELSE 0 END, rank
+      ORDER BY gmv_total_cents DESC, period_end DESC,
+        CASE WHEN rank IS NULL THEN 1 ELSE 0 END, rank, id ASC
       LIMIT ? OFFSET (SELECT (safe_page - 1) * ? FROM meta)
     )
     SELECT paged.*, meta.total full_count, meta.page_count resolved_page_count, meta.safe_page resolved_page,
       CASE WHEN paged.id IS NULL THEN 1 ELSE 0 END pagination_sentinel
     FROM meta LEFT JOIN paged ON 1=1
-    ORDER BY gmv_total_cents DESC, period_end DESC, CASE WHEN rank IS NULL THEN 1 ELSE 0 END, rank`)
+    ORDER BY gmv_total_cents DESC, period_end DESC,
+      CASE WHEN rank IS NULL THEN 1 ELSE 0 END, rank, paged.id ASC`
+    : `WITH candidates AS MATERIALIZED (
+      SELECT m.id, m.period_end, m.rank, COALESCE(gt.gmv_total_cents,0) gmv_total_cents
+      FROM market_master_identities identity
+      JOIN market_ranking_entries m ON m.id=identity.latest_entry_id
+      LEFT JOIN market_sku_gmv_totals gt ON gt.sku_code=m.sku_code
+      LEFT JOIN market_price_snapshots ps ON ps.category=m.category AND ps.scope=m.scope AND ps.sku_code=m.sku_code
+        AND ps.ranking_dimension=m.ranking_dimension AND ps.month=substr(m.period_end,1,7)
+      LEFT JOIN market_sku_annotations a ON a.category=m.category AND a.sku_code=m.sku_code
+      WHERE ${where}
+    ), meta AS MATERIALIZED (
+      SELECT total, page_count, MIN(?, page_count) safe_page FROM (
+        SELECT COUNT(*) total, MAX(1, CAST((COUNT(*) + ? - 1) / ? AS INTEGER)) page_count FROM candidates
+      )
+    ), page_ids AS MATERIALIZED (
+      SELECT id, period_end, rank, gmv_total_cents FROM candidates
+      ORDER BY gmv_total_cents DESC, period_end DESC,
+        CASE WHEN rank IS NULL THEN 1 ELSE 0 END, rank, id ASC
+      LIMIT ? OFFSET (SELECT (safe_page - 1) * ? FROM meta)
+    )
+    SELECT ${masterDetailColumnsSql()},
+      meta.total full_count, meta.page_count resolved_page_count, meta.safe_page resolved_page,
+      CASE WHEN page_ids.id IS NULL THEN 1 ELSE 0 END pagination_sentinel
+    FROM meta
+    LEFT JOIN page_ids ON 1=1
+    LEFT JOIN market_ranking_entries m ON m.id=page_ids.id
+    ${masterDetailJoinsSql()}
+    ORDER BY page_ids.gmv_total_cents DESC, page_ids.period_end DESC,
+      CASE WHEN page_ids.rank IS NULL THEN 1 ELSE 0 END, page_ids.rank, page_ids.id ASC`)
     .bind(...values, requestedPage, pageSize, pageSize, pageSize, pageSize)
     .all<Record<string, string | number | null>>();
   const resultRows = rows.results ?? [];
@@ -150,6 +196,112 @@ export async function listPendingMarketPrices(db: MarketDatabase, input: {
   q?: string; category?: string; categories?: string[]; candidatePriceSource?: "ai" | "non_ai"; candidatePriceSources?: string[]; page?: number; pageSize?: number;
 } = {}) {
   return listMarketMasterData(db, { ...input, priceStatus: "pending", includeHistory: true });
+}
+
+export async function getMarketMasterDatabasePrimary(db: MarketDatabase, input: MarketMasterListInput = {}) {
+  return { masterData: await listMarketMasterData(db, input) };
+}
+
+export async function getMarketMasterDatabaseFilters(db: MarketDatabase, input: Pick<MarketMasterListInput, "category" | "categories"> = {}) {
+  await Promise.all([ensureMarketAdminSchema(db), ensureAnnotationSchema(db)]);
+  const selectedCategories = [...new Set([...(input.categories ?? []), input.category ?? ""]
+    .map((value) => value.trim().slice(0, 120)).filter(Boolean))].slice(0, 50);
+  const categorySql = selectedCategories.length ? ` IN (${selectedCategories.map(() => "?").join(",")})` : "";
+  return getCachedMarketMasterDatabaseFilters(db, selectedCategories, async () => {
+    const [categories, subcategories] = await Promise.all([
+      db.prepare("SELECT category value, COUNT(DISTINCT sku_code) count FROM market_ranking_entries GROUP BY category ORDER BY count DESC, category LIMIT 200")
+        .all<{ value: string; count: number }>(),
+      db.prepare(`SELECT t.subcategory value, COUNT(DISTINCT m.sku_code) count
+        FROM market_subcategory_taxonomy t
+        LEFT JOIN market_ranking_entries m ON m.category=t.category AND m.subcategory=t.subcategory
+        WHERE t.status='active'${categorySql ? ` AND t.category${categorySql}` : ""}
+        GROUP BY t.subcategory ORDER BY count DESC, t.subcategory LIMIT 200`)
+        .bind(...selectedCategories).all<{ value: string; count: number }>(),
+    ]);
+    return {
+      categories: categories.results ?? [],
+      subcategories: subcategories.results ?? [],
+    };
+  }, validateMarketMasterDatabaseFiltersCachePayload);
+}
+
+export async function getMarketMasterDatabaseSecondary(db: MarketDatabase, input: {
+  categories?: string[]; candidatePriceSources?: string[]; page?: number; pageSize?: number;
+} = {}) {
+  await Promise.all([ensureMarketAdminSchema(db), ensureAnnotationSchema(db)]);
+  const selectedCategories = [...new Set((input.categories ?? [])
+    .map((value) => value.trim().slice(0, 120)).filter(Boolean))].slice(0, 50);
+  const categorySql = selectedCategories.length ? ` IN (${selectedCategories.map(() => "?").join(",")})` : "";
+  const [pendingPrices, imageCache, pricePrompts, statusCounts] = await Promise.all([
+    listPendingMarketPrices(db, {
+      categories: selectedCategories,
+      candidatePriceSources: input.candidatePriceSources,
+      page: input.page,
+      pageSize: input.pageSize,
+    }),
+    db.prepare(`SELECT COUNT(*) total, SUM(CASE WHEN status='ready' THEN 1 ELSE 0 END) cached,
+      SUM(CASE WHEN status='failed' THEN 1 ELSE 0 END) failed,
+      SUM(CASE WHEN status NOT IN ('ready','failed') THEN 1 ELSE 0 END) pending FROM market_image_cache`)
+      .first<Record<string, number | null>>(),
+    db.prepare(`SELECT c.category,
+        COALESCE((SELECT p.id FROM market_annotation_prompt_versions p WHERE p.category=c.category AND p.status='active' ORDER BY p.version DESC LIMIT 1), '') prompt_id,
+        (SELECT COUNT(*) FROM market_price_snapshots ps
+          WHERE ps.category=c.category AND ps.confirmed_market_price_cents IS NULL
+            AND (ps.image_content_sha256<>'' OR EXISTS (
+              SELECT 1 FROM market_image_cache mic WHERE mic.source_url=ps.image_url AND mic.status='ready' AND mic.content_sha256<>''
+            ))) pending_count
+      FROM (SELECT DISTINCT category FROM market_ranking_entries WHERE category<>'') c ORDER BY c.category`)
+      .all<Record<string, unknown>>(),
+    db.prepare(`SELECT COUNT(*) total,
+      SUM(CASE WHEN confirmed_market_price_cents IS NULL THEN 1 ELSE 0 END) pending_prices,
+      SUM(CASE WHEN confirmed_market_price_cents IS NOT NULL THEN 1 ELSE 0 END) confirmed_prices
+      FROM market_price_snapshots${categorySql ? ` WHERE category${categorySql}` : ""}`)
+      .bind(...selectedCategories).first<Record<string, number | null>>(),
+  ]);
+  return {
+    pendingPrices,
+    imageCache: {
+      total: Number(imageCache?.total ?? 0),
+      cached: Number(imageCache?.cached ?? 0),
+      failed: Number(imageCache?.failed ?? 0),
+      pending: Number(imageCache?.pending ?? 0),
+    },
+    priceRecognition: { prompts: pricePrompts.results ?? [] },
+    statusCounts: {
+      total: Number(statusCounts?.total ?? 0),
+      pendingPrices: Number(statusCounts?.pending_prices ?? 0),
+      confirmedPrices: Number(statusCounts?.confirmed_prices ?? 0),
+    },
+  };
+}
+
+export async function getMarketSettingsStatus(db: MarketDatabase) {
+  await ensureMarketAdminSchema(db);
+  const [range, batches, imageCache] = await Promise.all([
+    db.prepare(`SELECT MIN(period_start) start_date, MAX(period_end) end_date
+      FROM market_ranking_entries`).first<Record<string, string | null>>(),
+    db.prepare(`SELECT ${marketBatchColumns}
+      FROM market_import_batches ORDER BY created_at DESC LIMIT 8`)
+      .all<Parameters<typeof mapMarketBatch>[0]>(),
+    db.prepare(`SELECT COUNT(*) total,
+      SUM(CASE WHEN status='ready' THEN 1 ELSE 0 END) cached,
+      SUM(CASE WHEN status='failed' THEN 1 ELSE 0 END) failed,
+      SUM(CASE WHEN status NOT IN ('ready','failed') THEN 1 ELSE 0 END) pending
+      FROM market_image_cache`).first<Record<string, number | null>>(),
+  ]);
+  return {
+    dataRange: {
+      startDate: range?.start_date ?? null,
+      endDate: range?.end_date ?? null,
+    },
+    batches: (batches.results ?? []).map((row) => mapMarketBatch(row)),
+    imageCache: {
+      total: Number(imageCache?.total ?? 0),
+      cached: Number(imageCache?.cached ?? 0),
+      failed: Number(imageCache?.failed ?? 0),
+      pending: Number(imageCache?.pending ?? 0),
+    },
+  };
 }
 
 export async function confirmMarketPrice(db: MarketDatabase, input: {
@@ -206,6 +358,7 @@ export async function updateMarketSkuMasterData(db: MarketDatabase, input: {
   const priceCents = nullableInteger(input.priceCents, 0, 100_000_000);
   const priceType = optionalText(input.priceType, 40) ?? "标准售价";
   if (priceCents !== null && !validOfficialPriceTypes.has(priceType)) throw new Error("确认价格必须选择有效的完整售价类型");
+  if (category !== originalCategory) await ensureMarketMasterIdentities(db);
   if (subcategory) {
     const taxonomy = await db.prepare(`SELECT id FROM market_subcategory_taxonomy
       WHERE category=? AND subcategory=? AND status='active' LIMIT 1`).bind(category, subcategory).first<{ id: string }>();
@@ -268,6 +421,7 @@ export async function updateMarketSkuMasterData(db: MarketDatabase, input: {
       .bind(priceCents, priceCents === null ? "" : priceType, priceCents === null ? "missing" : "confirmed",
         actor.email, category, scope, rankingDimension, skuCode, month),
   ];
+  const domainStatementCount = statements.length;
   if (category !== originalCategory) {
     const guardId = `market-category-migration-guard-${crypto.randomUUID()}`;
     statements.unshift(db.prepare(`INSERT INTO market_master_audit_logs
@@ -292,6 +446,10 @@ export async function updateMarketSkuMasterData(db: MarketDatabase, input: {
       category, scope, rankingDimension, skuCode, category, skuCode, category, scope, rankingDimension, skuCode,
       guardId, actor.email, actor.role,
       `${originalCategory}|${scope}|${rankingDimension}|${skuCode}`));
+    statements.push(...(marketMasterIdentityRefreshKeyStatements(db, [
+      { category: originalCategory, scope, rankingDimension, skuCode },
+      { category, scope, rankingDimension, skuCode },
+    ]) as unknown as typeof statements));
     statements.push(db.prepare("DELETE FROM market_master_audit_logs WHERE id=? AND action='market_category_migration_guard'").bind(guardId));
   }
   const results = await db.batch(statements) as Array<{ meta?: { changes?: number } }>;
@@ -299,9 +457,8 @@ export async function updateMarketSkuMasterData(db: MarketDatabase, input: {
     FROM market_ranking_entries WHERE category=? AND scope=? AND ranking_dimension=? AND sku_code=?
     ORDER BY period_end DESC, period_start DESC, id DESC LIMIT 1`)
     .bind(category, scope, rankingDimension, skuCode).first<Record<string, unknown>>();
-  const domainResults = category !== originalCategory ? results.slice(1, -1) : results;
+  const domainResults = category !== originalCategory ? results.slice(1, 1 + domainStatementCount) : results;
   const changedRows = domainResults.reduce((sum, result) => sum + Number(result?.meta?.changes ?? 0), 0);
-  if (category !== originalCategory) await refreshMarketMasterIdentities(db);
   await audit(db, actor, "update_market_sku_master", "market_sku", `${originalCategory}|${scope}|${rankingDimension}|${skuCode}`, before, { ...after, month, priceCents, priceType, changedRows });
   return { ok: true, changedRows, item: after };
 }
@@ -1096,7 +1253,8 @@ export async function getMarketSystemKpis(db: MarketDatabase): Promise<MarketSys
   await ensureMarketAdminSchema(db);
   await ensureAnnotationSchema(db);
   await ensureMarketMasterIdentities(db);
-  const row = await db.prepare(`WITH market_identities AS MATERIALIZED (
+  const result = await getCachedMarketSystemKpis(db, async () => {
+    const row = await db.prepare(`WITH market_identities AS MATERIALIZED (
       SELECT category, scope, ranking_dimension, sku_code
       FROM market_master_identities
     ), price_state AS MATERIALIZED (
@@ -1137,8 +1295,8 @@ export async function getMarketSystemKpis(db: MarketDatabase): Promise<MarketSys
         ON image_cache.source_url=snapshot.image_url
         AND image_cache.status='ready' AND image_cache.content_sha256<>''
       WHERE snapshot.confirmed_market_price_cents IS NULL
-    ), pending_ai_identities AS MATERIALIZED (
-      SELECT snapshot.category, snapshot.scope, snapshot.ranking_dimension, snapshot.sku_code
+    ), pending_ai_snapshots AS MATERIALIZED (
+      SELECT snapshot.*
       FROM pending_snapshots snapshot
       WHERE NOT EXISTS (
         SELECT 1 FROM market_annotation_items result
@@ -1149,6 +1307,9 @@ export async function getMarketSystemKpis(db: MarketDatabase): Promise<MarketSys
           AND (COALESCE(result.ai_segment,'')<>'' OR result.ai_image_price_cents IS NOT NULL
             OR result.ai_confidence_bps IS NOT NULL OR COALESCE(result.ai_reason,'')<>'')
       )
+    ), pending_ai_identities AS MATERIALIZED (
+      SELECT snapshot.category, snapshot.scope, snapshot.ranking_dimension, snapshot.sku_code
+      FROM pending_ai_snapshots snapshot
       GROUP BY snapshot.category, snapshot.scope, snapshot.ranking_dimension, snapshot.sku_code
     ), same_image_standard AS MATERIALIZED (
       SELECT category, scope, ranking_dimension, sku_code, image_content_sha256
@@ -1187,7 +1348,7 @@ export async function getMarketSystemKpis(db: MarketDatabase): Promise<MarketSys
           AND snapshot.image_content_sha256<>'' AND failure.sku_code IS NULL
           AND standard.sku_code IS NULL AND segment.sku_code IS NULL THEN 1 ELSE 0 END) full_recognition
       FROM pending_ai_identities identity
-      LEFT JOIN pending_snapshots snapshot ON snapshot.category=identity.category AND snapshot.scope=identity.scope
+      LEFT JOIN pending_ai_snapshots snapshot ON snapshot.category=identity.category AND snapshot.scope=identity.scope
         AND snapshot.ranking_dimension=identity.ranking_dimension AND snapshot.sku_code=identity.sku_code
       LEFT JOIN active_prompts prompt ON prompt.category=identity.category
       LEFT JOIN same_image_standard standard ON standard.category=snapshot.category AND standard.scope=snapshot.scope
@@ -1219,17 +1380,19 @@ export async function getMarketSystemKpis(db: MarketDatabase): Promise<MarketSys
     FROM market_identities identity
     LEFT JOIN price_state ON price_state.category=identity.category AND price_state.scope=identity.scope
       AND price_state.ranking_dimension=identity.ranking_dimension AND price_state.sku_code=identity.sku_code`)
-    .first<Record<string, number | null>>();
-  return {
-    marketIdentityTotal: Number(row?.market_identity_total ?? 0),
-    pendingPriceCount: Number(row?.pending_price_count ?? 0),
-    pendingAiCount: Number(row?.pending_ai_count ?? 0),
-    completedAiCount: Number(row?.completed_ai_count ?? 0),
-    sameImageReuseCount: Number(row?.same_image_reuse_count ?? 0),
-    priceOnlyRecognitionCount: Number(row?.price_only_recognition_count ?? 0),
-    fullRecognitionCount: Number(row?.full_recognition_count ?? 0),
-    blockedRecognitionCount: Number(row?.blocked_recognition_count ?? 0),
-  };
+      .first<Record<string, number | null>>();
+    return {
+      marketIdentityTotal: Number(row?.market_identity_total ?? 0),
+      pendingPriceCount: Number(row?.pending_price_count ?? 0),
+      pendingAiCount: Number(row?.pending_ai_count ?? 0),
+      completedAiCount: Number(row?.completed_ai_count ?? 0),
+      sameImageReuseCount: Number(row?.same_image_reuse_count ?? 0),
+      priceOnlyRecognitionCount: Number(row?.price_only_recognition_count ?? 0),
+      fullRecognitionCount: Number(row?.full_recognition_count ?? 0),
+      blockedRecognitionCount: Number(row?.blocked_recognition_count ?? 0),
+    };
+  }, validateMarketSystemKpiCachePayload);
+  return result.payload;
 }
 
 export async function getMarketMasterWorkspace(db: MarketDatabase, input: {
@@ -1464,10 +1627,14 @@ export async function getMarketSkuComparison(db: MarketDatabase, input: {
   };
 }
 
-export async function getMarketOverviewForAi(db: MarketDatabase, args: Record<string, unknown>) {
+export async function getMarketOverviewForAi(
+  db: MarketDatabase,
+  args: Record<string, unknown>,
+  principal: AppPrincipal,
+) {
   const { getMarketOverview } = await import("@/lib/market/database");
   const filtersApplied = aiFilters(args);
-  const overview = await getMarketOverview(db, filtersApplied);
+  const overview = await getMarketOverview(db, principal, filtersApplied);
   const industryReport = overview.industryReport;
   return {
     filtersApplied,
@@ -1499,9 +1666,13 @@ export async function getMarketOverviewForAi(db: MarketDatabase, args: Record<st
   };
 }
 
-export async function getMarketBrandAnalysisForAi(db: MarketDatabase, args: Record<string, unknown>) {
+export async function getMarketBrandAnalysisForAi(
+  db: MarketDatabase,
+  args: Record<string, unknown>,
+  principal: AppPrincipal,
+) {
   const { getMarketOverview } = await import("@/lib/market/database");
-  const overview = await getMarketOverview(db, aiFilters(args));
+  const overview = await getMarketOverview(db, principal, aiFilters(args));
   return {
     filtersApplied: aiFilters(args),
     dataRange: overview.dataRange,
@@ -1514,9 +1685,13 @@ export async function getMarketBrandAnalysisForAi(db: MarketDatabase, args: Reco
   };
 }
 
-export async function getMarketPriceBandAnalysisForAi(db: MarketDatabase, args: Record<string, unknown>) {
+export async function getMarketPriceBandAnalysisForAi(
+  db: MarketDatabase,
+  args: Record<string, unknown>,
+  principal: AppPrincipal,
+) {
   const { getMarketOverview } = await import("@/lib/market/database");
-  const overview = await getMarketOverview(db, aiFilters(args), { priceBandBasis: "confirmed_only" });
+  const overview = await getMarketOverview(db, principal, aiFilters(args), { priceBandBasis: "confirmed_only" });
   return {
     filtersApplied: aiFilters(args),
     dataRange: overview.dataRange,
@@ -1560,31 +1735,39 @@ function masterBaseSql(includeHistory = false) {
         : `SELECT source.* FROM market_master_identities identity
           JOIN market_ranking_entries source ON source.id=identity.latest_entry_id`}
     )
-    SELECT m.id, m.period_start, m.period_end, substr(m.period_end,1,7) month, m.category, m.scope, m.ranking_dimension, m.operation_mode,
-      m.subcategory, m.rank, m.sku_code, m.product_name, m.brand, m.gmv_cents, m.quantity, m.visitors, m.conversion_bps,
-      COALESCE(gt.gmv_total_cents,0) gmv_total_cents,
-      m.image_url, m.product_url, COALESCE(c.status, CASE WHEN m.image_url='' THEN 'missing' ELSE 'pending' END) image_cache_status,
-      COALESCE(c.content_sha256, ps.image_content_sha256, '') image_content_sha256,
-      ps.source_price_cents, ps.ai_image_price_cents, ps.ai_price_type, ps.ai_confidence_bps, ps.ai_reason,
-      ps.confirmed_market_price_cents official_market_price_cents,
-      CASE WHEN ps.confirmation_status='ai_pending' AND ps.ai_image_price_cents IS NOT NULL THEN ps.ai_image_price_cents
-        ELSE COALESCE(ps.source_price_cents, ps.average_transaction_price_cents, ps.ai_image_price_cents) END candidate_price_cents,
-      CASE WHEN ps.confirmation_status='ai_pending' AND ps.ai_image_price_cents IS NOT NULL THEN 'ai_suggestion'
-        WHEN ps.source_price_cents IS NOT NULL THEN 'source_table'
-        WHEN ps.average_transaction_price_cents IS NOT NULL THEN 'average_transaction'
-        WHEN ps.ai_image_price_cents IS NOT NULL THEN 'ai_suggestion'
-        ELSE 'missing' END candidate_price_source,
-      ps.average_transaction_price_cents, ps.price_low_cents, ps.price_high_cents, COALESCE(ps.confirmation_status,'missing') confirmation_status,
-      bs.ai_brand suggested_brand, COALESCE(bs.status, '') brand_suggestion_status,
-      CASE WHEN a.id IS NULL THEN 'pending' ELSE 'committed' END annotation_status,
-      ${officialPriceBandSql("ps.confirmed_market_price_cents", {
-        confirmationStatusSql: "ps.confirmation_status",
-        aiPriceTypeSql: "ps.ai_price_type",
-        categorySql: "m.category",
-        periodEndSql: "m.period_end",
-      })} price_band
+    SELECT ${masterDetailColumnsSql()}
     FROM representatives m
-    LEFT JOIN market_sku_gmv_totals gt ON gt.sku_code=m.sku_code
+    ${masterDetailJoinsSql()}`;
+}
+
+function masterDetailColumnsSql() {
+  return `m.id, m.period_start, m.period_end, substr(m.period_end,1,7) month, m.category, m.scope, m.ranking_dimension, m.operation_mode,
+    m.subcategory, m.rank, m.sku_code, m.product_name, m.brand, m.gmv_cents, m.quantity, m.visitors, m.conversion_bps,
+    COALESCE(gt.gmv_total_cents,0) gmv_total_cents,
+    m.image_url, m.product_url, COALESCE(c.status, CASE WHEN m.image_url='' THEN 'missing' ELSE 'pending' END) image_cache_status,
+    COALESCE(c.content_sha256, ps.image_content_sha256, '') image_content_sha256,
+    ps.source_price_cents, ps.ai_image_price_cents, ps.ai_price_type, ps.ai_confidence_bps, ps.ai_reason,
+    ps.confirmed_market_price_cents official_market_price_cents,
+    CASE WHEN ps.confirmation_status='ai_pending' AND ps.ai_image_price_cents IS NOT NULL THEN ps.ai_image_price_cents
+      ELSE COALESCE(ps.source_price_cents, ps.average_transaction_price_cents, ps.ai_image_price_cents) END candidate_price_cents,
+    CASE WHEN ps.confirmation_status='ai_pending' AND ps.ai_image_price_cents IS NOT NULL THEN 'ai_suggestion'
+      WHEN ps.source_price_cents IS NOT NULL THEN 'source_table'
+      WHEN ps.average_transaction_price_cents IS NOT NULL THEN 'average_transaction'
+      WHEN ps.ai_image_price_cents IS NOT NULL THEN 'ai_suggestion'
+      ELSE 'missing' END candidate_price_source,
+    ps.average_transaction_price_cents, ps.price_low_cents, ps.price_high_cents, COALESCE(ps.confirmation_status,'missing') confirmation_status,
+    bs.ai_brand suggested_brand, COALESCE(bs.status, '') brand_suggestion_status,
+    CASE WHEN a.id IS NULL THEN 'pending' ELSE 'committed' END annotation_status,
+    ${officialPriceBandSql("ps.confirmed_market_price_cents", {
+      confirmationStatusSql: "ps.confirmation_status",
+      aiPriceTypeSql: "ps.ai_price_type",
+      categorySql: "m.category",
+      periodEndSql: "m.period_end",
+    })} price_band`;
+}
+
+function masterDetailJoinsSql() {
+  return `LEFT JOIN market_sku_gmv_totals gt ON gt.sku_code=m.sku_code
     LEFT JOIN market_price_snapshots ps ON ps.category=m.category AND ps.scope=m.scope AND ps.sku_code=m.sku_code AND ps.ranking_dimension=m.ranking_dimension AND ps.month=substr(m.period_end,1,7)
     LEFT JOIN market_brand_suggestions bs ON bs.category=m.category AND bs.scope=m.scope AND bs.ranking_dimension=m.ranking_dimension AND bs.sku_code=m.sku_code
     LEFT JOIN market_sku_annotations a ON a.category=m.category AND a.sku_code=m.sku_code

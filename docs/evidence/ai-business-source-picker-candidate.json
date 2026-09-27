@@ -1,0 +1,23 @@
+{
+  "date": "2026-09-17",
+  "branch": "codex/ai-business-analysis-stages",
+  "baseCommit": "b6824502",
+  "batch": 32,
+  "status": "candidate_account_bound_netshop_scope_picker",
+  "verification": {
+    "node": {"passed": 52, "failed": 0, "log": ".runtime/batch32-node.log"},
+    "chrome": {"passed": 68, "picker": 14, "parent": 9, "legacyWorkbench": 16, "legacyV2": 9, "legacyBudget": 7, "legacyMapping": 13, "pickerEvidence": ".runtime/batch32-scope-picker-ui/evidence.json", "parentEvidence": ".runtime/business-scope-workbench-ui/evidence.json", "externalRequests": 0},
+    "crossLanguageHash": "Three fixed Python canonical principal digest fixtures including ASCII, Chinese and dotted I",
+    "build": {"passed": true, "log": ".runtime/batch32-build.log"},
+    "renderedPages": {"passed": 20, "log": ".runtime/batch32-rendered.log"},
+    "typescript": {"outputLines": 223, "exactlyMatchesExistingBaseline": true, "log": ".runtime/batch32-types.log"},
+    "changedFilesLint": {"passed": true, "log": ".runtime/batch32-eslint.log"},
+    "backendBoundary": {"modules": 491, "violations": 0},
+    "independentReview": "Separate Agent reviewed final account/generation isolation, latest-form merge, immediate pending/write guards, layout-effect lock, refusal feedback and unchanged original submission body",
+    "visual": "Root inspected actual 390px parent screenshot; picker author inspected standalone mobile/desktop, no horizontal page overflow",
+    "firstAttemptCorrections": ["Parent browser test initially checked prepared pending state before POST existed; corrected to await actual unknown response", "Parent ref synchronization moved from render to layout effect to satisfy React lint; final browser and build rerun"]
+  },
+  "behavior": ["Original netshop GET unchanged", "Default manual form makes no options requests", "Expected principal mismatch refuses before domain fetch", "Full page and response revision validation", "Add re-reads current page under same revision", "Only explicit dataset added; dates/windows/ERP/market preserved", "Maximum four exact shops; duplicate dataset merged; other platform remains distinct", "Late results after filter/account/disable/unmount cannot add", "Unknown submission retains original UUID/body across reload", "Paging history bounded to 100 with explicit remaining-source notice"],
+  "remaining": ["ERP and market exact metadata options", "Natural-language scope suggestions", "Actual source availability and period coverage verification", "Production and real-model acceptance"],
+  "operations": {"productionBusinessReads": false, "productionWrites": false, "newMigration": false, "deployment": false, "serviceRestart": false, "paidModelCalls": false, "externalMessages": false}
+}

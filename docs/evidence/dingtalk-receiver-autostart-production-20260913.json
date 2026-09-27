@@ -1,0 +1,144 @@
+{
+  "version": "teruisi-dingtalk-receiver-autostart-production-v1",
+  "date": "2026-09-13",
+  "status": "completed",
+  "sourceCommit": "8b25c7005b6d6af4e04ee75937f2496b257ebf0e",
+  "sourceWorktree": "D:/运营管理系统-sales-django-release",
+  "authorization": "User explicitly requested 发布上线 after candidate validation and disclosure of controlled local service restart.",
+  "scope": "Enable the existing DingTalk receiver automatically after the single system startup engine confirms backend and Worker readiness.",
+  "validation": {
+    "fullNode": {
+      "tests": 2145,
+      "passed": 2122,
+      "failed": 0,
+      "skipped": 23
+    },
+    "finalTargeted": {
+      "passed": 6,
+      "failed": 0
+    },
+    "build": "passed",
+    "renderedHtml": {
+      "passed": 20,
+      "failed": 0
+    },
+    "lint": {
+      "errors": 0,
+      "existingWarnings": 11
+    },
+    "backendBoundary": {
+      "checkedModules": 426,
+      "violations": 0
+    },
+    "sourceAndAdoptedControllerHashesMatch": true
+  },
+  "preReleaseBackup": {
+    "backupId": "daily-20260912T233752Z-fd5b7894b217",
+    "backupDirectory": "D:\\teruisi-runtime\\django-sales\\backups\\postgres-daily\\daily-20260912T233752Z-fd5b7894b217",
+    "manifestSha256": "883562a33555d7470ab34e9ae49207bf0198c9113a3d49c3eb0165c9224d11fb",
+    "dumpSha256": "1bafdad82bbc15102da2d9c5fb773eca781ecba07d0fa5bea9380b5797241d75",
+    "contentSha256": "b0f3222792e7d58fed737cacfaf2cfd95803f186f724a35ef86c085d40ce7985"
+  },
+  "preReleaseIndependentRestore": {
+    "rehearsalId": "9f4c71a2b603",
+    "isolatedPort": 55476,
+    "status": "completed",
+    "restoredContentSha256": "b0f3222792e7d58fed737cacfaf2cfd95803f186f724a35ef86c085d40ce7985",
+    "productionDatabaseTouched": false,
+    "serviceStateChanged": false,
+    "cleanupStatus": "isolated_data_removed"
+  },
+  "djangoDeployment": {
+    "manifestSha256": "8c87f48c44b850baa0c426d00ef26970db671d656ebdb7ffd1d558e88d0beaa5",
+    "appFingerprint": "1a320dd99cbcc0248abe655d286ed053283850a4898c43fbba89f7a9f376c1e8",
+    "fileCount": 2022,
+    "sourceCommit": "8b25c7005b6d6af4e04ee75937f2496b257ebf0e"
+  },
+  "workerDeployment": {
+    "planSha256": "d02d27314c231d2fa645df03a8207153d18079dfa28296035da0513a8dfb9bca",
+    "predecessorReleaseId": "20260912T143827Z-79e971ff2b5bce03",
+    "releaseId": "20260912T234549Z-017f8196dda91b2b",
+    "manifestSha256": "908f4920a699240cbd241ae442eb2e6267baef470d976e09a8b8cadfef586e48",
+    "guardReceiptSha256": "fd4a157af5c7b0ebda8ff81325ef0b475717989ed333eb6ce789c1233461e14c",
+    "successorSha256": "bc9799319a0e678e74e55549072b0bbf6f3768f0ba2a8930ada44d6330775ca6",
+    "consumptionSha256": "870111388fff93e7b3429fdbeeb4183a1c3d55cfe8073a14c71880ad827d50d9",
+    "startupBindingSha256": "9ba02c90eb18376db4dc231f7ba115600b321b5f02e031ae8d3d4579548c57be"
+  },
+  "startup": {
+    "configurationEnabled": true,
+    "approvalSha256": "b2b36b75ac9efe8448b6233a12dd0f29b19eef41ea0e8291780818c8b4174710",
+    "coldSystemStart": {
+      "systemStartResult": "started",
+      "workerSupervisorProcessId": 27532,
+      "receiverProcessId": 12108,
+      "receiverCreationDate": "2026-09-12T23:56:18.230298Z",
+      "receiverRunId": "20260913-075554-2de80aa8",
+      "receiverConfigFingerprint": "04e6dee4a2b28231463e66f898193f0b27d0e712adefc17e8c6b208e44146ba6",
+      "connected": true
+    },
+    "repeatedSystemStart": {
+      "status": "already_running",
+      "sameReceiverProcess": true,
+      "receiverProcessId": 12108,
+      "receiverRunId": "20260913-075554-2de80aa8"
+    },
+    "startupShortcutVerified": true,
+    "aiStatus": {
+      "AiReader": "running",
+      "AiWriter": "running",
+      "ReaderReadiness": "ready",
+      "WriterReadiness": "ready",
+      "PandasReadiness": "ready",
+      "DingTalkStartup": "enabled",
+      "DingTalkReceiver": "running"
+    }
+  },
+  "productionReadback": {
+    "state": "Running",
+    "backendState": "Ready",
+    "workerState": "exact_release",
+    "allComponentsReady": true,
+    "checkedAt": "2026-09-13T07:58:25.9756386+08:00",
+    "receiverConnected": true,
+    "schedule": {
+      "name": "广东仓库存监控",
+      "enabled": true,
+      "cadence": "daily",
+      "hour": 9,
+      "minute": 0,
+      "version": 1,
+      "nextRunAt": "2026-09-13T09:00:00+08:00",
+      "priorManualRunStatus": "denied",
+      "priorManualRunError": "missed_window",
+      "historicalRunReplayed": false
+    }
+  },
+  "postReleaseBackup": {
+    "backupId": "daily-20260912T235659Z-f13916c2181e",
+    "backupDirectory": "D:\\teruisi-runtime\\django-sales\\backups\\postgres-daily\\daily-20260912T235659Z-f13916c2181e",
+    "manifestSha256": "c965566821ea5159ed8a1658d3049211ff05186a96ce02cef1dd49e59652d2bb",
+    "dumpSha256": "a70637222e3cfebca4dfbb21dff9443abb38a9d16d43d8b2fbf692203da2ec96",
+    "contentSha256": "7066b8880e8ee063258b6ff34dd7630071ccdad93ce49983f6772880c915d1d0",
+    "independentVerify": "completed",
+    "secondRestoreRehearsalPerformed": false
+  },
+  "operationalActions": {
+    "workerAndHelperRestarted": true,
+    "djangoAndPostgreSqlRestarted": true,
+    "n8nRestartRequested": false,
+    "databaseMigrationsApplied": false,
+    "modelOrBusinessConfigurationChanged": false,
+    "receiverAutostartConfigurationChanged": true
+  },
+  "limitations": [
+    "Windows was not rebooted during validation; the actual system Start engine and exact login shortcut binding were verified.",
+    "Requires the original Windows user login and DPAPI identity; unattended pre-login operation is not configured.",
+    "Receiver-only crash recovery is not added; failed authentication is not retried without bounds.",
+    "No real scheduled message delivery or paid model acceptance test was triggered; next scheduled slot remains 09:00 Asia/Shanghai.",
+    "Missed historical slots are not replayed; platform connected does not prove future delivery."
+  ],
+  "controllerHashes": {
+    "tools/django-ai.ps1": "9ebe9651fda118c9d10c718998b086c4a688f74496a739591a69620d14544e48",
+    "tools/worker-local-service.ps1": "23789686c1c3db9168b74ad3df448cb6456535db2467861cdf1e43ae8b1c0e80"
+  }
+}

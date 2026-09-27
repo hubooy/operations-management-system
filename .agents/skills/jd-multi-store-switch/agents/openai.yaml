@@ -1,4 +1,4 @@
 interface:
   display_name: "京东多店铺切换"
-  short_description: "按注册表隔离会话并串行运行京东店铺数据任务"
-  default_prompt: "使用京东多店铺切换流程，检查注册表、人工登录各店铺 profile，并按顺序运行导出任务。"
+  short_description: "隔离多店会话，使用 DPAPI 登录守护并串行运行京东任务"
+  default_prompt: "使用 $jd-multi-store-switch 检查店铺隔离与登录守护，并按注册表顺序安全运行京东导出任务。"

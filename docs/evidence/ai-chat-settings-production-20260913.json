@@ -1,0 +1,224 @@
+{
+  "date": "2026-09-13",
+  "status": "adopted_on_local_production",
+  "authorization": "User approved the preview and explicitly requested production release; asked whether configuration can be created and used immediately.",
+  "sourceCommit": "5520b3d7d51e3c32fbf90898fb3baac508335894",
+  "integratedMainBeforeChange": "e3b7e256",
+  "scope": {
+    "standaloneChatBeforeOperations": true,
+    "fullHeightChatAndCompactComposer": true,
+    "globalPromptCommonAndDomainRules": true,
+    "appendOnlyHistoryAndRestore": true,
+    "perQuestionPinnedGuidanceSnapshot": true,
+    "persistentConversationWorkspace": "deferred to phase two",
+    "independentAgentDagAndImages": "not connected to these guidance settings"
+  },
+  "worker": {
+    "status": "activated",
+    "version": "teruisi-local-worker-release-successor-v1",
+    "planSha256": "1ca86a7c4d9309b95e9c3c875e8b16eca35fc8d8b420ac57da85093269ff4521",
+    "predecessorReleaseId": "20260913T024434Z-bc351d47b7209e2b",
+    "releaseId": "20260913T083423Z-5b9bc1d755228cae",
+    "manifestPath": "D:\\teruisi-runtime\\teruisi-worker-sales\\releases\\20260913T083423Z-5b9bc1d755228cae\\deployment-manifest.json",
+    "manifestSha256": "dcba1b2342da4163cc25de91f9a7140b94597eb8a646bde29fc1e61f7dc5e06c",
+    "successorSha256": "722cfafde9bd5900b76ef7d3a6cfcf097460704eb82f71dcef335a1f1e4beff2",
+    "consumptionSha256": "0920afba153128144da869953218b7dbc6993013fe1918a7b321113bcfc2ecde",
+    "startupBindingSha256": "7f149232c588b046fe36f7e89e8d47e40f0d836ec7deac36cc99e88a65b51b79",
+    "verification": {
+      "status": "verified",
+      "version": "teruisi-local-worker-release-verification-v1",
+      "manifestSha256": "dcba1b2342da4163cc25de91f9a7140b94597eb8a646bde29fc1e61f7dc5e06c",
+      "releaseId": "20260913T083423Z-5b9bc1d755228cae",
+      "sourceFingerprint": "1b0c2441bbdaf3739cef01245c771126dd9c8af1491cce5333f58a4ff285b155",
+      "buildFingerprint": "f79e44b0cdc3479b598b8bfffbd8f9c5ea31c73a5851012624720a31acbb4a9a",
+      "sourceD1PathSha256": "f0d4996d3d9ee2768996b95271957fb3ccd744657cfcc59269811f9267057ec5",
+      "persistRootPathSha256": "707232242c7126c9190e3f2641c1cbd99a3443a967d93e9a4e97259279c6d116",
+      "contractReceiptSha256": "1bd88c82453bc92a34f7e20cb8e1b77c93893d148ffebc67cb56cb5eb18d3e8a",
+      "processState": "exact_release"
+    },
+    "startup": {
+      "status": "verified",
+      "version": "teruisi-local-worker-status-v1",
+      "releaseId": "20260913T083423Z-5b9bc1d755228cae",
+      "manifestSha256": "dcba1b2342da4163cc25de91f9a7140b94597eb8a646bde29fc1e61f7dc5e06c",
+      "startupVerified": true
+    }
+  },
+  "django": {
+    "manifestSha256": "d6bbf9f727475c7dab0a347f33a6ccc1523604bab55af074ba3659644c6d211e",
+    "previousManifestSha256": "eb6aeed6c8ad45a4335bd05dfc04c2b2267af643f14c765c261cf5dbba9d2e63",
+    "appFingerprint": "dc55930b50a8249b4b7236fab72d173a9217f4289b2a1234e1261273d04e7dfc",
+    "fileCount": 2027,
+    "migration": "ai_assistant.0011_prompt_settings",
+    "unexpectedPendingMigrations": 0,
+    "aiTables": 52,
+    "existingAiTablesPreserved": 51,
+    "existingAiRowsBeforeAfterSha256": "2ae537b58b6551994dac2194dc44a799ec08460579d6ba6e5590a968cec9ca9f",
+    "grants": "Existing DPAPI credentials, deployed ProvisionRoles operator; reader SELECT, writer SELECT/INSERT, authority fencing and immutable revisions retained",
+    "deployedChangedSourceFilesCompared": 5
+  },
+  "runtime": {
+    "version": "teruisi-operations-system-control-v2",
+    "state": "Running",
+    "backendState": "Ready",
+    "workerState": "exact_release",
+    "releaseId": "20260913T083423Z-5b9bc1d755228cae",
+    "supervisorProcessId": 51668,
+    "portProcessId": 8348,
+    "url": "http://localhost:3000/",
+    "reason": null,
+    "components": {
+      "core": true,
+      "finance": true,
+      "netshop": true,
+      "market": true,
+      "products": true,
+      "workflow": true,
+      "inventory": true,
+      "customerService": true,
+      "accessControl": true,
+      "erpReference": true,
+      "bi": true,
+      "ai": true
+    },
+    "checkedAt": "2026-09-13T16:47:02.1368056+08:00"
+  },
+  "publicAcceptance": {
+    "checkedAt": "2026-09-13T16:49:06.0714968+08:00",
+    "status": "passed_after_readonly_retry",
+    "publicGet": 200,
+    "publicSave": 200,
+    "version": 1,
+    "historyCount": 1,
+    "rules": 6,
+    "defaultContentUnchanged": true,
+    "staleVersion": 409,
+    "crossOrigin": 403,
+    "unsignedInternal": 401,
+    "configSha256": "bdc733c0c4fdca5fcd83e344c091cc547690d8ac20269d15c2e835e305e497d2",
+    "finalReadRetry": "One client timeout; fresh read succeeded, save not repeated",
+    "paidModelAcceptanceCalls": 0,
+    "operatorExternalMessages": 0
+  },
+  "browserAcceptance": {
+    "url": "http://localhost:3000/?module=ai&view=configuration",
+    "refreshedVersion": 1,
+    "ruleEditorAndSixDefaultRulesVisible": true,
+    "newRuleDraftOpenedAndDiscarded": true,
+    "persistedTestRuleCreated": false,
+    "chatNavBeforeOperations": true,
+    "chatFooterRemovedAndComposerAtBottom": true,
+    "screenshotsDirectory": "D:/CodexArtifacts/ai-chat-settings-20260913/",
+    "screenshots": [
+      "05-production-settings-v1.png",
+      "06-production-business-rules.png",
+      "07-production-chat.png"
+    ]
+  },
+  "backup": {
+    "pre": {
+      "backupId": "daily-20260913T082059Z-299ec22b4abc",
+      "manifestSha256": "9e5a48cc5010a0e2a18db45c7b8164e0b16d2c584465daafc7e45419128bfeec",
+      "dumpSha256": "ee2b7821a0fd3c871269b940ee9c64e1f2584606da7c2f665244cc103247f36f",
+      "contentSha256": "790ef681bd46c85ed72062cb130cc595c09e9f384be94b740520a5a81d6401de",
+      "verified": true,
+      "restore": {
+        "version": "teruisi-postgres-restore-rehearsal-v1",
+        "status": "completed",
+        "rehearsalId": "ac1309130001",
+        "startedAt": "2026-09-13T08:23:19.6794347+00:00",
+        "completedAt": "2026-09-13T08:27:49.7810537+00:00",
+        "backupId": "daily-20260913T082059Z-299ec22b4abc",
+        "backupManifestSha256": "9e5a48cc5010a0e2a18db45c7b8164e0b16d2c584465daafc7e45419128bfeec",
+        "dumpSha256": "ee2b7821a0fd3c871269b940ee9c64e1f2584606da7c2f665244cc103247f36f",
+        "expectedContentSha256": "790ef681bd46c85ed72062cb130cc595c09e9f384be94b740520a5a81d6401de",
+        "restoredContentSha256": "790ef681bd46c85ed72062cb130cc595c09e9f384be94b740520a5a81d6401de",
+        "isolatedPort": 55432,
+        "productionDatabaseTouched": false,
+        "serviceStateChanged": false,
+        "cleanupStatus": "isolated_data_removed"
+      }
+    },
+    "post": {
+      "status": "completed",
+      "backupId": "daily-20260913T084900Z-79414fb9497b",
+      "backupDirectory": "D:\\teruisi-runtime\\django-sales\\backups\\postgres-daily\\daily-20260913T084900Z-79414fb9497b",
+      "manifestSha256": "0d0be7e859cf5b19cdb7d31b613be26f7e58365e7066f65239b67d2ce25d9f8b",
+      "dumpSha256": "e80bc17cfc1c8c4a65f7b3d5a6f05cb277799eca895246ffcad65d3a7837cefe",
+      "contentSha256": "f75ceeb91349ad99aa78a7ec73c466266ed7fb271b084a6e246d6fd44d73d50e",
+      "completedAt": "09/13/2026 16:50:36",
+      "serviceStateChanged": false,
+      "verified": true,
+      "restore": {
+        "version": "teruisi-postgres-restore-rehearsal-v1",
+        "status": "completed",
+        "rehearsalId": "ac1309130002",
+        "startedAt": "2026-09-13T08:51:05.7747818+00:00",
+        "completedAt": "2026-09-13T08:55:35.3109125+00:00",
+        "backupId": "daily-20260913T084900Z-79414fb9497b",
+        "backupManifestSha256": "0d0be7e859cf5b19cdb7d31b613be26f7e58365e7066f65239b67d2ce25d9f8b",
+        "dumpSha256": "e80bc17cfc1c8c4a65f7b3d5a6f05cb277799eca895246ffcad65d3a7837cefe",
+        "expectedContentSha256": "f75ceeb91349ad99aa78a7ec73c466266ed7fb271b084a6e246d6fd44d73d50e",
+        "restoredContentSha256": "f75ceeb91349ad99aa78a7ec73c466266ed7fb271b084a6e246d6fd44d73d50e",
+        "isolatedPort": 55432,
+        "productionDatabaseTouched": false,
+        "serviceStateChanged": false,
+        "cleanupStatus": "isolated_data_removed"
+      }
+    }
+  },
+  "isolatedValidation": {
+    "afterLatestMainSync": {
+      "postgres": {
+        "tests": 202,
+        "passed": 199,
+        "skipped": 3,
+        "failed": 0
+      },
+      "upgrade": {
+        "upgrade": "0010->0011",
+        "existingConversationsAndMessagesPreserved": true,
+        "defaultsRequireNoSeed": true,
+        "secondApplyNoop": true,
+        "migrationDryRun": true,
+        "realRoleHealth": true,
+        "readerReadOnly": true,
+        "writerAppendOnlyAndFenced": true,
+        "businessWritesDenied": true,
+        "tables": 52,
+        "dumpRestoreDigest": "a97c1fcf6647ae92d8ae28ca63bfc1e1e87d879e79608e88582afb21ca1fd6c0",
+        "productionWrites": false,
+        "externalCalls": 0
+      },
+      "relatedNodeTests": {
+        "passed": 47,
+        "failed": 0
+      },
+      "build": "passed",
+      "renderedHtml": {
+        "passed": 20,
+        "failed": 0
+      },
+      "backendBoundary": {
+        "checkedModules": 432,
+        "violations": 0
+      }
+    },
+    "earlierCandidateEvidence": "docs/evidence/ai-chat-settings-candidate-20260913.json",
+    "fullTypecheck": "145 pre-existing diagnostics; candidate compared line-for-line to baseline with no additions, not a full typecheck pass"
+  },
+  "operationalObservations": [
+    "The startup command output wrapper remained pending after service startup. Independently verified Running/Ready/exact_release, then terminated only the exact originating command shell after confirming it had no child processes; durable service processes were preserved and Start was not replayed.",
+    "The final public GET in the acceptance script hit a 30-second client timeout after the successful save and rejection checks. Fresh read-only requests and browser reload confirmed v1 with unchanged defaults and exactly one history entry; the save was not replayed.",
+    "The initial pre-restore invocation used a non-hex rehearsal identifier and was rejected before restoration. It was corrected to a valid unique identifier; the successful restore result is retained."
+  ],
+  "limits": {
+    "productionPaidModelAcceptanceCalls": 0,
+    "operatorTriggeredExternalMessages": 0,
+    "n8nRestarted": false,
+    "existingAutomationPolicy": "Preserved existing enablement; normal scheduled and market activity resumed, unknown historical operations were not manually replayed",
+    "productionConfigurationWrites": "One save of the existing default content as immutable v1; no test rule persisted",
+    "realPaidModelGuidanceBehavior": "not end-to-end accepted",
+    "promptConfigurationDoesNotChangePermissionsOrCalculationFormulas": true
+  }
+}

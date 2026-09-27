@@ -1,0 +1,20 @@
+{
+  "date": "2026-09-17",
+  "branch": "codex/ai-business-analysis-stages",
+  "baseCommit": "8dea668d",
+  "batch": 26,
+  "status": "candidate_internal_foundation_not_runtime_opened",
+  "changes": ["Strict explicit mapping plan with fixed algorithm and source pair identities", "Complete ERP SKU/SPU aggregation and compatible period comparisons", "Serial mapping partitions sharing a bounded scratch budget", "Internal sealed-reader service and exact fact references with late permission checks"],
+  "verification": {
+    "identityClaimsAndLegacyReportsPostgres": {"passed": 23, "log": ".runtime/ai-pg-31125d7b31cb/tests.log"},
+    "mappedServicePostgres": {"passed": 7, "log": ".runtime/ai-pg-32a481bc005d/tests.log"},
+    "finalClaimsPostgres": {"passed": 3, "log": ".runtime/ai-pg-d43ec60c7f11/tests.log", "includes": "Actual baseline/difference/changeRate and missing-side rejection; failure at context exit returns no fact"},
+    "mappedPureAuthor": {"passed": 15, "seconds": 4.229},
+    "finalPureRegression": {"passed": 39, "seconds": 35.834, "log": ".runtime/batch26-pure-final.log"},
+    "mappingPlanIndependentReview": {"existingTestsPassed": 11, "additionalProbesPassed": 6},
+    "pureScale": {"currentSalesRows": 5001, "baselineSalesRows": 5001, "spuGroups": 2501, "derivedScratchBytes": 2150400, "mappingPeakBytes": 2326528, "combinedScratchHighWaterBytes": 4411392, "maximumConcurrentMappingContexts": 1, "syntheticOnly": true, "isProcessRss": false},
+    "backendBoundary": {"passed": true, "log": ".runtime/batch26-boundary.log"}
+  },
+  "limits": ["Internal computation and reference helpers only; integrated profile, tool surface and report export not yet connected", "Current master supports retrospective allocation only, not historical identity or advertising attribution", "Full five-phase business and production acceptance remain outstanding"],
+  "operations": {"productionBusinessReads": false, "productionWrites": false, "newMigration": false, "deployment": false, "serviceRestart": false, "paidModelCalls": false, "externalMessages": false}
+}

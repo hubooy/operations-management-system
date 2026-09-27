@@ -1,0 +1,9 @@
+{
+  "version": 1,
+  "loginMode": "windows_dpapi_credentials",
+  "tenantId": "771168",
+  "profileDirectory": "D:\\运营管理系统\\.runtime\\jackyun-chrome-profile",
+  "debuggingPort": 9223,
+  "initialWaitMs": 30000,
+  "afterSubmitWaitMs": 45000
+}

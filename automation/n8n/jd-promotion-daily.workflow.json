@@ -1,0 +1,413 @@
+{
+  "id": "JdPromotionDaily2026",
+  "name": "京东志高商用设备AI推广数据下载与导入",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "7a8b9c10-1112-4314-8516-171819202101",
+      "name": "手动补跑8月20日",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -700,
+        -80
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "target-start",
+              "name": "startDate",
+              "value": "2026-08-20",
+              "type": "string"
+            },
+            {
+              "id": "target-end",
+              "name": "endDate",
+              "value": "2026-08-20",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "7a8b9c10-1112-4314-8516-171819202108",
+      "name": "手动补跑日期",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -510,
+        -80
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "40 10 * * *"
+            }
+          ]
+        }
+      },
+      "id": "7a8b9c10-1112-4314-8516-171819202102",
+      "name": "每天 10:40 执行",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -700,
+        100
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:5791/coordination/claim",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-TERUISI-N8N-EXECUTION-ID",
+              "value": "={{ $execution.id }}"
+            },
+            {
+              "name": "X-TERUISI-COORDINATION-ATTEMPT",
+              "value": "={{ $runIndex }}"
+            },
+            {
+              "name": "X-TERUISI-WORKFLOW-KEY",
+              "value": "jd-promotion"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 10000
+        }
+      },
+      "id": "7a8b9c10-1112-4314-8516-171819202109",
+      "name": "领取共享 helper",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -300,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "7a8b9c10-1112-4314-8516-171819202110",
+              "leftValue": "={{ $json.coordinationStatus }}",
+              "rightValue": "granted",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "7a8b9c10-1112-4314-8516-171819202111",
+      "name": "helper 领取成功？",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -100,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "resume": "timeInterval",
+        "amount": 5,
+        "unit": "minutes"
+      },
+      "id": "7a8b9c10-1112-4314-8516-171819202112",
+      "name": "等待前序流程释放 helper",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -100,
+        170
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:5791/jd-promotion/plan",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-TERUISI-N8N-EXECUTION-ID",
+              "value": "={{ $execution.id }}"
+            },
+            {
+              "name": "X-TERUISI-JD-PROMOTION-STORE-KEY",
+              "value": "jd-yiyong-director"
+            },
+            {
+              "name": "X-TERUISI-JD-PROMOTION-START-DATE",
+              "value": "={{ $execution.mode === 'manual' ? $('手动补跑日期').first().json.startDate : '' }}"
+            },
+            {
+              "name": "X-TERUISI-JD-PROMOTION-END-DATE",
+              "value": "={{ $execution.mode === 'manual' ? $('手动补跑日期').first().json.endDate : '' }}"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 120000
+        }
+      },
+      "id": "7a8b9c10-1112-4314-8516-171819202103",
+      "name": "A·固化京准通目标日期与店铺",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        120,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:5791/jd-promotion/run",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-TERUISI-N8N-EXECUTION-ID",
+              "value": "={{ $execution.id }}"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 1800000
+        }
+      },
+      "id": "7a8b9c10-1112-4314-8516-171819202104",
+      "name": "B·生成下载校验导入并回查",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        520,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:5791/jd-promotion/verify",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-TERUISI-N8N-EXECUTION-ID",
+              "value": "={{ $execution.id }}"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 120000
+        }
+      },
+      "id": "7a8b9c10-1112-4314-8516-171819202105",
+      "name": "C·独立复验文件与精确批次",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        920,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## 京准通推广安全边界\n固定使用 jd-yiyong-director（志高商用设备旗舰店 / Default profile）。工作流不保存京东账号、密码、Cookie、Token 或 Session；所有页面操作和导入都由 127.0.0.1:5791 的一次性 helper 执行。",
+        "height": 170,
+        "width": 600,
+        "color": 3
+      },
+      "id": "7a8b9c10-1112-4314-8516-171819202106",
+      "name": "店铺与凭证边界",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -700,
+        -330
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## 原子协调领取 + A → B → C 闭环\n手动入口按填写范围检查缺口；每日 10:40 入口从店铺推广起始日检查到 Asia/Shanghai 的昨天。定时和手动入口都先原子领取共享 helper；未获授权时每 5 分钟等待，72 次后失败关闭。领取成功后，A 读取运营系统日期覆盖，只把缺失日期固化进计划；B 按日期升序逐日执行自定义报表、AI推广数据自动下载、唯一任务接管、UTF-8 CSV 校验、精确单日导入和回查；C 逐文件核对 SHA-256、行数、账户集合、精确 completed 批次，并再次确认计划日均已覆盖。无缺口时不启动 Chromium、不创建任务，直接完成覆盖复核。",
+        "height": 205,
+        "width": 880,
+        "color": 4
+      },
+      "id": "7a8b9c10-1112-4314-8516-171819202107",
+      "name": "流程与恢复说明",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -70,
+        -330
+      ]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "teruisi-hourly-retry-e30f35b5bcbba9b6372a866c8d8ba9c05d0be4c5",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "ab1a17fa-17f0-462d-9210-e0c3ad0253ff",
+      "name": "失败后每小时安全重试入口",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -540,
+        320
+      ],
+      "webhookId": "38eec35b-9d79-4c3d-8c29-534637adb663"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "手动补跑8月20日": {
+      "main": [
+        [
+          {
+            "node": "手动补跑日期",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "手动补跑日期": {
+      "main": [
+        [
+          {
+            "node": "领取共享 helper",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "每天 10:40 执行": {
+      "main": [
+        [
+          {
+            "node": "领取共享 helper",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "领取共享 helper": {
+      "main": [
+        [
+          {
+            "node": "helper 领取成功？",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "helper 领取成功？": {
+      "main": [
+        [
+          {
+            "node": "A·固化京准通目标日期与店铺",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "等待前序流程释放 helper",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "等待前序流程释放 helper": {
+      "main": [
+        [
+          {
+            "node": "领取共享 helper",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "A·固化京准通目标日期与店铺": {
+      "main": [
+        [
+          {
+            "node": "B·生成下载校验导入并回查",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "B·生成下载校验导入并回查": {
+      "main": [
+        [
+          {
+            "node": "C·独立复验文件与精确批次",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "失败后每小时安全重试入口": {
+      "main": [
+        [
+          {
+            "node": "领取共享 helper",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Asia/Shanghai",
+    "errorWorkflow": "TeruisiHourlyRetry2026"
+  },
+  "versionId": "b3384ec8-e8e3-46c8-963d-94d42430bb0a",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "hourlyRetryPolicy": {
+      "version": "2026-09-10.safe-hourly-retry.1",
+      "delayMinutes": 60,
+      "errorWorkflowId": "TeruisiHourlyRetry2026",
+      "webhookPath": "teruisi-hourly-retry-e30f35b5bcbba9b6372a866c8d8ba9c05d0be4c5"
+    }
+  },
+  "tags": []
+}

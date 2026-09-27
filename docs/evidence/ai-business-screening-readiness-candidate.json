@@ -1,0 +1,13 @@
+{
+  "date": "2026-09-17", "batch": 47,
+  "status": "candidate_leased_preparation_before_scheduler_registration",
+  "verification": {
+    "clock": {"passed": 1, "log": ".runtime/batch47-readiness-clock-pure.log"},
+    "lifecycle": {"passed": 6, "seconds": 34.061, "log": ".runtime/ai-pg-7a78ddebbde1/tests.log"},
+    "concurrencyAndLegacyStore": {"passed": 8, "concurrencyTests": 2, "legacyStoreTests": 6, "seconds": 32.635, "log": ".runtime/ai-pg-58dea90ca0bd/tests.log"},
+    "review": {"agent": "workbench_gap_review", "fixed": "Recheck 180-second deadline after acquiring mutation and after permission revalidation", "remainingBlockers": 0},
+    "realConcurrentClaims": true, "otherMutationDuringScan": true, "knownPublicationReused": true
+  },
+  "limits": {"deadlineSeconds": 180, "leaseSeconds": 200, "unpublishedScanAttempts": 3},
+  "operations": {"productionBusinessReads": false, "productionWrites": false, "deployment": false, "serviceRestart": false, "paidModelCalls": false, "externalMessages": false}
+}

@@ -1,0 +1,48 @@
+{
+  "status": "adopted",
+  "date": "2026-09-20",
+  "cause": "Interactive scheduled task directly launched console pwsh; WindowStyle Hidden did not prevent Windows Terminal allocation",
+  "fix": "GUI subsystem launcher, UseShellExecute=false, CreateNoWindow=true, redirected standard streams",
+  "taskName": "TERUISI Operations Watchdog",
+  "taskEnabled": true,
+  "taskExecute": "D:\\teruisi-runtime\\operations-watchdog\\Watchdog.NoConsole-8a0bc0aed704b33f.exe",
+  "triggersPreserved": true,
+  "principalPreserved": true,
+  "settingsPreservedExceptReenabled": true,
+  "scriptSha256": "a5a54665c597f1066430f7a70892a98017ecde8be5d1afe15ad47076b571176c",
+  "launcherSourceSha256": "8a0bc0aed704b33fbe107194218704b7b5130893ce18cad9995b387f772a30c7",
+  "launcherSha256": "0bcb6079d8d47689141d6165fd3c2b0dbb009ed18fc1959d2e5800b73b554834",
+  "scriptMatchesSource": true,
+  "tests": {
+    "lint": "passed",
+    "nodeRelatedPassed": 18,
+    "launcherAssertions": 5,
+    "watchdogIsolatedAssertions": 28
+  },
+  "observation": {
+    "runs": [
+      {
+        "result": 0,
+        "time": "2026-09-20T00:12:24+08:00"
+      },
+      {
+        "result": 0,
+        "time": "2026-09-20T00:11:25+08:00"
+      },
+      {
+        "result": 267009,
+        "time": "2026-09-20T00:13:24+08:00"
+      }
+    ],
+    "newTerminalProcesses": [],
+    "observedFrom": "2026-09-20T00:11:48.4100655+08:00",
+    "observedUntil": "2026-09-20T00:13:53.511311+08:00"
+  },
+  "finalHealthy": true,
+  "readyComponents": 12,
+  "workerPid": 3404,
+  "workerSupervisorPid": 9352,
+  "businessServicesRestarted": false,
+  "notificationsSent": false,
+  "limitations": "Sampled console process creation over two minutes plus native GetConsoleWindow=0 fixture; no Windows reboot performed"
+}

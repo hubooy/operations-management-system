@@ -1,0 +1,118 @@
+{
+  "schemaVersion": "market-options-candidate-evidence-v1",
+  "date": "2026-09-18",
+  "scope": "batch54-owning-market-options",
+  "status": "candidate-isolated-postgresql-upgrade-restore-edge-passed",
+  "productionTouched": false,
+  "productionMigrated": false,
+  "paidModelCalled": false,
+  "migration": "market.0005_analysis_options",
+  "newTables": [
+    "market_analysis_options",
+    "market_analysis_options_state"
+  ],
+  "staticChecks": {
+    "pythonCompile": "passed-before-pause",
+    "djangoSystemCheckErrors": 0,
+    "marketMigrationStateDrift": false,
+    "postgresTestsCollected": 11,
+    "postgresTestsRunByAuthor": false
+  },
+  "postgresTestLabel": "market.tests.test_analysis_options.MarketOptionsOwningTests",
+  "postgresResult": {
+    "tests": 11,
+    "passed": 9,
+    "failed": 2,
+    "seconds": 30.173,
+    "log": ".runtime/ai-pg-727c937310ba/failure.log",
+    "fixes": "normalized scope passed to synchronizer; root and child URLConf reloaded in role fixture",
+    "retest": {
+      "tests": 11,
+      "passed": 11,
+      "failed": 0,
+      "seconds": 31.04,
+      "log": ".runtime/ai-pg-a3e180821043/tests.log"
+    }
+  },
+  "upgradeRestoreResult": {
+    "log": ".runtime/ai-pg-05136156c352/market-options-upgrade.json",
+    "status": "passed",
+    "upgrade": "market.0004->0005",
+    "oldMarketTables": 40,
+    "oldRowsDigestPreserved": "6265e32e69d87d05b31391473a160f519e183f7c227896311ed4c3a0a28a8817",
+    "newTables": [
+      "market_analysis_options",
+      "market_analysis_options_state"
+    ],
+    "historicalAutoInitialization": false,
+    "publishedIdentities": 1,
+    "authorityVerified": true,
+    "coverageVerified": false,
+    "secondApplyNoop": true,
+    "populatedRollbackDenied": true,
+    "oldBackupStillAccepted": true,
+    "independentRestoreDigest": "58348d673a8ace24e142b507549bf0901046eec098e84c533d4e995ba4c4ece8",
+    "backupTableEvidenceEqual": true,
+    "restoredOwningPageEqual": true,
+    "productionWrites": false
+  },
+  "permissions": {
+    "actualAppUserRequired": true,
+    "localAdminFallback": false,
+    "userColumns": [
+      "email",
+      "role",
+      "status",
+      "scope",
+      "version"
+    ],
+    "realRestrictedRoleTestsWritten": true,
+    "realRestrictedRoleTestsPassed": true
+  },
+  "limits": {
+    "identities": 10000,
+    "canonicalDirectoryBytes": 16777216,
+    "rebuildBatches": 10000,
+    "rebuildRawScopeBytes": 67108864,
+    "singleScopeBytes": 16777216,
+    "pageItems": 20,
+    "completeResponseUtf8Bytes": 38000
+  },
+  "limitsMeaning": "Bounded candidate contracts, not PostgreSQL disk/RSS limits or production performance results.",
+  "unverified": [
+    "production historical initialization",
+    "production performance",
+    "frontend picker"
+  ],
+  "coverageVerified": false,
+  "legacyMarketRegression": {
+    "labels": [
+      "market.tests.test_api",
+      "market.tests.test_analysis"
+    ],
+    "tests": 22,
+    "passed": 22,
+    "failed": 0,
+    "seconds": 0.917,
+    "log": ".runtime/ai-pg-c3b0fde09a41/tests.log"
+  },
+  "upgradeRestoreInitialFailure": {
+    "status": "initial-fixture-failed-corrected-and-rerun-passed",
+    "log": ".runtime/ai-pg-14ca2344ae68/failure.log",
+    "reason": "complete backup collector requires sales/erp revision and domain authority controls",
+    "fix": "complete synthetic empty-domain controls; valid market run format; explicit validated native PostgreSQL target; collector unchanged"
+  },
+  "edgeNodeResult": {
+    "newTests": 9,
+    "legacyTests": 10,
+    "tests": 19,
+    "passed": 19,
+    "failed": 0,
+    "log": ".runtime/batch54-market-edge.log"
+  },
+  "edgeLintResult": {
+    "files": 4,
+    "status": "passed",
+    "reportedBy": "root"
+  }
+}

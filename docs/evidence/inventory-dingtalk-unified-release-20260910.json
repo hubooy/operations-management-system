@@ -1,0 +1,106 @@
+{
+  "version": "teruisi-inventory-dingtalk-unified-release-v1",
+  "date": "2026-09-10",
+  "status": "completed",
+  "scope": [
+    "inventory replenishment plan XLSX template and atomic import",
+    "multi-select confirmed replenishment plans and sequential idempotent DingTalk submission",
+    "DingTalk AI group settings, source-conversation replies and 12-domain read-only query surface"
+  ],
+  "source": {
+    "mainCommit": "af22d271",
+    "inventoryCommit": "a26cb6f8",
+    "dingtalkCommit": "7e844ee2",
+    "remoteMainPushed": true,
+    "releaseWorktree": "D:\\运营管理系统-sales-django-release",
+    "releaseWorktreeCleanAtBuild": true
+  },
+  "candidateValidation": {
+    "django": { "tests": 192, "passed": 190, "skipped": 2, "failed": 0 },
+    "node": { "tests": 2077, "passed": 2055, "skipped": 22, "failed": 0 },
+    "focusedNode": { "tests": 101, "passed": 101, "failed": 0 },
+    "renderedBuild": { "tests": 20, "passed": 20, "failed": 0 },
+    "lint": { "errors": 0, "existingWarnings": 9 },
+    "backendBoundary": { "modules": 408, "violations": 0 },
+    "migrationDrift": "No changes detected",
+    "build": "passed"
+  },
+  "preReleaseRecovery": {
+    "backupId": "daily-20260910T081718Z-c5b7b662cef6",
+    "manifestSha256": "9ba6ad1da57811e52c5e6990b071b8cdeff0603e030532c5b57b1be34622dd01",
+    "dumpSha256": "306da006451d4ce583cd0ed0a15cf2a58792e49f9e856cf1ec2de3f46ed5b938",
+    "contentSha256": "8bbc5e383aee69a728e5be1a3000ad325d97b137d1b593ee43f9d089b652b2c8",
+    "rehearsalId": "d1a608192601",
+    "isolatedPort": 55462,
+    "restoredContentSha256": "8bbc5e383aee69a728e5be1a3000ad325d97b137d1b593ee43f9d089b652b2c8",
+    "productionDatabaseTouched": false,
+    "serviceStateChanged": false,
+    "cleanupStatus": "isolated_data_removed"
+  },
+  "deployment": {
+    "maintenanceStopVerified": true,
+    "djangoDeploymentManifestSha256": "7de0c05d2d9a4025cf60c57aa4fb165e3388e6d3391a7035b51e188236bb1f84",
+    "djangoAcl": "verified",
+    "migration": "ai_assistant.0008_dingtalk_settings applied; inventory feature required no migration",
+    "aiProvisionRoles": "completed",
+    "workerPlanSha256": "cc4693953fcfa1c2543c781780426784a4af4e2898fee56031dadbeda3eda6b6",
+    "predecessorReleaseId": "20260910T033345Z-954b74d3e05a6399",
+    "releaseId": "20260910T083226Z-2c53e5a99e7232d9",
+    "workerManifestSha256": "54bcaa9845be609c7251bc23d36c74cda5bc81c9052e0bf1e22d1ec24daac170",
+    "successorSha256": "767c10eec78443b90c9ab266a29a24dd4f836971c5c63d6214a73e6eb7717009",
+    "startupBindingSha256": "db189466541c906ed0cb40e8e3a267ff8aced329c4bd1860e4624a5f390b1f70"
+  },
+  "productionReadback": {
+    "system": "Running",
+    "backend": "Ready",
+    "worker": "exact_release",
+    "allComponentsReady": true,
+    "homeHttpStatus": 200,
+    "inventoryTemplateHttpStatus": 200,
+    "inventoryTemplateContentType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "inventoryTemplateBytes": 30604,
+    "aiReader": "running_ready",
+    "aiWriter": "running_ready",
+    "dingtalkConfigCheck": { "status": "verified", "sent": 0 },
+    "dingtalkReceiver": "connected",
+    "dingtalkReadOnlyProbe": {
+      "settingsTableReadable": true,
+      "settingsEnabled": true,
+      "enabledGroups": 1,
+      "replyMode": "source",
+      "tools": 27,
+      "datasets": 243,
+      "domains": [
+        "access_control", "ai_assistant", "bi", "customer_service",
+        "erp_reference", "finance", "inventory", "market", "netshop",
+        "products", "sales", "workflow"
+      ],
+      "privateToolsExcluded": true,
+      "externalMessages": 0,
+      "paidModelCalls": 0
+    }
+  },
+  "postReleaseRecovery": {
+    "backupId": "daily-20260910T084230Z-972ff4bd765d",
+    "manifestSha256": "6180fbb9cb8d8dbce2845f5e6e02a4456b905ad45014a747b92f6346d041727b",
+    "dumpSha256": "9887f1f5a177782000c33f6e5dbd460400e15218e0b16cf9e6081dabcf208fac",
+    "contentSha256": "9ab0369bc08b86b6ead0605d549f7426cec02a8576f94401e77ef6f980e51980",
+    "rehearsalId": "0b47a3d8c921",
+    "isolatedPort": 55463,
+    "restoredContentSha256": "9ab0369bc08b86b6ead0605d549f7426cec02a8576f94401e77ef6f980e51980",
+    "productionDatabaseTouched": false,
+    "serviceStateChanged": false,
+    "cleanupStatus": "isolated_data_removed"
+  },
+  "externalEffects": {
+    "inventoryImportExecutedAgainstProduction": false,
+    "replenishmentPlansSubmittedToDingTalkDuringRelease": 0,
+    "realDingTalkMessagesSentDuringAcceptance": 0,
+    "paidModelCallsDuringAcceptance": 0
+  },
+  "limitations": [
+    "The production template route and full isolated import contract were verified; no production inventory rows were created for release testing.",
+    "The DingTalk Stream connection and read-only capability surface were verified without sending a real message; DM/group reply placement and model answer quality still require human end-to-end acceptance.",
+    "Model timeout and provider reliability limitations remain as documented."
+  ]
+}

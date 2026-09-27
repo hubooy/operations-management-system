@@ -24,6 +24,7 @@ const init = await fetch(endpoint, {
   body: JSON.stringify({
     action: "init",
     source,
+    ...(source === "inventory_age" ? { snapshotDate } : {}),
     fileName: path.basename(filePath),
     fileSizeBytes: bytes.byteLength,
     chunkCount,

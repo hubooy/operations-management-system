@@ -4,6 +4,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import {
   type BrowserAutomationClient,
+  closeChromeBrowser,
   connectJackyunTarget,
   evaluateValue,
   launchDedicatedChrome,
@@ -13,9 +14,18 @@ import { downloadSignedOssExport } from "../lib/jackyun/oss-download";
 import { assertBoundDownloadProvenance } from "../lib/jackyun/download-provenance";
 import { readJsonFile, readJsonFileOr, writeJsonAtomic } from "../lib/jackyun/json-file";
 import { jackyunModuleOrder, type JackyunModule } from "../lib/jackyun/post-download";
-import type { JackyunHistoricalSnapshotEvidence } from "../lib/jackyun/run-contract";
+import { assertJackyunSnapshotEvidence, jackyunCaptureDate, jackyunExportFirstPolicyVersion, jackyunExportOrder, type JackyunHistoricalSnapshotEvidence } from "../lib/jackyun/run-contract";
 import { withJackyunRunLock } from "../lib/jackyun/run-lock";
+import { readJackyunLoginConfig } from "../lib/jackyun/windows-dpapi";
+import { inspectJackyunLoginSurface, isJackyunLoginOrigin, submitJackyunDpapiLogin, verifyJackyunBrowserBinding, waitForJackyunDpapiSession } from "../lib/jackyun/dpapi-login";
+import { selectJackyunExportTask, type JackyunExportTaskBinding, type JackyunExportTaskRecord } from "../lib/jackyun/export-task";
 import type { BrowserExportConfirmation, BrowserHandoff } from "./jackyun-daily-runner";
+
+import { jackyunWebSessionTransport, prepareWebSessionExport, submitWebSessionExport, readWebSessionTasks, waitForWebSessionTask } from "../lib/jackyun/web-session-export";
+import { assert849ReprepareWindow } from "../lib/jackyun/web-session-recovery";
+import { assert890ReprepareWindow } from "../lib/jackyun/http-scope-recovery";
+import { captureDirectExport, createDirectSession, jackyunDirectTransport, readDirectTasks } from "../lib/jackyun/direct-export";
+import type { JackyunHttpSession } from "../lib/jackyun/direct-http";
 
 type Policy = {
   version: string;
@@ -47,7 +57,12 @@ type Policy = {
 };
 
 type ModuleActionState = Partial<BrowserHandoff> & {
+  exportTaskBinding?: JackyunExportTaskBinding;
   status: "pending" | "navigated" | "queried" | "export_armed" | "downloaded" | "handed_off" | "completed";
+  webSession?: { baselineIds: string[]; baselineAt: string; pendingTaskId?: string };
+  directPayloadSha256?: string;
+  queryAttemptHistory?: { queryIntentAt: string; tableStableAt: string | null; repreparedAt: string }[];
+  reprepareEvidence?: { originalIntentAt: string; permitSha256: string; originalControllerSha256: string };
   queryRetryCount?: number;
   queryRetryIntentAt?: string;
   tableReadbackFailure?: {
@@ -103,6 +118,8 @@ export function assertHistoricalDateReadback(
 }
 
 type ControllerState = {
+  exportTransport?: typeof jackyunWebSessionTransport | typeof jackyunDirectTransport;
+  inspectionOnly?: true;
   version: 1;
   runId: string;
   policyVersion: string;
@@ -122,7 +139,23 @@ type CliOptions = {
   headless: boolean;
   launchOnly: boolean;
   checkLoginOnly: boolean;
+  authenticateOnly?: boolean;
   signal?: AbortSignal;
+  /** Only the explicit n8n export-first protocol uses current queries and deferred imports. */
+  exportOnlyModule?: JackyunModule;
+  exportFirstBatch?: boolean;
+  directHttp?: boolean;
+  inspectWebSessionOnly?: boolean;
+  /** Isolated calibration only: capture unsigned parameters and abort the final POST. */
+  inspectApiPayload?: (module: JackyunModule, payload: { data: Record<string, string>; moduleCode: string; payloadSha256: string }, sourceRows: number) => Promise<void>;
+  beforeModule?: (module: JackyunModule) => Promise<void>;
+  afterModule?: (module: JackyunModule) => Promise<void>;
+  /** Operator diagnosis: query and open menus, then return before any export intent/click. */
+  inspectExportMenuOnly?: boolean;
+  /** Bound existing task approved for resuming the original run; never a new export. */
+  resumeTaskBinding?: JackyunExportTaskBinding;
+  webConfirmationRecovery?: { originalExecutionId: string; executionId: string; permitSha256: string };
+  httpScopeRecovery?: { originalExecutionId: string; executionId: string; permitSha256: string };
 };
 
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -145,18 +178,20 @@ function parseCli(): CliOptions {
   let headless = true;
   let launchOnly = false;
   let checkLoginOnly = false;
+  let authenticateOnly = false;
   const args = process.argv.slice(2);
   for (let index = 0; index < args.length; index += 1) {
     if (args[index] === "--headless") { headless = true; continue; }
     if (args[index] === "--headed") { headless = false; continue; }
     if (args[index] === "--launch-only") { launchOnly = true; continue; }
     if (args[index] === "--check-login") { checkLoginOnly = true; continue; }
+    if (args[index] === "--authenticate-only") { authenticateOnly = true; continue; }
     const next = args[index + 1];
     if (!next || next.startsWith("--")) throw new Error(`参数 ${args[index]} 缺少取值。`);
     values.set(args[index], next);
     index += 1;
   }
-  const runId = values.get("--run-id") ?? (launchOnly || checkLoginOnly ? `login-${shanghaiDate(0).replace(/-/g, '')}` : undefined);
+  const runId = values.get("--run-id") ?? (launchOnly || checkLoginOnly || authenticateOnly ? `login-${shanghaiDate(0).replace(/-/g, '')}` : undefined);
   if (!runId || !/^[A-Za-z0-9._-]+$/.test(runId)) throw new Error("浏览器 controller 必须提供有效 --run-id。");
   return {
     runId,
@@ -170,6 +205,7 @@ function parseCli(): CliOptions {
     headless,
     launchOnly,
     checkLoginOnly,
+    authenticateOnly,
   };
 }
 
@@ -541,11 +577,50 @@ function actionTimeout(policy: Policy, moduleKey: JackyunModule) {
 }
 
 function exportTimeout(policy: Policy, moduleKey: JackyunModule) {
+  if (policy.version === jackyunExportFirstPolicyVersion) return Math.max(actionTimeout(policy, moduleKey), policy.browser.exportTimeoutMs ?? 300_000);
   return Math.max(actionTimeout(policy, moduleKey), Math.min(policy.browser.exportTimeoutMs ?? 60_000, moduleTimeout(policy, moduleKey)));
 }
 
 function fastPoll(policy: Policy) {
   return Math.max(100, Math.min(policy.browser.fastPollIntervalMs ?? 200, policy.browser.pollIntervalMs));
+}
+
+export async function confirmJackyunComboExport(client: BrowserAutomationClient, urlHints: string[], promptParts: string[],
+  button: string, timeoutMs: number, pollMs: number) {
+  const read = () => evaluateValue<{ x: number; y: number; ready: boolean } | null>(client, `(() => {
+    ${jsDocumentsPrelude(urlHints)}
+    const dialogs=documents.flatMap(doc=>Array.from(doc.querySelectorAll('.mini-messagebox')).filter(visible));
+    if(!dialogs.length) return null;
+    if(dialogs.length!==1 || !${JSON.stringify(promptParts)}.every(part=>dialogs[0].innerText.includes(part))) throw new Error('组合装导出确认弹窗不唯一或内容不符');
+    const buttons=Array.from(dialogs[0].querySelectorAll('a.mini-button,button')).filter(el=>visible(el)&&normalize(el.innerText)===normalize(${JSON.stringify(button)}));
+    if(buttons.length!==1) throw new Error('组合装导出确认按钮不唯一');
+    const el=buttons[0];
+    if(el.matches(':disabled,[aria-disabled="true"],.mini-disabled') || getComputedStyle(el).pointerEvents==='none') throw new Error('组合装导出确认按钮不可用');
+    const control=el.ownerDocument.defaultView.mini?.get?.(el.id);
+    if(control && (control.enabled===false || control.readOnly===true)) throw new Error('组合装导出确认按钮不可用');
+    const r=el.getBoundingClientRect();let x=r.left+r.width/2,y=r.top+r.height/2,win=el.ownerDocument.defaultView;
+    if(!el.contains(el.ownerDocument.elementFromPoint(x,y))) throw new Error('组合装导出确认按钮被遮挡');
+    while(win.frameElement){const f=win.frameElement,b=f.getBoundingClientRect();x+=b.left;y+=b.top;win=win.parent;if(win.document.elementFromPoint(x,y)!==f)throw new Error('组合装导出确认框被遮挡');}
+    // MiniUI binds Button.onclick asynchronously after rendering the dialog.
+    // Visibility alone can lead to a trusted click before the handler exists.
+    return {x,y,ready:typeof el.onclick==='function'};
+  })()`);
+  const deadline = Date.now() + timeoutMs;
+  let target = await read();
+  while (!target?.ready && Date.now() < deadline) { await new Promise(resolve => setTimeout(resolve, pollMs)); target = await read(); }
+  if (!target?.ready) throw new Error("组合装导出确认弹窗或按钮处理函数未就绪。");
+  const point = { x: target.x, y: target.y };
+  await client.send("Input.dispatchMouseEvent", { type: "mouseMoved", ...point, button: "none" });
+  const afterMove = await read();
+  if (!afterMove?.ready || afterMove.x !== target.x || afterMove.y !== target.y) throw new Error("组合装导出确认按钮位置或处理函数变化。");
+  const confirmedAt = new Date().toISOString();
+  await client.send("Input.dispatchMouseEvent", { type: "mousePressed", ...point, button: "left", clickCount: 1 });
+  await client.send("Input.dispatchMouseEvent", { type: "mouseReleased", ...point, button: "left", clickCount: 1 });
+  while (Date.now() < deadline) {
+    if (!await read()) return confirmedAt;
+    await new Promise(resolve => setTimeout(resolve, pollMs));
+  }
+  throw new Error("组合装确认框未关闭；保留原导出意图，禁止再次点击。");
 }
 
 async function clickText(client: BrowserAutomationClient, text: string) {
@@ -712,13 +787,14 @@ async function setDateInputs(client: BrowserAutomationClient, values: string[], 
   })()`);
 }
 
-async function rightClickDataRow(client: BrowserAutomationClient, urlHints: string[] = []) {
+export async function rightClickDataRow(client: BrowserAutomationClient, urlHints: string[] = [], singleClick = false) {
   const point = await evaluateValue<{ found: boolean; x?: number; y?: number }>(client, `(() => {
     ${jsDocumentsPrelude(urlHints)}
     const rowScopes = documents.flatMap((doc) => Array.from(doc.querySelectorAll('#grid-goods_managet,#gridOrderDetail,#datagrid,.mini-grid')))
       .filter((el) => visible(el) && el.getBoundingClientRect().width > 500);
     const searchRoots = rowScopes.length ? rowScopes : documents;
-    const rows = searchRoots.flatMap((root) => Array.from(root.querySelectorAll('.mini-grid-row,.x-grid-item,.x-grid-row,[role=row],tbody tr')))
+    const rows = searchRoots.flatMap((root) => Array.from(root.querySelectorAll(${JSON.stringify(singleClick
+      ? ".mini-grid-row,.x-grid-item,.x-grid-row" : ".mini-grid-row,.x-grid-item,.x-grid-row,[role=row],tbody tr")})))
       .filter((el) => visible(el) && el.getBoundingClientRect().width > 500 && (el.innerText || '').trim().length > 5)
       .sort((a, b) => {
         const rank = (el) => el.closest?.('#grid-goods_managet') ? -1 : (/mini-grid-row|x-grid-row|x-grid-item/i.test(String(el.className || '')) ? 0 : 1);
@@ -747,6 +823,7 @@ async function rightClickDataRow(client: BrowserAutomationClient, urlHints: stri
   await client.send("Input.dispatchMouseEvent", { type: "mouseMoved", x: point.x, y: point.y, button: "none" });
   await client.send("Input.dispatchMouseEvent", { type: "mousePressed", x: point.x, y: point.y, button: "right", buttons: 2, clickCount: 1 });
   await client.send("Input.dispatchMouseEvent", { type: "mouseReleased", x: point.x, y: point.y, button: "right", buttons: 0, clickCount: 1 });
+  if (singleClick) return;
   await evaluateValue<boolean>(client, `(() => {
     ${jsDocumentsPrelude(urlHints)}
     const rowScopes = documents.flatMap((doc) => Array.from(doc.querySelectorAll('#grid-goods_managet,#gridOrderDetail,#datagrid,.mini-grid')))
@@ -1034,6 +1111,7 @@ export type QueryRefreshTracking = {
   module: JackyunModule;
   queryIntentAt: string;
   requiredDate?: string;
+  currentCapture?: boolean;
   pageProbeArmed: boolean;
   pageStartedAt?: string;
   pageCompletedAt?: string;
@@ -1076,7 +1154,16 @@ export function isModuleQueryRefreshRequest(
     sales: /order_detail_list|order.*detail/,
     combos: /goods_managet_combination|goods.*combination/,
   };
-  const matchesModule = moduleUrlHints(moduleKey).some((hint) => context.includes(hint.toLowerCase()))
+  // Current SKU inventory queries use this gateway route, without either a
+  // branch_stock page name or a "query" verb. Keep the route exact so totals,
+  // auxiliary grids and export requests cannot stand in for the main query.
+  let currentInventoryQuery = false;
+  try {
+    const url = new URL(String(request?.url ?? ""));
+    currentInventoryQuery = url.pathname.toLowerCase() === "/jkyun/erp-stock/warehousestock/stockskulist";
+  } catch { /* existing module matching still handles non-URL test contexts */ }
+  if (currentInventoryQuery && moduleKey !== "inventory") return false;
+  const matchesModule = currentInventoryQuery || moduleUrlHints(moduleKey).some((hint) => context.includes(hint.toLowerCase()))
     || modulePatterns[moduleKey].test(context);
   if (!matchesModule) return false;
   if (!requiredDate) return true;
@@ -1090,6 +1177,7 @@ export async function armQueryRefreshTracking(
   queryIntentAt: string,
   urlHints: string[],
   requiredDate?: string,
+  currentCapture = false,
 ) {
   const token = `query-${moduleKey}-${randomUUID()}`;
   const tracking: QueryRefreshTracking = {
@@ -1097,6 +1185,7 @@ export async function armQueryRefreshTracking(
     module: moduleKey,
     queryIntentAt,
     requiredDate,
+    currentCapture,
     pageProbeArmed: false,
   };
   const pendingRequestIds = new Set<string>();
@@ -1224,7 +1313,7 @@ function completedQueryRefreshEvidence(tracking: QueryRefreshTracking) {
       && startedMs >= intentMs
       && completedMs >= startedMs;
   };
-  if ((!requiresDateBoundNetwork || /^\d{4}-\d{2}-\d{2}$/.test(tracking.requiredDate ?? ""))
+  if ((!requiresDateBoundNetwork || tracking.currentCapture || /^\d{4}-\d{2}-\d{2}$/.test(tracking.requiredDate ?? ""))
     && validSequence(tracking.networkStartedAt, tracking.networkCompletedAt)) {
     return { source: "module_network_request" as const, completedAt: tracking.networkCompletedAt! };
   }
@@ -1368,7 +1457,7 @@ export async function stableRowCount(
   }
   if (queryRefresh && !completedQueryRefreshEvidence(queryRefresh)) {
     const requiredRefresh = queryRefresh.module === "inventory" || queryRefresh.module === "inventory_age"
-      ? `包含目标日期 ${queryRefresh.requiredDate ?? "缺失"} 的模块网络请求`
+      ? queryRefresh.currentCapture ? "当前采集的模块网络请求" : `包含目标日期 ${queryRefresh.requiredDate ?? "缺失"} 的模块网络请求`
       : "目标网格加载或模块网络请求";
     throw controllerFailure(
       "TABLE_TIMEOUT",
@@ -1540,16 +1629,6 @@ export async function getJackyunSessionStatus(port: number): Promise<JackyunSess
   }
 }
 
-async function waitForAuthenticatedSession(port: number, timeoutMs: number) {
-  const deadline = Date.now() + timeoutMs;
-  do {
-    const status = await getJackyunSessionStatus(port);
-    if (status === "authenticated") return status;
-    await new Promise((resolve) => setTimeout(resolve, 500));
-  } while (Date.now() < deadline);
-  return getJackyunSessionStatus(port);
-}
-
 async function waitForPageTextParts(client: BrowserAutomationClient, parts: string[], timeoutMs: number, pollIntervalMs = 100) {
   const deadline = Date.now() + timeoutMs;
   while (Date.now() < deadline) {
@@ -1584,8 +1663,66 @@ async function waitForActiveModule(client: BrowserAutomationClient, moduleKey: J
 export type CapturedDownloadUrlEvidence = {
   url: string;
   observedAt: string;
-  source: "browser_download_event" | "module_network_request" | "page_download_hook";
+  source: "browser_download_event" | "module_network_request" | "page_download_hook" | "task_download_record";
 };
+
+export async function waitForJackyunExportTask(client: BrowserAutomationClient, expected: {
+  module: JackyunModule; sourceRows: number; exportIntentAt: string; allowedHosts: readonly string[];
+  binding?: JackyunExportTaskBinding;
+}, timeoutMs: number, pollMs: number) {
+  const deadline = Date.now() + timeoutMs;
+  let opened = false;
+  let refreshedAt = Date.now();
+  while (Date.now() < deadline) {
+    const records = await evaluateValue<JackyunExportTaskRecord[]>(client, `(() => {
+      ${jsDocumentsPrelude(["/system/taskList.html"])}
+      return documents.flatMap(doc => Array.from(doc.querySelectorAll('[id^="sys-"]')).filter(visible).map(el => {
+        const button = el.querySelector('.download-btn');
+        let attachments = []; try { attachments = JSON.parse(button?.getAttribute('data-attas') || '[]'); } catch {}
+        return { taskId: el.id, label: (el.querySelector('.filename')?.textContent || '').trim(),
+          createdAt: Number(button?.getAttribute('data-gmtcreate')), completed: !!el.querySelector('.state.success'),
+          urls: Array.isArray(attachments) ? attachments.map(a => String(a.attachmentUrl || '')) : [] };
+      }));
+    })()`);
+    const result = selectJackyunExportTask(records, { ...expected, observedAt: new Date().toISOString() });
+    if (result) return result;
+    if (!opened) {
+      const entry = await evaluateValue<{ x: number; y: number } | null>(client, `(() => {
+        const candidates = Array.from(document.querySelectorAll('img[title="文件下载记录和系统任务"]')).filter(el=>{
+          const r=el.getBoundingClientRect(); return r.width>2 && r.height>2;
+        });
+        if(candidates.length>1) throw new Error('下载记录入口不唯一');
+        if(!candidates.length) return null;
+        const r=candidates[0].getBoundingClientRect(); return {x:r.left+r.width/2,y:r.top+r.height/2};
+      })()`);
+      if (entry) {
+        await client.send("Input.dispatchMouseEvent", { type: "mouseMoved", ...entry, button: "none" });
+        await client.send("Input.dispatchMouseEvent", { type: "mousePressed", ...entry, button: "left", clickCount: 1 });
+        await client.send("Input.dispatchMouseEvent", { type: "mouseReleased", ...entry, button: "left", clickCount: 1 });
+        opened = true;
+      }
+    }
+    if (opened && Date.now() - refreshedAt >= 10_000) {
+      const refresh = await evaluateValue<{ x: number; y: number } | null>(client, `(() => {
+        ${jsDocumentsPrelude(["/system/taskList.html"])}
+        const matches=documents.flatMap(doc=>Array.from(doc.querySelectorAll('i.fa-refresh[title="刷新"]')).filter(visible));
+        if(matches.length!==1) return null;
+        const el=matches[0], r=el.getBoundingClientRect(); let x=r.left+r.width/2,y=r.top+r.height/2,win=el.ownerDocument.defaultView;
+        if(el.ownerDocument.elementFromPoint(x,y)!==el) return null;
+        while(win.frameElement){const f=win.frameElement, b=f.getBoundingClientRect();x+=b.left;y+=b.top;win=win.parent;}
+        return {x,y};
+      })()`);
+      if (refresh) {
+        await client.send("Input.dispatchMouseEvent", { type: "mouseMoved", ...refresh, button: "none" });
+        await client.send("Input.dispatchMouseEvent", { type: "mousePressed", ...refresh, button: "left", clickCount: 1 });
+        await client.send("Input.dispatchMouseEvent", { type: "mouseReleased", ...refresh, button: "left", clickCount: 1 });
+      }
+      refreshedAt = Date.now();
+    }
+    await new Promise(resolve => setTimeout(resolve, Math.max(500, pollMs)));
+  }
+  throw new Error("导出任务仍未出现唯一已完成附件；保留原意图，禁止重复导出。");
+}
 
 export function assertBoundDownloadUrl(
   evidence: CapturedDownloadUrlEvidence | undefined,
@@ -1652,42 +1789,200 @@ async function persistControllerState(filePath: string, state: ControllerState) 
   await writeJsonAtomic(filePath, state);
 }
 
+export async function withOwnedControllerChromeCleanup<T>(
+  ownsBrowser: boolean,
+  port: number,
+  action: () => Promise<T>,
+  closeBrowser: (port: number) => Promise<boolean> = closeChromeBrowser,
+): Promise<T> {
+  try {
+    return await action();
+  } finally {
+    if (ownsBrowser) await closeBrowser(port);
+  }
+}
+
+export async function setShipmentTimeType(client: BrowserAutomationClient) {
+  const actual = await evaluateValue<string>(client, `(() => {
+    ${jsDocumentsPrelude(["order_detail"])}
+    const candidates = [];
+    for (const doc of documents) {
+      const mini = doc.defaultView?.mini;
+      if (!mini) continue;
+      for (const element of doc.querySelectorAll('#selectTimeStr,.mini-combobox')) {
+        if (!visible(element)) continue;
+        const control = mini.get?.(element.id);
+        const data = control?.getData?.();
+        if (!Array.isArray(data)) continue;
+        const textField = control.textField || 'text';
+        const matches = data.filter(item => String(item[textField] ?? '').trim() === '发货时间');
+        if (matches.length === 1) candidates.push({control, item: matches[0], textField});
+      }
+    }
+    if (candidates.length !== 1) throw new Error('统计时间类型控件缺失或不唯一');
+    const {control, item, textField} = candidates[0];
+    const valueField = control.valueField || 'id';
+    if (item[valueField] == null) throw new Error('发货时间选项缺少实际取值');
+    control.setValue(item[valueField]);
+    control.setText?.(item[textField]);
+    control.doValueChanged?.();
+    if (String(control.getValue()) !== String(item[valueField])) throw new Error('发货时间取值读回不一致');
+    return String(control.getText?.() ?? '').trim();
+  })()`);
+  if (actual !== "发货时间") throw controllerFailure("FIELD_MISMATCH", "field_readback", "统计时间类型未读回为发货时间。");
+  return actual;
+}
+
+async function readExportMenuInspection(client: BrowserAutomationClient, urlHints: string[]) {
+  return evaluateValue(client, `(() => {
+    ${jsDocumentsPrelude(urlHints)}
+    return documents.flatMap(doc => Array.from(doc.querySelectorAll('.mini-menuitem-text'))
+      .filter(visible).map(el => {
+        const rect = el.getBoundingClientRect();
+        let x = rect.left + rect.width / 2, y = rect.top + rect.height / 2, win = doc.defaultView;
+        const hit = doc.elementFromPoint(x,y), frames = [];
+        while (win.frameElement) {
+          const frame = win.frameElement, r = frame.getBoundingClientRect(); x+=r.left; y+=r.top; win=win.parent;
+          const hit = win.document.elementFromPoint(x,y);
+          frames.push({ x, y, correct: hit === frame, hit: hit?.tagName + '.' + hit?.className, frame: frame.tagName + '.' + frame.className,
+            width: r.width, height: r.height, layoutWidth: frame.offsetWidth, layoutHeight: frame.offsetHeight, innerWidth: frame.contentWindow.innerWidth });
+        }
+        return { path: doc.location.pathname, text: (el.textContent || '').trim(),
+          left: rect.left, top: rect.top, width: rect.width, height: rect.height,
+          scrollY: doc.defaultView.scrollY, viewportHeight: doc.defaultView.innerHeight,
+          itemHit: el.closest('.mini-menuitem')?.contains(hit), frames };
+      }));
+  })()`);
+}
+
+export async function findExportMenuTarget(client: BrowserAutomationClient, urlHints: string[], parentLabel?: string) {
+  return evaluateValue<{ text: string; x: number; y: number } | null>(client, `(() => {
+    ${jsDocumentsPrelude(urlHints)}
+    const wanted = ${JSON.stringify(parentLabel ?? null)};
+    const matches = [];
+    for (const doc of documents) for (const el of doc.querySelectorAll('.mini-menuitem-text')) {
+      if (!visible(el)) continue;
+      const text = (el.textContent || '').trim();
+      if (wanted ? normalize(text) !== normalize(wanted) : !/^导出所有页(?:\\s*[(（].*[)）])?$/.test(text)) continue;
+      const rect = el.getBoundingClientRect();
+      let x = rect.left + rect.width / 2, y = rect.top + rect.height / 2, win = doc.defaultView;
+      if (x < 0 || y < 0 || x >= win.innerWidth || y >= win.innerHeight) continue;
+      const item = el.closest('.mini-menuitem');
+      if (!item?.contains(doc.elementFromPoint(x, y)) || /disabled/.test(item.className)) continue;
+      if (wanted && !Array.from(item.querySelectorAll('.mini-menuitem-allow')).some(visible)) continue;
+      let unoccluded = true;
+      while (win.frameElement) {
+        const frame = win.frameElement, frameRect = frame.getBoundingClientRect();
+        x += frameRect.left; y += frameRect.top; win = win.parent;
+        if (x < 0 || y < 0 || x >= win.innerWidth || y >= win.innerHeight || win.document.elementFromPoint(x, y) !== frame) {
+          unoccluded = false; break;
+        }
+      }
+      if (unoccluded) matches.push({ text, x, y });
+    }
+    if (matches.length > 1) throw new Error('导出菜单目标不唯一');
+    return matches[0] || null;
+  })()`);
+}
+
+export async function prepareExportAllPagesMenu(client: BrowserAutomationClient, moduleKey: JackyunModule, urlHints: string[], timeoutMs: number, pollMs: number) {
+  const deadline = Date.now() + timeoutMs;
+  do {
+    const leaf = await findExportMenuTarget(client, urlHints);
+    if (leaf) return leaf;
+    const parent = await findExportMenuTarget(client, urlHints, moduleKey === "combos" ? "导出组合装及子件" : "导出");
+    if (parent) {
+      // MiniUI can redraw the parent beneath the pointer after the context
+      // menu opens. Re-enter the actual parent to fire its submenu hover.
+      // Neither preparation nor its retries send a mouse button event.
+      await client.send("Input.dispatchMouseEvent", { type: "mouseMoved", x: Math.max(5, parent.x - 160), y: parent.y, button: "none" });
+      await new Promise(resolve => setTimeout(resolve, 100));
+      await client.send("Input.dispatchMouseEvent", { type: "mouseMoved", x: parent.x, y: parent.y, button: "none" });
+    }
+    await new Promise(resolve => setTimeout(resolve, Math.max(500, pollMs)));
+  } while (Date.now() < deadline);
+  throw new Error("EXPORT_MENU_NOT_READY：未找到可点击的本模块导出所有页菜单，尚未发送导出点击。");
+}
+
+export async function clickPreparedExportAllPages(client: BrowserAutomationClient, urlHints: string[], beforeClick: () => Promise<void>) {
+  const target = await findExportMenuTarget(client, urlHints);
+  if (!target) throw new Error("EXPORT_MENU_NOT_READY：导出所有页菜单已消失，尚未发送导出点击。");
+  await client.send("Input.dispatchMouseEvent", { type: "mouseMoved", x: target.x, y: target.y, button: "none" });
+  const readback = await findExportMenuTarget(client, urlHints);
+  if (!readback || readback.text !== target.text || Math.abs(readback.x - target.x) > 1 || Math.abs(readback.y - target.y) > 1) {
+    throw new Error("EXPORT_MENU_NOT_READY：导出所有页菜单发生移动，尚未发送导出点击。");
+  }
+  await beforeClick();
+  await client.send("Input.dispatchMouseEvent", { type: "mousePressed", x: target.x, y: target.y, button: "left", clickCount: 1 });
+  await client.send("Input.dispatchMouseEvent", { type: "mouseReleased", x: target.x, y: target.y, button: "left", clickCount: 1 });
+}
+
 async function runController(options: CliOptions) {
-  const policy = await readJsonFile<Policy>(policyPath);
+  if (options.directHttp && (!options.exportFirstBatch || options.inspectWebSessionOnly || options.webConfirmationRecovery)) throw new Error("HTTP 导出必须使用独立的五表运行。");
+  const batchTransport = options.directHttp ? jackyunDirectTransport : jackyunWebSessionTransport;
+  const exportFirst = options.exportOnlyModule || options.exportFirstBatch;
+  if (options.exportFirstBatch && (options.exportOnlyModule || options.resumeTaskBinding || options.inspectExportMenuOnly)) throw new Error("网页批量模式不能接管旧单表任务。");
+  if (options.inspectWebSessionOnly && (!options.exportFirstBatch || !options.runId.startsWith("inspect-web-"))) throw new Error("网页诊断必须使用独立运行身份。");
+  if (options.inspectApiPayload && !options.inspectWebSessionOnly) throw new Error("接口模板采集只允许隔离的网页诊断。");
+  if (options.inspectExportMenuOnly && (!exportFirst || !options.runId.startsWith("inspect-menu-")
+    || !path.resolve(options.outputRoot).startsWith(path.join(projectRoot, "outputs", "jackyun-menu-inspection") + path.sep))) {
+    throw new Error("菜单诊断必须使用独立诊断目录和运行 ID。");
+  }
+  const policy = await readJsonFile<Policy>(exportFirst
+    ? path.join(projectRoot, "config", "jackyun-export-first-policy.json") : policyPath);
+  if (exportFirst && ((options.exportOnlyModule && !jackyunModuleOrder.includes(options.exportOnlyModule))
+    || policy.version !== jackyunExportFirstPolicyVersion
+    || options.snapshotDate !== jackyunCaptureDate(new Date().toISOString()))) {
+    throw new Error("先导出后导入协议的模块、策略或实际采集日无效。");
+  }
   const chromePath = options.chromePath ?? policy.browser.controller?.chromePath ?? "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe";
   const profileDirectory = path.resolve(options.profileDirectory ?? policy.browser.controller?.profileDirectory ?? path.join(projectRoot, ".runtime", "jackyun-chrome-profile"));
   const port = options.debuggingPort ?? policy.browser.controller?.debuggingPort ?? 9223;
   const startUrl = policy.browser.controller?.startUrl ?? "https://web.jackyun.com/home/mainframe_web_horizontal.html";
-  await launchDedicatedChrome({ executablePath: chromePath, profileDirectory, port, startUrl, headless: options.launchOnly ? false : options.headless });
+  const loginConfig = await readJackyunLoginConfig(projectRoot);
+  if (path.resolve(loginConfig.profileDirectory).toLowerCase() !== profileDirectory.toLowerCase()
+    || loginConfig.debuggingPort !== port || !isJackyunLoginOrigin(startUrl)) {
+    throw new Error("waiting_login：登录策略与专用 Profile、端口或站点不一致。");
+  }
+  const launchedBrowser = await launchDedicatedChrome({ executablePath: chromePath, profileDirectory, port, startUrl, headless: options.launchOnly ? false : options.headless });
   if (options.launchOnly) return { status: "chrome_ready", profileDirectory, port };
+  const ownsBrowser = Boolean(launchedBrowser);
 
-  let sessionStatus = await getJackyunSessionStatus(port);
-  if (options.checkLoginOnly) {
-    return { status: sessionStatus, port };
-  }
-  if (sessionStatus === "login_required") {
-    const target = await connectJackyunTarget(port).catch(() => null);
-    const loginResult = target
-      ? await autoLoginWithSavedBrowserCredentials(target.client).finally(() => target.client.close())
-      : { attempted: false, submitted: false, reason: "login_form_missing" as const };
-    console.log(JSON.stringify({ type: "jackyun_saved_login", ...loginResult }));
-    if (loginResult.submitted) sessionStatus = await waitForAuthenticatedSession(port, 30_000);
-  }
-  if (sessionStatus === "login_required") {
-    console.log("检测到吉客云登录页。专用 Chrome 未自动填充已保存凭证，或页面要求验证码；请执行 npm run jackyun:login 完成人工验证。");
-    return { status: "login_required", profileDirectory, port };
-  }
-  if (sessionStatus !== "authenticated") {
-    return { status: "login_unknown", profileDirectory, port };
+  return withOwnedControllerChromeCleanup(ownsBrowser, port, async () => {
+  await verifyJackyunBrowserBinding({ chromePath, profileDirectory, port });
+  const loginBrowser = await connectPlaywrightBrowser(port);
+  try {
+    const candidates = loginBrowser.contexts().flatMap(context => context.pages())
+      .filter(page => page.url() === "about:blank" || isJackyunLoginOrigin(page.url()));
+    if (candidates.length !== 1) throw new Error("waiting_login：专用浏览器的吉客云登录页面不唯一。");
+    const page = candidates[0];
+    if (page.url() === "about:blank") await page.goto(startUrl, { waitUntil: "domcontentloaded", timeout: 60000 });
+    const loginResult = await waitForJackyunDpapiSession({
+      inspect: () => inspectJackyunLoginSurface(page, loginConfig.tenantId),
+      submit: () => submitJackyunDpapiLogin(page, loginConfig),
+      initialWaitMs: loginConfig.initialWaitMs, afterSubmitWaitMs: loginConfig.afterSubmitWaitMs,
+      readOnly: options.checkLoginOnly, signal: options.signal,
+    });
+    if (options.checkLoginOnly || options.authenticateOnly) return { ...loginResult, port, tenantVerified: loginResult.status === "authenticated" };
+    console.log(JSON.stringify({ type: "jackyun_login", ...loginResult, tenantVerified: true }));
+  } finally {
+    await loginBrowser.close();
   }
 
   const eventDirectory = path.join(options.eventRoot, options.runId);
   const runDirectory = path.join(options.outputRoot, options.runId);
   const controllerStatePath = path.join(runDirectory, "browser-controller-state.json");
   const state = await readJsonFileOr<ControllerState>(controllerStatePath, {
-    version: 1, runId: options.runId, policyVersion: policy.version, updatedAt: new Date().toISOString(), modules: {},
+    version: 1, runId: options.runId, policyVersion: policy.version,
+    ...(options.exportFirstBatch ? { exportTransport: batchTransport } : {}),
+    ...(options.inspectWebSessionOnly ? { inspectionOnly: true as const } : {}), updatedAt: new Date().toISOString(), modules: {},
   });
+  if (Boolean(state.inspectionOnly) !== Boolean(options.inspectWebSessionOnly)) throw new Error("只读诊断不能升级为正式导出。");
+  if (state.exportTransport !== (options.exportFirstBatch ? batchTransport : undefined)) throw new Error("不同导出传输版本的运行状态不能互相接管。");
   if (state.runId !== options.runId || state.policyVersion !== policy.version) throw new Error("浏览器 controller 状态与当前运行参数不一致。");
+  if (options.inspectExportMenuOnly && Object.values(state.modules).some(module => module?.exportIntentAt || module?.filePath)) {
+    throw new Error("菜单诊断不能接管业务运行。");
+  }
 
   // Playwright owns the browser/page lifecycle. A browser-level CDP session
   // remains only for signed-export download evidence from legacy MiniUI pages.
@@ -1707,9 +2002,12 @@ async function runController(options: CliOptions) {
     if (url) capturedDownloadUrl = { url, observedAt: new Date().toISOString(), source: "browser_download_event" };
   });
 
-  for (let index = 0; index < jackyunModuleOrder.length; index += 1) {
+  const moduleOrder = options.exportFirstBatch ? jackyunExportOrder : jackyunModuleOrder;
+  for (const moduleKey of moduleOrder) {
+    const index = jackyunModuleOrder.indexOf(moduleKey);
     if (options.signal?.aborted) throw options.signal.reason instanceof Error ? options.signal.reason : new Error("浏览器 controller 已取消。");
-    const moduleKey = jackyunModuleOrder[index];
+    if (options.exportOnlyModule && moduleKey !== options.exportOnlyModule) continue;
+    await options.beforeModule?.(moduleKey);
     const resultPath = path.join(eventDirectory, `${eventFileName(index, moduleKey)}.result.json`);
     const existingResult = await readJsonFileOr<Record<string, unknown> | null>(resultPath, null);
     if (existingResult && ["completed", "duplicate_ignored"].includes(String(existingResult.status))) {
@@ -1717,9 +2015,30 @@ async function runController(options: CliOptions) {
       continue;
     }
 
+    const previousQuery = state.modules[moduleKey];
+    if (options.directHttp && previousQuery?.queryIntentAt && !previousQuery.exportIntentAt && !previousQuery.filePath) {
+      const history = previousQuery.queryAttemptHistory ?? [];
+      if (!Array.isArray(history) || history.length >= 5) throw new Error("未提交的查询已经多次失败，保留审计并停止。");
+      // No export was armed. A restarted process must issue a NEW read-only query,
+      // rather than accepting the lost process's table or network completion.
+      state.modules[moduleKey] = { status: "pending", queryAttemptHistory: [...history, {
+        queryIntentAt: previousQuery.queryIntentAt, tableStableAt: previousQuery.tableStableAt ?? null, repreparedAt: new Date().toISOString(),
+      }] };
+      await persistControllerState(controllerStatePath, state);
+    }
     const moduleState = state.modules[moduleKey] ?? { status: "pending" as const };
+    if (moduleState.reprepareEvidence && options.directHttp && (!options.exportFirstBatch || moduleKey !== "sales" || options.runId !== "n8n-export-first-890"
+      || options.httpScopeRecovery?.originalExecutionId !== "890"
+      || options.httpScopeRecovery.permitSha256 !== moduleState.reprepareEvidence.permitSha256)) throw new Error("HTTP 销售恢复缺少独占 n8n 许可。");
+    if (moduleState.reprepareEvidence && !options.directHttp && (!options.exportFirstBatch || moduleKey !== "combos" || options.runId !== "n8n-export-first-849"
+      || options.webConfirmationRecovery?.originalExecutionId !== "849"
+      || options.webConfirmationRecovery.permitSha256 !== moduleState.reprepareEvidence.permitSha256)) throw new Error("组合装恢复缺少独占 n8n 许可。");
     state.modules[moduleKey] = moduleState;
     const { client, page } = await connectPlaywrightJackyunTarget(playwrightBrowser, { startUrl });
+    // The report iframe has a 1024px minimum width. Chrome's default headless
+    // viewport can horizontally scroll its left filter button off-screen.
+    if (options.directHttp && options.headless) await page.setViewportSize({ width: 1920, height: 1080 });
+    if (options.headless && ownsBrowser) await page.setViewportSize({ width: 1920, height: 1080 });
     page.setDefaultTimeout(actionTimeout(policy, moduleKey));
     page.setDefaultNavigationTimeout(moduleTimeout(policy, moduleKey));
     await client.send("Page.enable");
@@ -1750,7 +2069,8 @@ async function runController(options: CliOptions) {
         moduleKey,
         queryIntentAt,
         moduleUrlHints(moduleKey),
-        moduleKey === "inventory" || moduleKey === "inventory_age" ? options.snapshotDate : undefined,
+        !exportFirst && (moduleKey === "inventory" || moduleKey === "inventory_age") ? options.snapshotDate : undefined,
+        Boolean(exportFirst),
       );
       await clickAnyTextEventually(
         client,
@@ -1760,9 +2080,32 @@ async function runController(options: CliOptions) {
       );
     };
 
+    let directTask: ReturnType<typeof selectJackyunExportTask> = null;
+    const withHttp = async <T>(callback: (http: JackyunHttpSession) => Promise<T>): Promise<T> => {
+      // The dedicated context cannot issue its own refresh while the HTTP owner is active.
+      await page.context().setOffline(true);
+      try { return await callback(await createDirectSession(client, loginConfig.tenantId)); }
+      finally { await page.context().setOffline(false); }
+    };
+    const waitBoundTask = async (http?: JackyunHttpSession): Promise<ReturnType<typeof selectJackyunExportTask>> => {
+      if (directTask) return directTask;
+      if (options.directHttp && !http) return withHttp(session => waitBoundTask(session));
+      const expected = { module: moduleKey, sourceRows: moduleState.expectedSourceRows!, exportIntentAt: moduleState.exportIntentAt!,
+        allowedHosts: policy.browser.allowedDownloadHosts, binding: moduleState.exportTaskBinding ?? (options.resumeTaskBinding?.module === moduleKey ? options.resumeTaskBinding : undefined) };
+      if (!options.exportFirstBatch) return waitForJackyunExportTask(client, expected, exportTimeout(policy, moduleKey), fastPoll(policy));
+      if (!moduleState.webSession) throw new Error("网页提交缺少任务基线，禁止恢复或重复导出。");
+      return waitForWebSessionTask(client, { ...expected, ...moduleState.webSession, observedAt: new Date().toISOString() }, {
+        timeoutMs: exportTimeout(policy, moduleKey), signal: options.signal,
+        ...(http ? { readTasks: (module: JackyunModule, since: string) => readDirectTasks(http, module, since) } : {}), onTask: async taskId => {
+          moduleState.webSession!.pendingTaskId = taskId; await persistControllerState(controllerStatePath, state);
+        },
+      });
+    };
     if (moduleState.exportIntentAt && !moduleState.filePath) {
       capturedDownloadUrl = undefined;
-      const recoveryUrl = await findOssUrl(
+      const task = exportFirst ? await waitBoundTask() : undefined;
+      if (task) { moduleState.exportTaskBinding = task.binding; await persistControllerState(controllerStatePath, state); }
+      const recoveryUrl = task?.url ?? await findOssUrl(
         () => capturedDownloadUrl,
         policy.browser.allowedDownloadHosts,
         moduleState.exportIntentAt,
@@ -1922,7 +2265,7 @@ async function runController(options: CliOptions) {
       // Formal inventory snapshots are historical facts. A real-time page or
       // a date control whose value cannot be read back exactly must stop before
       // the query/export intent is recorded.
-      try {
+      if (!exportFirst) try {
         const dates = await setDateInputs(client, [options.snapshotDate], moduleUrlHints(moduleKey));
         const observedDate = assertHistoricalDateReadback(moduleKey, options.snapshotDate, dates);
         const controlReadbackAt = new Date().toISOString();
@@ -1947,7 +2290,7 @@ async function runController(options: CliOptions) {
       }
     }
     if (moduleKey === "inventory_age") {
-      try {
+      if (!exportFirst) try {
         const dates = await setDateInputs(client, [options.snapshotDate], moduleUrlHints(moduleKey));
         const observedDate = assertHistoricalDateReadback(moduleKey, options.snapshotDate, dates);
         const controlReadbackAt = new Date().toISOString();
@@ -1989,6 +2332,10 @@ async function runController(options: CliOptions) {
         actionTimeout(policy, moduleKey),
         fastPoll(policy),
       );
+      if (exportFirst) {
+        const timeType = await setShipmentTimeType(client);
+        fieldChecks.push({ field: "统计时间类型", value: timeType, verifiedAt: new Date().toISOString() });
+      }
       const dates = await evaluateValue<string[]>(client, `(() => {
     let target = null;
     const visit = (d) => { if (d.location && /order_detail/.test(d.location.href)) { target = d; return; } try { for (const f of d.querySelectorAll('iframe,frame')) { try { if (f.contentDocument) visit(f.contentDocument); } catch(e){} } } catch(e){} };
@@ -2129,7 +2476,7 @@ async function runController(options: CliOptions) {
       };
       if (moduleKey === "inventory" || moduleKey === "inventory_age") {
         const snapshotControl = moduleState.snapshotControlReadback;
-        if (!snapshotControl) {
+        if (!snapshotControl && !exportFirst) {
           throw controllerFailure(
             "FIELD_MISMATCH",
             "field_readback",
@@ -2143,13 +2490,33 @@ async function runController(options: CliOptions) {
             `${moduleKey} 缺少可绑定到历史日期条件的查询刷新证据。`,
           );
         }
-        moduleState.snapshotEvidence = {
-          ...snapshotControl,
+        moduleState.snapshotEvidence = exportFirst ? {
+          version: 1,
+          module: moduleKey,
+          runId: options.runId,
+          source: "current_query",
+          targetDate: options.snapshotDate,
+          queryIntentAt: moduleState.queryRefreshEvidence.queryIntentAt,
+          queryRefreshSource: "module_network_request",
+          queryRefreshCompletedAt: moduleState.queryRefreshEvidence.completedAt,
+          tableStableAt: moduleState.tableStableAt,
+        } : {
+          ...snapshotControl!,
           queryIntentAt: moduleState.queryRefreshEvidence.queryIntentAt,
           queryRefreshSource: moduleState.queryRefreshEvidence.source,
           queryRefreshCompletedAt: moduleState.queryRefreshEvidence.completedAt,
           tableStableAt: moduleState.tableStableAt,
         };
+        if (exportFirst) {
+          if (moduleState.queryRefreshEvidence.source !== "module_network_request") {
+            throw controllerFailure("TABLE_TIMEOUT", "query_refresh", "当前快照缺少本模块成功网络响应。");
+          }
+          assertJackyunSnapshotEvidence(moduleState.snapshotEvidence, {
+            module: moduleKey, runId: options.runId, snapshotDate: options.snapshotDate,
+            policyVersion: policy.version, navigationIntentAt: moduleState.navigationIntentAt,
+            exportIntentAt: new Date().toISOString(),
+          });
+        }
       }
       fieldChecks.push({ field: "页面总数", value: `共 ${moduleState.expectedSourceRows} 条`, verifiedAt: moduleState.tableStableAt });
       moduleState.fieldChecks = fieldChecks;
@@ -2157,11 +2524,73 @@ async function runController(options: CliOptions) {
     }
 
     capturedDownloadUrl = undefined;
+    if (options.inspectExportMenuOnly) {
+      if (moduleState.exportIntentAt || moduleState.filePath) throw new Error("菜单诊断不能接管业务运行。");
+      await rightClickDataRow(client, moduleUrlHints(moduleKey), true);
+      const rightClickMenu = await readExportMenuInspection(client, moduleUrlHints(moduleKey));
+      const prepared = await prepareExportAllPagesMenu(client, moduleKey, moduleUrlHints(moduleKey), actionTimeout(policy, moduleKey), fastPoll(policy))
+        .catch(() => ({ error: "EXPORT_MENU_NOT_READY" }));
+      const afterHover = await readExportMenuInspection(client, moduleUrlHints(moduleKey));
+      client.close();
+      return { status: "menu_inspected", runId: options.runId, module: moduleKey, rightClickMenu, prepared, afterHover };
+    }
+    if (options.inspectWebSessionOnly) {
+      if (options.inspectApiPayload) {
+        const captured = await captureDirectExport(client, page, moduleKey, moduleKey === "combos" ? async () => {
+          const rule = policy.modules.combos.exportConfirmation;
+          if (!rule) throw new Error("组合装导出确认规则缺失。");
+          await confirmJackyunComboExport(client, moduleUrlHints(moduleKey), rule.promptIncludes, rule.button, actionTimeout(policy, moduleKey), fastPoll(policy));
+        } : undefined, options.asOfDate);
+        try {
+          await options.inspectApiPayload(moduleKey, { data: captured.data, moduleCode: captured.moduleCode, payloadSha256: captured.payloadSha256 }, moduleState.expectedSourceRows);
+        } finally { await captured.cancel(); }
+        client.close(); continue;
+      }
+      await prepareWebSessionExport(client, moduleKey);
+      const baseline = await readWebSessionTasks(client, moduleKey);
+      console.log(JSON.stringify({ type: "jackyun_web_preflight", module: moduleKey, rows: moduleState.expectedSourceRows, tasks: baseline.records.length }));
+      client.close(); continue;
+    }
     if (!moduleState.exportIntentAt) {
-      moduleState.exportIntentAt = new Date().toISOString();
-      moduleState.status = "export_armed";
-      await persistControllerState(controllerStatePath, state);
-      const directExportStarted = moduleKey === "sales"
+      const armExport = async () => {
+        moduleState.exportIntentAt = new Date().toISOString();
+        moduleState.status = "export_armed";
+        await persistControllerState(controllerStatePath, state);
+      };
+      if (options.directHttp) {
+        const baseline = await withHttp(http => readDirectTasks(http, moduleKey, moduleState.reprepareEvidence?.originalIntentAt));
+        if (moduleState.reprepareEvidence) assert890ReprepareWindow(moduleState.reprepareEvidence.originalIntentAt, baseline.records);
+        moduleState.webSession = { baselineIds: baseline.records.map(r => r.taskId), baselineAt: new Date().toISOString() };
+        await armExport();
+        const captured = await captureDirectExport(client, page, moduleKey, moduleKey === "combos" ? async () => {
+          const rule = policy.modules.combos.exportConfirmation;
+          if (!rule) throw new Error("组合装导出确认规则缺失。");
+          const confirmedAt = await confirmJackyunComboExport(client, moduleUrlHints(moduleKey), rule.promptIncludes, rule.button, actionTimeout(policy, moduleKey), fastPoll(policy));
+          moduleState.exportConfirmation = { prompt: rule.promptIncludes.join("，"), button: rule.button, confirmedAt };
+          await persistControllerState(controllerStatePath, state);
+        } : undefined, options.asOfDate);
+        try {
+          moduleState.directPayloadSha256 = captured.payloadSha256;
+          await persistControllerState(controllerStatePath, state);
+          await withHttp(async http => {
+            const response = await http.request("submitExport", captured.data, captured.moduleCode);
+            await captured.complete(response);
+            directTask = await waitBoundTask(http);
+          });
+        } catch (error) { await captured.cancel(); throw error; }
+      } else if (options.exportFirstBatch) {
+        const token = await prepareWebSessionExport(client, moduleKey);
+        if (moduleState.reprepareEvidence) {
+          const original = await readWebSessionTasks(client, moduleKey, moduleState.reprepareEvidence.originalIntentAt);
+          assert849ReprepareWindow(moduleState.expectedSourceRows,moduleState.reprepareEvidence.originalIntentAt,original.records);
+        }
+        const baseline = await readWebSessionTasks(client, moduleKey);
+        moduleState.webSession = { baselineIds: baseline.records.map(r => r.taskId), baselineAt: new Date().toISOString() };
+        await armExport();
+        await submitWebSessionExport(client, token);
+      } else {
+      if (!exportFirst) await armExport();
+      const directExportStarted = exportFirst ? false : moduleKey === "sales"
         ? await triggerSalesMinimalExportAllPage(client, moduleUrlHints(moduleKey))
         : moduleKey === "inventory_age"
           ? await triggerStockAgePayloadExport(client, stockAgeOwnerId ?? "")
@@ -2173,20 +2602,27 @@ async function runController(options: CliOptions) {
                 moduleKey === "products" ? ["grid-goods_managet"] : [],
                 minimalGridExportHeaders[moduleKey],
               );
-      if (!directExportStarted) await rightClickDataRow(client, moduleUrlHints(moduleKey));
-      if (moduleKey === "combos" && !directExportStarted) {
+      if (!directExportStarted) await rightClickDataRow(client, moduleUrlHints(moduleKey), Boolean(exportFirst));
+      if (exportFirst) {
+        await prepareExportAllPagesMenu(client, moduleKey, moduleUrlHints(moduleKey), actionTimeout(policy, moduleKey), fastPoll(policy));
+        await clickPreparedExportAllPages(client, moduleUrlHints(moduleKey), armExport);
+      } else if (moduleKey === "combos" && !directExportStarted) {
         await clickAnyTextEventually(client, ["导出组合装及子件"], actionTimeout(policy, moduleKey), fastPoll(policy));
         await clickAnyTextEventually(client, ["导出所有页", "导出所有页(限500000行)", "导出所有页（限500000行）"], actionTimeout(policy, moduleKey), fastPoll(policy));
       } else if (!directExportStarted) {
         await clickAnyTextEventually(client, ["导出"], actionTimeout(policy, moduleKey), fastPoll(policy));
         await clickAnyTextEventually(client, ["导出所有页(限500000行)", "导出所有页（限500000行）", "导出所有页"], actionTimeout(policy, moduleKey), fastPoll(policy));
       }
-      if (moduleKey === "combos") {
+      }
+      if (moduleKey === "combos" && !options.directHttp) {
         const confirmationPolicy = policy.modules.combos.exportConfirmation;
         if (!confirmationPolicy) throw new Error("组合装导出确认规则缺失。");
         await waitForPageTextParts(client, confirmationPolicy.promptIncludes, actionTimeout(policy, moduleKey), fastPoll(policy));
-        const confirmedAt = new Date().toISOString();
-        await clickText(client, confirmationPolicy.button);
+        const confirmedAt = exportFirst
+          ? await confirmJackyunComboExport(client, moduleUrlHints(moduleKey), confirmationPolicy.promptIncludes,
+              confirmationPolicy.button, actionTimeout(policy, moduleKey), fastPoll(policy))
+          : new Date().toISOString();
+        if (!exportFirst) await clickText(client, confirmationPolicy.button);
         moduleState.exportConfirmation = { prompt: confirmationPolicy.promptIncludes.join("，"), button: confirmationPolicy.button, confirmedAt };
         await persistControllerState(controllerStatePath, state);
       }
@@ -2194,7 +2630,9 @@ async function runController(options: CliOptions) {
     }  // end if (!moduleState.filePath) — 跳过浏览器操作
 
     if (!moduleState.filePath) {
-      const downloadEvidence = await findCurrentDownloadEvidence(
+      const task = exportFirst ? await waitBoundTask() : undefined;
+      if (task) { moduleState.exportTaskBinding = task.binding; await persistControllerState(controllerStatePath, state); }
+      const downloadEvidence = task ? { url: task.url, observedAt: task.binding.observedAt, source: "task_download_record" as const } : await findCurrentDownloadEvidence(
         client,
         moduleUrlHints(moduleKey),
         () => capturedDownloadUrl,
@@ -2264,14 +2702,22 @@ async function runController(options: CliOptions) {
       fieldChecks: moduleState.fieldChecks,
       evidence: {
         controller: "dedicated_chrome_playwright",
+        ...(options.exportFirstBatch ? { exportTransport: batchTransport, taskQuerySource: options.directHttp ? "direct_http_api" : "web_session_api" } : {}),
+        ...(options.directHttp ? { directPayloadSha256: moduleState.directPayloadSha256 } : {}),
         policyVersion: policy.version,
         sourceUrlHash: moduleState.downloadProvenance?.sourceUrlHash ?? null,
+        exportTaskBinding: moduleState.exportTaskBinding ?? null,
       },
     };
     const eventPath = path.join(eventDirectory, eventFileName(index, moduleKey));
     await writeJsonAtomic(eventPath, handoff);
     moduleState.status = "handed_off";
     await persistControllerState(controllerStatePath, state);
+    await options.afterModule?.(moduleKey);
+    if (exportFirst) {
+      client.close();
+      continue;
+    }
     const result = await waitForResult(`${eventPath}.result.json`, policy.browser.eventTimeoutMs, options.signal, fastPoll(policy));
     if (!["completed", "duplicate_ignored"].includes(String(result.status))) throw new Error(`${moduleKey} 下载后处理未完成。`);
     moduleState.status = "completed";
@@ -2282,7 +2728,7 @@ async function runController(options: CliOptions) {
     await persistControllerState(controllerStatePath, state);
     client.close();
   }
-  return { status: "completed", runId: options.runId, controllerStatePath };
+  return { status: options.inspectWebSessionOnly ? "web_session_inspected" : exportFirst ? "exported" : "completed", runId: options.runId, controllerStatePath };
   } finally {
     browserClient.close();
     await Promise.allSettled([
@@ -2290,12 +2736,20 @@ async function runController(options: CliOptions) {
       playwrightBrowser.close(),
     ]);
   }
+  });
 }
 
 if (path.resolve(process.argv[1] ?? "") === path.resolve(fileURLToPath(import.meta.url))) {
   const cliOptions = parseCli();
+  const cliLoginConfig = await readJackyunLoginConfig(projectRoot);
+  if (cliOptions.authenticateOnly || cliOptions.checkLoginOnly || cliOptions.launchOnly) {
+    const health = await fetch("http://127.0.0.1:5791/health", { signal: AbortSignal.timeout(2000) }).catch(() => null);
+    const value = health?.ok ? await health.json() as { busy?: boolean; activeWorkflow?: unknown } : null;
+    if (value?.busy || value?.activeWorkflow) throw new Error("共享辅助服务正忙，暂不能维护专用登录。");
+  }
   withJackyunRunLock(
-    { runId: cliOptions.runId, purpose: cliOptions.checkLoginOnly ? "browser_login_check" : "browser_controller" },
+    { runId: cliOptions.runId, purpose: cliOptions.checkLoginOnly || cliOptions.authenticateOnly ? "browser_login_check" : "browser_controller",
+      lockDirectory: path.join(path.dirname(cliLoginConfig.profileDirectory), "jackyun-automation.lock") },
     () => runController(cliOptions),
   )
     .then((result) => console.log(JSON.stringify(result)))

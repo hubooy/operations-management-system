@@ -1,0 +1,48 @@
+{
+  "version": 1,
+  "runId": "n8n-export-first-843",
+  "policyVersion": "2026-09-06.export-first.1",
+  "updatedAt": "2026-09-06T11:37:11.558Z",
+  "modules": {
+    "inventory": {
+      "status": "export_armed",
+      "navigationIntentAt": "2026-09-06T11:37:07.452Z",
+      "timings": {
+        "enterModuleMs": 773,
+        "tableStableMs": 1234
+      },
+      "fieldChecks": [
+        {
+          "field": "仓库",
+          "value": "已勾选:244条",
+          "verifiedAt": "2026-09-06T11:37:10.278Z"
+        },
+        {
+          "field": "页面总数",
+          "value": "共 25595 条",
+          "verifiedAt": "2026-09-06T11:37:11.556Z"
+        }
+      ],
+      "queryIntentAt": "2026-09-06T11:37:10.278Z",
+      "expectedSourceRows": 25595,
+      "queryRefreshEvidence": {
+        "queryIntentAt": "2026-09-06T11:37:10.278Z",
+        "completedAt": "2026-09-06T11:37:10.567Z",
+        "source": "module_network_request"
+      },
+      "tableStableAt": "2026-09-06T11:37:11.556Z",
+      "snapshotEvidence": {
+        "version": 1,
+        "module": "inventory",
+        "runId": "n8n-export-first-843",
+        "source": "current_query",
+        "targetDate": "2026-09-06",
+        "queryIntentAt": "2026-09-06T11:37:10.278Z",
+        "queryRefreshSource": "module_network_request",
+        "queryRefreshCompletedAt": "2026-09-06T11:37:10.567Z",
+        "tableStableAt": "2026-09-06T11:37:11.556Z"
+      },
+      "exportIntentAt": "2026-09-06T11:37:11.558Z"
+    }
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "version": 1,
+  "runId": "n8n-export-first-844",
+  "module": "combos",
+  "status": "failed",
+  "timings": {
+    "startedAt": "2026-09-06T14:34:27.793Z",
+    "failedAt": "2026-09-06T14:34:30.049Z",
+    "elapsedMs": 2256,
+    "stageElapsedMs": {
+      "strict_sequence": 0,
+      "verify_historical_snapshot_evidence": 0,
+      "wait_download_file_stable": 1042,
+      "verify_download_binding": 0,
+      "read_and_hash_source": 4,
+      "copy_raw_source": 1,
+      "validate_and_prepare_workbook": 381,
+      "verify_combo_relation_baseline": 67,
+      "chunk_upload_and_import": 760
+    }
+  },
+  "source": {
+    "path": "D:\\谷歌浏览器\\jackyun\\n8n-export-first-844\\combos\\2562762580796345344-5cfc3cbd-b78c-4187-83c7-08a8fad8502a.xlsx",
+    "sha256": "b10ec87fbb0175a7041d83361d40b9266d8bc80dc1f5ed9df24d85f36d1edb67",
+    "exportStart": "2026-09-06T14:27:35.384Z",
+    "downloadProvenance": {
+      "runId": "n8n-export-first-844",
+      "module": "combos",
+      "policyVersion": "2026-09-06.export-first.1",
+      "downloadId": "5cfc3cbd-b78c-4187-83c7-08a8fad8502a",
+      "method": "oss_fallback",
+      "completedAt": "2026-09-06T14:31:58.454Z",
+      "originalFileName": "2562762580796345344.xlsx",
+      "sourceHost": "jackyun-shortterm.oss-cn-zhangjiakou.aliyuncs.com",
+      "sourceUrlHash": "74e8c9da5e63f198179094c624a0684bacbfc63f27db513eb228423f074231c2",
+      "sha256": "b10ec87fbb0175a7041d83361d40b9266d8bc80dc1f5ed9df24d85f36d1edb67",
+      "bytes": 2483937
+    },
+    "snapshotEvidence": null
+  },
+  "error": {
+    "stage": "chunk_upload_and_import",
+    "message": "parentName 无效",
+    "details": {
+      "httpStatus": 400,
+      "status": "rejected",
+      "errorCount": null,
+      "errors": [],
+      "warnings": []
+    }
+  }
+}

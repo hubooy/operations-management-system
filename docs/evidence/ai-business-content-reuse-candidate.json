@@ -1,0 +1,18 @@
+{
+  "date": "2026-09-17",
+  "branch": "codex/ai-business-analysis-stages",
+  "baseCommit": "3082c091",
+  "batch": 29,
+  "status": "candidate_request_local_completed_result_reuse",
+  "scope": "Exactly one integrated report content validation; no cross-request, tick, publication-phase or owner cache",
+  "verification": {
+    "isolatedPostgres": {"passed": 42, "seconds": 125.961, "log": ".runtime/ai-pg-1c260ca98225/tests.log", "includes": "New helper/wrapper, actual five-Agent ledgers and file delivery, legacy v2 and budget reports, native/mapped tamper checks, simulation"},
+    "pureAuthorRegression": {"passed": 39, "seconds": 2.073, "includes": "14 memo, 4 wrapper, 21 receipt/preflight tests"},
+    "actualContentComparison": {"mappedRecomputationsBefore": 3, "mappedRecomputationsAfter": 1, "nativeRecomputationsBefore": 2, "nativeRecomputationsAfter": 1, "budgetRecomputationsBefore": 6, "budgetRecomputationsAfter": 1, "contentCanonicalBytesEqual": true, "fiveIndependentProofCanonicalBytesEqual": true, "freshScopeRecomputes": true},
+    "negativeCases": ["Each of five jobs independently rejects missing or rehashed tampered receipts", "Revocation after computation prevents context-exit return", "Cross-owner/report/binding and changed prepared input fail", "Caller aliases cannot alter stored values", "Loader exceptions and unknown outcomes are not cached", "Closed, reentrant and cross-thread access fail", "Exact 38000-byte analysis and 2MiB budget limits, 64-entry LRU and 4MiB charged capacity"],
+    "independentRootReview": "Reviewed immutable snapshots, live binding checks before/after reuse and context exit, source-context completion, unchanged no-reuse path and preserved per-job proof validation"
+  },
+  "capacity": {"entries": 64, "chargedBytes": 4194304, "counts": "Canonical completed JSON plus key and checksum bytes", "isProcessRss": false},
+  "limits": ["Recomputation counts are not a production latency or memory SLA", "Claims continue their own exact reference verification", "No persistent derived partitions or cross-request paging acceleration", "No full-model diagnostic coverage claim"],
+  "operations": {"productionBusinessReads": false, "productionWrites": false, "newMigration": false, "deployment": false, "serviceRestart": false, "paidModelCalls": false, "externalMessages": false}
+}

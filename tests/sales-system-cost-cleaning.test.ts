@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import type { SalesLineInput } from "../lib/sales/database";
+import type { SalesLineInput } from "../lib/sales/import-contract";
 import { cleanZeroCostSalesRows } from "../lib/sales/system-cost-cleaning";
 
 function salesRow(overrides: Partial<SalesLineInput> = {}): SalesLineInput {

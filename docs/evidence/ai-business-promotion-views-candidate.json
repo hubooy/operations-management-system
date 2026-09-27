@@ -1,0 +1,20 @@
+{
+  "date": "2026-09-17",
+  "branch": "codex/ai-business-analysis-stages",
+  "baseCommit": "3a5091be",
+  "batch": 34,
+  "status": "candidate_pure_jd_promotion_plan_unit_views",
+  "verification": {
+    "pure": {"newTests": 20, "existingResultsAndPartitionTests": 12, "passed": 32},
+    "independentReview": {"passedNewTests": 20, "randomTwoPeriodConservationProbes": 90, "remainingBlockers": 0},
+    "windowsLifecycle": "Two actively suspended scan iterators release SQLite cursors before temporary directory deletion; normal and consumer-exception exits delete directory; post-context reads fail as AnalysisContractError",
+    "firstAttemptFixes": ["Preserve AnalysisContractError before generic ValueError wrapping", "Track and close underlying active scan generators on context exit to fix actual Windows WinError32"],
+    "compileAndDiffCheck": true
+  },
+  "views": ["plan", "unit", "unit_match"],
+  "source": "jd_promotion/ad only; tmall aggregated product-day grain explicitly unsupported",
+  "limits": {"sourcePagesBothSides": 2000, "sourceRowsBothSides": 200000, "unionGroups": 250000, "scratchBytes": 268435456, "pageRows": 20, "pageUtf8Bytes": 38000},
+  "behavior": ["Exact platform/shop/parent identity grouping", "Complete source/control/digest/date reconciliation before table reads", "Missing identities retained as unresolved buckets without comparison", "Names never determine identity", "Missing direct/indirect/new-customer amounts remain missing", "Strict current/previous/yearAgo source matching", "Unknown result fields and oversized complete rows rejected"],
+  "remaining": ["Actual sealed owning-service integration", "Versioned analysis references and tools", "Screening and runtime integration", "Complete HTML/XLSX export", "Keyword by explicit SKU-role joint views", "Other platform detailed-source contract"],
+  "operations": {"productionBusinessReads": false, "productionWrites": false, "newMigration": false, "deployment": false, "serviceRestart": false, "paidModelCalls": false, "externalMessages": false}
+}

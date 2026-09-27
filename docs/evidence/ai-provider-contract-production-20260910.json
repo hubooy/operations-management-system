@@ -1,0 +1,877 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-09-10",
+  "status": "deployed-parameter-regression-fix-live-reliability-acceptance-failed",
+  "sourceCommit": "84dfa22121e1f7d955431d70e604ff603eaf7ee0",
+  "sourceMergedAndPushedToMain": true,
+  "scope": "Correct unsupported reasoning-parameter injection during finalization; review recurrent failures and document a durable conversation design.",
+  "incident": {
+    "failedReceiptId": "ai-chat-request-d325f001-54ea-4f8c-a962-3baf35bd561d",
+    "auditRequestId": "e03b0a15-c557-49b5-ba87-85b87e39464f",
+    "admittedAt": "2026-09-10T09:12:25.996335+08:00",
+    "completedAt": "2026-09-10T09:14:44.842867+08:00",
+    "providerMilliseconds": [
+      43453,
+      29421,
+      59718,
+      1375
+    ],
+    "firstThreeProviderTurnsSucceeded": true,
+    "toolsSucceeded": true,
+    "fourthProviderTurnFailed": "provider_error",
+    "screenshotHttpStatus": 400,
+    "priorRelease": "20260909T165119Z-57c98600b9650dbc",
+    "priorRegressingCommit": "796ba299bc46f46b98f7f9a333637bc73b4284e0",
+    "subsequentSameQuestionSucceededReceiptId": "ai-chat-request-e1d83462-4311-4da1-85b2-7fa02c3526c6",
+    "historicalProviderErrorBodyAvailable": false
+  },
+  "rootCause": {
+    "knownEndpoint": "https://ark.cn-beijing.volces.com/api/plan/v3",
+    "model": "glm-5.2",
+    "savedReasoningMode": "auto",
+    "priorObservedUnsupportedParameter": "thinking.type=disabled",
+    "regression": "Previous repair inferred endpoint capability from the model name and forced disabled during final turns, contradicting the existing September 9 endpoint record.",
+    "reproduction": "An isolated endpoint fixture rejecting disabled thinking failed with HTTP 400 on the pre-fix code at the fourth dispatch using remaining budgets 260/216/182/122; it passes without an injected parameter after the fix.",
+    "confidenceBoundary": "Historical failure discarded its HTTP body; causal attribution uses documented endpoint rejection, code, matching audit timings and deterministic reproduction, not a recovered upstream error message."
+  },
+  "checks": {
+    "djangoAi": {
+      "total": 93,
+      "passed": 92,
+      "skipped": 1,
+      "failed": 0
+    },
+    "node": {
+      "total": 2064,
+      "passed": 2042,
+      "skipped": 22,
+      "failed": 0
+    },
+    "renderedBuild": {
+      "passed": 20,
+      "failed": 0
+    },
+    "productionBuild": "passed",
+    "backendBoundary": "no violations",
+    "lint": {
+      "errors": 0,
+      "warnings": 9
+    },
+    "migrationDryRun": "No changes detected",
+    "typecheck": "Not repeated: no TypeScript changes; prior full-repository baseline had 142 diagnostics, not claimed clean.",
+    "review": "Local diff and endpoint/phase failure-path review; no subagents used."
+  },
+  "safeguards": {
+    "savedModelConfigUnchanged": true,
+    "defaultModelUnchanged": true,
+    "noAutomaticRetryOfHttpOrUnknownNetworkFailures": true,
+    "onlyKnownCompletedEmptyResponsesMayFinalizeOnceWithinExistingLimits": true,
+    "noSchemaOrRoleChange": true,
+    "noBusinessImport": true,
+    "noNotificationOrAutomationChange": true,
+    "auditContainsNoProviderBodyOrReasoningOrCredentials": true
+  },
+  "sourceFileSha256": {
+    "backend/ai_assistant/chat.py": "809d47a25187814422c1c650186ff3bf9c7dcc2fc600f185df3544e6426ea319",
+    "backend/ai_assistant/provider.py": "28a2b7a9edeaa73fd637f35514861fb345dc1be6dd3689929953dd51addc56d1",
+    "backend/ai_assistant/transport.py": "246a38c034d71c3c4c09d9dc0812cd09cc34caa0be2d72f31a36568f16797001"
+  },
+  "backups": {
+    "before": {
+      "status": "completed",
+      "backupId": "daily-20260910T013246Z-6aa8d27e46b4",
+      "backupDirectory": "D:\\teruisi-runtime\\django-sales\\backups\\postgres-daily\\daily-20260910T013246Z-6aa8d27e46b4",
+      "manifestSha256": "3bb76e55a592157ba2165b5084211940e9317808d56142b2a6b4d8d8631d8808",
+      "dumpSha256": "9565f13b51d61ec9ac2df77e7bb951c3f8b8f838d6d6d7b735fbe227f1a5a992",
+      "contentSha256": "af7a34ae147d2524c3a39567b3ea55b4f8ed47208d7cfda57dc6fdd7417dfbeb",
+      "completedAt": "2026-09-10T01:34:19.4626182+00:00",
+      "serviceStateChanged": false
+    },
+    "beforeVerify": {
+      "status": "completed",
+      "backupId": "daily-20260910T013246Z-6aa8d27e46b4",
+      "manifestSha256": "3bb76e55a592157ba2165b5084211940e9317808d56142b2a6b4d8d8631d8808",
+      "dumpSha256": "9565f13b51d61ec9ac2df77e7bb951c3f8b8f838d6d6d7b735fbe227f1a5a992",
+      "contentSha256": "af7a34ae147d2524c3a39567b3ea55b4f8ed47208d7cfda57dc6fdd7417dfbeb",
+      "serviceStateChanged": false
+    },
+    "restoreCompatibility": "Existing September 9 isolated 46-table restore d093ce61b8a4; unchanged schema/roles/backup helpers. No new isolated restore claimed.",
+    "after": {
+      "status": "completed",
+      "backupId": "daily-20260910T015724Z-1c6085c6d859",
+      "backupDirectory": "D:\\teruisi-runtime\\django-sales\\backups\\postgres-daily\\daily-20260910T015724Z-1c6085c6d859",
+      "manifestSha256": "bc4741f2aac214e93026eb4a6f2232b74909252589c642a36fe46dfd4e583bbb",
+      "dumpSha256": "e2322165c6ef791de71368a342e712a462d2deeb3020ac1cc092815b67744046",
+      "contentSha256": "f977ac110cbedb044b95e15cabf8ef685e9c55f4ef50401c7397381793ebce31",
+      "completedAt": "2026-09-10T01:58:50.3015565+00:00",
+      "serviceStateChanged": false
+    },
+    "afterVerify": {
+      "status": "completed",
+      "backupId": "daily-20260910T015724Z-1c6085c6d859",
+      "manifestSha256": "bc4741f2aac214e93026eb4a6f2232b74909252589c642a36fe46dfd4e583bbb",
+      "dumpSha256": "e2322165c6ef791de71368a342e712a462d2deeb3020ac1cc092815b67744046",
+      "contentSha256": "f977ac110cbedb044b95e15cabf8ef685e9c55f4ef50401c7397381793ebce31",
+      "serviceStateChanged": false
+    },
+    "controlMetadataEqual": {
+      "accessControl": true,
+      "customerServiceRevisions": true,
+      "customerServiceWriteAuthority": true,
+      "erpReferenceWriteAuthority": true,
+      "inventoryRevisions": true,
+      "inventoryWriteAuthority": true,
+      "marketRevisions": true,
+      "marketWriteAuthority": true,
+      "migrations": true,
+      "netshopRevisions": true,
+      "netshopWriteAuthority": true,
+      "productsRevisions": true,
+      "productsWriteAuthority": true,
+      "revisions": true,
+      "workflowOperationsWriteAuthority": true,
+      "workflowRevisions": true,
+      "workflowWriteAuthority": true,
+      "writeAuthority": true
+    },
+    "comparisonBoundary": "Compared migration, access-control, non-AI revisions and authority metadata. No full-database row-level comparison or fresh restore claimed; normal AI test receipts/audits changed.",
+    "aiAuthorityUnchanged": {
+      "authorityEpoch": true,
+      "cutoverId": true,
+      "migrationRunId": true,
+      "sourceDigest": true,
+      "status": true
+    }
+  },
+  "preStop": {
+    "helper": {
+      "ok": true,
+      "busy": false,
+      "activeWorkflow": null
+    },
+    "n8nNonterminal": 0,
+    "aiCurrentPrincipal": {
+      "rows_ai_chat_request_receipts": {
+        "rowCount": 0,
+        "hasMore": false,
+        "keys": [
+          "dataset",
+          "schemaVersion",
+          "columns",
+          "rows",
+          "returned",
+          "total",
+          "hasMore",
+          "truncated",
+          "truncatedFields",
+          "cellWindows",
+          "consistency",
+          "queriedAt",
+          "dataCutoffDate",
+          "sourceDomain",
+          "nextCursor"
+        ]
+      },
+      "rows_ai_agent_jobs": {
+        "rowCount": 0,
+        "hasMore": false,
+        "keys": [
+          "dataset",
+          "schemaVersion",
+          "columns",
+          "rows",
+          "returned",
+          "total",
+          "hasMore",
+          "truncated",
+          "truncatedFields",
+          "cellWindows",
+          "consistency",
+          "queriedAt",
+          "dataCutoffDate",
+          "sourceDomain",
+          "nextCursor"
+        ]
+      },
+      "rows_ai_workflow_runs": {
+        "rowCount": 0,
+        "hasMore": false,
+        "keys": [
+          "dataset",
+          "schemaVersion",
+          "columns",
+          "rows",
+          "returned",
+          "total",
+          "hasMore",
+          "truncated",
+          "truncatedFields",
+          "cellWindows",
+          "consistency",
+          "queriedAt",
+          "dataCutoffDate",
+          "sourceDomain",
+          "nextCursor"
+        ]
+      },
+      "rows_ai_space_jobs": {
+        "rowCount": 0,
+        "hasMore": false,
+        "keys": [
+          "dataset",
+          "schemaVersion",
+          "columns",
+          "rows",
+          "returned",
+          "total",
+          "hasMore",
+          "truncated",
+          "truncatedFields",
+          "cellWindows",
+          "consistency",
+          "queriedAt",
+          "dataCutoffDate",
+          "sourceDomain",
+          "nextCursor"
+        ]
+      },
+      "rows_ai_space_job_items": {
+        "rowCount": 0,
+        "hasMore": false,
+        "keys": [
+          "dataset",
+          "schemaVersion",
+          "columns",
+          "rows",
+          "returned",
+          "total",
+          "hasMore",
+          "truncated",
+          "truncatedFields",
+          "cellWindows",
+          "consistency",
+          "queriedAt",
+          "dataCutoffDate",
+          "sourceDomain",
+          "nextCursor"
+        ]
+      },
+      "rows_ai_agent_provider_dispatches": {
+        "rowCount": 0,
+        "hasMore": false,
+        "keys": [
+          "dataset",
+          "schemaVersion",
+          "columns",
+          "rows",
+          "returned",
+          "total",
+          "hasMore",
+          "truncated",
+          "truncatedFields",
+          "cellWindows",
+          "consistency",
+          "queriedAt",
+          "dataCutoffDate",
+          "sourceDomain",
+          "nextCursor"
+        ]
+      },
+      "rows_ai_agent_tool_dispatches": {
+        "rowCount": 0,
+        "hasMore": false,
+        "keys": [
+          "dataset",
+          "schemaVersion",
+          "columns",
+          "rows",
+          "returned",
+          "total",
+          "hasMore",
+          "truncated",
+          "truncatedFields",
+          "cellWindows",
+          "consistency",
+          "queriedAt",
+          "dataCutoffDate",
+          "sourceDomain",
+          "nextCursor"
+        ]
+      }
+    },
+    "ready": {
+      "ok": true,
+      "backend": "django-postgresql",
+      "unavailableServices": [],
+      "status": "ready"
+    }
+  },
+  "limitations": [
+    "Async durable analysis tasks and deterministic data answer cards are a documented proposal, not implemented by this hotfix.",
+    "Contract fixtures simulate the documented Ark rejection; they are not live provider calls.",
+    "This release cannot guarantee the external model will never time out or return empty output.",
+    "Live GLM acceptance still timed out at 120 seconds during final generation. This hotfix must not be described as making the entire AI system reliable or all original questions successful.",
+    "The configured Doubao comparison also failed: it requested an unregistered tool during the last no-tools turn. No global model switch or complete stability claim is justified by this test."
+  ],
+  "deployment": {
+    "plan": {
+      "status": "planned",
+      "version": "teruisi-local-worker-release-rotation-plan-v1",
+      "planSha256": "9c576f89e98dbc896def7ca3ad4e12b74136467528b013a9bd764ddebe1754f7",
+      "planPath": "D:\\teruisi-runtime\\teruisi-worker-sales\\state\\worker-release-rotation-plans\\9c576f89e98dbc896def7ca3ad4e12b74136467528b013a9bd764ddebe1754f7.json",
+      "predecessorReleaseId": "20260909T165119Z-57c98600b9650dbc",
+      "candidateReleaseId": "20260910T013929Z-8383c5cdd38757ab",
+      "candidateManifestSha256": "cb5c7143faee9614e3b4875ece2658abebb406493984479624b69ba4d1cb6a5c",
+      "candidateGuardReceiptSha256": "a6b3d87b267a39bde02121032997f5eeda8dd1157a7ef2f48141690bbf232339",
+      "cutoverId": "sales-pg-20260829T204417Z-d9896e904d8092cb"
+    },
+    "activation": {
+      "status": "activated",
+      "version": "teruisi-local-worker-release-successor-v1",
+      "planSha256": "9c576f89e98dbc896def7ca3ad4e12b74136467528b013a9bd764ddebe1754f7",
+      "predecessorReleaseId": "20260909T165119Z-57c98600b9650dbc",
+      "releaseId": "20260910T013929Z-8383c5cdd38757ab",
+      "manifestPath": "D:\\teruisi-runtime\\teruisi-worker-sales\\releases\\20260910T013929Z-8383c5cdd38757ab\\deployment-manifest.json",
+      "manifestSha256": "cb5c7143faee9614e3b4875ece2658abebb406493984479624b69ba4d1cb6a5c",
+      "successorSha256": "48879d114c0ad9ffe0639b21eeb0cc0aaba391ea85345f26abc43a2d4ef7fb27",
+      "consumptionSha256": "1d1eb7b2f2fe2b55b9a46d151571e6bf2f61ec10a2abac836db6807004015fd5",
+      "startupBindingSha256": "deb2ddfbcb25426afa3914b271502e86d9e8b639d8982a453cc9d2b2d0fdd29b"
+    },
+    "djangoManifestSha256": "a43b626c2d903d09e49b1ddb51d63df6b6ddb13f72e8fab1b6290f9e2237b09d",
+    "runtimeFiles": [
+      {
+        "path": "backend/ai_assistant/chat.py",
+        "sha256": "809d47a25187814422c1c650186ff3bf9c7dcc2fc600f185df3544e6426ea319",
+        "matched": true
+      },
+      {
+        "path": "backend/ai_assistant/provider.py",
+        "sha256": "28a2b7a9edeaa73fd637f35514861fb345dc1be6dd3689929953dd51addc56d1",
+        "matched": true
+      },
+      {
+        "path": "backend/ai_assistant/transport.py",
+        "sha256": "246a38c034d71c3c4c09d9dc0812cd09cc34caa0be2d72f31a36568f16797001",
+        "matched": true
+      }
+    ],
+    "workerSnapshotFiles": {
+      "backend/ai_assistant/chat.py": "809d47a25187814422c1c650186ff3bf9c7dcc2fc600f185df3544e6426ea319",
+      "backend/ai_assistant/provider.py": "28a2b7a9edeaa73fd637f35514861fb345dc1be6dd3689929953dd51addc56d1",
+      "backend/ai_assistant/transport.py": "246a38c034d71c3c4c09d9dc0812cd09cc34caa0be2d72f31a36568f16797001"
+    },
+    "ready": {
+      "ok": true,
+      "backend": "django-postgresql",
+      "unavailableServices": [],
+      "status": "ready"
+    },
+    "resolved": {
+      "status": "resolved",
+      "version": "teruisi-local-worker-effective-release-v1",
+      "releaseId": "20260910T013929Z-8383c5cdd38757ab",
+      "manifestPath": "D:\\teruisi-runtime\\teruisi-worker-sales\\releases\\20260910T013929Z-8383c5cdd38757ab\\deployment-manifest.json",
+      "manifestSha256": "cb5c7143faee9614e3b4875ece2658abebb406493984479624b69ba4d1cb6a5c",
+      "guardReceiptSha256": "a6b3d87b267a39bde02121032997f5eeda8dd1157a7ef2f48141690bbf232339",
+      "successorCount": 120,
+      "chainStateSha256": "931f0c4b5db49047c7ee3ce7a5ef413818df24606788aed4a0cd860d26b77964"
+    },
+    "start": {
+      "state": "Running",
+      "backendState": "Ready",
+      "workerState": "exact_release",
+      "releaseId": "20260910T013929Z-8383c5cdd38757ab",
+      "checkedAt": "2026-09-10T09:46:42.0518216+08:00"
+    }
+  },
+  "deployedModel": {
+    "id": "ai-model-2d82fdcf-221e-44c1-b277-3f59d99f8eba",
+    "name": "plan/glm-5.2",
+    "modelName": "glm-5.2",
+    "baseUrl": "https://ark.cn-beijing.volces.com/api/plan/v3",
+    "reasoningMode": "auto",
+    "maxTokens": 4096,
+    "timeoutMs": 120000,
+    "maxToolRounds": 56,
+    "maxTotalToolCalls": 62
+  },
+  "liveAcceptance": [
+    {
+      "model": "glm-5.2",
+      "modelId": "ai-model-2d82fdcf-221e-44c1-b277-3f59d99f8eba",
+      "scenario": "Exact original user question in a new sales conversation with the actual page context",
+      "receiptId": "ai-chat-request-451f44aa-0cef-49f8-b151-c549a2757ef8",
+      "clientRequestId": "441e23c2-adda-4808-b779-cb1aee0b789b",
+      "conversationId": "ai-conversation-4583a740-d431-4f34-b823-d96574aa616e",
+      "auditRequestId": "f7d9eed0-b2e7-4f03-9b6e-35b825929bf3",
+      "admittedAt": "2026-09-10T09:47:54.635107+08:00",
+      "completedAt": "2026-09-10T09:52:12.641026+08:00",
+      "elapsedSeconds": 258.006,
+      "status": "unknown",
+      "error": "provider_timeout",
+      "providerDurationMs": [
+        37797,
+        99187,
+        120016
+      ],
+      "dispatchCount": 3,
+      "finalTurnActuallyExercised": true,
+      "allThinkingParametersOmitted": true,
+      "http400Observed": false,
+      "nonemptyReplyPersisted": false,
+      "browserConfirmedTimeout": true,
+      "automaticallyReplayed": false
+    },
+    {
+      "receiptId": "ai-chat-request-1a4a0f26-c6ef-48c2-b43a-acf87aa3bf6e",
+      "clientRequestId": "16c6d11e-2683-44bb-8a88-32fe234b8545",
+      "conversationId": "ai-conversation-137ccce8-d3c1-4393-8929-1715ea83ad8c",
+      "modelId": "ai-model-9c289134-ea52-4732-a2c0-38f4f733c53c",
+      "status": "unknown",
+      "assistantMessageId": null,
+      "admittedAt": "2026-09-10T09:53:27.440227+08:00",
+      "completedAt": "2026-09-10T09:55:04.134415+08:00",
+      "errorCode": "ai_chat_result_unknown",
+      "dispatchCount": 6,
+      "model": "doubao-seed-2.1-turbo",
+      "scenario": "Same original question and sales context in a new conversation using an already configured model",
+      "auditRequestId": "cd0e7dda-474b-46fe-806f-3bd80d7df748",
+      "elapsedSeconds": 96.694,
+      "terminalToolError": "access_denied",
+      "unregisteredToolRequested": "get_system_dataset_schema",
+      "finalTurnActuallyExercised": true,
+      "finalToolsOffered": 0,
+      "nonemptyReplyPersisted": false,
+      "browserConfirmedToolRejection": true,
+      "automaticallyReplayed": false,
+      "globalDefaultChanged": false
+    }
+  ],
+  "liveAudit": [
+    {
+      "requestId": "f7d9eed0-b2e7-4f03-9b6e-35b825929bf3",
+      "tool": "ai_chat_provider",
+      "status": "started",
+      "durationMs": 0,
+      "errorCode": null,
+      "createdAt": "2026-09-10T09:47:54.737094+08:00",
+      "providerParameters": {
+        "modelId": "ai-model-2d82fdcf-221e-44c1-b277-3f59d99f8eba",
+        "ordinal": 1,
+        "phase": "query",
+        "thinkingParameter": "omitted",
+        "toolsOffered": 31
+      }
+    },
+    {
+      "requestId": "f7d9eed0-b2e7-4f03-9b6e-35b825929bf3",
+      "tool": "ai_chat_provider",
+      "status": "succeeded",
+      "durationMs": 37797,
+      "errorCode": null,
+      "createdAt": "2026-09-10T09:48:32.551101+08:00",
+      "providerParameters": {
+        "modelId": "ai-model-2d82fdcf-221e-44c1-b277-3f59d99f8eba",
+        "ordinal": 1,
+        "phase": "query",
+        "thinkingParameter": "omitted",
+        "toolsOffered": 31
+      }
+    },
+    {
+      "requestId": "f7d9eed0-b2e7-4f03-9b6e-35b825929bf3",
+      "tool": "get_data_freshness",
+      "status": "started",
+      "durationMs": 0,
+      "errorCode": null,
+      "createdAt": "2026-09-10T09:48:32.639166+08:00",
+      "providerParameters": null
+    },
+    {
+      "requestId": "f7d9eed0-b2e7-4f03-9b6e-35b825929bf3",
+      "tool": "get_data_freshness",
+      "status": "succeeded",
+      "durationMs": 309,
+      "errorCode": null,
+      "createdAt": "2026-09-10T09:48:32.925423+08:00",
+      "providerParameters": null
+    },
+    {
+      "requestId": "f7d9eed0-b2e7-4f03-9b6e-35b825929bf3",
+      "tool": "search_system_data",
+      "status": "started",
+      "durationMs": 0,
+      "errorCode": null,
+      "createdAt": "2026-09-10T09:48:32.983902+08:00",
+      "providerParameters": null
+    },
+    {
+      "requestId": "f7d9eed0-b2e7-4f03-9b6e-35b825929bf3",
+      "tool": "search_system_data",
+      "status": "succeeded",
+      "durationMs": 98,
+      "errorCode": null,
+      "createdAt": "2026-09-10T09:48:33.080854+08:00",
+      "providerParameters": null
+    },
+    {
+      "requestId": "f7d9eed0-b2e7-4f03-9b6e-35b825929bf3",
+      "tool": "ai_chat_provider",
+      "status": "started",
+      "durationMs": 0,
+      "errorCode": null,
+      "createdAt": "2026-09-10T09:48:33.105387+08:00",
+      "providerParameters": {
+        "modelId": "ai-model-2d82fdcf-221e-44c1-b277-3f59d99f8eba",
+        "ordinal": 2,
+        "phase": "query",
+        "thinkingParameter": "omitted",
+        "toolsOffered": 31
+      }
+    },
+    {
+      "requestId": "f7d9eed0-b2e7-4f03-9b6e-35b825929bf3",
+      "tool": "ai_chat_provider",
+      "status": "succeeded",
+      "durationMs": 99187,
+      "errorCode": null,
+      "createdAt": "2026-09-10T09:50:12.287881+08:00",
+      "providerParameters": {
+        "modelId": "ai-model-2d82fdcf-221e-44c1-b277-3f59d99f8eba",
+        "ordinal": 2,
+        "phase": "query",
+        "thinkingParameter": "omitted",
+        "toolsOffered": 31
+      }
+    },
+    {
+      "requestId": "f7d9eed0-b2e7-4f03-9b6e-35b825929bf3",
+      "tool": "search_system_data",
+      "status": "started",
+      "durationMs": 0,
+      "errorCode": null,
+      "createdAt": "2026-09-10T09:50:12.368165+08:00",
+      "providerParameters": null
+    },
+    {
+      "requestId": "f7d9eed0-b2e7-4f03-9b6e-35b825929bf3",
+      "tool": "search_system_data",
+      "status": "succeeded",
+      "durationMs": 231,
+      "errorCode": null,
+      "createdAt": "2026-09-10T09:50:12.599242+08:00",
+      "providerParameters": null
+    },
+    {
+      "requestId": "f7d9eed0-b2e7-4f03-9b6e-35b825929bf3",
+      "tool": "ai_chat_provider",
+      "status": "started",
+      "durationMs": 0,
+      "errorCode": null,
+      "createdAt": "2026-09-10T09:50:12.622241+08:00",
+      "providerParameters": {
+        "modelId": "ai-model-2d82fdcf-221e-44c1-b277-3f59d99f8eba",
+        "ordinal": 3,
+        "phase": "final",
+        "thinkingParameter": "omitted",
+        "toolsOffered": 0
+      }
+    },
+    {
+      "requestId": "f7d9eed0-b2e7-4f03-9b6e-35b825929bf3",
+      "tool": "ai_chat_provider",
+      "status": "failed",
+      "durationMs": 120016,
+      "errorCode": "provider_timeout",
+      "createdAt": "2026-09-10T09:52:12.635777+08:00",
+      "providerParameters": {
+        "modelId": "ai-model-2d82fdcf-221e-44c1-b277-3f59d99f8eba",
+        "ordinal": 3,
+        "phase": "final",
+        "thinkingParameter": "omitted",
+        "toolsOffered": 0
+      }
+    },
+    {
+      "requestId": "cd0e7dda-474b-46fe-806f-3bd80d7df748",
+      "tool": "ai_chat_provider",
+      "status": "started",
+      "durationMs": 0,
+      "errorCode": null,
+      "createdAt": "2026-09-10T09:53:27.499238+08:00",
+      "providerParameters": {
+        "modelId": "ai-model-9c289134-ea52-4732-a2c0-38f4f733c53c",
+        "ordinal": 1,
+        "phase": "query",
+        "thinkingParameter": "omitted",
+        "toolsOffered": 31
+      }
+    },
+    {
+      "requestId": "cd0e7dda-474b-46fe-806f-3bd80d7df748",
+      "tool": "ai_chat_provider",
+      "status": "succeeded",
+      "durationMs": 9797,
+      "errorCode": null,
+      "createdAt": "2026-09-10T09:53:37.292281+08:00",
+      "providerParameters": {
+        "modelId": "ai-model-9c289134-ea52-4732-a2c0-38f4f733c53c",
+        "ordinal": 1,
+        "phase": "query",
+        "thinkingParameter": "omitted",
+        "toolsOffered": 31
+      }
+    },
+    {
+      "requestId": "cd0e7dda-474b-46fe-806f-3bd80d7df748",
+      "tool": "get_data_freshness",
+      "status": "started",
+      "durationMs": 0,
+      "errorCode": null,
+      "createdAt": "2026-09-10T09:53:37.378045+08:00",
+      "providerParameters": null
+    },
+    {
+      "requestId": "cd0e7dda-474b-46fe-806f-3bd80d7df748",
+      "tool": "get_data_freshness",
+      "status": "succeeded",
+      "durationMs": 133,
+      "errorCode": null,
+      "createdAt": "2026-09-10T09:53:37.511847+08:00",
+      "providerParameters": null
+    },
+    {
+      "requestId": "cd0e7dda-474b-46fe-806f-3bd80d7df748",
+      "tool": "ai_chat_provider",
+      "status": "started",
+      "durationMs": 0,
+      "errorCode": null,
+      "createdAt": "2026-09-10T09:53:37.533861+08:00",
+      "providerParameters": {
+        "modelId": "ai-model-9c289134-ea52-4732-a2c0-38f4f733c53c",
+        "ordinal": 2,
+        "phase": "query",
+        "thinkingParameter": "omitted",
+        "toolsOffered": 31
+      }
+    },
+    {
+      "requestId": "cd0e7dda-474b-46fe-806f-3bd80d7df748",
+      "tool": "ai_chat_provider",
+      "status": "succeeded",
+      "durationMs": 11610,
+      "errorCode": null,
+      "createdAt": "2026-09-10T09:53:49.143423+08:00",
+      "providerParameters": {
+        "modelId": "ai-model-9c289134-ea52-4732-a2c0-38f4f733c53c",
+        "ordinal": 2,
+        "phase": "query",
+        "thinkingParameter": "omitted",
+        "toolsOffered": 31
+      }
+    },
+    {
+      "requestId": "cd0e7dda-474b-46fe-806f-3bd80d7df748",
+      "tool": "search_system_data",
+      "status": "started",
+      "durationMs": 0,
+      "errorCode": null,
+      "createdAt": "2026-09-10T09:53:49.182041+08:00",
+      "providerParameters": null
+    },
+    {
+      "requestId": "cd0e7dda-474b-46fe-806f-3bd80d7df748",
+      "tool": "search_system_data",
+      "status": "succeeded",
+      "durationMs": 87,
+      "errorCode": null,
+      "createdAt": "2026-09-10T09:53:49.268929+08:00",
+      "providerParameters": null
+    },
+    {
+      "requestId": "cd0e7dda-474b-46fe-806f-3bd80d7df748",
+      "tool": "ai_chat_provider",
+      "status": "started",
+      "durationMs": 0,
+      "errorCode": null,
+      "createdAt": "2026-09-10T09:53:49.291591+08:00",
+      "providerParameters": {
+        "modelId": "ai-model-9c289134-ea52-4732-a2c0-38f4f733c53c",
+        "ordinal": 3,
+        "phase": "query",
+        "thinkingParameter": "omitted",
+        "toolsOffered": 31
+      }
+    },
+    {
+      "requestId": "cd0e7dda-474b-46fe-806f-3bd80d7df748",
+      "tool": "ai_chat_provider",
+      "status": "succeeded",
+      "durationMs": 47483,
+      "errorCode": null,
+      "createdAt": "2026-09-10T09:54:36.775363+08:00",
+      "providerParameters": {
+        "modelId": "ai-model-9c289134-ea52-4732-a2c0-38f4f733c53c",
+        "ordinal": 3,
+        "phase": "query",
+        "thinkingParameter": "omitted",
+        "toolsOffered": 31
+      }
+    },
+    {
+      "requestId": "cd0e7dda-474b-46fe-806f-3bd80d7df748",
+      "tool": "get_sales_category_analysis",
+      "status": "started",
+      "durationMs": 0,
+      "errorCode": null,
+      "createdAt": "2026-09-10T09:54:36.808699+08:00",
+      "providerParameters": null
+    },
+    {
+      "requestId": "cd0e7dda-474b-46fe-806f-3bd80d7df748",
+      "tool": "get_sales_category_analysis",
+      "status": "succeeded",
+      "durationMs": 1705,
+      "errorCode": null,
+      "createdAt": "2026-09-10T09:54:38.555409+08:00",
+      "providerParameters": null
+    },
+    {
+      "requestId": "cd0e7dda-474b-46fe-806f-3bd80d7df748",
+      "tool": "ai_chat_provider",
+      "status": "started",
+      "durationMs": 0,
+      "errorCode": null,
+      "createdAt": "2026-09-10T09:54:38.576406+08:00",
+      "providerParameters": {
+        "modelId": "ai-model-9c289134-ea52-4732-a2c0-38f4f733c53c",
+        "ordinal": 4,
+        "phase": "query",
+        "thinkingParameter": "omitted",
+        "toolsOffered": 31
+      }
+    },
+    {
+      "requestId": "cd0e7dda-474b-46fe-806f-3bd80d7df748",
+      "tool": "ai_chat_provider",
+      "status": "succeeded",
+      "durationMs": 11282,
+      "errorCode": null,
+      "createdAt": "2026-09-10T09:54:49.85504+08:00",
+      "providerParameters": {
+        "modelId": "ai-model-9c289134-ea52-4732-a2c0-38f4f733c53c",
+        "ordinal": 4,
+        "phase": "query",
+        "thinkingParameter": "omitted",
+        "toolsOffered": 31
+      }
+    },
+    {
+      "requestId": "cd0e7dda-474b-46fe-806f-3bd80d7df748",
+      "tool": "describe_system_datasets",
+      "status": "started",
+      "durationMs": 0,
+      "errorCode": null,
+      "createdAt": "2026-09-10T09:54:49.88964+08:00",
+      "providerParameters": null
+    },
+    {
+      "requestId": "cd0e7dda-474b-46fe-806f-3bd80d7df748",
+      "tool": "describe_system_datasets",
+      "status": "succeeded",
+      "durationMs": 83,
+      "errorCode": null,
+      "createdAt": "2026-09-10T09:54:50.011407+08:00",
+      "providerParameters": null
+    },
+    {
+      "requestId": "cd0e7dda-474b-46fe-806f-3bd80d7df748",
+      "tool": "ai_chat_provider",
+      "status": "started",
+      "durationMs": 0,
+      "errorCode": null,
+      "createdAt": "2026-09-10T09:54:50.032964+08:00",
+      "providerParameters": {
+        "modelId": "ai-model-9c289134-ea52-4732-a2c0-38f4f733c53c",
+        "ordinal": 5,
+        "phase": "query",
+        "thinkingParameter": "omitted",
+        "toolsOffered": 31
+      }
+    },
+    {
+      "requestId": "cd0e7dda-474b-46fe-806f-3bd80d7df748",
+      "tool": "ai_chat_provider",
+      "status": "succeeded",
+      "durationMs": 8735,
+      "errorCode": null,
+      "createdAt": "2026-09-10T09:54:58.761026+08:00",
+      "providerParameters": {
+        "modelId": "ai-model-9c289134-ea52-4732-a2c0-38f4f733c53c",
+        "ordinal": 5,
+        "phase": "query",
+        "thinkingParameter": "omitted",
+        "toolsOffered": 31
+      }
+    },
+    {
+      "requestId": "cd0e7dda-474b-46fe-806f-3bd80d7df748",
+      "tool": "get_system_dataset_records",
+      "status": "started",
+      "durationMs": 0,
+      "errorCode": null,
+      "createdAt": "2026-09-10T09:54:58.933369+08:00",
+      "providerParameters": null
+    },
+    {
+      "requestId": "cd0e7dda-474b-46fe-806f-3bd80d7df748",
+      "tool": "get_system_dataset_records",
+      "status": "failed",
+      "durationMs": 180,
+      "errorCode": "invalid_arguments",
+      "createdAt": "2026-09-10T09:54:58.961425+08:00",
+      "providerParameters": null
+    },
+    {
+      "requestId": "cd0e7dda-474b-46fe-806f-3bd80d7df748",
+      "tool": "ai_chat_provider",
+      "status": "started",
+      "durationMs": 0,
+      "errorCode": null,
+      "createdAt": "2026-09-10T09:54:58.982678+08:00",
+      "providerParameters": {
+        "modelId": "ai-model-9c289134-ea52-4732-a2c0-38f4f733c53c",
+        "ordinal": 6,
+        "phase": "final",
+        "thinkingParameter": "omitted",
+        "toolsOffered": 0
+      }
+    },
+    {
+      "requestId": "cd0e7dda-474b-46fe-806f-3bd80d7df748",
+      "tool": "ai_chat_provider",
+      "status": "succeeded",
+      "durationMs": 5139,
+      "errorCode": null,
+      "createdAt": "2026-09-10T09:55:04.125516+08:00",
+      "providerParameters": {
+        "modelId": "ai-model-9c289134-ea52-4732-a2c0-38f4f733c53c",
+        "ordinal": 6,
+        "phase": "final",
+        "thinkingParameter": "omitted",
+        "toolsOffered": 0
+      }
+    },
+    {
+      "requestId": "cd0e7dda-474b-46fe-806f-3bd80d7df748",
+      "tool": "get_system_dataset_schema",
+      "status": "denied",
+      "durationMs": 0,
+      "errorCode": "access_denied",
+      "createdAt": "2026-09-10T09:55:04.131397+08:00",
+      "providerParameters": null
+    }
+  ],
+  "liveAcceptancePassed": false,
+  "systemReadyAtCompletion": true
+}

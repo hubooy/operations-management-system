@@ -20,7 +20,7 @@ import {
   saveMarketImport,
 } from "@/lib/market/database";
 import { parseMarketRows } from "@/lib/market/parser";
-import { cacheMarketImages } from "@/lib/market/image-cache";
+import { createOrResumeMarketImageCacheJob } from "@/lib/market/image-cache-job";
 import { matchImportedMarketBrands, refreshSystemMarketBrandSeeds } from "@/lib/market/brand-seeds";
 import { refreshMarketSkuGmvTotals } from "@/lib/market/gmv-total";
 import { refreshMarketMasterIdentities } from "@/lib/market/master-identity";
@@ -28,28 +28,25 @@ import { marketImportRangeKey } from "@/lib/market/import-identity";
 
 export { parseMarketRows } from "@/lib/market/parser";
 
-function monthsInRange(startDate: string, endDate: string) {
-  const months: string[] = [];
-  const cursor = new Date(`${startDate.slice(0, 7)}-01T00:00:00Z`);
-  const endMonth = endDate.slice(0, 7);
-  while (cursor.toISOString().slice(0, 7) <= endMonth) {
-    months.push(cursor.toISOString().slice(0, 7));
-    cursor.setUTCMonth(cursor.getUTCMonth() + 1);
-  }
-  return months;
-}
-
-async function cacheImagesAfterImport(db: ReturnType<typeof getMarketDatabase>, batchId: string) {
+async function queueImagesAfterImport(db: ReturnType<typeof getMarketDatabase>, batchId: string, requestedBy?: string) {
   try {
-    return await cacheMarketImages({ db, batchId, limit: 4 });
+    return await createOrResumeMarketImageCacheJob(db, { batchId, requestedBy: requestedBy || "market-import" });
   } catch {
-    return { processed: 0, cachedThisRun: 0, failedThisRun: 0, total: 0, cached: 0, failed: 0, pending: 0, maintenanceFailed: true };
+    return {
+      id: "", status: "failed" as const, total: 0, discoveredCount: 0, discoveryComplete: false,
+      cached: 0, failed: 0, pending: 0, propagationPending: 0, processedCount: 0,
+      runCount: 0, errorMessage: "", maintenanceFailed: true,
+    };
   }
 }
 
-async function refreshBrandSeedsAfterImport(db: ReturnType<typeof getMarketDatabase>, actorEmail: string) {
+async function refreshBrandSeedsAfterImport(
+  db: ReturnType<typeof getMarketDatabase>,
+  actorEmail: string,
+  systemSeedSnapshot: Awaited<ReturnType<typeof matchImportedMarketBrands>>["systemSeedSnapshot"],
+) {
   try {
-    return await refreshSystemMarketBrandSeeds(db, actorEmail);
+    return await refreshSystemMarketBrandSeeds(db, actorEmail, { systemSeedSnapshot });
   } catch {
     return { discovered: 0, inserted: 0, refreshed: 0, disabled: 0, manualPreserved: 0, maintenanceFailed: true };
   }
@@ -97,36 +94,36 @@ export async function importMarketFile(input: {
     await rejectBeforeFingerprint("MARKET_PARSE_ERROR", message);
     throw error;
   }
-  let expectedMonths: string[];
-  try {
-    expectedMonths = monthsInRange(input.defaultStartDate, input.defaultEndDate);
-  } catch (error) {
-    const message = error instanceof Error ? error.message : "市场导入周期无效";
-    await rejectBeforeFingerprint("INVALID_MARKET_PERIOD", message);
-    throw error;
-  }
   const brandMatch = await matchImportedMarketBrands(db, parsed.rows);
-  const identityRanges = [...new Set(brandMatch.rows.map((row) => JSON.stringify({
+  const ranges = [...new Set(brandMatch.rows.map((row) => JSON.stringify({
     category: row.category,
     scope: row.scope,
     rankingDimension: row.rankingDimension,
+    priceBandFilter: row.priceBandFilter,
+    periodStart: row.periodStart,
+    periodEnd: row.periodEnd,
   })))].sort().map((value) => JSON.parse(value) as {
     category: string;
     scope: string;
     rankingDimension: string;
+    priceBandFilter: string;
+    periodStart: string;
+    periodEnd: string;
   });
-  if (brandMatch.rows.some((row) => !expectedMonths.includes(row.periodEnd.slice(0, 7)))) {
-    const message = "市场文件包含表单权威周期之外的月份，请修正导入周期后重试";
+  if (brandMatch.rows.some((row) => row.periodStart < input.defaultStartDate || row.periodEnd > input.defaultEndDate)) {
+    const message = "市场文件包含表单权威周期之外的日期，请修正导入周期后重试";
     await rejectBeforeFingerprint("MARKET_PERIOD_OUT_OF_RANGE", message);
     throw new Error(message);
   }
-  const ranges = identityRanges.flatMap((identity) => expectedMonths.map((month) => ({ ...identity, month })));
-  const replaceRangeKeys = ranges.map((range) => marketImportRangeKey({
+  // The persisted claim remains a stable month-level base lock so a daily
+  // backfill cannot race a monthly replacement.  The exact periods in
+  // `ranges` are used for content identity and fact replacement below.
+  const replaceRangeKeys = [...new Set(ranges.map((range) => marketImportRangeKey({
     category: range.category!,
     scope: range.scope!,
     rankingDimension: range.rankingDimension!,
-    month: range.month!,
-  }));
+    month: range.periodEnd.slice(0, 7),
+  })))];
   const fingerprint = await buildImportContentFingerprint({
     domain: "market",
     scope: { sourceType: input.sourceType, ranges },
@@ -135,6 +132,16 @@ export async function importMarketFile(input: {
     ignoredTopLevelKeys: ["sourceRowNumber", "naturalKey", "importRangeKey"],
   });
   const rangesJson = JSON.stringify(ranges);
+  const importReceipt = (batchId: string) => ({
+    batchId,
+    rawFileSha256: rawFileHash,
+    fileName: input.fileName,
+    fileSizeBytes: input.fileSizeBytes,
+    sourceType: input.sourceType,
+    rowCount: brandMatch.rows.length,
+    warningCount: parsed.warnings.length,
+    ranges,
+  });
   const readScopeOwnership = async () => {
     const current = await db.prepare(
       `SELECT last_import_batch_id AS batch_id, COUNT(*) AS row_count
@@ -144,7 +151,9 @@ export async function importMarketFile(input: {
          WHERE entry.category = json_extract(target.value, '$.category')
            AND entry.scope = json_extract(target.value, '$.scope')
            AND entry.ranking_dimension = json_extract(target.value, '$.rankingDimension')
-           AND substr(entry.period_end, 1, 7) = json_extract(target.value, '$.month')
+           AND entry.price_band_filter = json_extract(target.value, '$.priceBandFilter')
+           AND entry.period_start = json_extract(target.value, '$.periodStart')
+           AND entry.period_end = json_extract(target.value, '$.periodEnd')
        )
        GROUP BY last_import_batch_id
        ORDER BY last_import_batch_id`,
@@ -173,8 +182,19 @@ export async function importMarketFile(input: {
       outcome: "duplicate",
     });
     await repairLegacyDerivedCaches(db);
-    const imageCache = await cacheImagesAfterImport(db, currentBatch.id);
-    return { ok: true, status: "duplicate" as const, message: "全部标准化市场资料与当前范围一致，无需重复导入；已继续检查商品图片缓存", batch: currentBatch, imageCache };
+    const imageCacheJob = await queueImagesAfterImport(db, currentBatch.id, input.actorEmail);
+    return {
+      ok: true,
+      status: "duplicate" as const,
+      message: "全部标准化市场资料与当前范围一致，无需重复导入；图片缓存已交给后台任务",
+      batch: currentBatch,
+      importReceipt: importReceipt(currentBatch.id),
+      imageCacheJob,
+      imageCache: {
+        total: imageCacheJob.total, cached: imageCacheJob.cached, failed: imageCacheJob.failed,
+        pending: imageCacheJob.pending + imageCacheJob.propagationPending,
+      },
+    };
   }
   const fileHash = await buildImportAttemptHash({
     fingerprint,
@@ -187,6 +207,7 @@ export async function importMarketFile(input: {
   if (existing) {
     await db.batch([
       db.prepare("DELETE FROM market_import_staging_rows WHERE batch_id=?").bind(existing.id),
+      db.prepare("DELETE FROM market_import_identity_refresh_keys_v2 WHERE batch_id=?").bind(existing.id),
       db.prepare("DELETE FROM market_import_range_claims WHERE batch_id=?").bind(existing.id),
       db.prepare("DELETE FROM market_import_batches WHERE id=? AND status<>'completed'").bind(existing.id),
     ]);
@@ -245,18 +266,23 @@ export async function importMarketFile(input: {
     metadata: { fileName: input.fileName, fileSizeBytes: input.fileSizeBytes, actor: input.actorEmail, warnings: parsed.warnings },
     outcome: created ? "imported" : "duplicate",
   });
-  const [imageCache, brandSeedRefresh] = await Promise.all([
-    cacheImagesAfterImport(db, batch.id),
-    refreshBrandSeedsAfterImport(db, input.actorEmail?.trim() || "market-import"),
+  const [imageCacheJob, brandSeedRefresh] = await Promise.all([
+    queueImagesAfterImport(db, batch.id, input.actorEmail),
+    refreshBrandSeedsAfterImport(db, input.actorEmail?.trim() || "market-import", brandMatch.systemSeedSnapshot),
   ]);
   return {
     ok: true,
     status: created ? "imported" as const : "duplicate" as const,
     message: created
       ? `成功导入 ${batch.rowCount} 条市场商品数据，系统品牌种子自动匹配 ${brandMatch.summary.matched} 条`
-      : "全部标准化市场资料与当前范围一致，无需重复导入；已继续检查商品图片缓存",
+      : "全部标准化市场资料与当前范围一致，无需重复导入；图片缓存已交给后台任务",
     batch,
-    imageCache,
+    importReceipt: importReceipt(batch.id),
+    imageCacheJob,
+    imageCache: {
+      total: imageCacheJob.total, cached: imageCacheJob.cached, failed: imageCacheJob.failed,
+      pending: imageCacheJob.pending + imageCacheJob.propagationPending,
+    },
     brandSeedRefresh,
     brandMatch: brandMatch.summary,
   };

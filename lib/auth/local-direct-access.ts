@@ -3,6 +3,7 @@ export type LocalDirectAccessContext = {
   runtimeEnvironment: string | undefined;
   viteDevelopment: boolean;
   viteProduction: boolean;
+  nodeEnvironment?: string;
   localBuild?: boolean;
 };
 
@@ -10,6 +11,17 @@ export type LocalDirectAccessDecision =
   | "disabled"
   | "allowed"
   | "role_denied";
+
+export function isLoopbackRequestHost(value: string | null | undefined): boolean {
+  const input = value?.trim();
+  if (!input || /[\\/@]/.test(input)) return false;
+  try {
+    const hostname = new URL(`http://${input}`).hostname.toLowerCase().replace(/\.$/, "");
+    return hostname === "localhost" || hostname === "127.0.0.1" || hostname === "[::1]";
+  } catch {
+    return false;
+  }
+}
 
 /**
  * Local direct access is deliberately fail-closed. Besides an explicit opt-in,
@@ -26,8 +38,11 @@ export function decideLocalDirectAccess(
   const declaredDevelopment =
     context.runtimeEnvironment?.trim().toLowerCase() === "development";
   const verifiedDevelopment =
-    (context.viteDevelopment === true && context.viteProduction === false) ||
-    context.localBuild === true;
+    context.localBuild === true ||
+    (context.viteProduction !== true && (
+      context.viteDevelopment === true ||
+      context.nodeEnvironment?.trim().toLowerCase() === "development"
+    ));
 
   if (!enabled || !declaredDevelopment || !verifiedDevelopment) {
     return "disabled";

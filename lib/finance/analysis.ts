@@ -1,5 +1,6 @@
 import type { FinanceDatabase } from "./database";
 import type { FinanceTarget } from "./types";
+import { PublicApiError } from "@/lib/http/api-error";
 
 type FinanceMonthRow = {
   month: string;
@@ -25,6 +26,7 @@ type TargetRow = {
   id: string;
   period_type: FinanceTarget["periodType"];
   period_key: string;
+  platform: string;
   shop_name: string;
   category: string;
   manager: string;
@@ -34,8 +36,20 @@ type TargetRow = {
   inventory_cleanup_target_cents: number;
   promotion_fee_ratio_bps: number;
   stagnant_inventory_target_cents: number;
+  version: number;
   created_at: string;
   updated_at: string;
+};
+
+type TargetAggregateRow = {
+  period_type: "month" | "year";
+  sales_target_cents: number;
+  profit_target_cents: number;
+  small_margin_bps: number;
+  inventory_cleanup_target_cents: number;
+  promotion_fee_ratio_bps: number;
+  stagnant_inventory_target_cents: number;
+  target_count: number;
 };
 
 export type FinanceActualMetrics = {
@@ -59,8 +73,9 @@ export type FinanceActualMetrics = {
 export type FinanceAnalysisOptions = {
   requestedMonths?: string[];
   allMonths?: boolean;
+  fallbackToLatestCompletedMonth?: boolean;
   platformNames?: string[];
-  shopNames?: string[];
+  shopKeys?: string[];
 };
 
 export type FinanceTargetTotals = {
@@ -78,6 +93,10 @@ const metricKeys = [
   "gross_margin", "selling_expense_total", "small_profit", "small_margin",
   "other_expense_total", "profit", "profit_margin",
 ] as const;
+export const MAX_FINANCE_ANALYSIS_MONTHS = 24;
+export const MAX_FINANCE_MONTH_OPTIONS = 120;
+export const MAX_FINANCE_SHOP_OPTIONS = 500;
+export const MAX_FINANCE_PLATFORM_OPTIONS = 100;
 
 const emptyMetrics = (): FinanceActualMetrics => ({
   grossSalesCents: 0,
@@ -108,6 +127,100 @@ function isSelectableShopName(name: string) {
   if (/^分销[-—]/.test(compact)) return false;
   if (/^(?:[1-9]|1[0-2])月(?:项目费率)?$/.test(compact)) return false;
   return true;
+}
+
+export type FinanceShopOption = { key: string; name: string; platform: string };
+
+export class FinanceDimensionFilterError extends PublicApiError {
+  readonly invalidPlatforms: string[];
+  readonly invalidShops: FinanceShopOption[];
+  readonly incompatibleShops: FinanceShopOption[];
+
+  constructor({
+    message,
+    invalidPlatforms,
+    invalidShops,
+    incompatibleShops,
+  }: {
+    message: string;
+    invalidPlatforms: string[];
+    invalidShops: FinanceShopOption[];
+    incompatibleShops: FinanceShopOption[];
+  }) {
+    super(400, "invalid_request", message);
+    this.name = "FinanceDimensionFilterError";
+    this.invalidPlatforms = invalidPlatforms;
+    this.invalidShops = invalidShops;
+    this.incompatibleShops = incompatibleShops;
+  }
+}
+
+export function financeShopIdentityKey(platform: string, name: string) {
+  return JSON.stringify([platform, name]);
+}
+
+export function parseFinanceShopIdentityKey(value: string) {
+  try {
+    const parsed = JSON.parse(value) as unknown;
+    if (!Array.isArray(parsed) || parsed.length !== 2 || parsed.some((item) => typeof item !== "string")) return null;
+    const platform = parsed[0].trim();
+    const name = parsed[1].trim();
+    if (!platform || !name || platform.length > 100 || name.length > 100) return null;
+    return { key: financeShopIdentityKey(platform, name), platform, name };
+  } catch {
+    return null;
+  }
+}
+
+function normalizedRequestedNames(values: string[] | undefined, label: string) {
+  const normalized = [...new Set((values ?? []).map((value) => value.trim()).filter(Boolean))];
+  if (normalized.length > 50 || normalized.some((value) => value.length > 100)) {
+    throw new PublicApiError(400, "invalid_request", `${label}筛选项数量或长度超出限制。`);
+  }
+  return normalized;
+}
+
+export function resolveFinanceDimensionFilters(
+  allShopOptions: readonly FinanceShopOption[],
+  requestedPlatformNames?: string[],
+  requestedShopKeys?: string[],
+) {
+  const requestedPlatforms = normalizedRequestedNames(requestedPlatformNames, "平台");
+  const rawShopKeys = [...new Set((requestedShopKeys ?? []).map((value) => value.trim()).filter(Boolean))];
+  if (rawShopKeys.length > 50 || rawShopKeys.some((value) => value.length > 240)) {
+    throw new PublicApiError(400, "invalid_request", "店铺筛选项数量或长度超出限制。");
+  }
+  const requestedShops = rawShopKeys.map((value) => parseFinanceShopIdentityKey(value));
+  if (requestedShops.some((item) => item === null)) {
+    throw new PublicApiError(400, "invalid_request", "店铺筛选必须使用平台与店铺组成的稳定复合标识。");
+  }
+  const shopPairs = requestedShops.filter((item): item is FinanceShopOption => item !== null);
+  const knownShops = new Set(allShopOptions.map((item) => item.key));
+  const knownPlatforms = new Set(allShopOptions.map((item) => item.platform));
+  const invalidShops = shopPairs.filter((item) => !knownShops.has(item.key));
+  const invalidPlatforms = requestedPlatforms.filter((name) => !knownPlatforms.has(name));
+  const incompatibleShops = requestedPlatforms.length
+    ? shopPairs.filter((item) => !requestedPlatforms.includes(item.platform))
+    : [];
+  if (invalidShops.length || invalidPlatforms.length || incompatibleShops.length) {
+    const detail = [
+      ...(invalidPlatforms.length ? [`平台：${invalidPlatforms.join("、")}`] : []),
+      ...(invalidShops.length ? [`店铺：${invalidShops.map((item) => `${item.platform} · ${item.name}`).join("、")}`] : []),
+      ...(incompatibleShops.length ? [`店铺不属于所选平台：${incompatibleShops.map((item) => `${item.platform} · ${item.name}`).join("、")}`] : []),
+    ].join("；");
+    throw new FinanceDimensionFilterError({
+      message: `筛选项不存在或不属于当前财务期间（${detail}）。`,
+      invalidPlatforms,
+      invalidShops,
+      incompatibleShops,
+    });
+  }
+  return {
+    platformFilter: new Set(requestedPlatforms),
+    shopFilter: new Set(shopPairs.map((item) => item.key)),
+    shopPairs,
+    hasDimensionFilter: requestedPlatforms.length > 0 || shopPairs.length > 0,
+  };
 }
 
 function changeRate(current: number, comparison: number | null) {
@@ -184,15 +297,18 @@ function mapTarget(row: TargetRow): FinanceTarget {
     id: row.id,
     periodType: row.period_type,
     periodKey: row.period_key,
+    platform: row.platform,
     shopName: row.shop_name,
     category: row.category,
     manager: row.manager,
     salesTargetCents: Number(row.sales_target_cents),
     profitTargetCents: Number(row.profit_target_cents),
+    grossMarginBps: 0,
     smallMarginBps: Number(row.small_margin_bps),
     inventoryCleanupTargetCents: Number(row.inventory_cleanup_target_cents),
     promotionFeeRatioBps: Number(row.promotion_fee_ratio_bps),
     stagnantInventoryTargetCents: Number(row.stagnant_inventory_target_cents),
+    version: Number(row.version || 1),
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   };
@@ -217,6 +333,19 @@ function aggregateTargets(targets: FinanceTarget[]): FinanceTargetTotals {
   };
 }
 
+function mapTargetAggregate(row: TargetAggregateRow | undefined): FinanceTargetTotals {
+  if (!row) return aggregateTargets([]);
+  return {
+    salesTargetCents: Number(row.sales_target_cents ?? 0),
+    profitTargetCents: Number(row.profit_target_cents ?? 0),
+    smallMarginBps: Number(row.small_margin_bps ?? 0),
+    inventoryCleanupTargetCents: Number(row.inventory_cleanup_target_cents ?? 0),
+    promotionFeeRatioBps: Number(row.promotion_fee_ratio_bps ?? 0),
+    stagnantInventoryTargetCents: Number(row.stagnant_inventory_target_cents ?? 0),
+    targetCount: Number(row.target_count ?? 0),
+  };
+}
+
 function progress(actual: FinanceActualMetrics, target: FinanceTargetTotals) {
   return {
     sales: target.salesTargetCents > 0 ? actual.netSalesCents / target.salesTargetCents : null,
@@ -227,12 +356,36 @@ function progress(actual: FinanceActualMetrics, target: FinanceTargetTotals) {
 }
 
 export async function getFinanceAnalysis(db: FinanceDatabase, options: FinanceAnalysisOptions = {}) {
-  const monthResult = await db.prepare(
-    `SELECT month, source_file_name, imported_at, shop_count, subject_count
-     FROM finance_months WHERE status = 'completed' ORDER BY month`,
-  ).all<FinanceMonthRow>();
-  const months = monthResult.results;
+  const requestedMonths = [...new Set(options.requestedMonths ?? [])].sort();
+  if (requestedMonths.length > MAX_FINANCE_ANALYSIS_MONTHS) {
+    throw new PublicApiError(400, "invalid_request", `单次最多分析 ${MAX_FINANCE_ANALYSIS_MONTHS} 个财务月份。`);
+  }
+  if (requestedMonths.some((month) => !/^\d{4}-(0[1-9]|1[0-2])$/.test(month))) {
+    throw new PublicApiError(400, "invalid_request", "财务月份必须使用 YYYY-MM。");
+  }
+  const [monthResult, monthCount, requestedMonthResult] = await Promise.all([
+    db.prepare(
+      `SELECT month, source_file_name, imported_at, shop_count, subject_count
+       FROM finance_months WHERE status = 'completed'
+       ORDER BY month DESC LIMIT ?`,
+    ).bind(MAX_FINANCE_MONTH_OPTIONS + 1).all<FinanceMonthRow>(),
+    db.prepare("SELECT COUNT(*) AS total FROM finance_months WHERE status = 'completed'")
+      .first<{ total: number }>(),
+    requestedMonths.length
+      ? db.prepare(`SELECT month, source_file_name, imported_at, shop_count, subject_count
+          FROM finance_months WHERE status = 'completed'
+            AND month IN (SELECT CAST(value AS TEXT) FROM json_each(?))`)
+        .bind(JSON.stringify(requestedMonths)).all<FinanceMonthRow>()
+      : Promise.resolve({ results: [] as FinanceMonthRow[] }),
+  ]);
+  const monthByKey = new Map<string, FinanceMonthRow>();
+  monthResult.results.slice(0, MAX_FINANCE_MONTH_OPTIONS).forEach((row) => monthByKey.set(row.month, row));
+  requestedMonthResult.results.forEach((row) => monthByKey.set(row.month, row));
+  const months = [...monthByKey.values()].sort((left, right) => left.month.localeCompare(right.month));
   if (months.length === 0) {
+    if (requestedMonths.length && !options.fallbackToLatestCompletedMonth) {
+      throw new PublicApiError(400, "invalid_request", `以下财务月份尚未导入：${requestedMonths.join("、")}`);
+    }
     return {
       hasData: false,
       months: [],
@@ -246,11 +399,15 @@ export async function getFinanceAnalysis(db: FinanceDatabase, options: FinanceAn
     };
   }
   const monthKeys = months.map((item) => item.month);
-  const requestedMonths = [...new Set(options.requestedMonths ?? [])]
-    .filter((month) => monthKeys.includes(month))
-    .sort();
-  const selectedMonths = options.allMonths
-    ? monthKeys
+  const missingMonths = requestedMonths.filter((month) => !monthKeys.includes(month));
+  const fallbackApplied = Boolean(options.fallbackToLatestCompletedMonth && requestedMonths.length && missingMonths.length);
+  if (missingMonths.length && !fallbackApplied) {
+    throw new PublicApiError(400, "invalid_request", `以下财务月份尚未导入：${missingMonths.join("、")}`);
+  }
+  const selectedMonths = fallbackApplied
+    ? [monthKeys.at(-1)!]
+    : options.allMonths
+    ? monthKeys.slice(-MAX_FINANCE_ANALYSIS_MONTHS)
     : requestedMonths.length > 0
       ? requestedMonths
       : [monthKeys.at(-1)!];
@@ -263,59 +420,215 @@ export async function getFinanceAnalysis(db: FinanceDatabase, options: FinanceAn
   const yearAgoMonths = selectedMonths.map((month) => shiftMonth(month, -12));
   const previousPeriodAvailable = previousPeriodMonths.every((month) => monthKeys.includes(month));
   const yearAgoPeriodAvailable = yearAgoMonths.every((month) => monthKeys.includes(month));
-  const placeholders = monthKeys.map(() => "?").join(",");
-  const summaryResult = await db.prepare(
-    `SELECT month, metric_key, subject_name, scope_type, scope_name, group_name,
-            amount_cents, rate_bps, sort_order
+  const selectedYear = selectedMonth.slice(0, 4);
+  const yearMonths = monthKeys.filter((month) => month.startsWith(`${selectedYear}-`) && month <= selectedMonth);
+  const timelineMonths = selectedMonths.length === 1
+    ? monthKeys.filter((month) => month <= selectedMonth).slice(-MAX_FINANCE_ANALYSIS_MONTHS)
+    : selectedMonths;
+  const queryMonths = [...new Set([
+    ...selectedMonths,
+    ...(previousPeriodAvailable ? previousPeriodMonths : []),
+    ...(yearAgoPeriodAvailable ? yearAgoMonths : []),
+    ...yearMonths,
+    ...timelineMonths,
+  ])].sort();
+  const placeholders = queryMonths.map(() => "?").join(",");
+  const requestedPlatforms = normalizedRequestedNames(options.platformNames, "平台");
+  const requestedShopKeys = options.shopKeys ?? [];
+  const requestedShopPairs = requestedShopKeys.map((value) => parseFinanceShopIdentityKey(value));
+  if (requestedShopPairs.some((item) => item === null)) {
+    throw new PublicApiError(400, "invalid_request", "店铺筛选必须使用平台与店铺组成的稳定复合标识。");
+  }
+  const requestedShopPairValues = requestedShopPairs.filter((item): item is FinanceShopOption => item !== null);
+  const [shopOptionResult, shopOptionCount, platformOptionResult, platformOptionCount, requestedShopResult, requestedPlatformResult] = await Promise.all([
+    db.prepare(`SELECT scope_name, COALESCE(NULLIF(group_name, ''), '未分组') AS group_name
+      FROM finance_lines
+      WHERE section = 'summary' AND scope_type = 'shop' AND scope_name <> ''
+        AND month IN (${placeholders})
+      GROUP BY COALESCE(NULLIF(group_name, ''), '未分组'), scope_name
+      ORDER BY group_name COLLATE NOCASE, scope_name COLLATE NOCASE LIMIT ?`)
+      .bind(...queryMonths, MAX_FINANCE_SHOP_OPTIONS + 1).all<{ scope_name: string; group_name: string }>(),
+    db.prepare(`SELECT COUNT(*) AS total FROM (
+      SELECT COALESCE(NULLIF(group_name, ''), '未分组'), scope_name FROM finance_lines
+      WHERE section = 'summary' AND scope_type = 'shop' AND scope_name <> ''
+        AND month IN (${placeholders})
+      GROUP BY COALESCE(NULLIF(group_name, ''), '未分组'), scope_name
+    )`).bind(...queryMonths).first<{ total: number }>(),
+    db.prepare(`SELECT DISTINCT COALESCE(NULLIF(group_name, ''), '未分组') AS group_name
+      FROM finance_lines
+      WHERE section = 'summary' AND scope_type = 'shop' AND month IN (${placeholders})
+      ORDER BY group_name COLLATE NOCASE LIMIT ?`)
+      .bind(...queryMonths, MAX_FINANCE_PLATFORM_OPTIONS + 1).all<{ group_name: string }>(),
+    db.prepare(`SELECT COUNT(*) AS total FROM (
+      SELECT COALESCE(NULLIF(group_name, ''), '未分组')
+      FROM finance_lines
+      WHERE section = 'summary' AND scope_type = 'shop' AND month IN (${placeholders})
+      GROUP BY COALESCE(NULLIF(group_name, ''), '未分组')
+    )`).bind(...queryMonths).first<{ total: number }>(),
+    requestedShopPairValues.length
+      ? db.prepare(`SELECT scope_name, COALESCE(NULLIF(group_name, ''), '未分组') AS group_name
+          FROM finance_lines
+          WHERE section = 'summary' AND scope_type = 'shop' AND month IN (${placeholders})
+            AND EXISTS (SELECT 1 FROM json_each(?) selected_shop
+              WHERE json_extract(selected_shop.value, '$.platform') = COALESCE(NULLIF(group_name, ''), '未分组')
+                AND json_extract(selected_shop.value, '$.name') = scope_name)
+          GROUP BY COALESCE(NULLIF(group_name, ''), '未分组'), scope_name`)
+        .bind(...queryMonths, JSON.stringify(requestedShopPairValues)).all<{ scope_name: string; group_name: string }>()
+      : Promise.resolve({ results: [] as Array<{ scope_name: string; group_name: string }> }),
+    requestedPlatforms.length
+      ? db.prepare(`SELECT DISTINCT COALESCE(NULLIF(group_name, ''), '未分组') AS group_name
+          FROM finance_lines
+          WHERE section = 'summary' AND scope_type = 'shop' AND month IN (${placeholders})
+            AND COALESCE(NULLIF(group_name, ''), '未分组') IN (SELECT CAST(value AS TEXT) FROM json_each(?))`)
+        .bind(...queryMonths, JSON.stringify(requestedPlatforms)).all<{ group_name: string }>()
+      : Promise.resolve({ results: [] as Array<{ group_name: string }> }),
+  ]);
+  const knownDimensionOptions = [
+    ...shopOptionResult.results,
+    ...requestedShopResult.results,
+  ].filter((row) => isSelectableShopName(row.scope_name)).map((row) => {
+    const platform = row.group_name || "未分组";
+    return { key: financeShopIdentityKey(platform, row.scope_name), name: row.scope_name, platform };
+  });
+  requestedPlatformResult.results.forEach((row, index) => knownDimensionOptions.push({
+    key: financeShopIdentityKey(row.group_name, `__platform_${index}`),
+    name: `__platform_${index}`,
+    platform: row.group_name,
+  }));
+  const { shopFilter, shopPairs, platformFilter, hasDimensionFilter } = resolveFinanceDimensionFilters(
+    knownDimensionOptions,
+    requestedPlatforms,
+    requestedShopKeys,
+  );
+  const dimensionConditions = hasDimensionFilter ? ["scope_type = 'shop'"] : ["scope_type = 'business'"];
+  const dimensionBindings: unknown[] = [];
+  if (shopFilter.size) {
+    dimensionConditions.push(`EXISTS (SELECT 1 FROM json_each(?) selected_shop
+      WHERE json_extract(selected_shop.value, '$.platform') = COALESCE(NULLIF(group_name, ''), '未分组')
+        AND json_extract(selected_shop.value, '$.name') = scope_name)`);
+    dimensionBindings.push(JSON.stringify(shopPairs));
+  }
+  if (platformFilter.size) {
+    dimensionConditions.push("COALESCE(NULLIF(group_name, ''), '未分组') IN (SELECT CAST(value AS TEXT) FROM json_each(?))");
+    dimensionBindings.push(JSON.stringify([...platformFilter]));
+  }
+  const dimensionWhere = dimensionConditions.join(" AND ");
+  const [summaryResult, promotionResult, shopRankingResult] = await Promise.all([
+    db.prepare(
+    `SELECT month, metric_key, MAX(subject_name) AS subject_name,
+            'business' AS scope_type, '' AS scope_name, '' AS group_name,
+            COALESCE(SUM(amount_cents), 0) AS amount_cents,
+            NULL AS rate_bps, MIN(sort_order) AS sort_order
      FROM finance_lines
-     WHERE section = 'summary' AND scope_type IN ('business', 'shop')
+     WHERE section = 'summary' AND ${dimensionWhere}
        AND metric_key IN (${metricKeys.map(() => "?").join(",")})
        AND month IN (${placeholders})
-     ORDER BY month, scope_type, scope_name, sort_order`,
-  ).bind(...metricKeys, ...monthKeys).all<FinanceLineRow>();
-  const promotionResult = await db.prepare(
-    `SELECT month, scope_type, scope_name, group_name,
+     GROUP BY month, metric_key
+     ORDER BY month, sort_order`,
+    ).bind(...dimensionBindings, ...metricKeys, ...queryMonths).all<FinanceLineRow>(),
+    db.prepare(
+    `SELECT month, 'business' AS scope_type, '' AS scope_name, '' AS group_name,
             COALESCE(SUM(amount_cents), 0) AS amount_cents
      FROM finance_lines
-     WHERE section = 'kingdee' AND scope_type IN ('business', 'shop')
+     WHERE section = 'kingdee' AND ${dimensionWhere}
        AND subject_name LIKE '销售费用_推广费用_%'
        AND month IN (${placeholders})
-     GROUP BY month, scope_type, scope_name, group_name`,
-  ).bind(...monthKeys).all<{
-    month: string;
-    scope_type: "business" | "shop";
-    scope_name: string;
-    group_name: string;
-    amount_cents: number;
-  }>();
+     GROUP BY month`,
+    ).bind(...dimensionBindings, ...queryMonths).all<{
+      month: string;
+      scope_type: "business" | "shop";
+      scope_name: string;
+      group_name: string;
+      amount_cents: number;
+    }>(),
+    db.prepare(`SELECT scope_name, COALESCE(NULLIF(group_name, ''), '未分组') AS group_name,
+        COALESCE(SUM(amount_cents), 0) AS net_sales_cents
+      FROM finance_lines
+      WHERE section = 'summary' AND scope_type = 'shop' AND metric_key = 'net_sales'
+        AND month IN (${selectedMonths.map(() => "?").join(",")})
+        ${shopFilter.size ? `AND EXISTS (SELECT 1 FROM json_each(?) selected_shop
+          WHERE json_extract(selected_shop.value, '$.platform') = COALESCE(NULLIF(group_name, ''), '未分组')
+            AND json_extract(selected_shop.value, '$.name') = scope_name)` : ""}
+        ${platformFilter.size ? "AND COALESCE(NULLIF(group_name, ''), '未分组') IN (SELECT CAST(value AS TEXT) FROM json_each(?))" : ""}
+      GROUP BY COALESCE(NULLIF(group_name, ''), '未分组'), scope_name
+      ORDER BY net_sales_cents DESC, group_name COLLATE NOCASE, scope_name COLLATE NOCASE
+      LIMIT ?`)
+      .bind(
+        ...selectedMonths,
+        ...(shopFilter.size ? [JSON.stringify(shopPairs)] : []),
+        ...(platformFilter.size ? [JSON.stringify([...platformFilter])] : []),
+        MAX_FINANCE_SHOP_OPTIONS + 1,
+      ).all<{ scope_name: string; group_name: string; net_sales_cents: number }>(),
+  ]);
 
-  const shopOptionsByName = new Map<string, { name: string; platform: string }>();
-  summaryResult.results.filter((row) => row.scope_type === "shop").forEach((row) => {
+  const shopOptionsByKey = new Map<string, FinanceShopOption>();
+  shopOptionResult.results.slice(0, MAX_FINANCE_SHOP_OPTIONS).forEach((row) => {
     if (!isSelectableShopName(row.scope_name)) return;
-    if (!shopOptionsByName.has(row.scope_name)) {
-      shopOptionsByName.set(row.scope_name, { name: row.scope_name, platform: row.group_name || "未分组" });
-    }
+    const platform = row.group_name || "未分组";
+    const key = financeShopIdentityKey(platform, row.scope_name);
+    shopOptionsByKey.set(key, { key, name: row.scope_name, platform });
   });
-  const shopOptions = [...shopOptionsByName.values()].sort((left, right) => left.name.localeCompare(right.name, "zh-CN"));
-  const platforms = [...new Set(shopOptions.map((item) => item.platform))].sort((left, right) => left.localeCompare(right, "zh-CN"));
-  const shopFilter = new Set((options.shopNames ?? []).filter((name) => shopOptionsByName.has(name)));
-  const platformFilter = new Set((options.platformNames ?? []).filter((name) => platforms.includes(name)));
-  const hasDimensionFilter = shopFilter.size > 0 || platformFilter.size > 0;
+  const allShopOptions = shopRankingResult.results.slice(0, MAX_FINANCE_SHOP_OPTIONS)
+    .filter((row) => isSelectableShopName(row.scope_name))
+    .map((row) => {
+      const platform = row.group_name || "未分组";
+      return { key: financeShopIdentityKey(platform, row.scope_name), name: row.scope_name, platform };
+    });
+  const platforms = platformOptionResult.results.slice(0, MAX_FINANCE_PLATFORM_OPTIONS).map((row) => row.group_name);
+  requestedShopResult.results.forEach((row) => {
+    if (!isSelectableShopName(row.scope_name)) return;
+    const platform = row.group_name || "未分组";
+    const key = financeShopIdentityKey(platform, row.scope_name);
+    shopOptionsByKey.set(key, { key, name: row.scope_name, platform });
+  });
+  const shopOptions = [...shopOptionsByKey.values()].sort((left, right) => (
+    left.platform.localeCompare(right.platform, "zh-CN") || left.name.localeCompare(right.name, "zh-CN")
+  ));
   const matchesShop = (shopName: string, platformName: string) => (
-    (shopFilter.size === 0 || shopFilter.has(shopName))
+    (shopFilter.size === 0 || shopFilter.has(financeShopIdentityKey(platformName || "未分组", shopName)))
     && (platformFilter.size === 0 || platformFilter.has(platformName || "未分组"))
   );
 
+  const rankedShopPairs = allShopOptions.map((shop) => ({ platform: shop.platform, name: shop.name }));
+  const [rankedShopSummary, rankedShopPromotions] = rankedShopPairs.length
+    ? await Promise.all([
+      db.prepare(`SELECT month, metric_key, subject_name, scope_type, scope_name, group_name,
+            amount_cents, rate_bps, sort_order
+        FROM finance_lines
+        WHERE section = 'summary' AND scope_type = 'shop'
+          AND metric_key IN (${metricKeys.map(() => "?").join(",")})
+          AND month IN (${selectedMonths.map(() => "?").join(",")})
+          AND EXISTS (SELECT 1 FROM json_each(?) selected_shop
+            WHERE json_extract(selected_shop.value, '$.platform') = COALESCE(NULLIF(group_name, ''), '未分组')
+              AND json_extract(selected_shop.value, '$.name') = scope_name)
+        ORDER BY month, group_name, scope_name, sort_order`)
+        .bind(...metricKeys, ...selectedMonths, JSON.stringify(rankedShopPairs)).all<FinanceLineRow>(),
+      db.prepare(`SELECT month, scope_type, scope_name, group_name,
+            COALESCE(SUM(amount_cents), 0) AS amount_cents
+        FROM finance_lines
+        WHERE section = 'kingdee' AND scope_type = 'shop'
+          AND subject_name LIKE '销售费用_推广费用_%'
+          AND month IN (${selectedMonths.map(() => "?").join(",")})
+          AND EXISTS (SELECT 1 FROM json_each(?) selected_shop
+            WHERE json_extract(selected_shop.value, '$.platform') = COALESCE(NULLIF(group_name, ''), '未分组')
+              AND json_extract(selected_shop.value, '$.name') = scope_name)
+        GROUP BY month, scope_name, group_name`)
+        .bind(...selectedMonths, JSON.stringify(rankedShopPairs)).all<{
+          month: string; scope_type: "shop"; scope_name: string; group_name: string; amount_cents: number;
+        }>(),
+    ])
+    : [{ results: [] as FinanceLineRow[] }, { results: [] as Array<{ month: string; scope_type: "shop"; scope_name: string; group_name: string; amount_cents: number }> }];
+
   const businessRowsByMonth = new Map<string, FinanceLineRow[]>();
   const shopRowsByMonthAndName = new Map<string, FinanceLineRow[]>();
-  summaryResult.results.forEach((row) => {
+  [...summaryResult.results, ...rankedShopSummary.results].forEach((row) => {
     if (row.scope_type === "business") {
       const items = businessRowsByMonth.get(row.month) ?? [];
       items.push(row);
       businessRowsByMonth.set(row.month, items);
       return;
     }
-    const key = `${row.month}\u0000${row.scope_name}`;
+    const key = `${row.month}\u0000${row.group_name || "未分组"}\u0000${row.scope_name}`;
     const items = shopRowsByMonthAndName.get(key) ?? [];
     items.push(row);
     shopRowsByMonthAndName.set(key, items);
@@ -323,12 +636,12 @@ export async function getFinanceAnalysis(db: FinanceDatabase, options: FinanceAn
 
   const businessPromotions = new Map<string, number>();
   const shopPromotions = new Map<string, number>();
-  promotionResult.results.forEach((row) => {
+  [...promotionResult.results, ...rankedShopPromotions.results].forEach((row) => {
     if (row.scope_type === "business") {
       businessPromotions.set(row.month, (businessPromotions.get(row.month) ?? 0) + Number(row.amount_cents));
       return;
     }
-    const key = `${row.month}\u0000${row.scope_name}`;
+    const key = `${row.month}\u0000${row.group_name || "未分组"}\u0000${row.scope_name}`;
     shopPromotions.set(key, (shopPromotions.get(key) ?? 0) + Number(row.amount_cents));
   });
 
@@ -338,16 +651,8 @@ export async function getFinanceAnalysis(db: FinanceDatabase, options: FinanceAn
   });
 
   const actualByMonth = new Map<string, FinanceActualMetrics>();
-  monthKeys.forEach((month) => {
-    if (!hasDimensionFilter) {
-      actualByMonth.set(month, metricsFromRows(businessRowsByMonth.get(month) ?? [], businessPromotions.get(month) ?? 0));
-      return;
-    }
-    const matching = shopOptions
-      .filter((shop) => matchesShop(shop.name, shop.platform))
-      .map((shop) => shopActualByMonthAndName.get(`${month}\u0000${shop.name}`))
-      .filter((item): item is FinanceActualMetrics => Boolean(item));
-    actualByMonth.set(month, sumMetrics(matching));
+  queryMonths.forEach((month) => {
+    actualByMonth.set(month, metricsFromRows(businessRowsByMonth.get(month) ?? [], businessPromotions.get(month) ?? 0));
   });
 
   const sumPeriod = (periodMonths: string[]) => sumMetrics(periodMonths.map((month) => actualByMonth.get(month) ?? emptyMetrics()));
@@ -355,45 +660,143 @@ export async function getFinanceAnalysis(db: FinanceDatabase, options: FinanceAn
   const previous = previousPeriodAvailable ? sumPeriod(previousPeriodMonths) : null;
   const yearAgo = yearAgoPeriodAvailable ? sumPeriod(yearAgoMonths) : null;
   const selectedYears = [...new Set(selectedMonths.map((month) => month.slice(0, 4)))];
-  const selectedYear = selectedMonth.slice(0, 4);
-  const yearMonths = monthKeys.filter((month) => month.startsWith(`${selectedYear}-`) && month <= selectedMonth);
   const yearToDate = sumPeriod(yearMonths);
 
-  const targetResult = await db.prepare(
-    `SELECT id, period_type, period_key, shop_name, category, manager,
-            sales_target_cents, profit_target_cents, small_margin_bps,
-            inventory_cleanup_target_cents, promotion_fee_ratio_bps,
-            stagnant_inventory_target_cents, created_at, updated_at
-     FROM finance_targets`,
-  ).all<TargetRow>();
-  const matchesTargetDimension = (target: FinanceTarget) => {
-    if (!hasDimensionFilter) return true;
-    if (!target.shopName) return false;
-    const shop = shopOptionsByName.get(target.shopName);
-    return Boolean(shop && matchesShop(shop.name, shop.platform));
-  };
-  const targets = targetResult.results.map(mapTarget);
-  const monthlyTargetRows = targets.filter((item) => item.periodType === "month" && selectedMonths.includes(item.periodKey) && matchesTargetDimension(item));
-  const annualTargetRows = targets.filter((item) => item.periodType === "year" && selectedYears.includes(item.periodKey) && matchesTargetDimension(item));
-  const monthTargets = aggregateTargets(monthlyTargetRows);
-  const yearTargets = aggregateTargets(annualTargetRows);
+  const monthTargetPlaceholders = selectedMonths.map(() => "?").join(",");
+  const yearTargetPlaceholders = selectedYears.map(() => "?").join(",");
+  const legacyTargetPlatformSql = `(SELECT MIN(COALESCE(NULLIF(target_scope.group_name, ''), '未分组'))
+    FROM finance_lines target_scope
+    WHERE target_scope.scope_type = 'shop'
+      AND target_scope.scope_name = finance_targets_scoped.shop_name)`;
+  const compatibleTargetCondition = `(finance_targets_scoped.platform <> '' OR (
+    SELECT COUNT(DISTINCT COALESCE(NULLIF(target_scope.group_name, ''), '未分组'))
+    FROM finance_lines target_scope
+    WHERE target_scope.scope_type = 'shop'
+      AND target_scope.scope_name = finance_targets_scoped.shop_name
+  ) = 1)`;
+  const targetDimensionConditions: string[] = [];
+  const targetDimensionBindings: unknown[] = [];
+  if (shopFilter.size) {
+    targetDimensionConditions.push(`EXISTS (SELECT 1 FROM json_each(?) selected_shop
+      WHERE json_extract(selected_shop.value, '$.name') = finance_targets_scoped.shop_name
+        AND json_extract(selected_shop.value, '$.platform') = COALESCE(
+          NULLIF(finance_targets_scoped.platform, ''), ${legacyTargetPlatformSql}
+        ))`);
+    targetDimensionBindings.push(JSON.stringify(shopPairs));
+  }
+  if (platformFilter.size) {
+    targetDimensionConditions.push(`COALESCE(
+      NULLIF(finance_targets_scoped.platform, ''), ${legacyTargetPlatformSql}
+    ) IN (SELECT CAST(value AS TEXT) FROM json_each(?))`);
+    targetDimensionBindings.push(JSON.stringify([...platformFilter]));
+  }
+  const targetDimensionWhere = ` AND ${compatibleTargetCondition}${targetDimensionConditions.length ? ` AND ${targetDimensionConditions.join(" AND ")}` : ""}`;
+  const targetQueryBindings = [...selectedMonths, ...selectedYears, ...targetDimensionBindings];
+  const [targetResult, targetCount, targetAggregateResult, projectTargetResult, projectTargetCount, legacyTargetGap] = await Promise.all([
+    db.prepare(
+    `SELECT id, period_type, period_key, platform, shop_name, category, manager,
+             sales_target_cents, profit_target_cents, small_margin_bps,
+             inventory_cleanup_target_cents, promotion_fee_ratio_bps,
+             stagnant_inventory_target_cents,
+             COALESCE((SELECT version FROM finance_target_scoped_versions version_state
+               WHERE version_state.target_id = finance_targets_scoped.id), 1) AS version,
+             created_at, updated_at
+     FROM finance_targets_scoped
+     WHERE ((period_type = 'month' AND period_key IN (${monthTargetPlaceholders}))
+        OR (period_type = 'year' AND period_key IN (${yearTargetPlaceholders})))
+       ${targetDimensionWhere}
+     ORDER BY period_type, period_key DESC, platform, shop_name, category
+     LIMIT 1001`,
+    ).bind(...targetQueryBindings).all<TargetRow>(),
+    db.prepare(`SELECT COUNT(*) AS total FROM finance_targets_scoped
+      WHERE ((period_type = 'month' AND period_key IN (${monthTargetPlaceholders}))
+        OR (period_type = 'year' AND period_key IN (${yearTargetPlaceholders})))
+      ${targetDimensionWhere}`)
+      .bind(...targetQueryBindings).first<{ total: number }>(),
+    db.prepare(`SELECT period_type,
+        COALESCE(SUM(sales_target_cents), 0) AS sales_target_cents,
+        COALESCE(SUM(profit_target_cents), 0) AS profit_target_cents,
+        CASE WHEN SUM(sales_target_cents) > 0
+          THEN ROUND(SUM(small_margin_bps * MAX(0, sales_target_cents)) * 1.0 / SUM(sales_target_cents))
+          ELSE COALESCE(ROUND(AVG(NULLIF(small_margin_bps, 0))), 0) END AS small_margin_bps,
+        COALESCE(SUM(inventory_cleanup_target_cents), 0) AS inventory_cleanup_target_cents,
+        CASE WHEN SUM(sales_target_cents) > 0
+          THEN ROUND(SUM(promotion_fee_ratio_bps * MAX(0, sales_target_cents)) * 1.0 / SUM(sales_target_cents))
+          ELSE COALESCE(ROUND(AVG(NULLIF(promotion_fee_ratio_bps, 0))), 0) END AS promotion_fee_ratio_bps,
+        COALESCE(SUM(stagnant_inventory_target_cents), 0) AS stagnant_inventory_target_cents,
+        COUNT(*) AS target_count
+      FROM finance_targets_scoped
+      WHERE ((period_type = 'month' AND period_key IN (${monthTargetPlaceholders}))
+        OR (period_type = 'year' AND period_key IN (${yearTargetPlaceholders})))
+        ${targetDimensionWhere}
+      GROUP BY period_type`)
+      .bind(...targetQueryBindings).all<TargetAggregateRow>(),
+    db.prepare(
+      `SELECT id, period_type, period_key, platform, shop_name, category, manager,
+              sales_target_cents, profit_target_cents, small_margin_bps,
+              inventory_cleanup_target_cents, promotion_fee_ratio_bps,
+              stagnant_inventory_target_cents,
+              COALESCE((SELECT version FROM finance_target_scoped_versions version_state
+                WHERE version_state.target_id = finance_targets_scoped.id), 1) AS version,
+              created_at, updated_at
+       FROM finance_targets_scoped
+       WHERE period_type = 'project'
+       ORDER BY updated_at DESC, id DESC
+       LIMIT 100`,
+    ).all<TargetRow>(),
+    db.prepare("SELECT COUNT(*) AS total FROM finance_targets_scoped WHERE period_type = 'project'")
+      .first<{ total: number }>(),
+    db.prepare(`SELECT COUNT(*) AS total FROM finance_targets_scoped
+      WHERE platform = ''
+        AND ((period_type = 'month' AND period_key IN (${monthTargetPlaceholders}))
+          OR (period_type = 'year' AND period_key IN (${yearTargetPlaceholders})))
+        AND (SELECT COUNT(DISTINCT COALESCE(NULLIF(target_scope.group_name, ''), '未分组'))
+          FROM finance_lines target_scope
+          WHERE target_scope.scope_type = 'shop'
+            AND target_scope.scope_name = finance_targets_scoped.shop_name) <> 1`)
+      .bind(...selectedMonths, ...selectedYears).first<{ total: number }>(),
+  ]);
+  const targets = targetResult.results.slice(0, 1_000).map(mapTarget);
+  const projectTargets = projectTargetResult.results.map(mapTarget);
+  const monthTargets = mapTargetAggregate(targetAggregateResult.results.find((row) => row.period_type === "month"));
+  const yearTargets = mapTargetAggregate(targetAggregateResult.results.find((row) => row.period_type === "year"));
 
-  const expenseResult = await db.prepare(
-    `SELECT month, metric_key, subject_name, scope_type, scope_name, group_name,
-            amount_cents, rate_bps, sort_order
-     FROM finance_lines
-     WHERE section = 'kingdee' AND scope_type IN ('business', 'shop')
-       AND is_total = 0 AND month IN (${placeholders})
-     ORDER BY month, scope_type, scope_name, sort_order`,
-  ).bind(...monthKeys).all<FinanceLineRow>();
+  const [expenseNameResult, expenseSubjectCount] = await Promise.all([
+    db.prepare(`SELECT subject_name, ABS(COALESCE(SUM(amount_cents), 0)) AS magnitude
+      FROM finance_lines
+      WHERE section = 'kingdee' AND ${dimensionWhere}
+        AND is_total = 0 AND month IN (${selectedMonths.map(() => "?").join(",")})
+      GROUP BY subject_name
+      ORDER BY magnitude DESC, subject_name COLLATE NOCASE
+      LIMIT 501`)
+      .bind(...dimensionBindings, ...selectedMonths).all<{ subject_name: string; magnitude: number }>(),
+    db.prepare(`SELECT COUNT(DISTINCT subject_name) AS total
+      FROM finance_lines
+      WHERE section = 'kingdee' AND ${dimensionWhere}
+        AND is_total = 0 AND month IN (${selectedMonths.map(() => "?").join(",")})`)
+      .bind(...dimensionBindings, ...selectedMonths).first<{ total: number }>(),
+  ]);
+  const expenseSubjectNames = expenseNameResult.results.slice(0, 500).map((row) => row.subject_name);
+  const expenseResult = expenseSubjectNames.length
+    ? await db.prepare(
+      `SELECT month, '' AS metric_key, subject_name,
+              ${hasDimensionFilter ? "'shop'" : "'business'"} AS scope_type,
+              '' AS scope_name, '' AS group_name,
+              COALESCE(SUM(amount_cents), 0) AS amount_cents,
+              NULL AS rate_bps, MIN(sort_order) AS sort_order
+       FROM finance_lines
+       WHERE section = 'kingdee' AND ${dimensionWhere}
+         AND is_total = 0 AND month IN (${placeholders})
+         AND subject_name IN (SELECT CAST(value AS TEXT) FROM json_each(?))
+       GROUP BY month, subject_name
+       ORDER BY month, sort_order`,
+    ).bind(...dimensionBindings, ...queryMonths, JSON.stringify(expenseSubjectNames)).all<FinanceLineRow>()
+    : { results: [] as FinanceLineRow[] };
   const expenseTotals = (periodMonths: string[]) => {
     const period = new Set(periodMonths);
     const totals = new Map<string, { amount: number; sortOrder: number }>();
     expenseResult.results.forEach((row) => {
       if (!period.has(row.month)) return;
-      if (hasDimensionFilter) {
-        if (row.scope_type !== "shop" || !matchesShop(row.scope_name, row.group_name || "未分组")) return;
-      } else if (row.scope_type !== "business") return;
       const existing = totals.get(row.subject_name) ?? { amount: 0, sortOrder: row.sort_order };
       existing.amount += Number(row.amount_cents ?? 0);
       existing.sortOrder = Math.min(existing.sortOrder, row.sort_order);
@@ -409,7 +812,7 @@ export async function getFinanceAnalysis(db: FinanceDatabase, options: FinanceAn
     ...(previousExpenses?.keys() ?? []),
     ...(yearAgoExpenses?.keys() ?? []),
   ]);
-  const expenses = [...expenseNames].map((name) => {
+  const allExpenses = [...expenseNames].map((name) => {
     const currentAmount = currentExpenses.get(name)?.amount ?? 0;
     const previousAmount = previousExpenses ? previousExpenses.get(name)?.amount ?? 0 : null;
     const yearAgoAmount = yearAgoExpenses ? yearAgoExpenses.get(name)?.amount ?? 0 : null;
@@ -433,16 +836,21 @@ export async function getFinanceAnalysis(db: FinanceDatabase, options: FinanceAn
   })
     .filter((item) => item.current !== 0 || item.previous !== null || item.yearAgo !== null)
     .sort((left, right) => Math.abs(right.current) - Math.abs(left.current));
+  const expenses = allExpenses;
 
-  const shops = shopOptions.filter((shop) => matchesShop(shop.name, shop.platform)).map((shop) => {
+  const shops = allShopOptions.filter((shop) => matchesShop(shop.name, shop.platform)).map((shop) => {
     const actuals = selectedMonths
-      .map((month) => shopActualByMonthAndName.get(`${month}\u0000${shop.name}`))
+      .map((month) => shopActualByMonthAndName.get(`${month}\u0000${shop.platform}\u0000${shop.name}`))
       .filter((item): item is FinanceActualMetrics => Boolean(item));
     const actual = sumMetrics(actuals);
-    const targetRows = targets.filter((target) => target.periodType === "month" && selectedMonths.includes(target.periodKey) && target.shopName === shop.name);
+    const targetRows = targets.filter((target) => target.periodType === "month"
+      && selectedMonths.includes(target.periodKey)
+      && target.shopName === shop.name
+      && (target.platform === shop.platform || target.platform === ""));
     const target = aggregateTargets(targetRows);
     return {
       name: shop.name,
+      key: shop.key,
       groupName: shop.platform,
       manager: targetRows.find((item) => item.manager)?.manager ?? "",
       actual,
@@ -450,7 +858,8 @@ export async function getFinanceAnalysis(db: FinanceDatabase, options: FinanceAn
       progress: progress(actual, target),
     };
   }).filter((shop) => shop.actual.netSalesCents !== 0 || shop.actual.grossSalesCents !== 0 || shop.target.targetCount > 0)
-    .sort((left, right) => right.actual.netSalesCents - left.actual.netSalesCents);
+    .sort((left, right) => right.actual.netSalesCents - left.actual.netSalesCents)
+    .slice(0, MAX_FINANCE_SHOP_OPTIONS);
 
   const anomalies: Array<{ level: "critical" | "warning" | "info"; title: string; detail: string }> = [];
   if (current.profitCents < 0) anomalies.push({ level: "critical", title: "所选期间利润为负", detail: "建议优先检查销售费用、退货和异常成本科目。" });
@@ -474,9 +883,6 @@ export async function getFinanceAnalysis(db: FinanceDatabase, options: FinanceAn
   const periodLabel = selectedMonths.length === 1
     ? selectedMonth
     : `${selectedMonths[0]} 至 ${selectedMonths.at(-1)}（${selectedMonths.length}个月）`;
-  const timelineMonths = selectedMonths.length === 1
-    ? monthKeys.filter((month) => month <= selectedMonth)
-    : selectedMonths;
   return {
     hasData: true,
     months: months.map((item) => ({
@@ -486,6 +892,11 @@ export async function getFinanceAnalysis(db: FinanceDatabase, options: FinanceAn
       shopCount: Number(item.shop_count),
       subjectCount: Number(item.subject_count),
     })),
+    monthPagination: {
+      total: Number(monthCount?.total ?? 0),
+      returned: months.length,
+      truncated: monthResult.results.length > MAX_FINANCE_MONTH_OPTIONS,
+    },
     selectedMonth,
     selectedMonths,
     periodLabel,
@@ -498,15 +909,62 @@ export async function getFinanceAnalysis(db: FinanceDatabase, options: FinanceAn
     yearAgo,
     yearToDate,
     timeline: timelineMonths.map((month) => ({ month, ...(actualByMonth.get(month) ?? emptyMetrics()) })),
-    targets: { month: monthTargets, year: yearTargets, projects: targets.filter((item) => item.periodType === "project") },
+    targets: {
+      month: monthTargets,
+      year: yearTargets,
+      projects: projectTargets,
+      projectPagination: {
+        total: Number(projectTargetCount?.total ?? 0),
+        returned: projectTargets.length,
+        truncated: projectTargets.length < Number(projectTargetCount?.total ?? 0),
+      },
+      periodPagination: {
+        total: Number(targetCount?.total ?? 0),
+        returned: targets.length,
+        truncated: targetResult.results.length > 1_000,
+      },
+      legacyCompatibility: {
+        excluded: Number(legacyTargetGap?.total ?? 0),
+        reason: "旧目标缺少平台，仅在全部财务数据中店铺名称只属于一个平台时兼容；跨平台同名目标已停止参与 KPI。",
+      },
+    },
     progress: { month: monthProgress, year: progress(yearToDate, yearTargets) },
     expenses,
+    expensePagination: {
+      total: Number(expenseSubjectCount?.total ?? 0),
+      returned: expenses.length,
+      truncated: expenseNameResult.results.length > 500,
+    },
     shops,
+    shopPagination: {
+      total: Number(shopOptionCount?.total ?? 0),
+      returned: shops.length,
+      truncated: shopRankingResult.results.length > MAX_FINANCE_SHOP_OPTIONS,
+    },
     anomalies,
-    filters: { platforms, shops: shopOptions },
+    filters: {
+      platforms,
+      shops: shopOptions,
+      pagination: {
+        platforms: {
+          total: Number(platformOptionCount?.total ?? 0),
+          returned: platforms.length,
+          truncated: platforms.length < Number(platformOptionCount?.total ?? 0),
+        },
+        shops: {
+          total: Number(shopOptionCount?.total ?? 0),
+          returned: shopOptions.length,
+          truncated: shopOptions.length < Number(shopOptionCount?.total ?? 0),
+        },
+      },
+    },
     selection: {
       allMonths: Boolean(options.allMonths),
+      truncated: Boolean(options.allMonths && monthKeys.length > MAX_FINANCE_ANALYSIS_MONTHS),
+      availableMonthCount: Number(monthCount?.total ?? monthKeys.length),
       months: selectedMonths,
+      requestedMonths,
+      fallbackApplied,
       platforms: [...platformFilter],
       shops: [...shopFilter],
     },

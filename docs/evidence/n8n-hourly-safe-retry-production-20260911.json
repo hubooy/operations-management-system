@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-09-11T09:24:34.0138933+08:00",
+  "scope": "local-production-n8n-hourly-safe-retry",
+  "sourceCommit": "21d0f4413b2a58034184451f3472be22ce62151b",
+  "n8nVersion": "2.32.7",
+  "result": "adopted_with_natural-failure-runtime-proof_pending",
+  "preconditions": {
+    "nonterminalExecutions": 0,
+    "helperReady": true,
+    "helperBusy": false,
+    "targetWorkflowCount": 11,
+    "existingWorkflowCount": 17
+  },
+  "backup": {
+    "directory": "C:\\Users\\86137\\.n8n\\backups\\hourly-retry-20260911T0853",
+    "integrityCheck": "ok",
+    "workflowCount": 17,
+    "executionCount": 188,
+    "databaseSha256": "177a06e7e418ed50d1dfc0cf056e69e5677d4a019fff446257fc64399bf32686",
+    "walSha256": "252d7fa96c75ea0d7288f6bd76c36b1c7fda1e256b17d56058892ec63594db8f",
+    "shmSha256": "92980ecdf3863aab6dc216ee2c41b9fbaeaacaf16819f61ae5a8e5c425ec6969"
+  },
+  "deployment": {
+    "method": "official n8n import:workflow then publish:workflow while stopped",
+    "sharedErrorWorkflow": {
+      "id": "TeruisiHourlyRetry2026",
+      "versionId": "51947b7a-21ee-449f-9b62-57525dad7dfd",
+      "active": true,
+      "published": true,
+      "ownerMatchesTargets": true,
+      "nodeCount": 5,
+      "waitMinutes": 60
+    },
+    "targets": [
+      { "id": "J8kY2mQ5vR7sT4pN", "versionId": "e11b4c5e-dcd7-4517-b3ea-5f3cb4b8f2d7" },
+      { "id": "JdN8nSilentCopy2026", "versionId": "a441654e-eca1-4294-a15e-2f521549f0b4" },
+      { "id": "JdMarketSilentCopy2026", "versionId": "42822146-296a-47fd-b88f-235800517072" },
+      { "id": "JdPromotionDaily2026", "versionId": "b208d31a-c63e-442c-bd31-0f21bd8565ff" },
+      { "id": "JdPromotionCutMeat2026", "versionId": "987c4a50-b742-4b93-8f50-a140a187f92b" },
+      { "id": "M4xY8kQ2vR6sT9pC", "versionId": "c80b4f08-1595-45d5-9c95-27f12ee21471" },
+      { "id": "TmallLiliDaily2026", "versionId": "731ea89c-f4d4-44cc-92f9-a792aa532518" },
+      { "id": "TmallTuofengDaily2026", "versionId": "086f2403-3aee-4f06-bb6b-a4106b14d167" },
+      { "id": "TmallCuizhiwangDaily2026", "versionId": "eba8bc36-b4fb-47a5-bc8b-1daf43ad2ba8" },
+      { "id": "TmallMasituDaily2026", "versionId": "860137a9-75c2-489c-b2b5-d6fe58a612f5" },
+      { "id": "TmallYiyongDaily2026", "versionId": "077d6510-b1fa-4358-9c67-05fb701142e9" }
+    ],
+    "registeredPostWebhooks": 11,
+    "businessDefinitionDelta": "retry webhook node, retry connection, errorWorkflow setting, and retry policy metadata only",
+    "productionExecutionsCreated": 0
+  },
+  "runtime": {
+    "runtimeCommit": "4768af9c",
+    "listenAddress": "127.0.0.1",
+    "port": 5678,
+    "healthStatus": 200,
+    "scheduledTaskState": "Running",
+    "continuousHealthyObservationSeconds": 322,
+    "allTargetVersionsPublished": true,
+    "allTargetOwnersMatchSharedWorkflow": true,
+    "nonterminalExecutionsAfterRestart": 0
+  },
+  "runtimeCompatibility": {
+    "initialRestartIssue": "The pre-existing active NewProductWeeklyDingTalk2026 workflow could not load n8n-nodes-base.executeCommand because n8n v2 excludes it by default.",
+    "resolution": "The controlled launcher now excludes only n8n-nodes-base.localFileTrigger, preserving the existing Execute Command workflow without enabling Local File Trigger.",
+    "allActiveWorkflowsActivated": true,
+    "naturalScheduledExecutionAfterRestart": {
+      "id": 942,
+      "workflowId": "NewProductWeeklyDingTalk2026",
+      "status": "success",
+      "startedAt": "2026-09-11T09:20:00.033+08:00",
+      "stoppedAt": "2026-09-11T09:20:23.306+08:00",
+      "triggeredByDeployment": false
+    }
+  },
+  "compatibilityTemplates": [
+    { "id": "JdN8nM3uL7tI2026", "active": false, "definitionUnchanged": true },
+    { "id": "JdMarketDaily2026", "active": false, "definitionUnchanged": true }
+  ],
+  "verification": {
+    "focusedTests": { "passed": 6, "failed": 0 },
+    "businessNodesAndConnectionsUnchanged": true,
+    "errorClassifierNegativeCasesPassed": true,
+    "liveFailureInjectionPerformed": false,
+    "liveFailureInjectionReason": "A POST to a production target webhook would create a real full workflow execution and could cause platform clicks or imports.",
+    "pendingEvidence": "On the first natural retryable production failure, confirm that the shared error execution reaches waiting with a one-hour waitTill and later creates a new full webhook execution."
+  },
+  "artifacts": {
+    "directory": "D:\\codex-artifacts\\n8n-hourly-retry-production-20260911T0853",
+    "prestateSha256": "a5ec36afec203db7a1e124a68a52644565eb79334348cd0a62d6e6446d564c4f",
+    "poststateSha256": "0650f1887da516ffcb106df15ac2039cfe1c93453d4d7bf2e396493dbf825117"
+  },
+  "changesNotPerformed": {
+    "workerOrHelperDeployment": true,
+    "djangoDeployment": true,
+    "databaseMigrations": true,
+    "businessDataWrites": true,
+    "platformDownloadOrExportClicks": true
+  }
+}

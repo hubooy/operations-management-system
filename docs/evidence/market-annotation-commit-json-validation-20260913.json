@@ -1,0 +1,94 @@
+{
+  "date": "2026-09-13",
+  "status": "validated_candidate",
+  "baseCommit": "a3a05328503f82f38b61b9b7a94149500ce6ba6e",
+  "diagnosis": {
+    "source": "Local production market writer log; no business writes for diagnosis",
+    "action": "commit_selected",
+    "failuresAtShanghai": [
+      "2026-09-13 21:32:13",
+      "2026-09-13 21:32:37",
+      "2026-09-13 21:32:49",
+      "2026-09-13 22:57:58"
+    ],
+    "exception": "TypeError: Object of type datetime is not JSON serializable",
+    "location": "backend/market/annotations.py _commit -> MarketAnnotationCommitReceipt.before_json",
+    "trigger": "Existing formal annotation is updated, including same-image monthly candidates in one batch",
+    "publicStatus": 503,
+    "internalStatus": 500,
+    "oldCodeReproducedInIsolatedPostgres": true
+  },
+  "fix": {
+    "snapshotTimestampEncoding": "ISO 8601 with timezone and full microsecond precision",
+    "otherFieldTypesPreserved": true,
+    "emptyBeforeSnapshotForNewAnnotationPreserved": true,
+    "databaseMigration": false,
+    "permissionChanges": false,
+    "automaticWriteReplay": false
+  },
+  "validation": {
+    "postgresMarketTests": 55,
+    "isolatedRoleProbes": [
+      {
+        "role": "teruisi_market_reader",
+        "readQueries": true,
+        "claimComplete": false,
+        "commitExistingAnnotation": false,
+        "externalModelCalls": 0,
+        "negativePermissionsRejected": 5
+      },
+      {
+        "role": "teruisi_market_writer",
+        "readQueries": true,
+        "claimComplete": true,
+        "commitExistingAnnotation": true,
+        "externalModelCalls": 0,
+        "negativePermissionsRejected": 4
+      }
+    ],
+    "isolatedClusterStopped": true,
+    "unitTests": {
+      "total": 2167,
+      "pass": 2144,
+      "fail": 0,
+      "cancelled": 0,
+      "skip": 23,
+      "durationMs": 291701.2937
+    },
+    "buildDependentUnitTestsAfterBuild": {
+      "pass": 3,
+      "fail": 0,
+      "note": "These three artifact checks were skipped before dist existed; they passed after the isolated production build. Twenty legacy skips remain."
+    },
+    "renderedTests": {
+      "pass": 20,
+      "fail": 0
+    },
+    "build": "passed_in_isolated_worktree",
+    "lint": {
+      "errors": 0,
+      "preExistingWarnings": 11
+    },
+    "backendBoundary": {
+      "modules": 433,
+      "violations": 0
+    },
+    "marketMigrationDryRun": "No changes detected",
+    "regressions": [
+      "signed commit_selected with existing annotation and native timestamps",
+      "two monthly candidates update same annotation and preserve before snapshots",
+      "transport request replay and business idempotency do not increment versions again",
+      "second receipt failure rolls back annotation, prices, ranking, selection, revision, audit and request receipt",
+      "same request can retry after a rolled-back failure",
+      "operator commit denied",
+      "real isolated market writer executes claim, completion, review and commit under current grants"
+    ]
+  },
+  "limitations": [
+    "Writer HTTP connection-capacity warnings are separate observations; no capacity configuration was changed.",
+    "Master database list timeout remains outside this fix.",
+    "Browser automation connection unavailable; production verification will use controlled status, source-byte and read-only HTTP checks."
+  ],
+  "productionBusinessWrites": 0,
+  "paidModelCalls": 0
+}

@@ -1,0 +1,127 @@
+{
+  "status": "verified_success",
+  "businessDateShanghai": "2026-09-26",
+  "authorization": "用户批准归档已逐文件核验的旧 PostgreSQL 备份、完成独立恢复、短暂维护发布修复，并从原工作流完整测试一次五表下载与导入。",
+  "sourceAndRelease": {
+    "sourceCommit": "073d9619",
+    "branch": "codex/jackyun-dpapi-retry",
+    "predecessorReleaseId": "20260924T170238Z-67f8e2ddf8f93e16",
+    "rotationPlanSha256": "2a5f570e3f67d99fb3de2eff5abcaeeb3385c623e788ecef4608f2c2142239e6",
+    "releaseId": "20260925T213040Z-e45b1332207bc4cf",
+    "manifestSha256": "66175500bfdd495026f8452d3bd2225f90761fc96258d7016bddf9016f70de9b",
+    "successorSha256": "75b9490e4981cb88f15bcd17b5ec5ba9948ed62cf4c230cfbf29b182488db379",
+    "effectiveReleaseVerified": true,
+    "startupBindingVerified": true,
+    "djangoAppRedeployed": false,
+    "databaseMigrated": false,
+    "n8nRestarted": false
+  },
+  "retryRule": {
+    "localReadAttemptsMaximum": 3,
+    "localRetryWaitMs": [500, 1000],
+    "stageDiagnostics": ["binding_input", "binding_fields", "binding_paths", "binding_identity", "binding_local_path", "binding_vault_lookup", "missing", "path_integrity", "read"],
+    "hourlyRetryOnlyAfterCreateOnlyZeroEffectClosure": true,
+    "terminalErrorsPreserved": ["missing credential", "decryption or ACL failure", "platform password rejection", "captcha or challenge", "uncertain login submission", "export intent or any business-effect path"],
+    "historicalMidnightBindingRootCauseConfirmed": false,
+    "realRunExercisedRetryBranch": false
+  },
+  "n8nErrorWorkflow": {
+    "workflowId": "TeruisiHourlyRetry2026",
+    "previousPublishedVersionId": "f18ba655-9da5-4d66-a1a6-47ecdb5c07b7",
+    "publishedVersionId": "489d1a1f-4f50-4c27-aca7-fd496abc5191",
+    "activeVersionMatchesCurrent": true,
+    "previousClassifierSha256": "04b4f358772235a51fa3c6a28bd24e555a42a13d61bca6b146ffecea9810c79e",
+    "classifierSha256": "c65872107b3acd7a392d8e14248b0be0685816c7d1866e1d99d9620996870130",
+    "otherNodesAndConnectionsUnchanged": true
+  },
+  "storage": {
+    "archivedOldPostgresBackupDirectories": 25,
+    "archivedOldPostgresBackupFiles": 75,
+    "archivedOldPostgresBackupBytes": 17107399743,
+    "archivedOldPostgresBackupRoot": "E:\\TERUISI-candidate-artifacts\\jackyun-dpapi-retry-20260926\\archived-D-postgres-backups",
+    "eachArchivedFileMatchesExistingEBackupCopyByNameSizeAndSha256": true,
+    "dBackupDirectoriesImmediatelyAfterMove": 173,
+    "otherReversibleArchivesOnE": ["old unreferenced Worker staging", "four old worktree dependency directories", "two historical SQLite files"],
+    "currentProductionDatabaseMoved": false
+  },
+  "beforeBackup": {
+    "backupId": "daily-20260925T214142Z-9d049d201641",
+    "manifestSha256": "7650f080fccf8e56cae1663a99f82637e2051c924ae3a491ecb0f84c9460caf1",
+    "contentSha256": "3e41346a1fa730175df96e24e9638e3c8e0f4be434fb0604646e6fdb86d7d75a",
+    "officialVerifyCompleted": true,
+    "firstRestore": { "id": "d09fed1103ef", "status": "failed_disk_full", "isolatedDataCleaned": true, "productionDatabaseTouched": false },
+    "secondRestore": { "id": "7fde3717182f", "status": "failed_disk_full", "isolatedDataCleaned": true, "productionDatabaseTouched": false },
+    "finalIndependentRestore": { "id": "e8989622f9f8", "status": "completed", "contentSha256MatchesBackup": true, "isolatedDataRemoved": true, "isolatedPortClosed": true, "productionDatabaseTouched": false, "serviceStateChanged": false },
+    "archivedThreeFilesToEWithSha256Match": true
+  },
+  "historicalFailureClosure": {
+    "executionId": 4299,
+    "planSha256": "ebb4ea6f90dbdd3c1ae54d36b6e83de7b597c1114e5d3b03a2b8eb299acce564",
+    "reason": "audited_4299_dpapi_before_api_exports",
+    "businessEffectPathsAbsent": 4,
+    "createOnlyReceiptSha256": "e3d5b42831c1e3b1af0d18b53b54f71f87d0b7586f02178815c59036acdfe6c0",
+    "verifiedByFormalReadOnlyValidator": true,
+    "originalPlanActiveAndN8nFailurePreserved": true
+  },
+  "businessRun": {
+    "workflowId": "J8kY2mQ5vR7sT4pN",
+    "publishedVersionIdUnchanged": "91d35933-8b9f-4ae8-a444-cbd74ee64381",
+    "executionId": 4397,
+    "mode": "manual",
+    "status": "success",
+    "startedAtShanghai": "2026-09-26 08:13:00",
+    "stoppedAtShanghai": "2026-09-26 08:17:09",
+    "planPhase": "completed",
+    "salesStartDate": "2026-08-12",
+    "salesEndDate": "2026-09-25",
+    "snapshotDate": "2026-09-26",
+    "fullNodeChainPassed": ["A", "B", "C", "D", "E"]
+  },
+  "independentReadOnlyBatchVerification": {
+    "ok": true,
+    "modules": [
+      { "module": "products", "rowCount": 8523, "warningCount": 0, "batchId": "products:c5f2c0d91aa905c6c4aded28bc989544c99756b1124ed0f87753b1ff9b705755" },
+      { "module": "inventory", "rowCount": 23969, "warningCount": 6, "batchId": "926050ae744f5002cc653b3adc89852bc7424b8f682f8abb83a74d8c312445a8" },
+      { "module": "inventory_age", "rowCount": 5722, "warningCount": 0, "batchId": "inventory_age:2ad154023c158f7d052c4276adaa49167cdefeefaf5129eb5490b73383b38672" },
+      { "module": "sales", "rowCount": 39495, "warningCount": 117, "batchId": "3c2a5f9e0c60a39c1ac252c2126301167f1dfb80b443dc85c2bc5e446f67059c" },
+      { "module": "combos", "rowCount": 4454, "warningCount": 2, "batchId": "combos:544a352d7fb3c44496a195ea198bc38541fb0602b93cdcdd8f8853227ade4d54" }
+    ]
+  },
+  "salesFreshness": {
+    "authority": "django_postgresql",
+    "revision": "39:39",
+    "cutoffDate": "2026-09-25",
+    "expectedThroughDate": "2026-09-25",
+    "throughYesterday": true,
+    "latestBatchMatchesRun": true
+  },
+  "afterBackup": {
+    "backupId": "daily-20260926T002119Z-3410f961361e",
+    "manifestSha256": "ad6429dd40bed4cfeb8404fcb60d4af6766d2479cd1f7029c8b491da56ac3158",
+    "contentSha256": "22aaea6f3b80e99342c91b3eb0b337a62a82a2c2352697143f45344e304cafe1",
+    "officialVerifyCompleted": true,
+    "archivedThreeFilesToEWithSha256Match": true
+  },
+  "finalState": {
+    "system": "Running",
+    "backend": "Ready",
+    "worker": "exact_release",
+    "componentsReady": 12,
+    "helperReadyAndIdle": true,
+    "jackyunLockAbsent": true,
+    "dedicatedBrowserPortClosed": true,
+    "dingtalkSchedulerAndReceiverRunning": true,
+    "dingtalkConnected": true,
+    "n8nHealthyAndActive": true,
+    "watchdogNaturalRoundsSucceededAtShanghai": ["2026-09-26 08:24", "2026-09-26 08:26"]
+  },
+  "validation": {
+    "focusedTestsPassed": 45,
+    "focusedTestsFailed": 0,
+    "fullLintErrors": 0,
+    "fullLintExistingWarnings": 11,
+    "backendBoundaryViolations": 0,
+    "fullUnitBaselineFailures": ["finance route static dispatch count", "color-surface-subtle design token"]
+  },
+  "authorizationLimit": "This single release and business test do not grant future maintenance, credential changes, backup moves or manual workflow replay."
+}

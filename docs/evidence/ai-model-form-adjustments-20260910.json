@@ -1,0 +1,35 @@
+{
+  "date": "2026-09-10",
+  "status": "isolated_candidate_not_production_adopted",
+  "branch": "codex/ai-chat-workbench",
+  "testedBaseCommit": "4b1e08be43fbb5e39420019efc9849cdfb730f54",
+  "changes": {
+    "newModelMaxOutputTokens": 65536,
+    "newModelTaskTimeoutSeconds": 1000000,
+    "singleCallTimeoutControlRemoved": true,
+    "providerUsesTaskBudgetInsteadOfLegacyTimeout": true,
+    "customTemperatureInputOnlyShownWithinCustomTemperatureSetting": true,
+    "legacySettingsPreserved": true,
+    "cancellationClosesOwnedSocketIncludingHttpFileReferences": true
+  },
+  "validation": {
+    "postgresql": {"tests": 151, "passed": 151, "failed": 0, "isolatedPort": 55983, "clusterStopped": true},
+    "unit": {"tests": 2087, "passed": 2066, "failed": 0, "skipped": 21, "note": "One artifact freshness check ran before the concurrent build finished; separately rerun after build"},
+    "build": "passed",
+    "renderedWorker": {"tests": 20, "passed": 20},
+    "lint": {"errors": 0, "existingWarnings": 9},
+    "typescript": {"baselineDiagnostics": 142, "candidateDiagnostics": 142, "added": 0},
+    "backendBoundaryViolations": 0
+  },
+  "newDatabaseMigration": false,
+  "productionDeployment": false,
+  "productionWrites": false,
+  "productionServiceRestart": false,
+  "paidProviderCalls": 0,
+  "externalMessages": 0,
+  "limitations": [
+    "A 1000000-second budget is not a guarantee of an eleven-day browser/provider connection or a durable background task",
+    "Existing saved task budgets remain unchanged; pre-option models retain the legacy 260-second total budget",
+    "Other channels and model connection diagnostics retain their own enclosing budgets"
+  ]
+}

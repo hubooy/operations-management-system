@@ -166,6 +166,7 @@ export async function executeMarketDownloadTask(db: MarketSchemaDatabase, input:
             WHEN status='downloading' AND execution_token=? THEN status ELSE NULL END
             WHERE id=?`).bind(executionToken, task.id),
           db.prepare("DELETE FROM market_import_staging_rows WHERE batch_id=?").bind(batchId),
+          db.prepare("DELETE FROM market_import_identity_refresh_keys_v2 WHERE batch_id=?").bind(batchId),
           db.prepare("DELETE FROM market_import_range_claims WHERE batch_id=?").bind(batchId),
           db.prepare("DELETE FROM market_import_batches WHERE id=? AND status<>'completed'").bind(batchId),
         ]);

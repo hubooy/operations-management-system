@@ -167,6 +167,29 @@ test("workbook validation handles a single day, cross-month coverage, exact aggr
   assert.throws(() => validateJdProductDetailWorkbook(emptyId, "SKU", { startDate: "2026-07-01", endDate: "2026-07-01" }), /empty SKU/);
 });
 
+test("workbook validation rejects mixed dimensions and normalized impossible calendar days", () => {
+  const mixed = createXlsxWorkbookBytes([{ name: "data", rows: [
+    ["时间", "SKU", "SKU名称", "SPU"],
+    ["2026-07-01", "sku-1", "a", "spu-1"],
+  ] }]);
+  assert.throws(
+    () => validateJdProductDetailWorkbook(mixed, "SKU", { startDate: "2026-07-01", endDate: "2026-07-01" }),
+    /both SKU and SPU/,
+  );
+  const impossible = createXlsxWorkbookBytes([{ name: "data", rows: [
+    ["时间", "SKU", "SKU名称"],
+    ["2026-02-30", "sku-1", "a"],
+  ] }]);
+  assert.throws(
+    () => validateJdProductDetailWorkbook(impossible, "SKU", { startDate: "2026-02-28", endDate: "2026-03-02" }),
+    /invalid detail date/,
+  );
+  assert.throws(
+    () => validateJdProductDetailWorkbook(impossible, "SKU", { startDate: "2026-02-30", endDate: "2026-02-30" }),
+    /真实存在|自然日/,
+  );
+});
+
 test("atomically marks a newly downloaded SPU workbook and verifies its header", async () => {
   await withTempDirectory(async (directory) => {
     let now = Date.now();

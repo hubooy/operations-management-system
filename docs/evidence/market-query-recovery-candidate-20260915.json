@@ -1,0 +1,53 @@
+{
+  "status": "candidate_verified_pending_preview_acceptance",
+  "date": "2026-09-15",
+  "baseCommit": "fd6a7a8ea55acccfd2e1e37998205e2426095c25",
+  "branch": "codex/market-query-recovery-20260915",
+  "productionChanged": false,
+  "productionDeployed": false,
+  "databaseMigrationRequired": false,
+  "validation": {
+    "postgresql": {
+      "tests": 65,
+      "passed": 65,
+      "port": 55447,
+      "syntheticScaleRows": 250002,
+      "pageRowsAndSalesProductCodes": 10,
+      "runtimeRoles": ["teruisi_market_reader", "teruisi_market_writer"],
+      "independentFiltersAndDatabasePaginationUnderRuntimeRoles": true,
+      "readerNegativePermissionsRejected": 5,
+      "writerNegativePermissionsRejected": 4,
+      "externalModelCalls": 0,
+      "migrationDryRun": "passed",
+      "isolatedClusterStopped": true,
+      "localEvidence": ".runtime/market-annotation-pg-301f1e6283fb/result.json"
+    },
+    "nodeFullInitial": {
+      "tests": 2190,
+      "passed": 2168,
+      "failed": 2,
+      "skipped": 20,
+      "failureResolution": "Updated two old assertions for load-more text and the 10000-page ceiling; both included in the final passing targeted suite.",
+      "localLog": ".runtime/market-all-unit.log"
+    },
+    "nodeFinalTargeted": { "tests": 65, "passed": 65, "failed": 0, "localLog": ".runtime/market-final-target-tests.log" },
+    "build": "passed",
+    "renderedHtml": { "tests": 20, "passed": 20 },
+    "changedFrontendLint": "passed",
+    "productionBoundary": { "checkedModules": 446, "violations": [] },
+    "browser": {
+      "script": "tools/verify-market-query-ui.mjs",
+      "checks": ["initial_413_preserves_tabs_and_filters", "settings_accessible_after_ranking_failure", "pagination_replaces_rows_and_supports_previous", "new_filter_hides_old_rows_and_rejects_late_response", "inline_period_recovery_applies_global_period", "report_failure_does_not_block_ranking", "independent_filter_failure_and_online_read_recovery"],
+      "pageErrors": [],
+      "localEvidence": ".runtime/market-query-ui/result.json"
+    },
+    "realIsolatedPreview": { "syntheticRows": 40, "verifiedPages": 2, "pageErrors": [], "salesConsumerPort": 18101, "localLog": ".runtime/market-real-preview.log" }
+  },
+  "preview": "http://127.0.0.1:3100/?module=market",
+  "limitations": [
+    "Industry report retains its original 250000-row and bounded sales-consumer limits; complex report calculations are not fully migrated to SQL aggregation.",
+    "Deep OFFSET pages remain subject to existing service and database execution deadlines.",
+    "Not a validation of multi-day process memory stability or the separate master-data list timeout.",
+    "Worktree and branch remain for user preview acceptance; no main merge, production restart, migration or production write performed."
+  ]
+}

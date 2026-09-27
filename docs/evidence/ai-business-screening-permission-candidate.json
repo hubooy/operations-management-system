@@ -1,0 +1,15 @@
+{
+  "date": "2026-09-17", "batch": 46,
+  "status": "candidate_process_local_capacity_permission",
+  "verification": {
+    "pure": {"passed": 9, "log": ".runtime/batch46-screening-permission-pure.log"},
+    "postgresCombination": {"passed": 11, "pureTests": 9, "postgresTests": 2, "log": ".runtime/ai-pg-a84a26a00e09/tests.log", "suite": "ai_assistant.test_business_screening_permission"},
+    "priorCombination": {"passed": 11, "seconds": 25.879, "log": ".runtime/ai-pg-592dae109cd5/tests.log"},
+    "finalReviewFix": "Reject cancel_requested even when status remains queued/running; added both-state negative checks and reran all 11",
+    "warmHitNoFactsOrRemeasure": true,
+    "publicEventsCannotRestorePermission": true
+  },
+  "limits": {"entries": 64, "pending": 64, "canonicalBytes": 2097152, "waitSeconds": 12},
+  "remaining": ["Leased readiness and dispatch integration", "Diagnosis and files", "Real model and production acceptance"],
+  "operations": {"productionBusinessReads": false, "productionWrites": false, "deployment": false, "serviceRestart": false, "paidModelCalls": false, "externalMessages": false}
+}

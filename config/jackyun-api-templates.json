@@ -1,0 +1,155 @@
+{
+  "version": 1,
+  "calibratedAt": "2026-09-08T04:37:30.961Z",
+  "permissionFieldsSha256": "fa9ef18ca1b53d8d757cf36d5f6fdc28ba2d4e7856fec414553051334f073e98",
+  "modules": {
+    "inventory": {
+      "moduleCode": "branch_stock",
+      "query": {
+        "searchNoType": "goodsNo",
+        "searchNos": "",
+        "isQuickSearch": "1",
+        "goodsNo": "",
+        "goodsName": "",
+        "cateIds": "",
+        "goodsAttrs": "",
+        "dataShop": "",
+        "threedayQuantityMin": "",
+        "threedayQuantityMax": "",
+        "weekQuantityMin": "",
+        "weekQuantityMax": "",
+        "ownerName": "",
+        "defaultVendIds": "",
+        "vendIds": "",
+        "assistBarcode": "",
+        "brandIds": "",
+        "pageIndex": "0",
+        "pageSize": "100",
+        "sortField": "",
+        "sortOrder": "",
+        "cols": "[\"goodsNo\",\"goodsName\",\"skuName\",\"unitName\",\"warehouseName\",\"retailPrice\",\"currentQuantity\",\"stockInQuantity\",\"stockOutQuantity\",\"weekQuantity\",\"field5\",\"threedayQuantity\",\"field4\",\"cateName\",\"canUseQuantity\",\"orderingQuantity\",\"orderAbleQuantity\",\"goodsAttr\",\"retailAmt\",\"distrubuteQuantity\",\"lockingQuantity\",\"ownerName\",\"defaultVendName\",\"preSaleQuantity\",\"preSaleStockQuantity\",\"refundingQuantity\",\"shelfLifeStr\",\"brandName\",\"id\",\"warehouseId\",\"goodsId\",\"skuId\",\"skuIds\",\"goodsAlias\",\"totalSaleQuantity\",\"skuBarcode\",\"isBlockup\",\"isStopSelling\",\"isStopPurchasing\",\"isBatchManagement\",\"isSerialManagement\",\"aduitStatus\",\"warehouseTypeCode\",\"isPositonStock\",\"flagData\",\"maxValue\",\"minValue\",\"skuFlags\"]",
+        "searchType": "2",
+        "searchWarehouseType": "2",
+        "isHideZeroQuantity": "0",
+        "isShowBlockup": "0",
+        "warehouseId": "@warehouse_ids",
+        "isHideStopSelling": "",
+        "isHideStopPurchasing": "",
+        "isPaidService": "",
+        "serviceType": "stock.search.v2",
+        "groupByGoods": ""
+      },
+      "export": {
+        "serverName": "erp-stock/erp-stock/export",
+        "excelType": "warehouse.stock.sku.export",
+        "headersJson": "{\"enName\":[\"goodsNo\",\"goodsName\",\"skuName\",\"unitName\",\"warehouseName\",\"retailPrice\",\"currentQuantity\",\"stockInQuantity\",\"stockOutQuantity\",\"weekQuantity\",\"field5\",\"threedayQuantity\",\"field4\",\"cateName\",\"canUseQuantity\",\"orderingQuantity\",\"orderAbleQuantity\",\"goodsAttrName\",\"retailAmt\",\"distrubuteQuantity\",\"lockingQuantity\",\"ownerName\",\"defaultVendName\",\"preSaleQuantity\",\"preSaleStockQuantity\",\"refundingQuantity\",\"shelfLifeStr\",\"brandName\"],\"showName\":[\"货品编号\",\"货品名称\",\"规格\",\"单位\",\"仓库\",\"固定成本价\",\"库存数量\",\"入库申请\",\"出库申请\",\"近7天销量\",\"近15天销量(库存公式)\",\"近30天销量\",\"近60天销量(库存公式)\",\"货品分类\",\"可用库存\",\"订购量\",\"可订购量\",\"货品类型\",\"固定成本\",\"渠道预留\",\"锁定待发\",\"货主\",\"规格默认供应商\",\"预售数量\",\"可预售库存数量\",\"退供在途（寄售）\",\"货品保质期\",\"品牌\"]}",
+        "conditionJson": "{\"searchNoType\":\"goodsNo\",\"searchNos\":\"\",\"isQuickSearch\":\"1\",\"goodsNo\":\"\",\"goodsName\":\"\",\"cateIds\":\"\",\"goodsAttrs\":\"\",\"dataShop\":\"\",\"threedayQuantityMin\":\"\",\"threedayQuantityMax\":\"\",\"weekQuantityMin\":\"\",\"weekQuantityMax\":\"\",\"ownerName\":\"\",\"defaultVendIds\":\"\",\"vendIds\":\"\",\"assistBarcode\":\"\",\"brandIds\":\"\",\"pageIndex\":0,\"pageSize\":100,\"sortField\":\"\",\"sortOrder\":\"\",\"cols\":[\"goodsNo\",\"goodsName\",\"skuName\",\"unitName\",\"warehouseName\",\"retailPrice\",\"currentQuantity\",\"stockInQuantity\",\"stockOutQuantity\",\"weekQuantity\",\"field5\",\"threedayQuantity\",\"field4\",\"cateName\",\"canUseQuantity\",\"orderingQuantity\",\"orderAbleQuantity\",\"goodsAttr\",\"retailAmt\",\"distrubuteQuantity\",\"lockingQuantity\",\"ownerName\",\"defaultVendName\",\"preSaleQuantity\",\"preSaleStockQuantity\",\"refundingQuantity\",\"shelfLifeStr\",\"brandName\",\"id\",\"warehouseId\",\"goodsId\",\"skuId\",\"skuIds\",\"goodsAlias\",\"totalSaleQuantity\",\"skuBarcode\",\"isBlockup\",\"isStopSelling\",\"isStopPurchasing\",\"isBatchManagement\",\"isSerialManagement\",\"aduitStatus\",\"warehouseTypeCode\",\"isPositonStock\",\"flagData\",\"maxValue\",\"minValue\",\"skuFlags\"],\"searchType\":\"2\",\"searchWarehouseType\":\"2\",\"isHideZeroQuantity\":\"0\",\"isShowBlockup\":\"0\",\"warehouseId\":\"@warehouse_ids\",\"isHideStopSelling\":\"\",\"isHideStopPurchasing\":\"\",\"isPaidService\":\"\",\"serviceType\":\"stock.search.v2\",\"groupByGoods\":\"\",\"outType\":1,\"useCostCalOrganization\":1,\"ids\":[],\"version\":\"2.0\"}",
+        "datasource": "",
+        "typeName": "分仓库存查询",
+        "multiSheet": "false",
+        "isSyn": "false"
+      }
+    },
+    "combos": {
+      "moduleCode": "goods_managet_combination",
+      "query": {
+        "blockUp": "0",
+        "packageGood": "1",
+        "pageIndex": "0",
+        "pageSize": "1000",
+        "sortField": "",
+        "sortOrder": "",
+        "cols": "[\"goodsNo\",\"goodsName\",\"skuProperitesName\",\"cateName\",\"brandName\",\"unitName\",\"skuBarcode\",\"flagData\",\"orderIndex\",\"skuWeight\",\"skuLength\",\"skuWidth\",\"skuHeight\",\"volume\",\"retailPrice\",\"stockPrice\",\"ownerName\",\"creator\",\"modifiedBy\",\"auditor\",\"gmtCreate\",\"isSplitOrder\",\"isSplitSale\",\"isSplitAllocate\",\"gmtModified\",\"skuCount\",\"amount\",\"goodsNewTimeName\",\"goodsMainImgUrl\",\"goodsField1\",\"goodsField2\",\"goodsField3\",\"goodsField4\",\"goodsField5\",\"skuNo\",\"skuWeightVal\",\"skuWeightUnit\",\"skuLengthVal\",\"skuLengthUnit\",\"skuFlags\",\"packageGood\",\"aduitStatus\",\"imgUrl\"]",
+        "businessType": "goods.sku.info.search",
+        "isNeedPkeyOrder": "0"
+      },
+      "export": {
+        "serverName": "erp/erp/manysheetexport",
+        "excelType": "PackAgeGoodsInfoService,ChartPackage",
+        "headersJson": "[{\"enName\":[\"goodsNo\",\"goodsName\",\"skuProperitesName\",\"cateName\",\"brandName\",\"unitName\",\"skuBarcode\",\"flagData\",\"orderIndex\",\"skuWeight\",\"skuLength\",\"skuWidth\",\"skuHeight\",\"volume\",\"retailPrice\",\"stockPrice\",\"ownerName\",\"creator\",\"modifiedBy\",\"auditor\",\"gmtCreate\",\"isSplitOrder\",\"isSplitSale\",\"isSplitAllocate\",\"gmtModified\",\"skuCount\",\"amount\",\"goodsNewTimeName\",\"goodsMainImgUrl\",\"goodsField1\",\"goodsField2\",\"goodsField3\",\"goodsField4\",\"goodsField5\",\"skuNo\",\"skuWeightVal\",\"skuWeightUnit\",\"skuLengthVal\",\"skuLengthUnit\"],\"showName\":[\"货品编号\",\"货品名称\",\"规格\",\"分类\",\"品牌\",\"基础单位\",\"货品条码\",\"标记\",\"序号\",\"重量(g)\",\"长(cm)\",\"宽(cm)\",\"高(cm)\",\"体积(cm³)\",\"固定成本价\",\"当前成本价\",\"货主\",\"创建人\",\"修改人\",\"审核人\",\"建档时间\",\"采购不拆分\",\"销售不拆分\",\"调拨不拆分\",\"最后修改时间\",\"子件种类\",\"子件总数量\",\"上新时间\",\"图片\",\"净重量(货)\",\"净尺寸长(货)\",\"净尺寸宽(货)\",\"净尺寸高(货)\",\"新品/退市品/核心品(货)\",\"规格编号\",\"重量\",\"重量单位\",\"体积\",\"体积单位\"]},{\"enName\":[\"mainGoodsNo\",\"goodsNo\",\"goodsName\",\"skuProperitesName\",\"skuBarcode\",\"imgUrl\",\"skuLength\",\"skuWidth\",\"skuHeight\",\"skuWeight\",\"unitName\",\"goodsAmount\",\"sharePrice\",\"shareAmount\",\"shareRatio\",\"isMainSku\",\"isGiveaway\",\"retailPrice\",\"assistUnit\",\"goodsField1\",\"goodsField2\",\"goodsField3\",\"goodsField4\",\"goodsField5\",\"volume\"],\"showName\":[\"母件编号\",\"编号\",\"名称\",\"规格\",\"条码\",\"图片\",\"长(cm)\",\"宽(cm)\",\"高(cm)\",\"重量(g)\",\"单位\",\"数量\",\"执行价格\",\"分摊金额\",\"分摊比例\",\"上传SN\",\"赠品\",\"固定成本价\",\"换算率\",\"净重量(货)\",\"净尺寸长(货)\",\"净尺寸宽(货)\",\"净尺寸高(货)\",\"新品/退市品/核心品(货)\",\"体积(cm³)\"]}]",
+        "conditionJson": "{\"blockUp\":\"0\",\"packageGood\":\"1\",\"pageIndex\":0,\"pageSize\":1000,\"sortField\":\"\",\"sortOrder\":\"\",\"cols\":[\"goodsNo\",\"goodsName\",\"skuProperitesName\",\"cateName\",\"brandName\",\"unitName\",\"skuBarcode\",\"flagData\",\"orderIndex\",\"skuWeight\",\"skuLength\",\"skuWidth\",\"skuHeight\",\"volume\",\"retailPrice\",\"stockPrice\",\"ownerName\",\"creator\",\"modifiedBy\",\"auditor\",\"gmtCreate\",\"isSplitOrder\",\"isSplitSale\",\"isSplitAllocate\",\"gmtModified\",\"skuCount\",\"amount\",\"goodsNewTimeName\",\"goodsMainImgUrl\",\"goodsField1\",\"goodsField2\",\"goodsField3\",\"goodsField4\",\"goodsField5\",\"skuNo\",\"skuWeightVal\",\"skuWeightUnit\",\"skuLengthVal\",\"skuLengthUnit\",\"skuFlags\",\"packageGood\",\"aduitStatus\",\"imgUrl\"],\"businessType\":\"goods.sku.info.search\",\"isNeedPkeyOrder\":\"0\",\"useCostCalOrganization\":1,\"skuIds\":[],\"version\":\"2.0\"}",
+        "datasource": "",
+        "typeName": "组合装及子件导出",
+        "multiSheet": "true",
+        "isSyn": "false"
+      }
+    },
+    "products": {
+      "moduleCode": "goods_managet_query",
+      "query": {
+        "blockUp": "2",
+        "packageGood": "0",
+        "pageIndex": "0",
+        "pageSize": "1000",
+        "sortField": "",
+        "sortOrder": "",
+        "cols": "[\"goodsNo\",\"goodsName\",\"retailPrice\",\"skuProperitesName\",\"skuBarcode\",\"cateName\",\"abcCate\",\"brandName\",\"colorCode\",\"colorName\",\"sizeCode\",\"sizeName\",\"materialCode\",\"materialName\",\"skuNo\",\"unitName\",\"assistUnit\",\"commonUnitName\",\"isBatchManagement\",\"isSerailManagement\",\"ownerName\",\"skuFlags\",\"flagData\",\"skuWeight\",\"goodsField1\",\"goodsField2\",\"goodsField3\",\"goodsField4\",\"goodsField5\",\"goodsAssistStockUnit\",\"skuAssistStockUnit\",\"isMatchTax\",\"skuImgUrlPath\",\"goodsImgUrlPath\",\"gmtCreate\",\"defaultVendName\",\"goodsAuditDate\",\"isCustomizProduction\",\"isPaidService\",\"inStoreProcessing\",\"packageGood\",\"aduitStatus\",\"ownerType\",\"goodsUnits\",\"goodsMemberId\",\"shelfLife\",\"shelfLiftUnit\",\"isPeriodManage\",\"goodsDesc\",\"goodsAttr\",\"skuCode\"]",
+        "businessType": "goods.sku.info.search",
+        "isNeedPkeyOrder": "0"
+      },
+      "export": {
+        "serverName": "erp-stock/erp-stock/export",
+        "excelType": "goods.sku.info.search",
+        "headersJson": "{\"enName\":[\"goodsNo\",\"goodsName\",\"retailPrice\",\"skuProperitesName\",\"skuBarcode\",\"cateName\",\"abcCateName\",\"brandName\",\"colorCode\",\"colorName\",\"sizeCode\",\"sizeName\",\"materialCode\",\"materialName\",\"skuNo\",\"unitName\",\"assistUnit\",\"commonUnitName\",\"isBatchManagement\",\"isSerailManagement\",\"ownerName\",\"skuFlags\",\"flagData\",\"skuWeight\",\"goodsField1\",\"goodsField2\",\"goodsField3\",\"goodsField4\",\"goodsField5\",\"goodsAssistStockUnit\",\"skuAssistStockUnit\",\"isMatchTax\",\"skuImgUrlPath\",\"goodsImgUrlPath\",\"gmtCreate\",\"defaultVendName\",\"goodsAuditDate\"],\"showName\":[\"货品编号\",\"货品名称\",\"固定成本价\",\"规格\",\"条码\",\"分类\",\"ABC分类\",\"品牌\",\"颜色编号\",\"颜色\",\"尺码编号\",\"尺码\",\"成分编号\",\"成分\",\"规格编号\",\"基础单位\",\"换算率\",\"常用单位\",\"批次管理\",\"唯一码管理\",\"货主\",\"规格标记\",\"货品标记\",\"重量(g)\",\"净重量(货)\",\"净尺寸长(货)\",\"净尺寸宽(货)\",\"净尺寸高(货)\",\"新品/退市品/核心品(货)\",\"货品第二单位\",\"规格第二单位\",\"税目匹配\",\"规格图片链接\",\"货品主图链接\",\"建档时间\",\"货品默认供应商\",\"审核时间\"]}",
+        "conditionJson": "{\"blockUp\":\"2\",\"packageGood\":\"0\",\"pageIndex\":0,\"pageSize\":1000,\"sortField\":\"\",\"sortOrder\":\"\",\"cols\":[\"goodsNo\",\"goodsName\",\"retailPrice\",\"skuProperitesName\",\"skuBarcode\",\"cateName\",\"abcCate\",\"brandName\",\"colorCode\",\"colorName\",\"sizeCode\",\"sizeName\",\"materialCode\",\"materialName\",\"skuNo\",\"unitName\",\"assistUnit\",\"commonUnitName\",\"isBatchManagement\",\"isSerailManagement\",\"ownerName\",\"skuFlags\",\"flagData\",\"skuWeight\",\"goodsField1\",\"goodsField2\",\"goodsField3\",\"goodsField4\",\"goodsField5\",\"goodsAssistStockUnit\",\"skuAssistStockUnit\",\"isMatchTax\",\"skuImgUrlPath\",\"goodsImgUrlPath\",\"gmtCreate\",\"defaultVendName\",\"goodsAuditDate\",\"isCustomizProduction\",\"isPaidService\",\"inStoreProcessing\",\"packageGood\",\"aduitStatus\",\"ownerType\",\"goodsUnits\",\"goodsMemberId\",\"shelfLife\",\"shelfLiftUnit\",\"isPeriodManage\",\"goodsDesc\",\"goodsAttr\",\"skuCode\"],\"businessType\":\"goods.sku.info.search\",\"isNeedPkeyOrder\":\"0\",\"exportType\":2,\"skuIds\":[],\"version\":\"2.0\"}",
+        "datasource": "",
+        "typeName": "货品导出",
+        "multiSheet": "false",
+        "isSyn": "false"
+      }
+    },
+    "sales": {
+      "moduleCode": "order_detail_list",
+      "query": {
+        "jsonStr": "{\"timeBegin\":\"@sales_begin\",\"timeEnd\":\"@sales_end\",\"companyId\":[],\"shopId\":[],\"tradeType\":[],\"tradeFrom\":[],\"isIncludeAllFlag\":\"0\",\"includeFlagId\":[],\"tradeStatus\":[],\"skuId\":[],\"cateId\":[],\"warehouseId\":[],\"logisticId\":[],\"unitPriceStart\":\"\",\"unitPriceEnd\":\"\",\"isCancel\":\"0\",\"isFit\":\"\",\"assemblyDimension\":0,\"goodsMemoFlag\":\"\",\"goodsMemo\":\"\",\"chargeAccounts\":[],\"chargeTypes\":[],\"apiTypeStrs\":\"\",\"brandId\":[],\"tradeNo\":[],\"isSafeMode\":true,\"hasQueryHistory\":0,\"timeType\":4}",
+        "isLeftFilter": "true",
+        "pageIndex": "0",
+        "pageSize": "1000",
+        "sortField": "",
+        "sortOrder": "",
+        "cols": "[\"sourceTradeNo\",\"companyId\",\"goodsIconList\",\"tradeFrom\",\"chargeCurrency\",\"shopId\",\"oaidSourceCode\",\"unit\",\"payType\",\"sellCount\",\"seller\",\"registerId\",\"agentShopId\",\"terminalSalesNo\",\"sourceSubtradeNo\",\"mainPostid\",\"agentTradeNo\",\"sourceSubtradeNos\",\"goodsId\",\"tradeNo\",\"shopName\",\"logisticName\",\"warehouseName\",\"customerCode\",\"customerName\",\"customerAccount\",\"receiverName\",\"goodsNo\",\"goodsName\",\"specName\",\"barcode\",\"sellPrice\",\"defaultVendName\",\"tradeTime\",\"cost\",\"afterShareUnitFee\",\"outerSkuId\",\"afterShareFee\",\"platSkuId\",\"grossProfit\",\"grossProfitRate\",\"state\",\"unGrossProfitRate\",\"cateName\",\"consignTime\",\"sellerMemo\"]"
+      },
+      "export": {
+        "serverName": "oms/oms/excel",
+        "excelType": "11",
+        "headersJson": "{\"enName\":[\"tradeNo\",\"sourceTradeNo\",\"shopName\",\"logisticName\",\"mainPostid\",\"warehouseName\",\"customerCode\",\"customerName\",\"customerAccount\",\"receiverName\",\"goodsNo\",\"goodsName\",\"specName\",\"barcode\",\"sellCount\",\"sellPrice\",\"defaultVendName\",\"tradeTime\",\"cost\",\"afterShareUnitFee\",\"outerSkuId\",\"afterShareFee\",\"platSkuId\",\"grossProfit\",\"grossProfitRate\",\"state\",\"unGrossProfitRate\",\"cateName\",\"consignTime\",\"sellerMemo\"],\"showName\":[\"订单编号\",\"网店订单号\",\"销售渠道\",\"物流公司\",\"物流单号\",\"发货仓库\",\"客户编号\",\"客户名称\",\"客户账号\",\"收货人\",\"货品编号\",\"货品名称\",\"规格\",\"货品条码\",\"数量\",\"单价\",\"货品默认供应商\",\"下单时间\",\"货品成本\",\"分摊后单价\",\"网店规格编码\",\"分摊后金额\",\"商品链接SkuId\",\"毛利\",\"毛利率\",\"省\",\"未税毛利率(%)\",\"货品分类\",\"发货时间\",\"客服备注\"]}",
+        "conditionJson": "{\"pageInfo\":{\"pageIndex\":0,\"pageSize\":500000,\"sortField\":\"\",\"sortOrder\":\"\"},\"filterOrderDetailDto\":{\"timeBegin\":\"@sales_begin\",\"timeEnd\":\"@sales_end\",\"companyId\":[],\"shopId\":[],\"tradeType\":[],\"tradeFrom\":[],\"isIncludeAllFlag\":\"0\",\"includeFlagId\":[],\"tradeStatus\":[],\"skuId\":[],\"cateId\":[],\"warehouseId\":[],\"logisticId\":[],\"unitPriceStart\":\"\",\"unitPriceEnd\":\"\",\"isCancel\":\"0\",\"isFit\":\"\",\"assemblyDimension\":0,\"goodsMemoFlag\":\"\",\"goodsMemo\":\"\",\"chargeAccounts\":[],\"chargeTypes\":[],\"apiTypeStrs\":\"\",\"brandId\":[],\"tradeNo\":[],\"isSafeMode\":true,\"hasQueryHistory\":0,\"timeType\":4},\"cols\":[\"tradeNo\",\"sourceTradeNo\",\"shopName\",\"logisticName\",\"mainPostid\",\"warehouseName\",\"customerCode\",\"customerName\",\"customerAccount\",\"receiverName\",\"goodsNo\",\"goodsName\",\"specName\",\"barcode\",\"sellCount\",\"sellPrice\",\"defaultVendName\",\"tradeTime\",\"cost\",\"afterShareUnitFee\",\"outerSkuId\",\"afterShareFee\",\"platSkuId\",\"grossProfit\",\"grossProfitRate\",\"state\",\"unGrossProfitRate\",\"cateName\",\"consignTime\",\"sellerMemo\"],\"version\":\"2.0\"}",
+        "datasource": "",
+        "isMerge": "true",
+        "typeName": "销售单明细账",
+        "multiSheet": "false",
+        "isSyn": "false"
+      }
+    },
+    "inventory_age": {
+      "moduleCode": "warehouse_age_analysis",
+      "query": {
+        "ownerId": "@owner_id",
+        "warehouseId": "",
+        "skuId": "",
+        "brandId": "",
+        "cateId": "",
+        "warehouseCompanyId": "",
+        "stockAgeMin": "",
+        "stockAgeMax": "",
+        "goodsTypeCodes": "",
+        "includeBlockWarehouse": "0",
+        "pageIndex": "0",
+        "pageSize": "50",
+        "sortField": "",
+        "sortOrder": "",
+        "cols": "[\"warehouseName\",\"goodsNo\",\"goodsName\",\"skuName\",\"skuBarcode\",\"unit\",\"cateName\",\"brandName\",\"stockQty\",\"accountingQuantity\",\"costAmt\",\"stockAge\",\"retailPrice\",\"minPrice\",\"wholesalePrice\",\"memberPrice\",\"costPrice\",\"fixedCostPrice\",\"assistInfo\",\"goodsTypeName\",\"recent7DayQuantity\",\"recent30DayQuantity\"]"
+      },
+      "export": {
+        "serverName": "birc/birc/excel/v3/report",
+        "excelType": "stockAgeReport",
+        "headersJson": "{\"enName\":[\"warehouseName\",\"goodsNo\",\"goodsName\",\"skuName\",\"skuBarcode\",\"unit\",\"cateName\",\"brandName\",\"stockQty\",\"accountingQuantity\",\"costAmt\",\"stockAge\",\"retailPrice\",\"minPrice\",\"wholesalePrice\",\"memberPrice\",\"costPrice\",\"fixedCostPrice\",\"assistInfo\",\"goodsTypeName\",\"recent7DayQuantity\",\"recent30DayQuantity\"],\"showName\":[\"仓库\",\"货品编号\",\"货品名称\",\"规格\",\"条码\",\"单位\",\"分类\",\"品牌\",\"库存数量\",\"核算数量\",\"成本金额\",\"库龄(天)\",\"零售价\",\"最低售价\",\"批发价\",\"会员价\",\"当前成本价\",\"固定成本价\",\"辅助显示\",\"货品类型\",\"前7天销量\",\"前30天销量\"],\"permissionsFieldList\":[]}",
+        "conditionJson": "{\"ownerId\":\"@owner_id\",\"warehouseId\":\"\",\"skuId\":\"\",\"brandId\":\"\",\"cateId\":\"\",\"warehouseCompanyId\":\"\",\"stockAgeMin\":\"\",\"stockAgeMax\":\"\",\"goodsTypeCodes\":\"\",\"includeBlockWarehouse\":\"0\",\"pageIndex\":0,\"pageSize\":50,\"sortField\":\"\",\"sortOrder\":\"\",\"cols\":[\"warehouseName\",\"goodsNo\",\"goodsName\",\"skuName\",\"skuBarcode\",\"unit\",\"cateName\",\"brandName\",\"stockQty\",\"accountingQuantity\",\"costAmt\",\"stockAge\",\"retailPrice\",\"minPrice\",\"wholesalePrice\",\"memberPrice\",\"costPrice\",\"fixedCostPrice\",\"assistInfo\",\"goodsTypeName\",\"recent7DayQuantity\",\"recent30DayQuantity\"],\"orderIds\":[],\"version\":\"2.0\"}",
+        "datasource": "",
+        "typeName": "库龄分析(正式勿删)",
+        "multiSheet": "false",
+        "isSyn": "false"
+      }
+    }
+  }
+}

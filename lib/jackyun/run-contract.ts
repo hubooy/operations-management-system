@@ -1,6 +1,7 @@
 import { createHash } from "node:crypto";
 import type { JackyunDownloadProvenance } from "./download-provenance";
 import type { JackyunModule } from "./post-download";
+import { jackyunSalesPeriod } from "./sales-period";
 
 export type JackyunInputContract = {
   runId: string;
@@ -8,8 +9,9 @@ export type JackyunInputContract = {
   module: JackyunModule;
   rawSha256: string;
   snapshotDate?: string;
-  snapshotEvidence?: JackyunHistoricalSnapshotEvidence;
+  snapshotEvidence?: JackyunSnapshotEvidence;
   asOfDate?: string;
+  salesStartDate?: string;
   expectedSourceRows: number;
   previousComboRows?: number;
   costOutputSha256?: string;
@@ -49,6 +51,56 @@ export type JackyunHistoricalSnapshotEvidence = {
   queryRefreshCompletedAt: string;
   tableStableAt: string;
 };
+
+export const jackyunExportFirstPolicyVersion = "2026-09-06.export-first.1";
+export const jackyunExportOrder = ["inventory", "combos", "sales", "inventory_age", "products"] as const;
+
+/** A live query is a capture on its actual Shanghai date, never a historical balance. */
+export type JackyunCurrentSnapshotEvidence = {
+  version: 1;
+  module: JackyunHistoricalSnapshotModule;
+  runId: string;
+  source: "current_query";
+  targetDate: string;
+  queryIntentAt: string;
+  queryRefreshSource: "module_network_request";
+  queryRefreshCompletedAt: string;
+  tableStableAt: string;
+};
+export type JackyunSnapshotEvidence = JackyunHistoricalSnapshotEvidence | JackyunCurrentSnapshotEvidence;
+
+export function jackyunCaptureDate(timestamp: string) {
+  const milliseconds = Date.parse(timestamp);
+  if (!Number.isFinite(milliseconds)) throw contractError("FIELD_MISMATCH", "采集时间无效。");
+  return new Date(milliseconds + 8 * 60 * 60 * 1000).toISOString().slice(0, 10);
+}
+
+export function assertJackyunSnapshotEvidence(
+  value: unknown,
+  expected: ExpectedHistoricalSnapshotEvidence & { policyVersion: string },
+): asserts value is JackyunSnapshotEvidence {
+  if (expected.policyVersion !== jackyunExportFirstPolicyVersion) {
+    assertJackyunHistoricalSnapshotEvidence(value, expected);
+    return;
+  }
+  const evidence = value as Partial<JackyunCurrentSnapshotEvidence> | undefined;
+  if (!evidence || evidence.version !== 1 || evidence.source !== "current_query"
+    || evidence.runId !== expected.runId || evidence.module !== expected.module
+    || !isIsoDate(expected.snapshotDate) || evidence.targetDate !== expected.snapshotDate
+    || evidence.queryRefreshSource !== "module_network_request") {
+    throw contractError("FIELD_MISMATCH", "当前查询的身份、日期或刷新来源不一致。");
+  }
+  const timestamps = [expected.navigationIntentAt, evidence.queryIntentAt,
+    evidence.queryRefreshCompletedAt, evidence.tableStableAt, expected.exportIntentAt];
+  if (timestamps.slice(1, 4).some((item) => !item)) {
+    throw contractError("FIELD_MISMATCH", "当前查询缺少查询、响应或表格稳定证据。");
+  }
+  const present = timestamps.filter((item): item is string => typeof item === "string");
+  if (present.some((item) => jackyunCaptureDate(item) !== expected.snapshotDate)
+    || present.some((item, index) => index > 0 && Date.parse(item) < Date.parse(present[index - 1]))) {
+    throw contractError("TABLE_TIMEOUT", "当前查询跨日或时间线倒序；不能回填为昨天的历史快照。");
+  }
+}
 
 type ExpectedHistoricalSnapshotEvidence = {
   module: JackyunHistoricalSnapshotModule;
@@ -176,8 +228,12 @@ export function isValidJackyunSourceRowCountCorrection(
 }
 
 export function createJackyunInputContractHash(contract: JackyunInputContract) {
+  if (contract.salesStartDate !== undefined) {
+    if (contract.module !== "sales" || !contract.asOfDate) throw new Error("销售滚动范围不能绑定其他模块。");
+    jackyunSalesPeriod(contract.asOfDate, contract.salesStartDate);
+  }
   const stableContract = {
-    version: 3,
+    version: contract.salesStartDate === undefined ? 3 : 4,
     runId: contract.runId,
     policyVersion: contract.policyVersion,
     module: contract.module,
@@ -185,6 +241,7 @@ export function createJackyunInputContractHash(contract: JackyunInputContract) {
     snapshotDate: contract.snapshotDate ?? null,
     snapshotEvidence: contract.snapshotEvidence ?? null,
     asOfDate: contract.asOfDate ?? null,
+    ...(contract.salesStartDate !== undefined ? { salesStartDate: contract.salesStartDate } : {}),
     expectedSourceRows: contract.expectedSourceRows,
     previousComboRows: contract.previousComboRows ?? null,
     costOutputSha256: contract.costOutputSha256 ?? null,

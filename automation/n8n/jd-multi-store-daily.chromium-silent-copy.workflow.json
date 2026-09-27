@@ -1,0 +1,377 @@
+{
+  "id": "JdN8nSilentCopy2026",
+  "name": "京东多店铺商品数据统一下载与导入（Chromium静默下载副本）",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "7aa3e3b1-4adb-4c8e-b431-100000000001",
+      "name": "手动运行",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -700,
+        -80
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 10 * * *"
+            }
+          ]
+        }
+      },
+      "id": "7aa3e3b1-4adb-4c8e-b431-100000000002",
+      "name": "每天 10:00 执行",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -700,
+        100
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:5791/coordination/claim",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-TERUISI-N8N-EXECUTION-ID",
+              "value": "={{ $execution.id }}"
+            },
+            {
+              "name": "X-TERUISI-COORDINATION-ATTEMPT",
+              "value": "={{ $runIndex }}"
+            },
+            {
+              "name": "X-TERUISI-WORKFLOW-KEY",
+              "value": "jd"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 10000
+        }
+      },
+      "id": "7aa3e3b1-4adb-4c8e-b431-100000000008",
+      "name": "领取共享 helper",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -500,
+        0
+      ],
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "7aa3e3b1-4adb-4c8e-b431-100000000010",
+              "leftValue": "={{ $json.coordinationStatus }}",
+              "rightValue": "granted",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "7aa3e3b1-4adb-4c8e-b431-100000000009",
+      "name": "helper 领取成功？",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -300,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "resume": "timeInterval",
+        "amount": 5,
+        "unit": "minutes"
+      },
+      "id": "7aa3e3b1-4adb-4c8e-b431-100000000011",
+      "name": "等待前序流程释放 helper",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -300,
+        170
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:5791/jd/plan",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-TERUISI-N8N-EXECUTION-ID",
+              "value": "={{ $execution.id }}"
+            },
+            {
+              "name": "X-TERUISI-JD-SILENT-NO-WINDOW",
+              "value": "1"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 120000
+        }
+      },
+      "id": "7aa3e3b1-4adb-4c8e-b431-100000000003",
+      "name": "A·生成京东多店铺计划",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -330,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:5791/jd/run",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-TERUISI-N8N-EXECUTION-ID",
+              "value": "={{ $execution.id }}"
+            },
+            {
+              "name": "X-TERUISI-JD-SILENT-NO-WINDOW",
+              "value": "1"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 21600000
+        }
+      },
+      "id": "7aa3e3b1-4adb-4c8e-b431-100000000004",
+      "name": "B·四店串行静默下载、导入并回查",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        70,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:5791/jd/verify",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-TERUISI-N8N-EXECUTION-ID",
+              "value": "={{ $execution.id }}"
+            },
+            {
+              "name": "X-TERUISI-JD-SILENT-NO-WINDOW",
+              "value": "1"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 120000
+        }
+      },
+      "id": "7aa3e3b1-4adb-4c8e-b431-100000000005",
+      "name": "C·核验四店三类数据与批次",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        470,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Chromium 静默下载副本\n执行器使用 Chromium 的普通有头浏览器，窗口在后台隐藏并最小化；下载由受控执行器直接写入每店独立目录，不弹系统保存窗口。登录失效、验证码、安全验证、业务码 601 或店铺身份异常时只失败关闭并保留审计，不打开可见窗口、不自动重放业务点击。",
+        "height": 205,
+        "width": 630,
+        "color": 5
+      },
+      "id": "7aa3e3b1-4adb-4c8e-b431-100000000006",
+      "name": "Chromium静默下载说明",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -700,
+        -350
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## 原子协调领取 + A → B → C 闭环\n定时和手动入口先原子领取共享 helper；未获授权时每 5 分钟等待，72 次后失败关闭。领取成功后 A 按 Asia/Shanghai 固化“昨天所在月 1 日至昨天”的扫描范围，逐店读取 SKU/SPU 落库覆盖并把缺失日期合并为连续下载区间，同时预检本机系统和四店独立 profile；B 每店每日更新一次商品 SKU 主数据，只为 SKU/SPU 缺口区间静默下载、导入和回查，无缺口维度不创建日数据任务；C 独立重读每个 runner 审计与精确批次，并再次逐店回查整个扫描范围已无 SKU/SPU 缺口。A/B/C 绑定同一 n8n execution ID；空 ID、旧执行、跨执行接管、乱序和并发均失败关闭。",
+        "height": 225,
+        "width": 850,
+        "color": 4
+      },
+      "id": "7aa3e3b1-4adb-4c8e-b431-100000000007",
+      "name": "流程说明",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -20,
+        -350
+      ]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "teruisi-hourly-retry-b12ca72b424761db1f0c7f165bab115ab54fac22",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "fe3c17d6-5260-4f6a-94be-08f48b2457be",
+      "name": "失败后每小时安全重试入口",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -740,
+        320
+      ],
+      "webhookId": "16f18455-865f-426a-9239-90a7aed98331"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "手动运行": {
+      "main": [
+        [
+          {
+            "node": "领取共享 helper",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "每天 10:00 执行": {
+      "main": [
+        [
+          {
+            "node": "领取共享 helper",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "领取共享 helper": {
+      "main": [
+        [
+          {
+            "node": "helper 领取成功？",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "helper 领取成功？": {
+      "main": [
+        [
+          {
+            "node": "A·生成京东多店铺计划",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "等待前序流程释放 helper",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "等待前序流程释放 helper": {
+      "main": [
+        [
+          {
+            "node": "领取共享 helper",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "A·生成京东多店铺计划": {
+      "main": [
+        [
+          {
+            "node": "B·四店串行静默下载、导入并回查",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "B·四店串行静默下载、导入并回查": {
+      "main": [
+        [
+          {
+            "node": "C·核验四店三类数据与批次",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "失败后每小时安全重试入口": {
+      "main": [
+        [
+          {
+            "node": "领取共享 helper",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Asia/Shanghai",
+    "binaryMode": "separate",
+    "errorWorkflow": "TeruisiHourlyRetry2026"
+  },
+  "versionId": "c5b2e937-d1ba-41ad-b539-25d36f79cb91",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "hourlyRetryPolicy": {
+      "version": "2026-09-10.safe-hourly-retry.1",
+      "delayMinutes": 60,
+      "errorWorkflowId": "TeruisiHourlyRetry2026",
+      "webhookPath": "teruisi-hourly-retry-b12ca72b424761db1f0c7f165bab115ab54fac22"
+    }
+  },
+  "tags": []
+}

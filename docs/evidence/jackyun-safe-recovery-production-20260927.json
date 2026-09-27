@@ -1,0 +1,107 @@
+{
+  "status": "production_adopted_watchdog_recovered_natural_failure_path_pending",
+  "businessDateShanghai": "2026-09-27",
+  "sourceCommit": "75a89e64809400a2c421a59e6489369c547d5b33",
+  "featureCommit": "5309972560a80058e4abc2a4e173bf2bbf44cb1d",
+  "approvedScope": "one Worker/helper stop, adoption and restart; PostgreSQL, Django and n8n retained; no manual Jackyun replay",
+  "release": {
+    "predecessorReleaseId": "20260927T025729Z-73db9d9489dd6952",
+    "candidateReleaseId": "20260927T054418Z-9450f55665c5e000",
+    "manifestSha256": "5afc99ee3a1486a22cd5d1e239889f607c7ed36c76224b584555d73ad9ed1f75",
+    "planSha256": "c8cff1fe6c633a8facb16ac8f7fc1c65cc1fa9a11af869f5a62ddafb17cee0cc",
+    "helperBundleSha256": "9187afe7cee71b40cc427af9a1ff41da710275104cbb51963c8a84aa14aef85d",
+    "sourceAndCandidateBound": true,
+    "startupVerified": true,
+    "serviceState": "Running",
+    "backendState": "Ready",
+    "workerState": "exact_release",
+    "readyComponents": 12
+  },
+  "cutoverShanghai": {
+    "lastPreflight": "2026-09-27T14:06:59+08:00",
+    "workerStopped": "2026-09-27T14:07:06+08:00",
+    "candidateActivated": "2026-09-27T14:09:37+08:00",
+    "workerStarted": "2026-09-27T14:11:09+08:00"
+  },
+  "isolation": {
+    "postgresPidBeforeAndAfter": 11332,
+    "n8nPidBeforeAndAfter": 17868,
+    "djangoManifestSha256BeforeAndAfter": "58856907a1de036aa364d281d95c1c8f824992966de428ac343042137591e94b",
+    "n8nDefinitions": 18,
+    "n8nDefinitionsSha256BeforeAndAfter": "734ab9ddee4e95ec19635065ca012ef57dc513d892aae176e1ce3dd7546ce806",
+    "helperIdleAfter": true,
+    "activeN8nExecutionsAfter": 0,
+    "credentialOrBrowserProfileChanged": false,
+    "n8nDefinitionOrScheduleChanged": false,
+    "manualJackyunReplayOrNewClosure": false
+  },
+  "backupBefore": {
+    "id": "daily-20260927T055200Z-d179c6e30055",
+    "manifestSha256": "7663ce237a54f041f36f0c2687d9700d53a88e3c137b556ad757c155474ee549",
+    "contentSha256": "2437fc426de0c7348293f6754aebc144eb861c79402fa9b52f4dcda3a29bf162",
+    "verified": true,
+    "isolatedRestoreId": "6453b8bd30bf",
+    "isolatedRestorePort": 55580,
+    "restoredContentMatches": true,
+    "productionDatabaseTouched": false,
+    "isolatedCleanup": "isolated_data_removed",
+    "eArchive": "E:\\运营管理系统业务数据\\daily-20260927T055200Z-d179c6e30055",
+    "allThreeArchiveFilesSha256Verified": true
+  },
+  "backupAfter": {
+    "id": "daily-20260927T061303Z-14a8f467aaed",
+    "manifestSha256": "da22ad9657793a29b0caa68747718bd33e5ed0974c40883538b736a9e389dc26",
+    "contentSha256": "42a90a2df6768f0ba3444816fca157744a976cb4cec92a5faf55bda8687b24b2",
+    "verified": true,
+    "eArchive": "E:\\运营管理系统业务数据\\daily-20260927T061303Z-14a8f467aaed",
+    "allThreeArchiveFilesSha256Verified": true
+  },
+  "storagePreparation": {
+    "olderBackupsReversiblyArchived": 20,
+    "archivedBytes": 12466354506,
+    "perFileSourceMirrorAndDestinationHashesVerified": true,
+    "archiveRoot": "E:\\TERUISI-candidate-artifacts\\jackyun-safe-recovery-20260927\\archived-D-postgres-backups"
+  },
+  "validation": {
+    "focusedTestsAfterMainIntegration": 266,
+    "focusedTestFailures": 0,
+    "productionBoundaryModulesChecked": 468,
+    "productionBoundaryViolations": 0,
+    "realHelperSyntheticRecoverySmoke": true,
+    "syntheticSmokeBusinessActions": 0,
+    "watchdogRounds": [
+      "2026-09-27T14:20:24.7672433+08:00",
+      "2026-09-27T14:21:24.7382035+08:00"
+    ],
+    "watchdogHealthyOnBothRounds": true,
+    "preservedTmallRetryExecution": 4790,
+    "preservedTmallRetryStatus": "success",
+    "scheduledWeeklyChecksAfterCutover": [4796, 4797, 4798],
+    "scheduledWeeklyChecksAfterCutoverStatus": "success"
+  },
+  "postReleaseIncident": {
+    "lastOldProcessActivityShanghai": "2026-09-27T14:33:57+08:00",
+    "firstWatchdogFailureShanghai": "2026-09-27T14:34:59+08:00",
+    "watchdogIncidentId": "7fc1270f254145dcb3e6e18f5af2543b",
+    "symptom": "Worker supervisor, Worker port and helper port disappeared; watchdog observed StaleReceipt and NotReady",
+    "databaseAndN8nPidsPreserved": true,
+    "watchdogOriginalStartAttemptShanghai": "2026-09-27T14:35:56+08:00",
+    "newSupervisorCreatedShanghai": "2026-09-27T14:38:32+08:00",
+    "healthySameReleaseObservedShanghai": [
+      "2026-09-27T14:40:25+08:00",
+      "2026-09-27T14:45:24+08:00"
+    ],
+    "watchdogIncidentClosed": true,
+    "manualRestartOrReplay": false,
+    "weeklyCheckFailedExecution": 4801,
+    "subsequentNaturalSuccessExecutions": [4802, 4803],
+    "exitCause": "undetermined; prior Worker stdout ended after normal requests, stderr and checked Windows Application/System events did not identify a crash cause",
+    "temporalAssociation": "The exit followed worktree archival, but available evidence does not establish causation."
+  },
+  "limitations": [
+    "The new generalized zero-effect recovery branch has not yet been exercised by a natural production Jackyun failure.",
+    "The underlying intermittent DPAPI lookup cause is not proven; a higher natural-run success rate is not yet measured.",
+    "The prior 4737 five-table success belongs to the predecessor release and was not replayed.",
+    "A post-release Worker exit recovered automatically but its underlying cause remains unknown; two early healthy watchdog rounds were not a long-term stability test."
+  ]
+}

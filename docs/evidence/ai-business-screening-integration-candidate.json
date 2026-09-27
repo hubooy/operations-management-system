@@ -1,0 +1,19 @@
+{
+  "date": "2026-09-17",
+  "branch": "codex/ai-business-analysis-stages",
+  "baseCommit": "45ab12a0",
+  "batch": 33,
+  "status": "candidate_internal_fixed_complete_screening",
+  "verification": {
+    "pure": {"passed": 62, "seconds": 4.583, "suites": ["business_analysis.test_screening_plan", "business_analysis.test_diagnostic_screening", "business_analysis.test_mapping_plan", "business_analysis.test_mapped_results"]},
+    "postgres": {"passed": 18, "seconds": 86.982, "port": 55485, "suites": ["ai_assistant.test_business_diagnostic_screening", "ai_assistant.test_business_integrated_reports"], "log": ".runtime/ai-pg-2b25cb9f6bec/tests.log"},
+    "firstPostgresAttempt": {"tests": 18, "errors": 4, "log": ".runtime/ai-pg-cdb4baae04d2/failure.log", "cause": "Scanner incorrectly required native source filters from mapped checkpoint metadata; pure fixture had added fields absent from real checkpoint", "fix": "Mapped metadata checks actual coverage/revision while exact query is checked through immutable mapping bindings; periods derived from validated query; fabricated fixture fields removed; native filter checks unchanged"},
+    "independentReview": "Separate Agent closed ambiguous coverage flag issue, checked actual mapped metadata fix and authority boundaries; independently passed 51 pure tests plus 11 tamper probes",
+    "boundary": {"checkedModules": 491, "violations": 0},
+    "diffCheck": true
+  },
+  "behavior": ["Complete requested coverage retained including unsupported and missing capabilities", "55-partition plan admitted; 65-partition plan rejected before fact traversal", "Actual native and mapped streams completely exhausted with late context/authority checks", "No business source query or model call during sealed screening", "Empty and partial dates do not become complete date coverage", "Coverage and candidate pages preserve full UTF-8 records and exact next offset", "Internal frozen result cannot be restored from public JSON", "Read-time owner, scope and revocation verified"],
+  "remaining": ["Persistent shared screening storage", "New versioned runtime profile and tools", "Per-Agent independent coverage/candidate receipts", "Model context admission for actual full pages", "Report and HTML/XLSX screening disclosure", "Real diagnostic quality and scale acceptance"],
+  "referenceReview": {"mode": "read_only_structure_not_business_or_visual_acceptance", "xlsxBytes": 42715563, "xlsxExpandedPartBytes": 432731773, "worksheets": 30, "chartParts": 2, "tableParts": 30, "htmlBytes": 6772587, "rawBusinessDataCommitted": false, "excelRecalculated": false, "htmlExecuted": false, "diagnosticQualityCards": 6, "realModelCardsRun": 0},
+  "operations": {"productionBusinessReads": false, "productionWrites": false, "newMigration": false, "deployment": false, "serviceRestart": false, "paidModelCalls": false, "externalMessages": false}
+}

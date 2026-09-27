@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { execFile } from "node:child_process";
 import { createHash } from "node:crypto";
-import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, readdir, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { promisify } from "node:util";
@@ -153,6 +153,56 @@ test("sales dry-run uses the stable price-adjustment product code", async () => 
   }
 });
 
+test("sales dry-run --use-file-cost keeps the workbook cost column as final cost", async () => {
+  const directory = await mkdtemp(path.join(tmpdir(), "sales-file-cost-test-"));
+  try {
+    // 文件自带货品成本列（整行成本）为 50，库存成本源固定成本价为 20。
+    // --use-file-cost 应以文件 50 为准，而不是成本源的 20×数量。
+    const salesBytes = salesSheet([
+      ["网店订单号", "销售渠道", "发货仓库", "货品编号", "货品名称", "数量", "下单时间", "发货时间", "货品成本", "分摊后单价", "分摊后金额", "费用分摊", "毛利"],
+      ["ON-1", "京东-志高切肉机旗舰店（志高迈德豪）", "主仓", "SKU-1", "测试货品", 1, "2026-07-10 09:00:00", "2026-07-10 10:00:00", 50, 100, 100, 5, 45],
+    ]);
+    const costBytes = costSheet([
+      ["货品编号", "固定成本价", "货品名称"],
+      ["SKU-1", 20, "测试货品"],
+    ]);
+    const salesPath = path.join(directory, "销售单明细账.xlsx");
+    const costPath = path.join(directory, "分仓库存查询_已剔除刷刷仓.xlsx");
+    await Promise.all([writeFile(salesPath, salesBytes), writeFile(costPath, costBytes)]);
+
+    // 以文件成本为准：不传 --cost-source
+    const result = await execFileAsync(process.execPath, [
+      "--import", "tsx", path.resolve("tools/sales-import-runner.ts"),
+      "--download", salesPath,
+      "--use-file-cost",
+      "--expected-source-rows", "1",
+      "--as-of", "2026-07-15",
+      "--audit-root", path.join(directory, "audit"),
+      "--dry-run",
+    ], { cwd: path.resolve("."), encoding: "utf8", timeout: 30_000 });
+
+    const output = JSON.parse(result.stdout) as { status?: string; auditPath?: string; outputPath?: string };
+    assert.equal(output.status, "prepared");
+    assert.ok(output.outputPath);
+    const workbook = parseXlsxFirstSheet(new Uint8Array(await readFile(output.outputPath)));
+    const head = workbook.rows[0]?.cells.map((cell) => String(cell)) ?? [];
+    const costIdx = head.indexOf("货品成本");
+    const grossIdx = head.indexOf("毛利");
+    assert.ok(costIdx >= 0);
+    // 文件成本列保留为 50（整行成本），毛利保留文件值 45
+    assert.equal(Number(workbook.rows[1]?.cells[costIdx]), 50);
+    assert.equal(Number(workbook.rows[1]?.cells[grossIdx]), 45);
+    const audit = JSON.parse(await readFile(output.auditPath!, "utf8")) as {
+      sources?: { costSource?: { mode?: string } };
+      totals?: { costAmountCents?: number };
+    };
+    assert.equal(audit.sources?.costSource?.mode, "file_cost");
+    assert.equal(audit.totals?.costAmountCents, 5000);
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});
+
 test("sales dry-run accepts the current sales export shape", async () => {
   const directory = await mkdtemp(path.join(tmpdir(), "sales-runner-test-"));
   try {
@@ -278,6 +328,91 @@ test("sales dry-run ignores line ship time when shipment time is missing", async
     assert.equal(audit.filtering?.retainedRows, 1);
     assert.equal(audit.filtering?.excludedTodayRows, 0);
   } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});
+
+test("sales upload failures are persisted as failed audits before they are rethrown", async () => {
+  const directory = await mkdtemp(path.join(tmpdir(), "sales-upload-failure-audit-test-"));
+  const originalFetch = globalThis.fetch;
+  try {
+    const policy = JSON.parse(await readFile(path.resolve("config/sales-import-policy.json"), "utf8")) as { version: string };
+    const salesBytes = salesSheet([
+      ["网店订单号", "销售渠道", "发货仓库", "货品编号", "货品名称", "数量", "下单时间", "发货时间", "货品成本", "分摊后单价", "分摊后金额", "费用分摊", "毛利"],
+      ["ON-1", "京东-志高切肉机旗舰店（志高迈德豪）", "主仓", "SKU-1", "测试货品", 1, "2026-07-10 09:00:00", "2026-07-10 10:00:00", 0, 100, 100, 5, 0],
+    ]);
+    const costBytes = costSheet([
+      ["货品编号", "固定成本价", "货品名称"],
+      ["SKU-1", 20, "测试货品"],
+    ]);
+    const salesPath = path.join(directory, "销售单明细账.xlsx");
+    const costPath = path.join(directory, "分仓库存查询_已剔除刷刷仓.xlsx");
+    const auditRoot = path.join(directory, "audit");
+    await Promise.all([writeFile(salesPath, salesBytes), writeFile(costPath, costBytes)]);
+
+    globalThis.fetch = (async (input: string | URL | Request, init?: RequestInit) => {
+      const url = new URL(typeof input === "string" || input instanceof URL ? input : input.url);
+      if (url.searchParams.get("policyOnly") === "1") {
+        return Response.json({ policyVersion: policy.version });
+      }
+      if (url.pathname === "/api/imports/sales/verify") {
+        return Response.json({ shops: [] });
+      }
+      if (url.pathname === "/api/imports/sales/chunks" && init?.method === "POST") {
+        const payload = JSON.parse(String(init.body)) as { action?: string };
+        assert.equal(payload.action, "init");
+        return Response.json({
+          ok: true,
+          upload: { id: "upload-failure-test", receivedChunkIndexes: [] },
+        });
+      }
+      if (url.pathname === "/api/imports/sales/chunks" && init?.method === "PUT") {
+        return Response.json({
+          ok: false,
+          message: "Django 销售服务暂时不可用，请稍后重试。",
+        }, { status: 503 });
+      }
+      throw new Error(`unexpected request: ${init?.method ?? "GET"} ${url}`);
+    }) as typeof fetch;
+
+    await assert.rejects(
+      runSalesImport({
+        asOfDate: "2026-07-15",
+        downloadPath: salesPath,
+        costSourcePath: costPath,
+        expectedDownloadSha256: sha256(salesBytes),
+        expectedCostSha256: sha256(costBytes),
+        expectedSourceRows: 1,
+        auditRootPath: auditRoot,
+        baseUrl: "http://localhost:3000",
+        dryRun: false,
+      }),
+      (error: unknown) => error instanceof SalesImportError
+        && error.failureCode === "IMPORT_FAILED"
+        && error.stage === "chunk_upload_and_import",
+    );
+
+    const runDirectories = (await readdir(auditRoot, { withFileTypes: true }))
+      .filter((entry) => entry.isDirectory())
+      .map((entry) => entry.name);
+    assert.equal(runDirectories.length, 1);
+    const audit = JSON.parse(
+      await readFile(path.join(auditRoot, runDirectories[0]!, "audit.json"), "utf8"),
+    ) as {
+      ok?: boolean;
+      import?: unknown;
+      postImportVerification?: unknown;
+      failure?: { code?: string; stage?: string; message?: string; failedAt?: string };
+    };
+    assert.equal(audit.ok, false);
+    assert.equal(audit.import, null);
+    assert.equal(audit.postImportVerification, null);
+    assert.equal(audit.failure?.code, "IMPORT_FAILED");
+    assert.equal(audit.failure?.stage, "chunk_upload_and_import");
+    assert.match(audit.failure?.message ?? "", /Django 销售服务暂时不可用/);
+    assert.ok(audit.failure?.failedAt);
+  } finally {
+    globalThis.fetch = originalFetch;
     await rm(directory, { recursive: true, force: true });
   }
 });

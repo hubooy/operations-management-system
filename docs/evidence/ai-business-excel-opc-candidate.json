@@ -1,0 +1,154 @@
+{
+  "status": "candidate_partial_native_acceptance_license_blocked",
+  "productionAdopted": false,
+  "rendererVersions": {
+    "newSingle": 5,
+    "newVolumes": 6,
+    "unchangedHistorical": [
+      1,
+      2,
+      3,
+      4
+    ]
+  },
+  "migration": "0025_business_file_opc",
+  "aiOwnedTableCount": 65,
+  "fixes": [
+    "manifest JSON OPC ContentType",
+    "new-version bounded integer remainder without native MOD #NUM"
+  ],
+  "pureTests": {
+    "passed": 58,
+    "seconds": 5.897,
+    "log": ".runtime/excel-opc-compatibility/pure-tests.log"
+  },
+  "nodeDownloads": {
+    "passed": 41
+  },
+  "targetedEslint": {
+    "errors": 0,
+    "warnings": 0
+  },
+  "legacyByteProof": ".runtime/excel-opc-compatibility/legacy-bytes.json",
+  "databaseFileServices": {
+    "passed": 19,
+    "seconds": 81.675,
+    "log": ".runtime/ai-pg-53104740e6cc/tests.log"
+  },
+  "native": {
+    "total": 50,
+    "passed": 49,
+    "failed": 1,
+    "budgetPassed": 48,
+    "syntheticVolumeSmokePassed": 1,
+    "comparedValues": 2080,
+    "excelErrorCells": 0,
+    "sourceAndCopyHashesUnchanged": true,
+    "privateProcessExited": true,
+    "forcedTermination": false,
+    "excelPid": 50424,
+    "evidence": ".runtime/native-excel-5db64c136ae8/evidence.json",
+    "blockedCase": "blank_total",
+    "block": "Excel reported license expired while ClearContents; stopped further native operations",
+    "pending": [
+      "blank_total",
+      "additional independent 8 budget boundary cases",
+      "complete renderer6 formal synthetic files"
+    ],
+    "repairRequested": false,
+    "normalLoadDefault": true
+  },
+  "originalOpcRootCause": ".runtime/native-excel-de5932d5a5a5/result.json",
+  "independentFormulaReview": "source_capacity_design: no remaining concrete blocker; 6 pure tests independently passed",
+  "upgradeRestore": {
+    "status": "passed",
+    "script": "tools/business-file-opc-upgrade-rehearsal.py",
+    "evidence": ".runtime/ai-pg-3e91a50962f9/business-file-opc-upgrade.json",
+    "result": {
+      "upgrade": "0024->0025",
+      "aiTables": 65,
+      "oldRowsDigestPreserved": "a172fdc1d19f86a5fbbd61d28da24952eddba237f8d85b19d2612e87a4104055",
+      "restoreDigest": "35779a19f580846c704f9f217111c4f88443b4cdac5829571607ef4163becafb",
+      "oldVersionsPreserved": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "newVersions": [
+        5,
+        6
+      ],
+      "pausedV4Restored": true,
+      "allFileBytesRestored": true,
+      "realWriterPublishedNewVersions": true,
+      "readerWritesDenied": true,
+      "writerWrongEpochDenied": true,
+      "grantsUnchanged": true,
+      "emptyReverseAndReupgrade": true,
+      "reverseWithNewRowsDenied": true,
+      "fullManifestsReverified": true,
+      "syntheticLedgerOnly": true,
+      "realReportAuthorizationExercised": false,
+      "nativeExcelExercised": false,
+      "productionWrites": false
+    },
+    "initialFixtureFailure": {
+      "code": "ai_invalid_authority",
+      "log": ".runtime/ai-pg-54ca4845fea3/failure.log",
+      "resolution": "Completed synthetic authority terminal fields; no guard disabled or weakened"
+    }
+  },
+  "lastHarnessChangesNotNativeRetested": [
+    "explicit xlWBATWorksheet control template",
+    "independent legacy fixture baseline-precision expectation compatibility"
+  ],
+  "paidModelCalls": false,
+  "productionServiceChanges": false,
+  "formalV6SyntheticPipeline": {
+    "passed": 1,
+    "seconds": 88.061,
+    "log": ".runtime/ai-pg-0f33e3640a7c/tests.log",
+    "artifacts": ".runtime/screening-formal-files-v6",
+    "browserEvidence": ".runtime/screening-formal-files-v6/browser-evidence.json",
+    "browser": {
+      "passed": true,
+      "rendererVersion": 6,
+      "tableCount": 36,
+      "visibleRowsTraversed": 119,
+      "summaryFirst": true,
+      "search": true,
+      "csv": true,
+      "mobileNoOverflow": true,
+      "errors": [],
+      "external": [],
+      "syntheticOnly": true,
+      "nativeExcel": false
+    },
+    "nativeExcel": "pending_license",
+    "paidModel": false
+  },
+  "finalIntegration": {
+    "build": "passed",
+    "node": {
+      "total": 2410,
+      "passed": 2390,
+      "failed": 0,
+      "cancelled": 0,
+      "skipped": 20,
+      "seconds": 299.8074361,
+      "log": ".runtime/batch-market-excel-node-all.log"
+    },
+    "typecheck": {
+      "status": "unchanged_existing_errors",
+      "lines": 223,
+      "exactBaseline": ".runtime/batch52-types.log",
+      "log": ".runtime/batch-market-excel-tsc.log"
+    },
+    "productionBoundary": {
+      "checkedModules": 497,
+      "violations": 0
+    },
+    "diffWhitespace": "One intentional predecessor SQL whitespace-only line is preserved for exact reverse function bytes in migration 0025."
+  }
+}

@@ -7,7 +7,7 @@ import {
   salesImportPolicy,
 } from "../lib/sales/import-policy";
 
-test("sales import policy keeps the exact 27-shop whitelist", () => {
+test("sales import policy keeps the exact 30-shop whitelist", () => {
   assert.deepEqual(salesImportPolicy.approvedSalesChannels, [
     "志高商用厨电京东自营旗舰店",
     "京东-志高商用厨电旗舰店",
@@ -16,6 +16,9 @@ test("sales import policy keeps the exact 27-shop whitelist", () => {
     "京东-志高商用西厨旗舰店（志高乐度）",
     "京东-志高商用设备旗舰店（亿用）",
     "京东-志高切肉机旗舰店（志高迈德豪）",
+    "阿里巴巴-炊之王店",
+    "阿里巴巴-亿用店",
+    "阿里巴巴-震坤行",
     "拼多多-志高中式厨电旗舰店（志高亿玥）",
     "拼多多-志高中式厨电旗舰店（志高亿玖）",
     "拼多多-志高商用厨具旗舰店（志高丽力）",
@@ -38,6 +41,10 @@ test("sales import policy keeps the exact 27-shop whitelist", () => {
     "抖店-志高炊之王专卖店",
   ]);
   assert.equal(isApprovedSalesChannel("亿玥淘工厂"), true);
+  assert.equal(isApprovedSalesChannel("阿里巴巴-炊之王店"), true);
+  assert.equal(isApprovedSalesChannel("阿里巴巴-亿用店"), true);
+  assert.equal(isApprovedSalesChannel("阿里巴巴-震坤行"), true);
+  assert.equal(isApprovedSalesChannel("阿里巴巴-振坤行"), false);
   assert.equal(isApprovedSalesChannel("拼多多-志高中式厨电旗舰店（志高亿玖）"), true);
   assert.equal(isApprovedSalesChannel("天猫-非名单店铺"), false);
 });

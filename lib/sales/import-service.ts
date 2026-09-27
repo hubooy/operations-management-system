@@ -1,39 +1,36 @@
+import type { AppPrincipal } from "@/lib/auth/authorization";
+import {
+  DjangoSalesServiceResponseError,
+  SALES_STAGED_IMPORTS_PATH,
+  requestDjangoSalesService,
+} from "@/lib/django/sales-writer";
 import {
   parseSalesLedgerXlsx,
   type SalesLedgerRow,
   type SalesLedgerTotals,
 } from "@/lib/imports/sales-ledger";
+import { findLatestAuthoritativeSystemCostSnapshot } from "@/lib/inventory/system-cost-reference";
 import {
-  buildImportAttemptHash,
-  buildImportContentFingerprint,
-  auditRejectedImportResult,
-  ensureImportFingerprintSchema,
-  failImportFingerprint,
-  nextImportScopeStateToken,
-  readImportScopeStateToken,
-  recordImportFingerprint,
-  renewImportFingerprintReservation,
-  reserveImportFingerprint,
-} from "@/lib/imports/content-fingerprint";
-import { findLatestSystemCostSnapshot } from "@/lib/inventory/database";
-import {
-  ensureSalesSchema,
-  findSalesImportBatchByHash,
-  findSalesImportBatchById,
-  getSalesDatabase,
   sanitizeSalesIssues,
-  saveSalesImport,
+  type SalesImportBatch,
   type SalesImportIssue,
   type SalesLineInput,
-} from "@/lib/sales/database";
+} from "@/lib/sales/import-contract";
 import {
   isApprovedSalesChannel,
   isExcludedSalesWarehouse,
   isZeroCostProductName,
+  salesImportPolicy,
 } from "@/lib/sales/import-policy";
-import { cleanZeroCostSalesRows } from "@/lib/sales/system-cost-cleaning";
 
 export const XLSX_CONTENT_TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+export const MAX_SALES_IMPORT_RANGE_DAYS = 366;
+export const MAX_SALES_IMPORT_CHANNELS = 50;
+
+const MAX_STAGED_ROWS = 500_000;
+const MAX_ROWS_PER_STAGED_CHUNK = 1_000;
+const TARGET_STAGED_BODY_BYTES = 6 * 1024 * 1024;
+const encoder = new TextEncoder();
 
 export function isXlsxSignature(bytes: Uint8Array) {
   return bytes.length >= 4 && bytes[0] === 0x50 && bytes[1] === 0x4b && bytes[2] === 0x03 && bytes[3] === 0x04;
@@ -48,13 +45,18 @@ function sha256(bytes: Uint8Array) {
   return crypto.subtle.digest("SHA-256", input);
 }
 
+async function sha256Text(value: string) {
+  return toHex(await sha256(encoder.encode(value)));
+}
+
 function safeFileName(name: string) {
   const baseName = name.split(/[\\/]/).pop() ?? "sales-ledger.xlsx";
   return baseName.replace(/[\u0000-\u001f\u007f]/g, "").slice(0, 255);
 }
 
 function mapAnalysisSafeRow(row: SalesLedgerRow): SalesLineInput {
-  // Explicit allow-list: personal/account/logistics details remain outside analytics storage.
+  // Explicit allow-list: personal/account/logistics details stay outside the
+  // analytics boundary before any data leaves the Worker.
   return {
     sourceRowNumber: row.sourceRowNumber,
     sourceLineKey: row.sourceLineKey,
@@ -85,9 +87,6 @@ function mapAnalysisSafeRow(row: SalesLedgerRow): SalesLineInput {
     untaxedGrossMarginBps: row.untaxedGrossMarginBps ?? 0,
     orderTime: row.orderTime,
     salesTime: row.salesTime,
-    // “补差价专用”等虚拟金额调整行没有实际发货时间。为保持发货时间
-    // 为主口径，同时避免将这类订单金额排除在统计周期外，按货品级发货
-    // 时间、下单时间依次兜底。
     shipTime: row.shipTime ?? row.orderTime,
     lineShipTime: row.lineShipTime ?? "",
     businessType: row.businessType,
@@ -111,69 +110,65 @@ function addUtcDays(value: string, days: number) {
   return date.toISOString().slice(0, 10);
 }
 
-function hasCleanableZeroCostRows(rows: readonly SalesLineInput[]) {
-  return rows.some((row) => row.costAmountCents === 0
-    && row.productCode !== "ERP_PRICE_ADJUSTMENT"
-    && !isZeroCostProductName(row.productName));
+export function validateSalesImportChannels(value: unknown) {
+  if (value === undefined || value === null || value === "") {
+    return { ok: true as const, channels: null };
+  }
+  let parsed = value;
+  if (typeof value === "string") {
+    try {
+      parsed = JSON.parse(value);
+    } catch {
+      return { ok: false as const, code: "INVALID_EXPECTED_CHANNELS", message: "expectedChannels 必须是 JSON 字符串数组" };
+    }
+  }
+  if (!Array.isArray(parsed) || parsed.length === 0 || parsed.length > MAX_SALES_IMPORT_CHANNELS) {
+    return { ok: false as const, code: "INVALID_EXPECTED_CHANNELS", message: `expectedChannels 必须包含 1 到 ${MAX_SALES_IMPORT_CHANNELS} 个销售渠道` };
+  }
+  const channels = parsed.map((item) => typeof item === "string" ? item.trim() : "");
+  if (channels.some((channel) => !channel || channel.length > 100)) {
+    return { ok: false as const, code: "INVALID_EXPECTED_CHANNELS", message: "expectedChannels 只能包含非空且不超过 100 字符的渠道名" };
+  }
+  const unique = [...new Set(channels)].sort((left, right) => left.localeCompare(right, "zh-CN"));
+  if (unique.length !== channels.length) {
+    return { ok: false as const, code: "DUPLICATE_EXPECTED_CHANNELS", message: "expectedChannels 不能包含重复渠道" };
+  }
+  const unapproved = unique.filter((channel) => !salesImportPolicy.approvedSalesChannels.includes(channel));
+  if (unapproved.length > 0) {
+    return { ok: false as const, code: "UNAPPROVED_EXPECTED_CHANNELS", message: `expectedChannels 包含未纳入白名单的渠道：${unapproved.join("、")}` };
+  }
+  return { ok: true as const, channels: unique };
 }
 
-function safeTotal(total: number, value: number, field: string) {
-  const result = total + value;
-  if (!Number.isSafeInteger(result)) throw new Error(`${field} 汇总超出安全整数范围`);
-  return result;
+function realIsoDate(value: string) {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+  if (!match) return null;
+  const year = Number(match[1]);
+  const month = Number(match[2]);
+  const day = Number(match[3]);
+  if (year < 1900 || year > 2199) return null;
+  const epochMs = Date.UTC(year, month - 1, day);
+  const parsed = new Date(epochMs);
+  if (parsed.getUTCFullYear() !== year || parsed.getUTCMonth() !== month - 1 || parsed.getUTCDate() !== day) return null;
+  return { value, epochMs };
 }
 
-function calculateStoredTotals(
-  sourceTotals: SalesLedgerTotals,
-  rows: readonly SalesLineInput[],
-  input: {
-    rawFileHash: string;
-    excludedBrushWarehouseRows: number;
-    excludedFutureDateRows: number;
-    systemCost?: {
-      sourceBatchId: string;
-      snapshotDate: string;
-      cleanedRows: number;
-      matchedByWarehouseRows: number;
-      matchedByProductFallbackRows: number;
-      skippedPriceAdjustmentRows: number;
-      unresolvedRows: number;
-    };
-  },
-) {
-  let saleRowCount = 0;
-  let returnRowCount = 0;
-  let quantity = 0;
-  let netSalesCents = 0;
-  let costAmountCents = 0;
-  let feeAllocationCents = 0;
-  let grossProfitCents = 0;
-  let untaxedGrossProfitCents = 0;
-  for (const row of rows) {
-    if (row.businessType === "return") returnRowCount += 1;
-    else saleRowCount += 1;
-    quantity = safeTotal(quantity, row.quantity, "销售数量");
-    netSalesCents = safeTotal(netSalesCents, row.allocatedAmountCents, "销售金额");
-    costAmountCents = safeTotal(costAmountCents, row.costAmountCents, "货品成本");
-    feeAllocationCents = safeTotal(feeAllocationCents, row.feeAllocationCents, "费用分摊");
-    grossProfitCents = safeTotal(grossProfitCents, row.grossProfitCents, "毛利");
-    untaxedGrossProfitCents = safeTotal(untaxedGrossProfitCents, row.untaxedGrossProfitCents, "未税毛利");
+export function validateSalesImportDateRange(startDate: string, endDate: string) {
+  const start = realIsoDate(startDate);
+  const end = realIsoDate(endDate);
+  if (!start || !end || start.epochMs > end.epochMs) {
+    return { ok: false as const, code: "INVALID_EXPECTED_DATE_RANGE", message: "起止日期必须为真实的 YYYY-MM-DD 自然日，且开始日期不能晚于结束日期" };
+  }
+  const dayCount = Math.floor((end.epochMs - start.epochMs) / 86_400_000) + 1;
+  if (dayCount > MAX_SALES_IMPORT_RANGE_DAYS) {
+    return { ok: false as const, code: "EXPECTED_DATE_RANGE_TOO_LARGE", message: `单次销售导入日期范围最多 ${MAX_SALES_IMPORT_RANGE_DAYS} 天` };
   }
   return {
-    ...sourceTotals,
-    rowCount: rows.length,
-    saleRowCount,
-    returnRowCount,
-    quantity,
-    netSalesCents,
-    costAmountCents,
-    feeAllocationCents,
-    grossProfitCents,
-    untaxedGrossProfitCents,
-    rawFileHash: input.rawFileHash,
-    excludedBrushWarehouseRows: input.excludedBrushWarehouseRows,
-    excludedFutureDateRows: input.excludedFutureDateRows,
-    ...(input.systemCost ? { systemCost: input.systemCost } : {}),
+    ok: true as const,
+    startDate: start.value,
+    endDate: end.value,
+    endExclusive: new Date(end.epochMs + 86_400_000).toISOString().slice(0, 10),
+    dayCount,
   };
 }
 
@@ -185,16 +180,14 @@ function validateRows(rows: readonly SalesLineInput[]): SalesImportIssue[] {
     "allocatedUnitPriceCents", "allocatedAmountCents", "feeAllocationCents",
     "grossProfitCents", "grossMarginBps", "untaxedGrossProfitCents", "untaxedGrossMarginBps",
   ] as const;
-
   if (rows.length === 0) return [{ code: "NO_DATA_ROWS", message: "工作表中没有可导入的销售明细行" }];
-
+  if (rows.length > MAX_STAGED_ROWS) return [{ code: "ROW_LIMIT", message: `销售明细总行数超过 ${MAX_STAGED_ROWS} 行上限` }];
   for (const row of rows) {
     if (!row.sourceLineKey || !row.sourceRowHash) {
       errors.push({ row: row.sourceRowNumber, code: "MISSING_ROW_KEY", message: "明细行缺少唯一标识" });
     } else if (keys.has(row.sourceLineKey)) {
       errors.push({ row: row.sourceRowNumber, code: "DUPLICATE_ROW_KEY", message: "文件内存在重复的销售明细行" });
     } else keys.add(row.sourceLineKey);
-
     if (!/^\d{4}-\d{2}-\d{2}/.test(row.salesTime)) {
       errors.push({ row: row.sourceRowNumber, field: "salesTime", code: "INVALID_SALES_TIME", message: "销售时间无效" });
     }
@@ -214,285 +207,209 @@ function validateRows(rows: readonly SalesLineInput[]): SalesImportIssue[] {
   return errors;
 }
 
+function effectiveRowsForCost(
+  rows: readonly SalesLineInput[],
+  startDate: string,
+  endDate: string,
+  expectedChannels: readonly string[] | null,
+) {
+  const cutoff = addUtcDays(shanghaiToday(), -1);
+  const channels = expectedChannels ? new Set(expectedChannels) : null;
+  return rows.filter((row) => {
+    const businessDate = row.shipTime.slice(0, 10);
+    return businessDate >= startDate && businessDate <= endDate && businessDate <= cutoff
+      && !isExcludedSalesWarehouse(row.warehouse)
+      && isApprovedSalesChannel(row.channel)
+      && (!channels || channels.has(row.channel));
+  });
+}
+
+function hasCleanableZeroCostRows(rows: readonly SalesLineInput[]) {
+  return rows.some((row) => row.costAmountCents === 0
+    && row.productCode !== "ERP_PRICE_ADJUSTMENT"
+    && !isZeroCostProductName(row.productName));
+}
+
+function splitRowsForStaging(rows: readonly SalesLineInput[]): SalesLineInput[][] {
+  const chunks: SalesLineInput[][] = [];
+  let current: SalesLineInput[] = [];
+  let bytes = 2;
+  for (const row of rows) {
+    const rowBytes = encoder.encode(JSON.stringify(row)).byteLength + (current.length === 0 ? 0 : 1);
+    if (rowBytes + 64 > TARGET_STAGED_BODY_BYTES) {
+      throw new Error("单行销售明细超过规范化分片请求上限");
+    }
+    if (current.length >= MAX_ROWS_PER_STAGED_CHUNK || bytes + rowBytes > TARGET_STAGED_BODY_BYTES) {
+      chunks.push(current);
+      current = [];
+      bytes = 2;
+    }
+    current.push(row);
+    bytes += rowBytes;
+  }
+  if (current.length > 0) chunks.push(current);
+  return chunks;
+}
+
 export type SalesImportExecution = {
   ok: boolean;
   status: "imported" | "duplicate" | "rejected";
   message: string;
-  batch?: Awaited<ReturnType<typeof findSalesImportBatchByHash>>;
+  code?: string;
+  batch?: SalesImportBatch;
   warnings: SalesImportIssue[];
   errors?: SalesImportIssue[];
   errorCount?: number;
 };
 
+function rejected(message: string, code: string, warnings: SalesImportIssue[] = []): SalesImportExecution {
+  return {
+    ok: false,
+    status: "rejected",
+    message,
+    code,
+    warnings,
+    errors: [{ code, message }],
+    errorCount: 1,
+  };
+}
+
+function upstreamImportPayload(error: unknown): SalesImportExecution | null {
+  if (!(error instanceof DjangoSalesServiceResponseError)) return null;
+  const payload = error.payload;
+  if (payload.status !== "rejected" || payload.ok !== false || typeof payload.message !== "string") return null;
+  return {
+    ok: false,
+    status: "rejected",
+    message: payload.message,
+    ...(typeof payload.code === "string" ? { code: payload.code } : {}),
+    warnings: sanitizeSalesIssues(Array.isArray(payload.warnings) ? payload.warnings : []),
+    errors: sanitizeSalesIssues(Array.isArray(payload.errors) ? payload.errors : []),
+    errorCount: Number.isSafeInteger(payload.errorCount) ? Number(payload.errorCount) : undefined,
+  };
+}
+
 export async function importSalesLedgerBytes(input: {
+  principal: AppPrincipal;
   bytes: Uint8Array;
   fileName: string;
   fileSizeBytes: number;
   expectedStartDate: string;
   expectedEndDate: string;
+  expectedChannels?: unknown;
+  rawUploadId?: string;
+  rawUploadOwnerToken?: string;
+  fingerprint?: string;
 }): Promise<SalesImportExecution> {
+  const dateRange = validateSalesImportDateRange(input.expectedStartDate, input.expectedEndDate);
+  if (!dateRange.ok) return rejected("销售导入必须提供有效的权威起止日期", dateRange.code);
+  const channelScope = validateSalesImportChannels(input.expectedChannels);
+  if (!channelScope.ok) return rejected("销售导入必须提供有效的权威渠道范围", channelScope.code);
+  const expectedChannels = channelScope.channels;
   const rawFileHash = toHex(await sha256(input.bytes));
-  const db = getSalesDatabase();
-  await ensureSalesSchema(db);
-  await ensureImportFingerprintSchema(db);
-  const reject = (result: SalesImportExecution) => auditRejectedImportResult(db, {
-    domain: "sales",
-    rawFileHash,
-    scopeHint: { source: "sales_ledger", startDate: input.expectedStartDate, endDate: input.expectedEndDate },
-    metadata: { fileName: input.fileName, fileSizeBytes: input.fileSizeBytes },
-  }, result);
+  const fileName = safeFileName(input.fileName);
+
+  let sourceTotals: SalesLedgerTotals = {} as SalesLedgerTotals;
+  let sheetName = "销售单明细账";
+  let rows: SalesLineInput[] = [];
+  let parserWarnings: SalesImportIssue[] = [];
+  let parserErrors: SalesImportIssue[] = [];
   if (!isXlsxSignature(input.bytes)) {
-    return reject({ ok: false, status: "rejected", message: "文件签名不是有效的 .xlsx（ZIP）格式", warnings: [], errors: [{ code: "INVALID_XLSX_SIGNATURE", message: "文件签名无效" }], errorCount: 1 });
-  }
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(input.expectedStartDate)
-    || !/^\d{4}-\d{2}-\d{2}$/.test(input.expectedEndDate)
-    || input.expectedStartDate > input.expectedEndDate) {
-    return reject({ ok: false, status: "rejected", message: "销售导入必须提供有效的权威起止日期", warnings: [], errors: [{ code: "INVALID_EXPECTED_DATE_RANGE", message: "起止日期必须为 YYYY-MM-DD，且开始日期不能晚于结束日期" }], errorCount: 1 });
-  }
-
-  let parsed: Awaited<ReturnType<typeof parseSalesLedgerXlsx>>;
-  try {
-    parsed = await parseSalesLedgerXlsx(input.bytes);
-  } catch (error) {
-    const message = error instanceof Error ? error.message : "Excel 文件解析失败";
-    return reject({ ok: false, status: "rejected", message, warnings: [], errors: [{ code: "XLSX_PARSE_ERROR", message }], errorCount: 1 });
+    parserErrors = [{ code: "INVALID_XLSX_SIGNATURE", message: "文件签名不是有效的 .xlsx（ZIP）格式" }];
+  } else {
+    try {
+      const parsed = await parseSalesLedgerXlsx(input.bytes);
+      sourceTotals = parsed.totals;
+      sheetName = parsed.sheetName || sheetName;
+      rows = parsed.rows.map(mapAnalysisSafeRow);
+      parserWarnings = sanitizeSalesIssues(parsed.warnings ?? []);
+      parserErrors = sanitizeSalesIssues([...(parsed.errors ?? []), ...validateRows(rows)]);
+    } catch {
+      parserErrors = [{ code: "XLSX_PARSE_ERROR", message: "销售 Excel 文件解析失败，请确认文件格式和模板" }];
+    }
   }
 
-  const parserErrors = sanitizeSalesIssues(parsed.errors ?? []);
-  const mappedRows = parsed.rows.map(mapAnalysisSafeRow);
-  const today = shanghaiToday();
-  const cutoffDate = addUtcDays(today, -1);
-  const excludedFutureDateRows = mappedRows.filter((row) => row.shipTime.slice(0, 10) === today).length;
-  const invalidFutureDateRows = mappedRows.filter((row) => row.shipTime.slice(0, 10) > today);
-  const rowsWithinCutoff = mappedRows.filter((row) => row.shipTime.slice(0, 10) <= cutoffDate);
-  const excludedBrushWarehouseRows = rowsWithinCutoff.filter((row) => isExcludedSalesWarehouse(row.warehouse)).length;
-  let rows = rowsWithinCutoff.filter((row) => !isExcludedSalesWarehouse(row.warehouse));
-  const disallowedChannelRows = rows.filter((row) => !isApprovedSalesChannel(row.channel));
-  rows = rows.filter((row) => isApprovedSalesChannel(row.channel));
-  const outOfScopeRows = rows.filter((row) => {
-    const date = row.shipTime.slice(0, 10);
-    return date < input.expectedStartDate || date > input.expectedEndDate;
-  });
-  const baseWarnings: Array<{ code: string; message: string; sourceRowNumber?: number }> = [
-    ...(parsed.warnings ?? []),
-    ...(excludedFutureDateRows > 0
-      ? [{ code: "EXCLUDED_FUTURE_DATE_ROWS", message: `已剔除晚于截止日期的 ${excludedFutureDateRows} 行当天订单明细` }]
-      : []),
-    ...(excludedBrushWarehouseRows > 0
-      ? [{ code: "EXCLUDED_BRUSH_WAREHOUSE", message: `已剔除刷刷仓 ${excludedBrushWarehouseRows} 行，不写入经营分析数据` }]
-      : []),
-    ...(disallowedChannelRows.length > 0
-      ? [{ code: "EXCLUDED_NON_WHITELIST_CHANNEL", message: `已剔除白名单外店铺 ${disallowedChannelRows.length} 行，不写入经营分析数据` }]
-      : []),
-  ];
-  let warnings = sanitizeSalesIssues(baseWarnings);
-  const policyErrors: SalesImportIssue[] = invalidFutureDateRows.map((row) => ({
-    row: row.sourceRowNumber,
-    field: "shipTime",
-    code: "INVALID_FUTURE_SHIP_TIME",
-    message: `发货日期晚于执行当天，不能按当天订单自动剔除：${row.shipTime}`,
+  let systemCostSnapshot: Record<string, unknown> | null = null;
+  if (parserErrors.length === 0
+    && hasCleanableZeroCostRows(effectiveRowsForCost(rows, dateRange.startDate, dateRange.endDate, expectedChannels))) {
+    const snapshot = await findLatestAuthoritativeSystemCostSnapshot(input.principal);
+    if (snapshot) {
+      systemCostSnapshot = {
+        sourceBatchId: snapshot.batchId,
+        snapshotDate: snapshot.snapshotDate,
+        costs: snapshot.costs,
+      };
+    }
+  }
+
+  const chunks = parserErrors.length === 0 ? splitRowsForStaging(rows) : [];
+  const scopeDigest = await sha256Text(JSON.stringify({
+    startDate: dateRange.startDate,
+    endDate: dateRange.endDate,
+    channels: expectedChannels,
   }));
-  const rowErrors = validateRows(rows);
-  const errors = [...parserErrors, ...policyErrors, ...rowErrors].slice(0, 200);
-  if (outOfScopeRows.length > 0) {
-    errors.unshift({ code: "OUT_OF_EXPECTED_DATE_RANGE", message: `${outOfScopeRows.length} 行发货日期超出权威导入范围 ${input.expectedStartDate} 至 ${input.expectedEndDate}` });
-  }
-  if (rows.length === 0) {
-    errors.unshift({ code: "NO_DATA_ROWS", message: "剔除当天订单明细、刷刷仓和白名单外店铺后没有可导入的销售数据" });
-  }
-  if (errors.length > 0) {
-    return reject({
-      ok: false,
-      status: "rejected",
-      message: "文件校验未通过，未写入任何销售数据",
-      warnings,
-      errors,
-      errorCount: (parsed.errors?.length ?? 0) + policyErrors.length + rowErrors.length,
+  const fingerprint = input.fingerprint?.trim()
+    || `sales-stage-v1:${rawFileHash}:${scopeDigest}`;
+  try {
+    const initialized = await requestDjangoSalesService<{ session: { id: string; status: string; receivedChunkIndexes: number[] } }>(input.principal, {
+      method: "POST",
+      path: SALES_STAGED_IMPORTS_PATH,
+      service: "writer",
+      payload: {
+        action: "init",
+        ...(input.rawUploadId ? { rawUploadId: input.rawUploadId } : {}),
+        ...(input.rawUploadOwnerToken ? { rawUploadOwnerToken: input.rawUploadOwnerToken } : {}),
+        fingerprint,
+        fileName,
+        fileSizeBytes: input.fileSizeBytes,
+        rawFileHash,
+        sheetName,
+        expectedStartDate: dateRange.startDate,
+        expectedEndDate: dateRange.endDate,
+        expectedChannels,
+        chunkCount: Math.max(chunks.length, 1),
+        sourceTotals,
+        parserWarnings,
+        parserErrors,
+        systemCostSnapshot,
+      },
     });
-  }
-
-  let systemCost: {
-    sourceBatchId: string;
-    snapshotDate: string;
-    cleanedRows: number;
-    matchedByWarehouseRows: number;
-    matchedByProductFallbackRows: number;
-    skippedPriceAdjustmentRows: number;
-    unresolvedRows: number;
-  } | undefined;
-  if (hasCleanableZeroCostRows(rows)) {
-    const snapshot = await findLatestSystemCostSnapshot(db);
-    if (!snapshot) {
-      return reject({
-        ok: false,
-        status: "rejected",
-        message: "检测到货品成本为 0 的销售明细，但没有可用的系统成本快照",
-        warnings,
-        errors: [{
-          code: "MISSING_SYSTEM_COST_SNAPSHOT",
-          field: "costAmountCents",
-          message: "请先同步包含正固定成本价的分仓库存快照，再重新导入销售明细",
-        }],
-        errorCount: 1,
+    const session = initialized.data.session;
+    if (!session || typeof session.id !== "string" || !Array.isArray(session.receivedChunkIndexes)) {
+      throw new Error("Django 返回的规范化导入会话无效");
+    }
+    const received = new Set(session.receivedChunkIndexes);
+    for (let index = 0; index < chunks.length; index += 1) {
+      if (received.has(index)) continue;
+      await requestDjangoSalesService(input.principal, {
+        method: "PUT",
+        path: SALES_STAGED_IMPORTS_PATH,
+        service: "writer",
+        payload: {
+          sessionId: session.id,
+          chunkIndex: index,
+          rows: chunks[index],
+          ...(input.rawUploadOwnerToken ? { rawUploadOwnerToken: input.rawUploadOwnerToken } : {}),
+        },
       });
     }
-
-    const cleaned = cleanZeroCostSalesRows(rows, snapshot.costs);
-    rows = cleaned.rows;
-    const cleanedRowNumbers = new Set(cleaned.cleanedRowNumbers);
-    const unresolvedSamples = [...new Set(cleaned.unresolvedRows
-      .map((row) => row.productCode || row.productName)
-      .filter(Boolean))]
-      .slice(0, 8)
-      .join("、");
-    warnings = sanitizeSalesIssues([
-      ...baseWarnings.filter((warning) => !(warning.code === "GROSS_PROFIT_MISMATCH"
-        && cleanedRowNumbers.has(Number(warning.sourceRowNumber)))),
-      ...(cleaned.cleanedRowNumbers.length > 0
-        ? [{
-          code: "SYSTEM_COST_CLEANED",
-          message: `已按系统成本快照 ${snapshot.snapshotDate} 清洗 ${cleaned.cleanedRowNumbers.length} 行原始成本为 0 的销售明细`,
-        }]
-        : []),
-      ...(cleaned.unresolvedRows.length > 0
-        ? [{
-          code: "SYSTEM_COST_UNRESOLVED",
-          message: `系统成本快照未匹配 ${cleaned.unresolvedRows.length} 行 0 成本明细，已保留原始 0 成本继续导入${unresolvedSamples ? `；样例：${unresolvedSamples}` : ""}`,
-        }]
-        : []),
-      ...(cleaned.matchedByProductFallbackRows > 0
-        ? [{
-          code: "SYSTEM_COST_PRODUCT_FALLBACK",
-          message: `${cleaned.matchedByProductFallbackRows} 行未匹配到同仓成本，已使用货品唯一系统成本`,
-        }]
-        : []),
-    ]);
-    systemCost = {
-      sourceBatchId: snapshot.batchId,
-      snapshotDate: snapshot.snapshotDate,
-      cleanedRows: cleaned.cleanedRowNumbers.length,
-      matchedByWarehouseRows: cleaned.matchedByWarehouseRows,
-      matchedByProductFallbackRows: cleaned.matchedByProductFallbackRows,
-      skippedPriceAdjustmentRows: cleaned.skippedPriceAdjustmentRows,
-      unresolvedRows: cleaned.unresolvedRows.length,
-    };
-  }
-
-  const scopeStart = input.expectedStartDate;
-  const scopeEnd = input.expectedEndDate;
-  const fingerprint = await buildImportContentFingerprint({
-    domain: "sales",
-    scope: { source: "sales_ledger", startDate: scopeStart, endDate: scopeEnd },
-    lockScope: { source: "sales_ledger" },
-    rows,
-    ignoredTopLevelKeys: ["sourceRowNumber", "sourceLineKey", "sourceRowHash"],
-  });
-  const readScopeOwnership = async () => {
-    const current = await db.prepare(
-      `SELECT last_import_batch_id AS batch_id, COUNT(*) AS row_count
-       FROM sales_order_lines
-       WHERE ship_time >= ? AND ship_time < ?
-       GROUP BY last_import_batch_id
-       ORDER BY last_import_batch_id`,
-    ).bind(scopeStart, addUtcDays(scopeEnd, 1)).all<{ batch_id: string; row_count: number }>();
-    return current.results.map((row) => ({ batchId: row.batch_id, rowCount: Number(row.row_count) }));
-  };
-  const scopeOwnership = await readScopeOwnership();
-  const currentStateToken = await readImportScopeStateToken(db, fingerprint);
-  const currentBatchId = scopeOwnership.length === 1 && scopeOwnership[0]?.rowCount === rows.length
-    ? scopeOwnership[0].batchId
-    : null;
-  const currentBatch = currentBatchId ? await findSalesImportBatchById(db, currentBatchId) : null;
-  const currentTotals = currentBatch?.totals as { contentHash?: unknown; rawFileHash?: unknown } | null;
-  if (currentBatch?.status === "completed" && currentBatch.rowCount === rows.length
-    && currentTotals?.contentHash === fingerprint.contentHash) {
-    await recordImportFingerprint(db, {
-      ...fingerprint,
-      batchId: currentBatch.id,
-      importHash: currentBatch.fileHash,
-      rawFileHash,
-      publishedStateToken: currentStateToken,
-      metadata: { fileName: input.fileName, fileSizeBytes: input.fileSizeBytes, warnings },
-      outcome: "duplicate",
+    const completed = await requestDjangoSalesService<SalesImportExecution>(input.principal, {
+      method: "POST",
+      path: SALES_STAGED_IMPORTS_PATH,
+      service: "writer",
+      payload: {
+        action: "complete",
+        sessionId: session.id,
+        ...(input.rawUploadOwnerToken ? { rawUploadOwnerToken: input.rawUploadOwnerToken } : {}),
+      },
     });
-    return { ok: true, status: "duplicate", message: "全部标准化销售资料与当前期间一致，无需重复导入", batch: currentBatch, warnings: currentBatch.warnings };
-  }
-  const fileHash = await buildImportAttemptHash({
-    fingerprint,
-    currentStateToken,
-  });
-  const reservation = await reserveImportFingerprint(db, {
-    ...fingerprint,
-    batchId: fileHash,
-    importHash: fileHash,
-    rawFileHash,
-    currentStateToken,
-    metadata: { fileName: input.fileName, fileSizeBytes: input.fileSizeBytes, warnings },
-  });
-  if (!reservation.claimed) {
-    return { ok: false, status: "rejected", message: "同一销售期间已被更新，请重新提交最新文件", warnings, errors: [{ code: "IMPORT_SCOPE_CHANGED", message: "导入开始前当前期间版本已变化" }], errorCount: 1 };
-  }
-  await renewImportFingerprintReservation(db, { ...fingerprint, batchId: fileHash, attemptId: reservation.attemptId });
-
-  try {
-  const result = await saveSalesImport(db, {
-    fileHash,
-    fileName: safeFileName(input.fileName),
-    fileSizeBytes: input.fileSizeBytes,
-    sheetName: parsed.sheetName,
-    rows,
-    warnings,
-    replaceStartDate: scopeStart,
-    replaceEndDate: scopeEnd,
-    reservationFence: {
-      domain: fingerprint.domain,
-      scopeKey: fingerprint.scopeKey,
-      batchId: fileHash,
-      attemptId: reservation.attemptId,
-    },
-    totals: {
-      ...calculateStoredTotals(parsed.totals, rows, {
-      rawFileHash,
-      excludedBrushWarehouseRows,
-      excludedFutureDateRows,
-      systemCost,
-      }),
-      contentHash: fingerprint.contentHash,
-    },
-  });
-  const postOwnership = await readScopeOwnership();
-  if (result.batch.status !== "completed" || postOwnership.length !== 1
-    || postOwnership[0]?.batchId !== result.batch.id || postOwnership[0].rowCount !== rows.length) {
-    throw new Error("销售导入批次未完成或当前期间的落库事实与解析结果不一致");
-  }
-  await recordImportFingerprint(db, {
-    ...fingerprint,
-    batchId: result.batch.id,
-    importHash: fileHash,
-    rawFileHash,
-    attemptId: reservation.attemptId,
-    publishedStateToken: await nextImportScopeStateToken({
-      previousStateToken: currentStateToken,
-      batchId: result.batch.id,
-      contentHash: fingerprint.contentHash,
-      rowCount: fingerprint.rowCount,
-    }),
-    metadata: { fileName: input.fileName, fileSizeBytes: input.fileSizeBytes, warnings },
-    outcome: result.created ? "imported" : "duplicate",
-  });
-  return {
-    ok: true,
-    status: result.created ? "imported" : "duplicate",
-    message: result.created
-      ? systemCost
-        ? `销售单明细账导入成功，已用系统成本清洗 ${systemCost.cleanedRows} 行零成本明细`
-        : "销售单明细账导入成功"
-      : "全部标准化销售资料与当前期间一致，无需重复导入",
-    batch: result.batch,
-    warnings,
-  };
+    return {
+      ...completed.data,
+      warnings: sanitizeSalesIssues(completed.data.warnings ?? []),
+    };
   } catch (error) {
-    await failImportFingerprint(db, { ...fingerprint, batchId: fileHash, importHash: fileHash, rawFileHash, attemptId: reservation.attemptId, metadata: { fileName: input.fileName, fileSizeBytes: input.fileSizeBytes, warnings }, errorCode: "SALES_IMPORT_FAILED" }).catch(() => undefined);
+    const payload = upstreamImportPayload(error);
+    if (payload) return payload;
     throw error;
   }
 }

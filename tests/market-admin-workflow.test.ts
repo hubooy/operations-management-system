@@ -15,6 +15,9 @@ import {
   getMarketSkuComparison,
   getMarketBrandRecognitionJob,
   getMarketBrandSeedWorkspace,
+  getMarketMasterDatabaseFilters,
+  getMarketMasterDatabasePrimary,
+  getMarketMasterDatabaseSecondary,
   getMarketMasterWorkspace,
   getMarketSubcategoryWorkspace,
   getMarketSystemKpis,
@@ -38,7 +41,7 @@ import { ensureMarketMasterIdentities, refreshMarketMasterIdentities } from "../
 import { executeMarketDownloadTask } from "../lib/market/download-executor";
 import { matchImportedMarketBrands, matchMarketBrandTitle, refreshSystemMarketBrandSeeds, type MarketBrandSeed } from "../lib/market/brand-seeds";
 import type { MarketEntryForImport } from "../lib/market/import-core";
-import { ensureMarketSchemaCore, officialPriceBandSql, type MarketSchemaDatabase } from "../lib/market/schema-core";
+import { ensureMarketSchemaCached, ensureMarketSchemaCore, officialPriceBandSql, type MarketSchemaDatabase } from "../lib/market/schema-core";
 
 function sqliteAdapter(sqlite: DatabaseSync, hooks: {
   beforeRun?: (sql: string) => Promise<void>;
@@ -46,6 +49,7 @@ function sqliteAdapter(sqlite: DatabaseSync, hooks: {
   afterFirst?: (sql: string) => Promise<void>;
   beforeAll?: (sql: string) => Promise<void>;
   afterAll?: (sql: string) => Promise<void>;
+  afterBatch?: () => Promise<void>;
 } = {}): MarketSchemaDatabase {
   return {
     prepare(sql: string) {
@@ -74,15 +78,16 @@ function sqliteAdapter(sqlite: DatabaseSync, hooks: {
     },
     async batch(statements: Array<{ run(): Promise<unknown> }>) {
       sqlite.exec("BEGIN");
+      const output = [];
       try {
-        const output = [];
         for (const statement of statements) output.push(await statement.run());
         sqlite.exec("COMMIT");
-        return output;
       } catch (error) {
         sqlite.exec("ROLLBACK");
         throw error;
       }
+      await hooks.afterBatch?.();
+      return output;
     },
   };
 }
@@ -128,7 +133,9 @@ test("system settings KPIs split every pending AI identity into one highest-cost
     ('blocked-spu',6,'2026-07-01','2026-07-31','category-spu','self','SPU','自营','SPU-BLOCKED','SPU','{}','batch'),
     ('blocked-prompt',7,'2026-07-01','2026-07-31','category-no-prompt','POP','SKU','POP','SKU-NO-PROMPT','No prompt','{}','batch'),
     ('blocked-terminal',8,'2026-07-01','2026-07-31','category-terminal','POP','SKU','POP','SKU-TERMINAL','Terminal','{}','batch'),
-    ('completed-ai',9,'2026-07-01','2026-07-31','category-completed','POP','SKU','POP','SKU-COMPLETED','Completed','{}','batch');
+    ('completed-ai',9,'2026-07-01','2026-07-31','category-completed','POP','SKU','POP','SKU-COMPLETED','Completed','{}','batch'),
+    ('cross-month-result',11,'2026-07-01','2026-07-31','category-cross-month','POP','SKU','POP','SKU-CROSS','Cross month result','{}','batch'),
+    ('cross-month-blocked',12,'2026-08-01','2026-08-31','category-cross-month','POP','SKU','POP','SKU-CROSS','Cross month missing image','{}','batch');
     INSERT INTO market_annotation_prompt_versions
       (id,category,version,source,status,segments_json,prompt_body,created_by)
     VALUES
@@ -137,7 +144,8 @@ test("system settings KPIs split every pending AI identity into one highest-cost
       ('prompt-full','category-full',1,'manual','active','["segment-full","other"]','A full prompt body long enough for testing.','admin'),
       ('prompt-no-image','category-no-image',1,'manual','active','["segment-image","other"]','A no-image prompt body long enough for testing.','admin'),
       ('prompt-spu','category-spu',1,'manual','active','["segment-spu","other"]','A SPU prompt body long enough for testing.','admin'),
-      ('prompt-terminal','category-terminal',1,'manual','active','["segment-terminal","other"]','A terminal prompt body long enough for testing.','admin');
+      ('prompt-terminal','category-terminal',1,'manual','active','["segment-terminal","other"]','A terminal prompt body long enough for testing.','admin'),
+      ('prompt-cross-month','category-cross-month',1,'manual','active','["segment-cross","other"]','A cross-month prompt body long enough for testing.','admin');
     INSERT INTO market_price_snapshots
     (id,category,scope,sku_code,ranking_dimension,month,image_content_sha256,confirmed_market_price_cents,confirmation_status,ai_price_type)
     VALUES
@@ -151,26 +159,29 @@ test("system settings KPIs split every pending AI identity into one highest-cost
     ('spu-pending','category-spu','self','SPU-BLOCKED','SPU','2026-07','hash-spu',NULL,'review_pending',''),
     ('prompt-pending','category-no-prompt','POP','SKU-NO-PROMPT','SKU','2026-07','hash-no-prompt',NULL,'review_pending',''),
     ('terminal-pending','category-terminal','POP','SKU-TERMINAL','SKU','2026-07','hash-terminal',NULL,'review_pending',''),
-    ('completed-pending','category-completed','POP','SKU-COMPLETED','SKU','2026-07','hash-completed',NULL,'review_pending','');
+    ('completed-pending','category-completed','POP','SKU-COMPLETED','SKU','2026-07','hash-completed',NULL,'review_pending',''),
+    ('cross-result','category-cross-month','POP','SKU-CROSS','SKU','2026-07','hash-cross',NULL,'review_pending',''),
+    ('cross-blocked','category-cross-month','POP','SKU-CROSS','SKU','2026-08','',NULL,'review_pending','');
     INSERT INTO market_annotation_items
     (id,job_id,category,scope,sku_code,ranking_dimension,month,image_content_sha256,status,ai_segment,reviewed_segment,attempt_count)
     VALUES
     ('price-history','job-price','category-price','POP','SKU-PRICE','SKU','2026-06','hash-price-old','committed','','segment-price',1),
     ('full-old-result','job-full-old','category-full','POP','SKU-FULL','SKU','2026-07','hash-full-old','review_pending','segment-full','segment-full',1),
     ('terminal-failure','job-terminal','category-terminal','POP','SKU-TERMINAL','SKU','2026-07','hash-terminal','failed','','',3),
-    ('completed-result','job-completed','category-completed','POP','SKU-COMPLETED','SKU','2026-07','hash-completed','review_pending','segment-completed','segment-completed',1);`);
+    ('completed-result','job-completed','category-completed','POP','SKU-COMPLETED','SKU','2026-07','hash-completed','review_pending','segment-completed','segment-completed',1),
+    ('cross-result-item','job-cross','category-cross-month','POP','SKU-CROSS','SKU','2026-07','hash-cross','committed','segment-cross','segment-cross',1);`);
 
   const kpis = await getMarketSystemKpis(db as never);
   assert.equal(kpis.sameImageReuseCount + kpis.priceOnlyRecognitionCount + kpis.fullRecognitionCount + kpis.blockedRecognitionCount, kpis.pendingAiCount);
   assert.deepEqual(kpis, {
-    marketIdentityTotal: 8,
-    pendingPriceCount: 8,
-    pendingAiCount: 7,
+    marketIdentityTotal: 9,
+    pendingPriceCount: 9,
+    pendingAiCount: 8,
     completedAiCount: 1,
     sameImageReuseCount: 1,
     priceOnlyRecognitionCount: 1,
     fullRecognitionCount: 1,
-    blockedRecognitionCount: 4,
+    blockedRecognitionCount: 5,
   });
   sqlite.close();
 });
@@ -351,6 +362,40 @@ test("market master pagination uses one snapshot query for valid, clamped, and e
   sqlite.close();
 });
 
+test("market master and pending-price pages use the unique row id to stabilize fully tied sort keys", async () => {
+  const sqlite = new DatabaseSync(":memory:");
+  const db = sqliteAdapter(sqlite);
+  await ensureMarketSchemaCore(db);
+  const insertEntry = sqlite.prepare(`INSERT INTO market_ranking_entries
+    (natural_key, source_row_number, period_start, period_end, category, scope, ranking_dimension, operation_mode,
+      rank, sku_code, product_name, brand, gmv_cents, raw_json, last_import_batch_id)
+    VALUES (?,?,'2026-06-01','2026-06-30','tied-pagination','POP','SKU','POP',1,?,?, '',100,'{}','batch')`);
+  const insertSnapshot = sqlite.prepare(`INSERT INTO market_price_snapshots
+    (id, category, scope, sku_code, ranking_dimension, month, source_price_cents, confirmation_status)
+    VALUES (?,'tied-pagination','POP',?,'SKU','2026-06',10000,'source_table')`);
+  const expected = Array.from({ length: 23 }, (_, index) => `SKU-TIED-${String(index + 1).padStart(2, "0")}`);
+  expected.forEach((skuCode, index) => {
+    insertEntry.run(`tied-pagination-${index + 1}`, index + 1, skuCode, skuCode);
+    insertSnapshot.run(`tied-pagination-snapshot-${index + 1}`, skuCode);
+  });
+
+  const collectPages = async (history: boolean) => {
+    const pages = await Promise.all([1, 2, 3].map((page) => history
+      ? listPendingMarketPrices(db as never, { category: "tied-pagination", page, pageSize: 10 })
+      : listMarketMasterData(db as never, { category: "tied-pagination", page, pageSize: 10 })));
+    pages.forEach((result, index) => assert.deepEqual(result.pagination, {
+      page: index + 1, pageSize: 10, total: 23, pageCount: 3,
+    }));
+    return pages.flatMap((result) => result.items.map((item) => item.skuCode));
+  };
+
+  assert.deepEqual(await collectPages(false), expected);
+  assert.deepEqual(await collectPages(false), expected, "repeated current-master reads must keep identical page membership");
+  assert.deepEqual(await collectPages(true), expected);
+  assert.deepEqual(await collectPages(true), expected, "repeated historical reads must keep identical page membership");
+  sqlite.close();
+});
+
 test("database workspace returns the requested pending-price source and page", async () => {
   const sqlite = new DatabaseSync(":memory:");
   const db = sqliteAdapter(sqlite);
@@ -389,6 +434,42 @@ test("database workspace returns the requested pending-price source and page", a
   assert.deepEqual(aiFirstPage.pendingPrices.pagination, { page: 1, pageSize: 20, total: 1, pageCount: 1 });
   assert.equal(aiFirstPage.pendingPrices.items[0]?.skuCode, "SKU-AI");
   assert.equal(aiFirstPage.pendingPrices.items[0]?.candidatePriceSource, "ai_suggestion");
+  sqlite.close();
+});
+
+test("database primary and deferred secondary views preserve filters and pagination independently", async () => {
+  const sqlite = new DatabaseSync(":memory:");
+  const db = sqliteAdapter(sqlite);
+  await ensureMarketSchemaCore(db);
+  sqlite.exec(`INSERT INTO market_ranking_entries
+    (natural_key, source_row_number, period_start, period_end, category, scope, ranking_dimension, operation_mode, subcategory, sku_code, product_name, brand, raw_json, last_import_batch_id)
+    VALUES
+    ('split-primary-a',1,'2026-06-01','2026-06-30','split-category','pop','SKU','POP','split-subcategory','SKU-SPLIT-A','Split A','','{}','batch'),
+    ('split-primary-b',2,'2026-06-01','2026-06-30','other-category','pop','SKU','POP','other-subcategory','SKU-SPLIT-B','Split B','','{}','batch');
+    INSERT INTO market_subcategory_taxonomy (id, category, subcategory, status)
+    VALUES ('split-taxonomy','split-category','split-subcategory','active');
+    INSERT INTO market_price_snapshots
+    (id, category, scope, sku_code, ranking_dimension, month, source_price_cents, confirmation_status)
+    VALUES ('split-price-a','split-category','pop','SKU-SPLIT-A','SKU','2026-06',199900,'review_pending');`);
+
+  const primary = await getMarketMasterDatabasePrimary(db as never, {
+    categories: ["split-category"], page: 1, pageSize: 20,
+  });
+  assert.equal(primary.masterData.pagination.total, 1);
+  assert.equal(primary.masterData.items[0]?.skuCode, "SKU-SPLIT-A");
+
+  const filters = await getMarketMasterDatabaseFilters(db as never, {
+    categories: ["split-category"],
+  });
+  assert.ok(filters.categories.some((item) => item.value === "split-category"));
+  assert.ok(filters.subcategories.some((item) => item.value === "split-subcategory"));
+
+  const secondary = await getMarketMasterDatabaseSecondary(db as never, {
+    categories: ["split-category"], candidatePriceSources: ["non_ai"], page: 1, pageSize: 1,
+  });
+  assert.deepEqual(secondary.pendingPrices.pagination, { page: 1, pageSize: 1, total: 1, pageCount: 1 });
+  assert.equal(secondary.pendingPrices.items[0]?.skuCode, "SKU-SPLIT-A");
+  assert.equal(secondary.statusCounts.pendingPrices, 1);
   sqlite.close();
 });
 
@@ -601,6 +682,54 @@ test("SKU category migration transaction rechecks a concurrently inserted siblin
   sqlite.close();
 });
 
+test("SKU category migration publishes facts and precise master identities in one batch", async () => {
+  const sqlite = new DatabaseSync(":memory:");
+  let migrationBatchCount = 0;
+  let observedAfterCategoryBatch: Array<Record<string, unknown>> = [];
+  const db = sqliteAdapter(sqlite, { afterBatch: async () => {
+    migrationBatchCount += 1;
+    if (migrationBatchCount !== 2) return;
+    observedAfterCategoryBatch = (sqlite.prepare(`SELECT 'ranking' kind, category, scope, ranking_dimension, sku_code, id latest_entry_id
+        FROM market_ranking_entries WHERE sku_code IN ('SKU-ATOMIC-MOVE','SKU-UNCHANGED')
+      UNION ALL
+      SELECT 'identity' kind, category, scope, ranking_dimension, sku_code, latest_entry_id
+        FROM market_master_identities WHERE sku_code IN ('SKU-ATOMIC-MOVE','SKU-UNCHANGED')
+      ORDER BY kind, sku_code`).all() as Array<Record<string, unknown>>).map((row) => ({ ...row }));
+  } });
+  await ensureMarketSchemaCached(db);
+  await ensureAnnotationSchema(db as never);
+  sqlite.exec(`INSERT INTO market_subcategory_taxonomy (id,category,subcategory,status,created_by,updated_by)
+      VALUES ('atomic-move-target','目标类目','目标细分','active','test','test');
+    INSERT INTO market_ranking_entries
+      (natural_key,source_row_number,period_start,period_end,category,scope,ranking_dimension,operation_mode,subcategory,sku_code,product_name,raw_json,last_import_batch_id) VALUES
+      ('atomic-move',1,'2026-06-01','2026-06-30','原类目','POP','SKU','POP','原细分','SKU-ATOMIC-MOVE','待迁商品','{}','batch'),
+      ('atomic-unchanged',2,'2026-06-01','2026-06-30','无关类目','POP','SKU','POP','无关细分','SKU-UNCHANGED','无关商品','{}','batch');
+    INSERT INTO market_price_snapshots (id,category,scope,sku_code,ranking_dimension,month)
+      VALUES ('atomic-move-price','原类目','POP','SKU-ATOMIC-MOVE','SKU','2026-06');
+    INSERT INTO market_sku_annotations (id,category,sku_code,segment,source_job_item_id,prompt_version_id,reviewed_by,reviewed_at)
+      VALUES ('atomic-move-annotation','原类目','SKU-ATOMIC-MOVE','原细分','history','prompt','admin@example.com',CURRENT_TIMESTAMP);`);
+
+  // Ignore schema setup batches. The first observed batch bootstraps the legacy-empty
+  // identity table; the second is the category migration transaction itself.
+  migrationBatchCount = 0;
+  const result = await updateMarketSkuMasterData(db as never, {
+    originalCategory: "原类目", category: "目标类目", scope: "POP", rankingDimension: "SKU",
+    skuCode: "SKU-ATOMIC-MOVE", month: "2026-06", productName: "已迁商品", brand: "品牌",
+    operationMode: "POP", subcategory: "目标细分", priceCents: 199_900, priceType: "标准售价",
+  }, admin);
+
+  assert.equal(result.changedRows, 5, "identity/control statements must not inflate business changedRows");
+  assert.deepEqual(observedAfterCategoryBatch, [
+    { kind: "identity", category: "目标类目", scope: "POP", ranking_dimension: "SKU", sku_code: "SKU-ATOMIC-MOVE", latest_entry_id: 1 },
+    { kind: "identity", category: "无关类目", scope: "POP", ranking_dimension: "SKU", sku_code: "SKU-UNCHANGED", latest_entry_id: 2 },
+    { kind: "ranking", category: "目标类目", scope: "POP", ranking_dimension: "SKU", sku_code: "SKU-ATOMIC-MOVE", latest_entry_id: 1 },
+    { kind: "ranking", category: "无关类目", scope: "POP", ranking_dimension: "SKU", sku_code: "SKU-UNCHANGED", latest_entry_id: 2 },
+  ]);
+  assert.equal((sqlite.prepare("SELECT COUNT(*) count FROM market_master_identities WHERE category='原类目' AND sku_code='SKU-ATOMIC-MOVE'").get() as { count: number }).count, 0);
+  assert.equal((sqlite.prepare("SELECT suppress_identity_revision value FROM market_system_kpi_cache_control WHERE id=1").get() as { value: number }).value, 0);
+  sqlite.close();
+});
+
 test("subcategory rename is atomic when its audit write fails", async () => {
   const sqlite = new DatabaseSync(":memory:");
   const base = sqliteAdapter(sqlite);
@@ -755,6 +884,27 @@ test("newly discovered system brand seeds match the current import without pre-p
     brand: "", productName: "旧品牌商用净水机", scope: "C店", operationMode: "POP", raw: { 店铺类型: "C店" },
   } as MarketEntryForImport]);
   assert.equal(stale.rows[0]?.brand, "");
+  sqlite.close();
+});
+
+test("market import can atomically persist its discovered system seed snapshot without rescanning source tables", async () => {
+  const sqlite = new DatabaseSync(":memory:");
+  const db = sqliteAdapter(sqlite);
+  await ensureMarketSchemaCore(db);
+  const snapshot: MarketBrandSeed[] = [{
+    id: "snapshot-seed",
+    canonicalBrand: "品牌快照",
+    seedText: "品牌快照",
+    normalizedSeed: "品牌快照",
+    source: "system",
+    sourceRef: "market_confirmed_brand,erp_product_master",
+    status: "enabled",
+  }];
+  const refreshed = await refreshSystemMarketBrandSeeds(db, "market-import", { systemSeedSnapshot: snapshot });
+  assert.equal(refreshed.discovered, 1);
+  assert.equal(refreshed.inserted, 1);
+  assert.deepEqual({ ...sqlite.prepare("SELECT canonical_brand brand, source_ref sourceRef FROM market_brand_seeds WHERE normalized_seed=?")
+    .get("品牌快照") }, { brand: "品牌快照", sourceRef: "erp_product_master,market_confirmed_brand" });
   sqlite.close();
 });
 

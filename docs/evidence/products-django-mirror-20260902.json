@@ -1,0 +1,56 @@
+{
+  "version": "products-django-mirror-rehearsal-v1",
+  "status": "passed",
+  "recordedAt": "2026-09-02T00:03:56.6271735+08:00",
+  "productionStateChanged": false,
+  "environment": {
+    "kind": "isolated-postgresql-cluster",
+    "postgresVersion": "17.11",
+    "listenAddress": "127.0.0.1",
+    "port": 55441,
+    "database": "products_system_mirror"
+  },
+  "source": {
+    "kind": "local-d1-read-only-transaction",
+    "sourcePathSha256": "658ec575000b3d9fe4417b65e02a36397822deff9b684ae11fa9016e78fce448",
+    "sourceDigest": "e44d40245ef61b8e0231fbec2a44f466cf0709eb049c75182e2fdde16d050a6e",
+    "counts": {
+      "attempts": 1,
+      "batches": 1,
+      "fingerprints": 1,
+      "inventory": 6461,
+      "rates": 3630
+    },
+    "latestShippingRateBatchCompletedAt": "2026-08-27T13:22:15+08:00",
+    "latestInventorySnapshotDate": "2026-08-31",
+    "latestInventoryBatchCompletedAt": "2026-09-01T06:15:38+08:00",
+    "legacyProductUploadChunkCount": 0
+  },
+  "postgresBase": {
+    "backupId": "daily-20260901T141558Z-a68cc9120c95",
+    "backupCreatedAt": "2026-09-01T22:15:58.7468664+08:00",
+    "manifestSha256": "05cbd1d1534cd223ca5315d96eb51517d85a28c1110f9b48a208981db37a2eb9",
+    "dumpSha256": "dabe0317820b449627f054611575e23fd1cbfc0e25770202ef2d68d9e3637021",
+    "evidenceCanonicalSha256": "b3a3b7af25dc2ec64869e95e375b4d4611b9b8245a44d47bb231b7c48103cea8"
+  },
+  "migration": {
+    "planRunId": "products-plan-23e6f32b9d764faa95cffa703b5d96b1",
+    "applyRunId": "products-apply-b8c848908065455799845eaf9a42b410",
+    "targetDigest": "e44d40245ef61b8e0231fbec2a44f466cf0709eb049c75182e2fdde16d050a6e",
+    "verifyStatus": "passed",
+    "inventoryExclusion": "刷刷仓"
+  },
+  "systemChecks": {
+    "djangoMigrations": "passed",
+    "readFullProjection": "passed",
+    "pageSnapshotConsistency": "passed",
+    "itemContract": "passed",
+    "salesWindow": "passed",
+    "inventoryProjection": "passed",
+    "duplicateWriteIdempotency": "passed",
+    "writeRequestReplay": "passed",
+    "factCountStableOnDuplicate": "passed",
+    "unsignedRequestRejected": "passed",
+    "terminalRetirementOperator": "passed-in-isolated-test"
+  }
+}

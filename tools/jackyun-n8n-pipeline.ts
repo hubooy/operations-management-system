@@ -18,6 +18,7 @@ import { runJackyunAutomation, type JackyunAutomationOptions } from "./jackyun-a
 import { isExactFailedSourceRowCountRepair } from "./jackyun-download-runner";
 import type { BrowserHandoff } from "./jackyun-daily-runner";
 import { salesSourceRowCountSemantic } from "./sales-import-runner";
+import { jackyunSalesPeriod } from "../lib/jackyun/sales-period";
 
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const maximumRunDirectoriesToInspect = 365;
@@ -130,6 +131,7 @@ type VerifiedModuleEvidence = {
   warningCount: number;
   outputSha256: string;
   salesPolicyVersion?: string;
+  djangoReceipt?: { contentHash: string; rawFileHash: string };
 };
 
 function pathsFor(root = projectRoot): RuntimePaths {
@@ -488,11 +490,14 @@ async function readPublishedItems(request: typeof fetch, url: string) {
 export async function verifyPublishedJackyunBatches(options: {
   baseUrl: string;
   asOfDate: string;
+  salesStartDate?: string;
+  snapshotDate?: string;
   modules: readonly VerifiedModuleEvidence[];
   request?: typeof fetch;
 }) {
   const baseUrl = normalizeJackyunLocalBaseUrl(options.baseUrl);
   const request = options.request ?? fetch;
+  const salesPeriod = jackyunSalesPeriod(options.asOfDate, options.salesStartDate);
   const byModule = new Map(options.modules.map((item) => [item.module, item]));
   if (byModule.size !== jackyunModuleOrder.length || jackyunModuleOrder.some((moduleKey) => !byModule.has(moduleKey))) {
     throw new Error("吉客云落库回查缺少完整五类批次。");
@@ -511,7 +516,7 @@ export async function verifyPublishedJackyunBatches(options: {
       source: "combos", batchId: byModule.get("combos")!.batchId,
     })}`),
     request(`${baseUrl}/api/imports/sales/verify?${new URLSearchParams({
-      startDate: `${options.asOfDate.slice(0, 8)}01`,
+      startDate: salesPeriod.startDate,
       endDate: options.asOfDate,
       batchId: byModule.get("sales")!.batchId,
     })}`, { cache: "no-store", signal: AbortSignal.timeout(30_000) }),
@@ -534,7 +539,13 @@ export async function verifyPublishedJackyunBatches(options: {
       throw new Error(`吉客云 ${moduleKey} 精确批次未在运营系统落库历史中完成。`);
     }
     const snapshotDate = batch.snapshotDate;
-    if ((moduleKey === "inventory" || moduleKey === "inventory_age") && snapshotDate !== options.asOfDate) {
+    if (expected.djangoReceipt) {
+      const totals = batch.totals as Record<string, unknown> | undefined;
+      if (totals?.contentHash !== expected.djangoReceipt.contentHash || totals?.rawFileHash !== expected.djangoReceipt.rawFileHash) {
+        throw new Error(`吉客云 ${moduleKey} Django 当前批次摘要与本轮回执不一致。`);
+      }
+    }
+    if ((moduleKey === "inventory" || moduleKey === "inventory_age") && snapshotDate !== (options.snapshotDate ?? options.asOfDate)) {
       throw new Error(`吉客云 ${moduleKey} 落库批次快照日期不一致。`);
     }
     if ((moduleKey === "products" || moduleKey === "combos") && snapshotDate !== null) {
@@ -561,7 +572,7 @@ export async function verifyPublishedJackyunBatches(options: {
   const expectedSales = byModule.get("sales")!;
   if (!salesResponse.ok || !sales || typeof sales.policyVersion !== "string" || !sales.policyVersion
     || (expectedSales.salesPolicyVersion !== undefined && sales.policyVersion !== expectedSales.salesPolicyVersion)
-    || sales.period?.startDate !== `${options.asOfDate.slice(0, 8)}01` || sales.period.endDate !== options.asOfDate
+    || sales.period?.startDate !== salesPeriod.startDate || sales.period.endDate !== options.asOfDate
     || sales.batch?.id !== expectedSales.batchId || sales.batch.status !== "completed"
     || sales.batch.rowCount !== expectedSales.rowCount || sales.stats?.rowCount !== expectedSales.rowCount
     || sales.batch.totals?.rawFileHash !== expectedSales.outputSha256

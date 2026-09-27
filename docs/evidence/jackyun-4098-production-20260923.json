@@ -1,0 +1,398 @@
+{
+  "version": "teruisi-jackyun-4098-production-v1",
+  "status": "adopted_and_failure_closed",
+  "checkedAt": "2026-09-22T17:18:21.390Z",
+  "sourceCommit": "47c1d6f68b68eb09532e0c8a913237c74e044af0",
+  "authorization": "用户明确允许现在短暂维护运营系统，发布补丁并完成关闭。",
+  "worker": {
+    "status": "activated",
+    "version": "teruisi-local-worker-release-successor-v1",
+    "planSha256": "e992e061e830fece8818119b5cd5ab5ce306223a67f240432d14ceb71eb76175",
+    "predecessorReleaseId": "20260922T105105Z-d8e06b9d16695c3f",
+    "releaseId": "20260922T165537Z-43dfa5ea8751488e",
+    "manifestPath": "D:\\teruisi-runtime\\teruisi-worker-sales\\releases\\20260922T165537Z-43dfa5ea8751488e\\deployment-manifest.json",
+    "manifestSha256": "ebc226b1d0ebdea914551dd5b6e0a39c24aa2e9037fbaea98a7c2cff114422c1",
+    "successorSha256": "427b0e0f82f5ef30b19a1676d870d3335b24a713a2d02629f2defa46ed3b93c0",
+    "consumptionSha256": "d26d04f81a90200c52b827c9ff9c0f77a64b5195b55358999c6dea5bb0dac1d3",
+    "startupBindingSha256": "199d0eaac216833ca30b6e7e69ceb47ba10d3854613df2f51fc8536e3308d49b"
+  },
+  "runtime": {
+    "version": "teruisi-operations-system-control-v2",
+    "state": "Running",
+    "backendState": "Ready",
+    "workerState": "exact_release",
+    "releaseId": "20260922T165537Z-43dfa5ea8751488e",
+    "supervisorProcessId": 37996,
+    "portProcessId": 26988,
+    "url": "http://localhost:3000/",
+    "reason": null,
+    "components": {
+      "core": true,
+      "finance": true,
+      "netshop": true,
+      "market": true,
+      "products": true,
+      "workflow": true,
+      "inventory": true,
+      "customerService": true,
+      "accessControl": true,
+      "erpReference": true,
+      "bi": true,
+      "ai": true
+    },
+    "checkedAt": "2026-09-23T01:14:17.9539463+08:00"
+  },
+  "startup": {
+    "status": "verified",
+    "version": "teruisi-local-worker-status-v1",
+    "releaseId": "20260922T165537Z-43dfa5ea8751488e",
+    "manifestSha256": "ebc226b1d0ebdea914551dd5b6e0a39c24aa2e9037fbaea98a7c2cff114422c1",
+    "startupVerified": true
+  },
+  "http": {
+    "at": "2026-09-22T17:13:53.035Z",
+    "assets": [
+      {
+        "path": "/assets/index-EszXsfPr.css",
+        "sha256": "58a1530f60936a8462baf5e669b144cd4b8524f6eaa99b262fb768fb4c20d729"
+      },
+      {
+        "path": "/assets/layout-segment-context-B6qQElV7.js",
+        "sha256": "efccf1fe726539a67fcc981d8dd5f0f73b54a876cd0a76d564cc334950392474"
+      },
+      {
+        "path": "/assets/rolldown-runtime-S-ySWqyJ.js",
+        "sha256": "5db5ba82eef00d1dee7e86e663098c9427d01183a88d357437daff295aec3e75"
+      },
+      {
+        "path": "/assets/index-DnHKKleU.js",
+        "sha256": "b1ed4e455a4936b30ec2571ef4e9ddee079545cd5b02b4f6e8e0d8fbbc36ee96"
+      },
+      {
+        "path": "/assets/framework-CXnKph_e.js",
+        "sha256": "73b45b606448e4dc310fbe851d8089ee752f3eb081980b3a6fec88988820ee12"
+      },
+      {
+        "path": "/assets/page-CX28QWVI.js",
+        "sha256": "a1dd663e5ae4a91f1825c8910267395a9ebc41c71c90b9989a18b05d9080460e"
+      },
+      {
+        "path": "/assets/ai-page-context-provider-Dc3lH0uZ.js",
+        "sha256": "81068a87be6359e62cb5aca4183656b0fdb30f82e4dab2532fd9e2caa6753858"
+      },
+      {
+        "path": "/assets/module-view-shared-C5DPvJ_4.js",
+        "sha256": "bef709b2ccd5a55e06911ae20a759ba86e015a641693a7ab40cd93607f8086d3"
+      },
+      {
+        "path": "/assets/navigation-catalog-DvolBk78.js",
+        "sha256": "c83bd576cc5d5ce20c2d4cd8cd67214cb338dc7f340405edad8b7ba11ae1efbe"
+      },
+      {
+        "path": "/assets/reloadable-lazy-BU4AV5pU.js",
+        "sha256": "89877a478fb2c752b38ed3187cc3c2976f3114b25c92131f6a3da6421188a432"
+      },
+      {
+        "path": "/assets/dialog-CXm5GeIc.js",
+        "sha256": "62403b91d7d23f2e2c0f24b5941f9176e1a7ebf61f5cb8f770132bc6f8dc1ac5"
+      },
+      {
+        "path": "/assets/searchable-select-TuzqFU6k.js",
+        "sha256": "f423c656f508f5e8c08f6790e50b567b02f6e294204032fe6ba28e765310916f"
+      },
+      {
+        "path": "/assets/page-context-DTMpRdSa.js",
+        "sha256": "5d9125e98d2820f2853aeb82cb368758d028ddd380e71062e35726a2cd774c52"
+      },
+      {
+        "path": "/assets/api-client-BkSFlZxp.js",
+        "sha256": "1668ca8a79bf454e2d7c8c8ef2783c19ca9d6640e5df6327400a57e8ccc5edbe"
+      },
+      {
+        "path": "/assets/api-error-CJCV3BJQ.js",
+        "sha256": "4efae8b1a9127677a8c80569e149000d507839d79d3fc807c2a37d490174941f"
+      }
+    ],
+    "localhost": 200,
+    "127.0.0.1": 200,
+    "live": {
+      "ok": true,
+      "status": "live"
+    },
+    "ready": {
+      "ok": true,
+      "backend": "django-postgresql",
+      "unavailableServices": [],
+      "status": "ready"
+    },
+    "closure": {
+      "status": "closed_before_business",
+      "reason": "audited_4098_page_selection_before_api_exports",
+      "sha256": "69d3d3665044e9288fe179ed2952f3160fddcc59ddd5fda458d8d31fea99a910",
+      "sourceMatchesDeployed": true,
+      "oldPlanAndActiveUnchanged": true,
+      "n8nFailureAndDefinitionUnchanged": true,
+      "effectsAbsent": 4,
+      "djangoDeploymentUnchanged": true
+    },
+    "helper": {
+      "ok": true,
+      "busy": false
+    },
+    "n8n": {
+      "status": "ok"
+    }
+  },
+  "closure": {
+    "status": "closed_before_business",
+    "runId": "n8n-export-first-4098",
+    "closureSha256": "69d3d3665044e9288fe179ed2952f3160fddcc59ddd5fda458d8d31fea99a910",
+    "reason": "audited_4098_page_selection_before_api_exports",
+    "proposalSha256": "f661d469b55b352a1225eaa05ce6d461f7d8bcb55ce0a414df4410a7e146f2b9",
+    "closedAt": "2026-09-22T17:13:32.080Z",
+    "deployedValidatorAccepted": true,
+    "originalPlanAndActiveUnchanged": true,
+    "originalN8nErrorRetained": true,
+    "businessEffectPathsAbsent": 4
+  },
+  "maintenance": {
+    "entered": {
+      "startedAt": "2026-09-23T01:05:34.9997998+08:00",
+      "completedAt": "2026-09-23T01:07:47.4552893+08:00",
+      "exitCode": 0,
+      "step": "enter"
+    },
+    "exited": {
+      "startedAt": "2026-09-23T01:10:28.7774563+08:00",
+      "exitCode": 0,
+      "step": "exit",
+      "completedAt": "2026-09-23T01:10:49.5984562+08:00"
+    },
+    "start": {
+      "startedAt": "2026-09-23T01:10:50.0852069+08:00",
+      "completedAt": "2026-09-23T01:13:13.5541059+08:00",
+      "step": "start",
+      "exitCode": 0
+    },
+    "postgresPreserved": true
+  },
+  "django": {
+    "redeployed": false,
+    "manifestSha256": "75e2875fd18e7753b04dd7ec237e37791a29771ad538038ffef3ce19d4351d5b",
+    "unchanged": true,
+    "migrationsCount": 62,
+    "migrationsUnchanged": true,
+    "inventoryBatchUnchanged": true
+  },
+  "supervisor": {
+    "health": "healthy",
+    "status": "completed",
+    "desiredState": "running"
+  },
+  "ai": {
+    "reader": "running",
+    "writer": "running",
+    "scheduler": "running",
+    "receiver": "running",
+    "connection": "connected"
+  },
+  "watchdog": [
+    {
+      "at": "2026-09-22T17:16:25.0301427+00:00",
+      "healthy": true,
+      "task": {
+        "LastRunTime": "2026-09-23T01:16:24+08:00",
+        "LastTaskResult": 0,
+        "NextRunTime": "2026-09-23T01:17:23+08:00"
+      }
+    },
+    {
+      "at": "2026-09-22T17:17:24.9316318+00:00",
+      "healthy": true,
+      "task": {
+        "LastRunTime": "2026-09-23T01:17:24+08:00",
+        "LastTaskResult": 0,
+        "NextRunTime": "2026-09-23T01:18:23+08:00"
+      }
+    }
+  ],
+  "backups": {
+    "before": {
+      "status": "completed",
+      "backupId": "daily-20260922T165600Z-4bc3ce16437e",
+      "backupDirectory": "D:\\teruisi-runtime\\django-sales\\backups\\postgres-daily\\daily-20260922T165600Z-4bc3ce16437e",
+      "manifestSha256": "106940cc7e3e2d8446ca147fe2c6546699b904be5fc5af037cf0ccb6c5bd4a81",
+      "dumpSha256": "29360bfe31cf4b0484ce990545e3368fa20f0de7eb07ec99cd6fd94451d1d26a",
+      "contentSha256": "417f5c5ea3efe635530a2209f20b5fd2661fe23daf174e1f3724e65802c0c4ec",
+      "completedAt": "2026-09-22T16:58:14.4721517+00:00",
+      "serviceStateChanged": false
+    },
+    "verifyBefore": {
+      "status": "completed",
+      "backupId": "daily-20260922T165600Z-4bc3ce16437e",
+      "manifestSha256": "106940cc7e3e2d8446ca147fe2c6546699b904be5fc5af037cf0ccb6c5bd4a81",
+      "dumpSha256": "29360bfe31cf4b0484ce990545e3368fa20f0de7eb07ec99cd6fd94451d1d26a",
+      "contentSha256": "417f5c5ea3efe635530a2209f20b5fd2661fe23daf174e1f3724e65802c0c4ec",
+      "serviceStateChanged": false
+    },
+    "restore": {
+      "version": "teruisi-postgres-restore-rehearsal-v1",
+      "status": "completed",
+      "rehearsalId": "409809230923",
+      "startedAt": "2026-09-22T16:59:25.7281897+00:00",
+      "completedAt": "2026-09-22T17:05:14.2536850+00:00",
+      "backupId": "daily-20260922T165600Z-4bc3ce16437e",
+      "backupManifestSha256": "106940cc7e3e2d8446ca147fe2c6546699b904be5fc5af037cf0ccb6c5bd4a81",
+      "dumpSha256": "29360bfe31cf4b0484ce990545e3368fa20f0de7eb07ec99cd6fd94451d1d26a",
+      "expectedContentSha256": "417f5c5ea3efe635530a2209f20b5fd2661fe23daf174e1f3724e65802c0c4ec",
+      "restoredContentSha256": "417f5c5ea3efe635530a2209f20b5fd2661fe23daf174e1f3724e65802c0c4ec",
+      "isolatedPort": 55983,
+      "productionDatabaseTouched": false,
+      "serviceStateChanged": false,
+      "cleanupStatus": "isolated_data_removed"
+    },
+    "archiveBefore": {
+      "files": [
+        {
+          "file": "teruisi-sales.dump",
+          "sha256": "29360bfe31cf4b0484ce990545e3368fa20f0de7eb07ec99cd6fd94451d1d26a",
+          "verified": true
+        },
+        {
+          "file": "backup-manifest.json",
+          "sha256": "106940cc7e3e2d8446ca147fe2c6546699b904be5fc5af037cf0ccb6c5bd4a81",
+          "verified": true
+        },
+        {
+          "file": "backup-manifest.json.sha256",
+          "sha256": "62af99cb0bf7f050bcfc0e16dd9d6d59d64abb970a30ceec15c7fbe5be7ea7a1",
+          "verified": true
+        }
+      ],
+      "directory": "E:\\运营管理系统业务数据\\daily-20260922T165600Z-4bc3ce16437e"
+    },
+    "after": {
+      "status": "completed",
+      "backupId": "daily-20260922T171401Z-10ef7cc6bb87",
+      "backupDirectory": "D:\\teruisi-runtime\\django-sales\\backups\\postgres-daily\\daily-20260922T171401Z-10ef7cc6bb87",
+      "manifestSha256": "24078515aa49376bc0ad5318f91f863a7003787044e6b35e4d0216b92cf441b2",
+      "dumpSha256": "af33df154c371d061fa25f663bba164668bacb4be03eafbe4d394f5692ae7804",
+      "contentSha256": "34b6584e59ca2b0e4ae0b1e49d51e3ad49e56d0fc37b899c9bb746a465276f8a",
+      "completedAt": "09/23/2026 01:16:04",
+      "serviceStateChanged": false
+    },
+    "verifyAfter": {
+      "status": "completed",
+      "backupId": "daily-20260922T171401Z-10ef7cc6bb87",
+      "manifestSha256": "24078515aa49376bc0ad5318f91f863a7003787044e6b35e4d0216b92cf441b2",
+      "dumpSha256": "af33df154c371d061fa25f663bba164668bacb4be03eafbe4d394f5692ae7804",
+      "contentSha256": "34b6584e59ca2b0e4ae0b1e49d51e3ad49e56d0fc37b899c9bb746a465276f8a",
+      "serviceStateChanged": false
+    },
+    "archiveAfter": {
+      "directory": "E:\\运营管理系统业务数据\\daily-20260922T171401Z-10ef7cc6bb87",
+      "files": [
+        {
+          "file": "teruisi-sales.dump",
+          "verified": true,
+          "sha256": "af33df154c371d061fa25f663bba164668bacb4be03eafbe4d394f5692ae7804"
+        },
+        {
+          "file": "backup-manifest.json",
+          "verified": true,
+          "sha256": "24078515aa49376bc0ad5318f91f863a7003787044e6b35e4d0216b92cf441b2"
+        },
+        {
+          "file": "backup-manifest.json.sha256",
+          "verified": true,
+          "sha256": "001f1e91757297353f1cd2e882605421fbd0e0c41a438c5ed32c51c14cb777a7"
+        }
+      ]
+    }
+  },
+  "n8n": {
+    "workflow": {
+      "id": "J8kY2mQ5vR7sT4pN",
+      "name": "吉客云导入系统",
+      "active": 1,
+      "versionId": "e11b4c5e-dcd7-4517-b3ea-5f3cb4b8f2d7",
+      "activeVersionId": "e11b4c5e-dcd7-4517-b3ea-5f3cb4b8f2d7",
+      "definitionSha256": "483fa93de8dc3a49940784f77634e121b5bef81663975a966caa4cef5aadb82f"
+    },
+    "restarted": false,
+    "modified": false,
+    "manualRuns": 0,
+    "recent": [
+      {
+        "id": 4101,
+        "workflowId": "TeruisiHourlyRetry2026",
+        "status": "waiting",
+        "startedAt": "2026-09-22 17:10:24.667",
+        "stoppedAt": "2026-09-22 17:10:24.679",
+        "waitTill": "2026-09-22 18:10:24.679"
+      },
+      {
+        "id": 4100,
+        "workflowId": "J8kY2mQ5vR7sT4pN",
+        "status": "error",
+        "startedAt": "2026-09-22 17:10:04.584",
+        "stoppedAt": "2026-09-22 17:10:24.654",
+        "waitTill": null
+      },
+      {
+        "id": 4099,
+        "workflowId": "TeruisiHourlyRetry2026",
+        "status": "success",
+        "startedAt": "2026-09-22 16:10:04.451",
+        "stoppedAt": "2026-09-22 17:10:04.596",
+        "waitTill": null
+      },
+      {
+        "id": 4098,
+        "workflowId": "J8kY2mQ5vR7sT4pN",
+        "status": "error",
+        "startedAt": "2026-09-22 16:10:00.032",
+        "stoppedAt": "2026-09-22 16:10:04.434",
+        "waitTill": null
+      },
+      {
+        "id": 3959,
+        "workflowId": "TeruisiHourlyRetry2026",
+        "status": "success",
+        "startedAt": "2026-09-22 03:00:54.042",
+        "stoppedAt": "2026-09-22 04:00:54.524",
+        "waitTill": null
+      },
+      {
+        "id": 3949,
+        "workflowId": "TeruisiHourlyRetry2026",
+        "status": "success",
+        "startedAt": "2026-09-22 02:31:26.849",
+        "stoppedAt": "2026-09-22 03:31:27.929",
+        "waitTill": null
+      }
+    ],
+    "nonterminal": [
+      {
+        "id": 4101,
+        "workflowId": "TeruisiHourlyRetry2026",
+        "status": "waiting",
+        "startedAt": "2026-09-22 17:10:24.667",
+        "waitTill": "2026-09-22 18:10:24.679"
+      }
+    ],
+    "maintenanceRetry": {
+      "executionId": "4100",
+      "failedAtNode": "领取共享 helper",
+      "noBusinessPlanOrEffects": true,
+      "nextRetryExecution": "4101",
+      "nextRetryShanghai": "2026-09-23 02:10:24"
+    }
+  },
+  "limitations": {
+    "businessImportPerformed": false,
+    "loginRootCauseFixed": false,
+    "generalAutomaticClosureImplemented": false,
+    "retryClassificationChanged": false
+  }
+}
